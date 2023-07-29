@@ -1,6 +1,6 @@
 # Build Files
-.o
-.exe
+*.o
+*.exe
 
 # Junk Files
 *~

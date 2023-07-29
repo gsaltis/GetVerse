@@ -29,6 +29,7 @@
  *****************************************************************************/
 #define DEFAULT_FILENAME                        "NASB.txt"
 #define DEFAULT_DB_FILENAME                     "NASB.db"
+#define DATABASE_ENV_LOCATION                   "GETVERSE_DATABASE"
 #define DUPLICATE_BOOK                          1
 #define BOOK_NOT_FOUND                          2
 #define BOOK_FOUND                              3
@@ -53,6 +54,7 @@ typedef struct _BookInfo BookInfo;
  *****************************************************************************/
 struct _VerseRange
 {
+  int                                   chapter;
   int                                   first;
   int                                   last;
 };
@@ -84,9 +86,6 @@ ProgramName = "getverse";
 
 static BookInfo*
 MainSearchBook = NULL;
-
-static int
-MainChapter = 0;
 
 static VerseRange
 MainVerseRanges[VERSE_RANGES_COUNT];
@@ -199,7 +198,7 @@ MainDBBFindVerseInfoCB
 
 void
 ProcessCommandLineVerseDeclaration
-(string InVerseDecl);
+(int InChapter, string InVerseDecl);
 
 /*****************************************************************************!
  * Function : main
@@ -223,11 +222,18 @@ void
 MainInitialize
 (void)
 {
+  string                                s;
+  
   MainFilename          = NULL;
   MainDatabaseFilename  = StringCopy(DEFAULT_DB_FILENAME);
   MainBook              = NULL;
-  MainChapter           = 0;
   MainVerseRangesCount  = 0;
+
+  s = getenv(DATABASE_ENV_LOCATION);
+  if ( s ) {
+    FreeMemory(MainDatabaseFilename);
+    MainDatabaseFilename = StringCopy(s);
+  }
 }
 
 /*****************************************************************************!
@@ -237,8 +243,14 @@ void
 ProcessCommandLine
 (int argc, char** argv)
 {
+  int                                   chapterNumber;
+  int                                   k;
+  string                                chapterString;
+  string                                verseString;
   string                                command;
   int                                   i;
+  StringList*                           st;
+  
   for (i = 1; i < argc; i++) {
     command = argv[i];
     if ( StringEqualsOneOf(command, "-h", "--help", NULL) ) {
@@ -301,24 +313,42 @@ ProcessCommandLine
     break;
   }
   
-  if ( i + 3 != argc ) {
-    fprintf(stderr, "Missing verse reference\n");
-    DisplayHelp();
+  if ( i == argc ) {
+    fprintf(stderr, "Missing book reference\n");
     exit(EXIT_FAILURE);
   }
-
   FreeMemory(MainBook);
   MainBook = StringCopy(argv[i]);
   i++;
-  
-  if ( !StringIsInteger(argv[i]) ) {
-    fprintf(stderr, "Chapter reference is not a number\n");
-    exit(EXIT_FAILURE);
-  }
-  MainChapter = atoi(argv[i]);
-  i++;
 
-  ProcessCommandLineVerseDeclaration(argv[i]);
+  for ( k = i; k < argc; k++ ) {
+    st = StringSplit(argv[k], ":", false);
+    if ( st->stringCount < 1 || st->stringCount > 2 ) {
+      fprintf(stderr, "Invalid chapter/verse reference\n");
+      exit(EXIT_FAILURE);
+    }
+    do {
+      if ( st->stringCount == 2 ) {
+        chapterString = st->strings[0];
+        verseString = st->strings[1];
+        break;
+      }
+      chapterString = argv[k];
+      k++;
+      if ( k == argc ) {
+        fprintf(stderr, "Missing verse reference\n");
+        exit(EXIT_FAILURE);
+      }
+      verseString = argv[k];
+    } while (false);
+    if ( !StringIsInteger(chapterString) ) {
+      fprintf(stderr, "Chapter reference is not a number\n");
+      exit(EXIT_FAILURE);
+    }
+    chapterNumber = atoi(chapterString);
+    ProcessCommandLineVerseDeclaration(chapterNumber, verseString);
+  }
+  StringListDestroy(st);
 }
 
 /*****************************************************************************!
@@ -326,7 +356,7 @@ ProcessCommandLine
  *****************************************************************************/
 void
 ProcessCommandLineVerseDeclaration
-(string InVerseDecl)
+(int InChapter, string InVerseDecl)
 {
   int                                   i;
   StringList*                           st;     // Destroy Me
@@ -343,18 +373,19 @@ ProcessCommandLineVerseDeclaration
         fprintf(stderr, "Verse reference is not a number\n");
         exit(EXIT_FAILURE);
       }
-
+      MainVerseRanges[MainVerseRangesCount].chapter = InChapter;
       MainVerseRanges[MainVerseRangesCount].first = atoi(st3);
       MainVerseRanges[MainVerseRangesCount].last  = atoi(st3);
       MainVerseRangesCount++;
       StringListDestroy(st);
-      return;
+      continue;
     }
     if ( st->stringCount == 2 ) {
       if ( ! (StringIsInteger(st->strings[0]) && StringIsInteger(st->strings[1]) ) ) {
         fprintf(stderr, "%s is not a valid verse reference\n", st3);
         exit(EXIT_FAILURE);
       }
+      MainVerseRanges[MainVerseRangesCount].chapter = InChapter;
       MainVerseRanges[MainVerseRangesCount].first = atoi(st->strings[0]);
       MainVerseRanges[MainVerseRangesCount].last = atoi(st->strings[1]);
       MainVerseRangesCount++;
@@ -412,10 +443,6 @@ VerifyCommandLine
     }
   }
   MainSearchBook = MainGetSearchableBookName(MainBook);
-  if ( 0 == MainChapter ) {
-    fprintf(stderr, "Missing chapter\n");
-    exit(EXIT_FAILURE);
-  }
   if ( MainVerseRangesCount == 0 ) {
     fprintf(stderr, "Missing verse\n");
     exit(EXIT_FAILURE);
@@ -879,7 +906,7 @@ MainDBFindVerse
   int                                   n;
 
   sprintf(sqlstmt, "  SELECT * FROM Verses where book is %d AND chapter is %d AND verse >= %d AND verse <= %d;",
-          MainSearchBook->index, MainChapter, MainVerseRanges[InRange].first, MainVerseRanges[InRange].last);
+          MainSearchBook->index, MainVerseRanges[InRange].chapter, MainVerseRanges[InRange].first, MainVerseRanges[InRange].last);
   n = sqlite3_exec(MainDatabase, sqlstmt, MainDBBFindVerseInfoCB, NULL, &error);
   if ( n == SQLITE_OK ) {
     return;
