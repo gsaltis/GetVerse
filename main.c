@@ -38,6 +38,8 @@
 #define BOOK_COUNT                              66
 #define VERSE_RANGES_COUNT                      50
 
+#define ALL_VERSES_STRING                       "1-1000"
+
 /*****************************************************************************!
  * Exported Type : BookInfo
  *****************************************************************************/
@@ -200,6 +202,10 @@ void
 ProcessCommandLineVerseDeclaration
 (int InChapter, string InVerseDecl);
 
+string
+CapitalizeBookName
+(string InBookname);
+
 /*****************************************************************************!
  * Function : main
  *****************************************************************************/
@@ -335,9 +341,10 @@ ProcessCommandLine
       }
       chapterString = argv[k];
       k++;
+      
       if ( k == argc ) {
-        fprintf(stderr, "Missing verse reference\n");
-        exit(EXIT_FAILURE);
+        verseString = ALL_VERSES_STRING;
+        break;
       }
       verseString = argv[k];
     } while (false);
@@ -817,7 +824,7 @@ MainDBBReadBookInfoCB
   int                                   chapterCount;
   int                                   bookIndex;
   string                                bookName;
-
+  
   bookIndex = atoi(InColumnValues[0]);
   bookName = InColumnValues[1];
   chapterCount = atoi(InColumnValues[2]);
@@ -926,15 +933,18 @@ MainDBBFindVerseInfoCB
   StringList*                           st;
   string                                reference;
   string                                text;
+  string                                bookNameCap;
 
   reference = InColumnValues[0];
+  bookNameCap = CapitalizeBookName(reference);
   text = InColumnValues[4];
   if ( MainDisplayReference ) {
-    printf("%s\n", reference);
+    printf("%s\n", bookNameCap);
     if ( !MainVerseTextSimpleSplit && !MainVerseTextSplit ) {
       printf("  ");
     }
   }
+  FreeMemory(bookNameCap);
   st = MainProcessVerseText(text);
   for ( i = 0; i < st->stringCount ; i++ ) {
     printf("%s\n", st->strings[i]);
@@ -1021,4 +1031,26 @@ MainProcessVerseText
     StringListAppend(strings, StringCopy(&(InText[start])));
   }
   return strings;
+}
+
+/*****************************************************************************!
+ * Function : CapitalizeBookName
+ *****************************************************************************/
+string
+CapitalizeBookName
+(string InBookname)
+{
+  int                                   i;
+  int                                           n = strlen(InBookname);
+  string                                        returnBookName;
+
+  returnBookName = StringCopy(InBookname);
+  for (i = 0; i < n; i++) {
+    if ( i == 0 || isspace(returnBookName[i-1]) ) {
+      returnBookName[i] = toupper(returnBookName[i]);
+      continue;
+    }
+  }
+  return returnBookName;
+
 }
