@@ -114,6 +114,10 @@ MainBookInfo[BOOK_COUNT] =
 /*****************************************************************************!
  * Local Functions
  *****************************************************************************/
+void
+MainWordDataBasePopulate
+(void);
+
 StringList*
 MainProcessVerseText
 (string InText);
@@ -188,6 +192,10 @@ MainDBBReadBookInfo
 
 int
 MainDBBReadBookInfoCB
+(void*, int InColumnCount, char** InColumnValues, char** InColumnNames);
+
+int
+MainWordDataBasePopulateCB
 (void*, int InColumnCount, char** InColumnValues, char** InColumnNames);
 
 void
@@ -296,6 +304,12 @@ ProcessCommandLine
       exit(EXIT_SUCCESS);
     }
 
+    //!
+    if ( StringEqualsOneOf(command, "-w", "--words", NULL) ) {
+      MainWordDataBasePopulate();
+      exit(EXIT_SUCCESS);
+    }
+    
     //!
     if ( StringEqualsOneOf(command, "-r", "--reference", NULL) ) {
       MainDisplayReference = true;
@@ -607,6 +621,7 @@ MainDataBasePopulate
   if ( MainVerbose ) {
     printf("Opening Database   : %s\n", MainDatabaseFilename);
   }
+
   n = sqlite3_open(MainDatabaseFilename, &MainDatabase);
   if ( n != SQLITE_OK ) {
     fprintf(stderr, "Could not open database %s : %s\n", MainDatabaseFilename, sqlite3_errstr(n));
@@ -623,11 +638,6 @@ MainDataBasePopulate
   }
 
   MainReadLines();
-
-  //!
-  if ( MainVerbose ) {
-    printf("Closing Database\n");
-  }
 
   //!
   if ( MainVerbose ) {
@@ -1053,4 +1063,134 @@ CapitalizeBookName
   }
   return returnBookName;
 
+}
+
+/*****************************************************************************!
+ * Function : MainWordDataBasePopulate
+ *****************************************************************************/
+void
+MainWordDataBasePopulate
+(void)
+{
+  int                                   book;
+  char                                  sqlstmt[128];
+  string                                error;
+  int                                   n;
+  
+  book = 45;  // Romans
+  //!
+  if ( MainVerbose ) {
+    printf("Opening Database   : %s\n", MainDatabaseFilename);
+  }
+  
+  n = sqlite3_open(MainDatabaseFilename, &MainDatabase);
+  if ( n != SQLITE_OK ) {
+    fprintf(stderr, "Could not open database %s : %s\n", MainDatabaseFilename, sqlite3_errstr(n));
+    exit(EXIT_FAILURE);
+  }
+
+  sprintf(sqlstmt, "SELECT * FROM Verses WHERE book is %d;", book);
+
+  (void)sqlite3_exec(MainDatabase, sqlstmt, MainWordDataBasePopulateCB, NULL, &error);
+    
+  //!
+  if ( MainVerbose ) {
+    printf("Closing Database   : %s\n", MainDatabaseFilename);
+  }
+}
+
+/*****************************************************************************!
+ * Function : MainWordDataBasePopulateCB
+ *****************************************************************************/
+int
+MainWordDataBasePopulateCB
+(void*, int InColumnCount, char** InColumnValues, char** InColumnNames)
+{
+  int                                   m;
+  char                                  ch2;
+  int                                   k;
+  int                                   start;
+  char                                  ch;
+  int                                   i;
+  int                                   book;
+  int                                   chapter;
+  int                                   verse;
+  string                                text;
+  int                                   n;
+  char                                  word[256];
+  
+  enum {
+    Start,
+    InWord,
+    InSpaces
+  } state = Start;
+  
+  for (i = 0; i < InColumnCount; i++) {
+    if ( StringEqual(InColumnNames[i], "book") ) {
+      book = atoi(InColumnValues[i]);
+      continue;
+    }
+    if ( StringEqual(InColumnNames[i], "chapter") ) {
+      chapter = atoi(InColumnValues[i]);
+      continue;
+      
+    }
+    if ( StringEqual(InColumnNames[i], "verse") ) {
+      verse = atoi(InColumnValues[i]);
+      continue;      
+    }
+    if ( StringEqual(InColumnNames[i], "text") ) {
+      text = InColumnValues[i];
+      continue;
+    }
+  }
+
+  n = strlen(text);
+
+  for (i = 0; i < n; i++) {
+    ch = text[i];
+    switch (state) {
+      case Start : {
+        if ( isalpha(ch) ) {
+          start = i;
+          state = InWord;
+          break;
+        }
+        break;
+      }
+
+      case InSpaces : {
+        if ( isalpha(ch) ) {
+          start = i;
+          state = InWord;
+          break;
+        }        
+        break;
+      }
+
+      case InWord : {
+        if ( isalpha(ch) ) {
+          break;
+        }
+        if ( ch == '\'' ) {
+          k = i + 1;
+          if ( k < n ) {
+            // Handle what looks like a contraction
+            ch2 = text[k];
+            if ( isalpha(ch2) ) {
+              break;
+            }
+            break;
+          }
+        }
+        m = i - start;
+        strncpy(word, &(text[start]), m);
+        word[m] = 0x00;
+        printf("%2d %2d %2d : %s\n", book, chapter, verse, word);
+        state = InSpaces;
+        break;
+      }
+    }
+  }
+  return 0;
 }
