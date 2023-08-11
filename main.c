@@ -40,6 +40,8 @@
 
 #define ALL_VERSES_STRING                       "1-1000"
 
+#define FORMAT_INFO_TYPE_VERSE_SPLIT            1
+
 /*****************************************************************************!
  * Exported Type : BookInfo
  *****************************************************************************/
@@ -63,8 +65,34 @@ struct _VerseRange
 typedef struct _VerseRange VerseRange;
 
 /*****************************************************************************!
+ * Exported Type : FormatInfo
+ *****************************************************************************/
+struct _FormatInfo
+{
+  int                                   chapter;
+  int                                   verse;
+  int                                   type;
+  char                                  splitText[1024];
+  struct _FormatInfo*                   next;
+};
+typedef struct _FormatInfo FormatInfo;
+
+/*****************************************************************************!
+ * Exported Type : FormatInfoList
+ *****************************************************************************/
+struct _FormatInfoList
+{
+  FormatInfo*                           head;
+  FormatInfo*                           tail;
+};
+typedef struct _FormatInfoList FormatInfoList;
+
+/*****************************************************************************!
  * Local Data
  *****************************************************************************/
+static bool
+MainBlockOutput = false;
+
 bool
 MainVerbose = false;
 
@@ -111,9 +139,36 @@ BookInfo
 MainBookInfo[BOOK_COUNT] =
 { 0 };
 
+FormatInfoList*
+MainFormatInfos;
+
 /*****************************************************************************!
  * Local Functions
  *****************************************************************************/
+FormatInfo*
+FormatInfoListFind
+(FormatInfoList* InList, int InChapter, int InVerse);
+
+int
+FormatInfoListFindType
+(FormatInfoList* InList, int InChapter, int InVerse);
+
+void
+FormatInfoListAdd
+(FormatInfoList* InList, FormatInfo* InInfo);
+
+FormatInfoList*
+FormatInfoListCreate
+(void);
+
+FormatInfo*
+FormatInfoCreate
+(int InChapter, int InVerse, int InType, string InSplitText);
+
+void
+AddVerseRange
+(int InChapter, int InVerseStart, int InVerseEnd);
+
 void
 MainWordDataBasePopulate
 (void);
@@ -242,7 +297,9 @@ MainInitialize
   MainDatabaseFilename  = StringCopy(DEFAULT_DB_FILENAME);
   MainBook              = NULL;
   MainVerseRangesCount  = 0;
-
+  MainFormatInfos       = FormatInfoListCreate();
+  FormatInfoListAdd(MainFormatInfos, FormatInfoCreate(2, 11, 1, NULL));
+    
   s = getenv(DATABASE_ENV_LOCATION);
   if ( s ) {
     FreeMemory(MainDatabaseFilename);
@@ -272,6 +329,11 @@ ProcessCommandLine
       exit(EXIT_SUCCESS);
     }
 
+    if ( StringEqualsOneOf(command, "-b", "--block", NULL) ) {
+      MainBlockOutput = true;
+      continue;
+    }
+        
     //!
     if ( StringEqualsOneOf(command, "-f", "--file", NULL) ) {
       i++;
@@ -341,6 +403,7 @@ ProcessCommandLine
   MainBook = StringCopy(argv[i]);
   i++;
 
+  //!
   for ( k = i; k < argc; k++ ) {
     st = StringSplit(argv[k], ":", false);
     if ( st->stringCount < 1 || st->stringCount > 2 ) {
@@ -394,10 +457,7 @@ ProcessCommandLineVerseDeclaration
         fprintf(stderr, "Verse reference is not a number\n");
         exit(EXIT_FAILURE);
       }
-      MainVerseRanges[MainVerseRangesCount].chapter = InChapter;
-      MainVerseRanges[MainVerseRangesCount].first = atoi(st3);
-      MainVerseRanges[MainVerseRangesCount].last  = atoi(st3);
-      MainVerseRangesCount++;
+      AddVerseRange(InChapter, atoi(st3), atoi(st3));
       StringListDestroy(st);
       continue;
     }
@@ -406,10 +466,7 @@ ProcessCommandLineVerseDeclaration
         fprintf(stderr, "%s is not a valid verse reference\n", st3);
         exit(EXIT_FAILURE);
       }
-      MainVerseRanges[MainVerseRangesCount].chapter = InChapter;
-      MainVerseRanges[MainVerseRangesCount].first = atoi(st->strings[0]);
-      MainVerseRanges[MainVerseRangesCount].last = atoi(st->strings[1]);
-      MainVerseRangesCount++;
+      AddVerseRange(InChapter, atoi(st->strings[0]), atoi(st->strings[1]));
       if ( MainVerseRanges[MainVerseRangesCount].last < MainVerseRanges[MainVerseRangesCount].first ) {
         fprintf(stderr, "First Verse must be < Last Verse\n");
         exit(EXIT_FAILURE);
@@ -494,8 +551,8 @@ DisplayHelp
   printf("options book chapter verse \n");
   printf("  -h, --help              : Display this information\n");
   printf("  -f, --file filename     : Specify the input filename\n");
-  printf("  -p, --populate filename : Specify the database filename (Default %s)\n",
-         DEFAULT_DB_FILENAME);
+  printf("  -b, --block             : Specify the block output style\n");
+  printf("  -p, --populate filename : Specify the database filename (Default %s)\n", DEFAULT_DB_FILENAME);
   printf("                            Requires that '-f, --filename' is specified\n");
   printf("  -v, --verbose           : Specifies 'verbose' operation\n");
   printf("  -r, --reference         : Specifies whether to display the verse reference\n");
@@ -939,6 +996,9 @@ int
 MainDBBFindVerseInfoCB
 (void*, int InColumnCount, char** InColumnValues, char** InColumnNames)
 {
+  int                                   splitType;
+  int                                   verse;
+  int                                   chapter;
   int                                   i;
   StringList*                           st;
   string                                reference;
@@ -948,16 +1008,34 @@ MainDBBFindVerseInfoCB
   reference = InColumnValues[0];
   bookNameCap = CapitalizeBookName(reference);
   text = InColumnValues[4];
-  if ( MainDisplayReference ) {
-    printf("%s\n", bookNameCap);
-    if ( !MainVerseTextSimpleSplit && !MainVerseTextSplit ) {
-      printf("  ");
+  chapter = atoi(InColumnValues[2]);
+  verse = atoi(InColumnValues[3]);
+  do {
+    if ( MainDisplayReference ) {
+      if ( MainBlockOutput ) {
+        printf("%d:%d ", chapter, verse);
+        break;
+      }
+      printf("%s\n", bookNameCap);
+      if ( !MainVerseTextSimpleSplit && !MainVerseTextSplit ) {
+        printf("  ");
+      }
     }
   }
+  while (false);
   FreeMemory(bookNameCap);
   st = MainProcessVerseText(text);
   for ( i = 0; i < st->stringCount ; i++ ) {
-    printf("%s\n", st->strings[i]);
+    printf("%s", st->strings[i]);
+    if ( MainBlockOutput ) {
+      splitType = FormatInfoListFindType(MainFormatInfos, chapter, verse);
+      if ( splitType == FORMAT_INFO_TYPE_VERSE_SPLIT ) {
+        printf("\n\n");
+      }
+    } else {
+      printf("%s", MainBlockOutput ? " " : "\n");
+    }
+    
     if ( i + 1 < st->stringCount ) {
       if ( ! MainVerseTextSimpleSplit  && !MainVerseTextSplit ) {
         printf("  ");
@@ -965,7 +1043,7 @@ MainDBBFindVerseInfoCB
     }
   }
   if ( MainDisplayReference ) {
-    printf("\n");
+    printf("%s", MainBlockOutput ? " " : "\n");
   }
   StringListDestroy(st);
   return 0;
@@ -1062,7 +1140,6 @@ CapitalizeBookName
     }
   }
   return returnBookName;
-
 }
 
 /*****************************************************************************!
@@ -1190,6 +1267,113 @@ MainWordDataBasePopulateCB
         state = InSpaces;
         break;
       }
+    }
+  }
+  return 0;
+}
+
+/*****************************************************************************!
+ * Function : AddVerseRange
+ *****************************************************************************/
+void
+AddVerseRange
+(int InChapter, int InVerseStart, int InVerseEnd)
+{
+  MainVerseRanges[MainVerseRangesCount].chapter = InChapter;
+  MainVerseRanges[MainVerseRangesCount].first = InVerseStart;
+  MainVerseRanges[MainVerseRangesCount].last  = InVerseEnd;
+  MainVerseRangesCount++;  
+}
+
+/*****************************************************************************!
+ * Function : FormatInfoCreate
+ *****************************************************************************/
+FormatInfo*
+FormatInfoCreate
+(int InChapter, int InVerse, int InType, string InSplitText)
+{
+  FormatInfo*                           formatInfo;
+  int                                   n;
+
+  n = sizeof(FormatInfo);
+  formatInfo = (FormatInfo*)GetMemory(n);
+  memset(formatInfo, 0x00, n);
+  formatInfo->chapter = InChapter;
+  formatInfo->verse = InVerse;
+  formatInfo->type = InType;
+  if ( InSplitText ) {
+    strcpy(formatInfo->splitText, InSplitText);
+  }
+  return formatInfo;
+}
+
+/*****************************************************************************!
+ * Function : FormatInfoListCreate
+ *****************************************************************************/
+FormatInfoList*
+FormatInfoListCreate
+(void)
+{
+  FormatInfoList*                       list;
+  int                                   n;
+
+  n = sizeof(FormatInfoList);
+  list = (FormatInfoList*)GetMemory(n);
+  memset(list, 0x00, n);
+  return list;
+}
+
+/*****************************************************************************!
+ * Function : FormatInfoListAdd
+ *****************************************************************************/
+void
+FormatInfoListAdd
+(FormatInfoList* InList, FormatInfo* InInfo)
+{
+  if ( NULL == InList || NULL == InInfo ) {
+    return;
+  }
+  if ( InList->head ) {
+    InList->tail->next = InInfo;
+    InList->tail = InInfo;
+    return;
+  }
+  InList->head = InInfo;
+  InList->tail = InInfo;
+}
+
+/*****************************************************************************!
+ * Function : FormatInfoListFindType
+ *****************************************************************************/
+int
+FormatInfoListFindType
+(FormatInfoList* InList, int InChapter, int InVerse)
+{
+  
+  FormatInfo*                           info;
+
+  info = FormatInfoListFind(InList, InChapter, InVerse);
+  if ( info ) {
+    return 0;
+  }
+  return info->type;
+}
+
+/*****************************************************************************!
+ * Function : FormatInfoListFind
+ *****************************************************************************/
+FormatInfo*
+FormatInfoListFind
+(FormatInfoList* InList, int InChapter, int InVerse)
+{
+  FormatInfo*                           info;
+  if ( NULL == InList ) {
+    return NULL;
+  }
+
+  for ( info = InList->head ; info ; info = info->next ) {
+    if ( info->chapter == InChapter && info->verse == InVerse ) {
+      return info;
     }
   }
   return 0;
