@@ -1353,7 +1353,7 @@ FormatInfoListFindType
   FormatInfo*                           info;
 
   info = FormatInfoListFind(InList, InChapter, InVerse);
-  if ( info ) {
+  if ( NULL == info ) {
     return 0;
   }
   return info->type;
