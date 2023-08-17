@@ -1031,9 +1031,10 @@ MainDBBFindVerseInfoCB
       splitType = FormatInfoListFindType(MainFormatInfos, chapter, verse);
       if ( splitType == FORMAT_INFO_TYPE_VERSE_SPLIT ) {
         printf("\n\n");
-      }
+      } else {
+        printf(" ");
     } else {
-      printf("%s", MainBlockOutput ? " " : "\n");
+      printf("\n");
     }
     
     if ( i + 1 < st->stringCount ) {
