@@ -90,6 +90,9 @@ typedef struct _FormatInfoList FormatInfoList;
 /*****************************************************************************!
  * Local Data
  *****************************************************************************/
+static string
+MainBlockOutputText = NULL;
+
 static bool
 MainBlockOutput = false;
 
@@ -145,6 +148,10 @@ MainFormatInfos;
 /*****************************************************************************!
  * Local Functions
  *****************************************************************************/
+void
+MainPostProcess
+(void);
+
 FormatInfo*
 FormatInfoListFind
 (FormatInfoList* InList, int InChapter, int InVerse);
@@ -281,6 +288,7 @@ main
   VerifyCommandLine();
   MainDBBReadBookInfo();
   MainGetVerse();
+  MainPostProcess();
   return (EXIT_SUCCESS);
 }
 
@@ -299,7 +307,8 @@ MainInitialize
   MainVerseRangesCount  = 0;
   MainFormatInfos       = FormatInfoListCreate();
   FormatInfoListAdd(MainFormatInfos, FormatInfoCreate(2, 11, 1, NULL));
-    
+  MainBlockOutputText   = StringCopy("");
+  
   s = getenv(DATABASE_ENV_LOCATION);
   if ( s ) {
     FreeMemory(MainDatabaseFilename);
@@ -996,6 +1005,7 @@ int
 MainDBBFindVerseInfoCB
 (void*, int InColumnCount, char** InColumnValues, char** InColumnNames)
 {
+  string                                st2;
   int                                   splitType;
   int                                   verse;
   int                                   chapter;
@@ -1010,6 +1020,13 @@ MainDBBFindVerseInfoCB
   text = InColumnValues[4];
   chapter = atoi(InColumnValues[2]);
   verse = atoi(InColumnValues[3]);
+
+  if ( MainBlockOutput ) {
+    st2 = StringMultiConcat(MainBlockOutputText, text, " ", NULL);
+    FreeMemory(MainBlockOutputText);
+    MainBlockOutputText = st2;
+    return 0;
+  }
   do {
     if ( MainDisplayReference ) {
       if ( MainBlockOutput ) {
@@ -1033,7 +1050,8 @@ MainDBBFindVerseInfoCB
         printf("\n\n");
       } else {
         printf(" ");
-    } else {
+      }
+    }else {
       printf("\n");
     }
     
@@ -1378,4 +1396,36 @@ FormatInfoListFind
     }
   }
   return 0;
+}
+
+/*****************************************************************************!
+ * Function : MainPostProcess
+ *****************************************************************************/
+void
+MainPostProcess
+(void)
+{
+  string                                st;
+  StringList*                           st2;
+  
+  if ( ! MainBlockOutput ) {
+    return;
+  }
+
+  if ( MainVerseTextSimpleSplit ) {
+    st2 = StringSplit(MainBlockOutputText, ".?!", true);
+    for (int i = 0; i < st2->stringCount; i++ ) {
+      if ( strlen(st2->strings[i]) == 1 && st2->strings[i][0] == ' ' ) {
+        continue;
+      }
+      st = st2->strings[i];
+      if ( st[0] == ' ' ) {
+        st++;
+      }
+      printf("%s.\n", st);
+    }
+    StringListDestroy(st2);
+    return;
+  }
+  printf("%s\n", MainBlockOutputText);
 }
