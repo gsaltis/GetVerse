@@ -587,14 +587,10 @@ DisplayHelp
   printf("                            Requires that '-f, --filename' is specified\n");
   printf("  -r, --reference         : Specifies whether to display the verse reference\n");
   printf("  -s, --split             : Specifies whether to split lines at puncations\n");
-<<<<<<< HEAD
   printf("  -e, --easysplit         : Specifies whether to split lines only at end of sentence\n");
   printf("  -d, --database          : Populates the database\n");
-  printf("  -v, --version           : Display the version information\n");
-=======
   printf("  -v, --verbose           : Specifies 'verbose' operation\n");
-  printf("  -V, --version           : Display version\n");
->>>>>>> c99443eefffd5be2358d72da231d2d231eeff946
+  printf("  -v, --version           : Display the version information\n");
 }
 
 /*****************************************************************************!
