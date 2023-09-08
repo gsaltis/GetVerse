@@ -1,5 +1,8 @@
 CC					= gcc
 LINK					= gcc
+BINDIR					= c:/users/grego/bin
+INSTALLDIR				= c:/users/grego/AppData/Local/getverse/
+DATABASE				= NASB.db
 
 CC_FLAGS				= -c -g -Wall -I../GeneralUtilities
 LINK_FLAGS				= -g
@@ -32,3 +35,9 @@ junkclean				:
 .PHONY					: clean
 clean					: junkclean
 					  rm -rf $(wildcard $(TARGET) $(OBJS))
+
+.PHONY					: install
+install					: $(TARGET)
+					  strip $(TARGET)
+					  cp $(TARGET) $(BINDIR)
+					  cp $(DATABASE) $(INSTALLDIR)

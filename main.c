@@ -147,6 +147,15 @@ MainBookInfo[BOOK_COUNT] =
 FormatInfoList*
 MainFormatInfos;
 
+int
+VersionMajor = 1;
+
+int
+VersionMinor = 0;
+
+int
+VersionRelease = 1;
+
 /*****************************************************************************!
  * Local Functions
  *****************************************************************************/
@@ -349,7 +358,11 @@ ProcessCommandLine
       MainBlockOutput = true;
       continue;
     }
-        
+
+    if ( StringEqualsOneOf(command, "-V", "--version", NULL) ) {
+      printf("%s Version : %02d.%02d.%02d\n", ProgramName, VersionMajor, VersionMinor, VersionRelease);
+      exit(EXIT_SUCCESS);
+    }
     //!
     if ( StringEqualsOneOf(command, "-f", "--file", NULL) ) {
       i++;
@@ -565,17 +578,23 @@ DisplayHelp
 {
   printf("Usage : %s options\n", ProgramName);
   printf("options book chapter verse \n");
-  printf("  -h, --help              : Display this information\n");
-  printf("  -f, --file filename     : Specify the input filename\n");
   printf("  -b, --block             : Specify the block output style\n");
+  printf("  -d, --database          : Populates the database\n");
+  printf("  -e, --easysplit         : Specifies whether to split lines only at end of sentence\n");
+  printf("  -f, --file filename     : Specify the input filename\n");
+  printf("  -h, --help              : Display this information\n");
   printf("  -p, --populate filename : Specify the database filename (Default %s)\n", DEFAULT_DB_FILENAME);
   printf("                            Requires that '-f, --filename' is specified\n");
-  printf("  -v, --verbose           : Specifies 'verbose' operation\n");
   printf("  -r, --reference         : Specifies whether to display the verse reference\n");
   printf("  -s, --split             : Specifies whether to split lines at puncations\n");
+<<<<<<< HEAD
   printf("  -e, --easysplit         : Specifies whether to split lines only at end of sentence\n");
   printf("  -d, --database          : Populates the database\n");
   printf("  -v, --version           : Display the version information\n");
+=======
+  printf("  -v, --verbose           : Specifies 'verbose' operation\n");
+  printf("  -V, --version           : Display version\n");
+>>>>>>> c99443eefffd5be2358d72da231d2d231eeff946
 }
 
 /*****************************************************************************!
@@ -1102,11 +1121,8 @@ MainProcessVerseText
   start = 0;
   for ( i = 0 ; i < n ; i++ ) {
     ch = InText[i];
-    if ( ch == '.' || ch == '?') {
-      if ( InText[i+1] == '\'' ) {
-        i++;
-      }
-      if ( InText[i+1] == '`') {
+    if ( ch == '.' || ch == '?' || ch == '!' ) {
+      if ( InText[i+1] == '\'' || InText[i+1] == ')' || InText[i+1] == '`' ) {
         i++;
       }
       m = (i - start) + 1;
@@ -1413,27 +1429,45 @@ void
 MainPostProcess
 (void)
 {
+  char                                  ch2;
+  int                                   i2;
+  char                                  ch;
+  int                                   start;
+  int                                   end;
+  int                                   len;
+  int                                   n;
+  int                                   i;
   string                                st;
-  StringList*                           st2;
   
   if ( ! MainBlockOutput ) {
     return;
   }
 
-  if ( MainVerseTextSimpleSplit ) {
-    st2 = StringSplit(MainBlockOutputText, ".?!", true);
-    for (int i = 0; i < st2->stringCount; i++ ) {
-      if ( strlen(st2->strings[i]) == 1 && st2->strings[i][0] == ' ' ) {
-        continue;
-      }
-      st = st2->strings[i];
-      if ( st[0] == ' ' ) {
-        st++;
-      }
-      printf("%s.\n", st);
-    }
-    StringListDestroy(st2);
-    return;
+  n = strlen(MainBlockOutputText);
+  if ( ! MainVerseTextSimpleSplit ) {
+    printf("%s\n", MainBlockOutputText);
   }
-  printf("%s\n", MainBlockOutputText);
+
+  start = 0;
+  for ( i = 0; i < n ; i++ ) {
+    ch = MainBlockOutputText[i];
+    if ( ! ( ch == '.' || ch == '?' || ch == '!') ) {
+      continue;
+    }
+    i2 = i + 1;
+    ch2 = MainBlockOutputText[i2];
+    if ( ch2 == ')' || ch == '\'' || ch == '`' ) {
+      i2++;
+    }
+    end = i2;
+    len = (end - start) + 1;
+    st = StringNCopy(&(MainBlockOutputText[start]), len);
+    printf("%s\n", st);
+    end++;
+    while (MainBlockOutputText[end] && MainBlockOutputText[end] == ' ') {
+      end++;
+    }
+    FreeMemory(st);
+    start = end;
+  }
 }
