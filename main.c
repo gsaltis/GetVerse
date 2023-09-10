@@ -46,6 +46,11 @@
 
 #define VERSION									"1.0.0"
 
+#define SQL_STATEMENT_INSERT_FORMATTING         \
+  "INSERT INTO Formatting VALUES(%d, %d, %d, '', %d);\n"
+
+#define MAIN_FORMAT_COUNT_MAX                   128
+
 /*****************************************************************************!
  * Exported Type : BookInfo
  *****************************************************************************/
@@ -73,6 +78,9 @@ typedef struct _VerseRange VerseRange;
  *****************************************************************************/
 static string
 MainBlockOutputText = NULL;
+
+static bool
+MainFormatAdd = false;
 
 static bool
 MainBlockOutput = false;
@@ -115,6 +123,18 @@ MainDatabaseFilename = NULL;
 
 int
 MainBookIndex = 0;
+
+int
+MainChapter = 0;
+
+int
+MainVerse[MAIN_FORMAT_COUNT_MAX] = { 0 };
+
+int
+MainFormatType[MAIN_FORMAT_COUNT_MAX] = { 0 } ;
+
+int
+MainFormatCount = 0;
 
 static string
 MainBook = NULL;
@@ -250,6 +270,14 @@ int
 GetBookIndexFromName
 (string InBookName);
 
+void
+HandleCommandLineFormatAdd
+(int InStart, int argc, char** argv);
+
+bool
+ProcessFormatAdd
+();
+
 /*****************************************************************************!
  * Function : main
  *****************************************************************************/
@@ -261,6 +289,9 @@ main
   ProcessCommandLine(argc, argv);
   VerifyCommandLine();
   MainDBBReadBookInfo();
+  if ( MainFormatAdd ) {
+    ProcessFormatAdd();
+  }
   FormattingInfoListReadSQL(MainFormatInfos, MainDatabase);
   MainGetVerse();
   MainPostProcess();
@@ -319,6 +350,13 @@ ProcessCommandLine
 
     if ( StringEqualsOneOf(command, "-b", "--block", NULL) ) {
       MainBlockOutput = true;
+      continue;
+    }
+
+    if ( StringEqualsOneOf(command, "-a", "--addformatting", NULL) ) {
+      HandleCommandLineFormatAdd(i + 1, argc, argv);
+      MainFormatAdd = true;
+      i += 4;
       continue;
     }
 
@@ -385,6 +423,11 @@ ProcessCommandLine
       continue;
     }
     break;
+  }
+
+  if ( MainFormatAdd ) {
+    // The remaining options have been consumedm
+    return;
   }
   
   if ( i == argc ) {
@@ -498,6 +541,10 @@ VerifyCommandLine
     exit(EXIT_FAILURE);
   }
 
+  if ( MainFormatAdd ) {
+    exit(ProcessFormatAdd() ? EXIT_SUCCESS : EXIT_FAILURE);
+  }
+  
   MainDBBReadBookInfo();
   b = MainVerifyBookName(MainBook);
   switch (b) {
@@ -541,6 +588,7 @@ DisplayHelp
 {
   printf("Usage : %s options\n", ProgramName);
   printf("options book chapter verse \n");
+  printf("  -a, --addformatting     : Add formatting to database\n");
   printf("  -b, --block             : Specify the block output style\n");
   printf("  -d, --database          : Populates the database\n");
   printf("  -e, --easysplit         : Specifies whether to split lines only at end of sentence\n");
@@ -1016,7 +1064,10 @@ MainDBBFindVerseInfoCB
     if ( formatInfo ) {
       text2 = FormattingInfoApply(formatInfo, text);
     }
-    st2 = StringMultiConcat(MainBlockOutputText, text2 ? text2 : text, " ", NULL);
+    st2 = StringMultiConcat(MainBlockOutputText,
+                            text2 ? text2 : text,
+                            text2 ? "" : " ",
+                            NULL);
     FreeMemory(MainBlockOutputText);
     MainBlockOutputText = st2;
     if ( text2 ) {
@@ -1358,5 +1409,68 @@ GetBookIndexFromName
     }
   }
   return -1;
+}
+
+/*****************************************************************************!
+ * Function : HandleCommandLineFormatAdd
+ *****************************************************************************/
+void
+HandleCommandLineFormatAdd
+(int InStart, int argc, char** argv)
+{
+  int                                   i;
+  int                                   k;
+  int                                   n;
+  
+  n = argc - InStart;
+  if ( n < 4 ) {
+    fprintf(stderr, "Missing formatting information.\n");
+    exit(EXIT_FAILURE);
+  }
+
+  k = InStart;
+
+  MainBookIndex = atoi(argv[k]);
+  k++;
+
+  MainChapter = atoi(argv[k]);
+  k++;
+
+  for ( i = k ; i < argc; i += 2 ) {
+    MainVerse[MainFormatCount] = atoi(argv[i]);
+    if ( i + 1 == argc ) {
+      fprintf(stderr, "Missing type at %d\n", i);
+      exit(EXIT_FAILURE);
+    }
+    MainFormatType[MainFormatCount] = atoi(argv[i + 1]);
+    MainFormatCount++;
+    if ( MainFormatCount >= MAIN_FORMAT_COUNT_MAX ) {
+      fprintf(stderr, "Tool main formats on command line\n");
+    }
+  }
+}
+
+/*****************************************************************************!
+ * Function : ProcessFormatAdd
+ *****************************************************************************/
+bool
+ProcessFormatAdd
+()
+{
+  int                                   i;
+  int                                   m;
+  string                                error;
+  char                                  sqlstatement[1024];
+
+  for ( i = 0 ; i < MainFormatCount; i++ ) {
+    sprintf(sqlstatement, SQL_STATEMENT_INSERT_FORMATTING,
+            MainBookIndex, MainChapter, MainVerse[i], MainFormatType[i]);
+    m  = sqlite3_exec(MainDatabase, sqlstatement, NULL, NULL, &error);
+    if ( m != SQLITE_OK ) {
+      fprintf(stderr, "sqlite_exec() failed\n %s\n %d : %s\n", sqlstatement, m, sqlite3_errstr(m));
+      return false;
+    }
+  }
+  return true;
 }
 
