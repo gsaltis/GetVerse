@@ -42,6 +42,8 @@
 
 #define FORMAT_INFO_TYPE_VERSE_SPLIT            1
 
+#define VERSION									"1.0.0"
+
 /*****************************************************************************!
  * Exported Type : BookInfo
  *****************************************************************************/
@@ -342,6 +344,11 @@ ProcessCommandLine
   
   for (i = 1; i < argc; i++) {
     command = argv[i];
+    if ( StringEqualsOneOf(command, "-v", "--version", NULL) ) {
+      printf("%s : %s\n", ProgramName, VERSION); 
+      exit(EXIT_SUCCESS);
+    }
+
     if ( StringEqualsOneOf(command, "-h", "--help", NULL) ) {
       DisplayHelp();
       exit(EXIT_SUCCESS);
@@ -580,8 +587,10 @@ DisplayHelp
   printf("                            Requires that '-f, --filename' is specified\n");
   printf("  -r, --reference         : Specifies whether to display the verse reference\n");
   printf("  -s, --split             : Specifies whether to split lines at puncations\n");
+  printf("  -e, --easysplit         : Specifies whether to split lines only at end of sentence\n");
+  printf("  -d, --database          : Populates the database\n");
   printf("  -v, --verbose           : Specifies 'verbose' operation\n");
-  printf("  -V, --version           : Display version\n");
+  printf("  -v, --version           : Display the version information\n");
 }
 
 /*****************************************************************************!
