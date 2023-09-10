@@ -23,6 +23,8 @@
  * Local Headers
  *****************************************************************************/
 #include "sqlite3.h"
+#include "main.h"
+#include "Formatting.h"
 
 /*****************************************************************************!
  * Local Macros
@@ -65,29 +67,6 @@ struct _VerseRange
   int                                   last;
 };
 typedef struct _VerseRange VerseRange;
-
-/*****************************************************************************!
- * Exported Type : FormatInfo
- *****************************************************************************/
-struct _FormatInfo
-{
-  int                                   chapter;
-  int                                   verse;
-  int                                   type;
-  char                                  splitText[1024];
-  struct _FormatInfo*                   next;
-};
-typedef struct _FormatInfo FormatInfo;
-
-/*****************************************************************************!
- * Exported Type : FormatInfoList
- *****************************************************************************/
-struct _FormatInfoList
-{
-  FormatInfo*                           head;
-  FormatInfo*                           tail;
-};
-typedef struct _FormatInfoList FormatInfoList;
 
 /*****************************************************************************!
  * Local Data
@@ -144,7 +123,7 @@ BookInfo
 MainBookInfo[BOOK_COUNT] =
 { 0 };
 
-FormatInfoList*
+FormattingInfoList*
 MainFormatInfos;
 
 int
@@ -162,26 +141,6 @@ VersionRelease = 1;
 void
 MainPostProcess
 (void);
-
-FormatInfo*
-FormatInfoListFind
-(FormatInfoList* InList, int InChapter, int InVerse);
-
-int
-FormatInfoListFindType
-(FormatInfoList* InList, int InChapter, int InVerse);
-
-void
-FormatInfoListAdd
-(FormatInfoList* InList, FormatInfo* InInfo);
-
-FormatInfoList*
-FormatInfoListCreate
-(void);
-
-FormatInfo*
-FormatInfoCreate
-(int InChapter, int InVerse, int InType, string InSplitText);
 
 void
 AddVerseRange
@@ -287,6 +246,10 @@ string
 CapitalizeBookName
 (string InBookname);
 
+int
+GetBookIndexFromName
+(string InBookName);
+
 /*****************************************************************************!
  * Function : main
  *****************************************************************************/
@@ -298,6 +261,7 @@ main
   ProcessCommandLine(argc, argv);
   VerifyCommandLine();
   MainDBBReadBookInfo();
+  FormattingInfoListReadSQL(MainFormatInfos, MainDatabase);
   MainGetVerse();
   MainPostProcess();
   return (EXIT_SUCCESS);
@@ -316,8 +280,7 @@ MainInitialize
   MainDatabaseFilename  = StringCopy(DEFAULT_DB_FILENAME);
   MainBook              = NULL;
   MainVerseRangesCount  = 0;
-  MainFormatInfos       = FormatInfoListCreate();
-  FormatInfoListAdd(MainFormatInfos, FormatInfoCreate(2, 11, 1, NULL));
+  MainFormatInfos       = FormattingInfoListCreate();
   MainBlockOutputText   = StringCopy("");
   
   s = getenv(DATABASE_ENV_LOCATION);
@@ -1028,8 +991,10 @@ int
 MainDBBFindVerseInfoCB
 (void*, int InColumnCount, char** InColumnValues, char** InColumnNames)
 {
+  string                                text2;
+  FormattingInfo*                       formatInfo;
+  int                                   book;
   string                                st2;
-  int                                   splitType;
   int                                   verse;
   int                                   chapter;
   int                                   i;
@@ -1041,13 +1006,22 @@ MainDBBFindVerseInfoCB
   reference = InColumnValues[0];
   bookNameCap = CapitalizeBookName(reference);
   text = InColumnValues[4];
+  book = atoi(InColumnValues[1]);
   chapter = atoi(InColumnValues[2]);
   verse = atoi(InColumnValues[3]);
 
   if ( MainBlockOutput ) {
-    st2 = StringMultiConcat(MainBlockOutputText, text, " ", NULL);
+    formatInfo = FormattingInfoListFind(MainFormatInfos, book, chapter, verse);
+    text2 = NULL;
+    if ( formatInfo ) {
+      text2 = FormattingInfoApply(formatInfo, text);
+    }
+    st2 = StringMultiConcat(MainBlockOutputText, text2 ? text2 : text, " ", NULL);
     FreeMemory(MainBlockOutputText);
     MainBlockOutputText = st2;
+    if ( text2 ) {
+      FreeMemory(text2);
+    }
     return 0;
   }
   do {
@@ -1067,17 +1041,7 @@ MainDBBFindVerseInfoCB
   st = MainProcessVerseText(text);
   for ( i = 0; i < st->stringCount ; i++ ) {
     printf("%s", st->strings[i]);
-    if ( MainBlockOutput ) {
-      splitType = FormatInfoListFindType(MainFormatInfos, chapter, verse);
-      if ( splitType == FORMAT_INFO_TYPE_VERSE_SPLIT ) {
-        printf("\n\n");
-      } else {
-        printf(" ");
-      }
-    }else {
-      printf("\n");
-    }
-    
+    printf("\n");
     if ( i + 1 < st->stringCount ) {
       if ( ! MainVerseTextSimpleSplit  && !MainVerseTextSplit ) {
         printf("  ");
@@ -1325,100 +1289,6 @@ AddVerseRange
 }
 
 /*****************************************************************************!
- * Function : FormatInfoCreate
- *****************************************************************************/
-FormatInfo*
-FormatInfoCreate
-(int InChapter, int InVerse, int InType, string InSplitText)
-{
-  FormatInfo*                           formatInfo;
-  int                                   n;
-
-  n = sizeof(FormatInfo);
-  formatInfo = (FormatInfo*)GetMemory(n);
-  memset(formatInfo, 0x00, n);
-  formatInfo->chapter = InChapter;
-  formatInfo->verse = InVerse;
-  formatInfo->type = InType;
-  if ( InSplitText ) {
-    strcpy(formatInfo->splitText, InSplitText);
-  }
-  return formatInfo;
-}
-
-/*****************************************************************************!
- * Function : FormatInfoListCreate
- *****************************************************************************/
-FormatInfoList*
-FormatInfoListCreate
-(void)
-{
-  FormatInfoList*                       list;
-  int                                   n;
-
-  n = sizeof(FormatInfoList);
-  list = (FormatInfoList*)GetMemory(n);
-  memset(list, 0x00, n);
-  return list;
-}
-
-/*****************************************************************************!
- * Function : FormatInfoListAdd
- *****************************************************************************/
-void
-FormatInfoListAdd
-(FormatInfoList* InList, FormatInfo* InInfo)
-{
-  if ( NULL == InList || NULL == InInfo ) {
-    return;
-  }
-  if ( InList->head ) {
-    InList->tail->next = InInfo;
-    InList->tail = InInfo;
-    return;
-  }
-  InList->head = InInfo;
-  InList->tail = InInfo;
-}
-
-/*****************************************************************************!
- * Function : FormatInfoListFindType
- *****************************************************************************/
-int
-FormatInfoListFindType
-(FormatInfoList* InList, int InChapter, int InVerse)
-{
-  
-  FormatInfo*                           info;
-
-  info = FormatInfoListFind(InList, InChapter, InVerse);
-  if ( NULL == info ) {
-    return 0;
-  }
-  return info->type;
-}
-
-/*****************************************************************************!
- * Function : FormatInfoListFind
- *****************************************************************************/
-FormatInfo*
-FormatInfoListFind
-(FormatInfoList* InList, int InChapter, int InVerse)
-{
-  FormatInfo*                           info;
-  if ( NULL == InList ) {
-    return NULL;
-  }
-
-  for ( info = InList->head ; info ; info = info->next ) {
-    if ( info->chapter == InChapter && info->verse == InVerse ) {
-      return info;
-    }
-  }
-  return 0;
-}
-
-/*****************************************************************************!
  * Function : MainPostProcess
  *****************************************************************************/
 void
@@ -1439,11 +1309,12 @@ MainPostProcess
     return;
   }
 
-  n = strlen(MainBlockOutputText);
   if ( ! MainVerseTextSimpleSplit ) {
     printf("%s\n", MainBlockOutputText);
+    return;
   }
 
+  n = strlen(MainBlockOutputText);
   start = 0;
   for ( i = 0; i < n ; i++ ) {
     ch = MainBlockOutputText[i];
@@ -1467,3 +1338,25 @@ MainPostProcess
     start = end;
   }
 }
+
+/*****************************************************************************!
+ * Function : GetBookIndexFromName
+ *****************************************************************************/
+int
+GetBookIndexFromName
+(string InBookName)
+{
+  int                                   n;
+  if ( InBookName == NULL || InBookName[0] == 0x00 ) {
+    return -1;
+  }
+
+  n = BOOK_COUNT;
+  for (int i = 0; i < n; i++) {
+    if ( StringEqual(InBookName, MainBookInfo[i].name) ) {
+      return i + 1;
+    }
+  }
+  return -1;
+}
+

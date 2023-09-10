@@ -13,6 +13,7 @@ LIBS					= -lutils
 OBJS					= $(sort				\
 					    main.o                              \
 					    sqlite3.o				\
+					    Formatting.o			\
 					   )
 
 %.o					: %.c
