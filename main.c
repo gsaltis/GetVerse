@@ -1249,7 +1249,10 @@ MainWordDataBasePopulateCB
   string                                text;
   int                                   n;
   char                                  word[256];
-  
+
+  verse = 0;
+  book = 0;
+  chapter = 0;
   enum {
     Start,
     InWord,
@@ -1442,7 +1445,7 @@ HandleCommandLineFormatAdd
       fprintf(stderr, "Missing type at %d\n", i);
       exit(EXIT_FAILURE);
     }
-    MainFormatType[MainFormatCount] = atoi(argv[i + 1]);
+    MainFormatType[MainFormatCount] = atoi(argv[i]);
     MainFormatCount++;
     if ( MainFormatCount >= MAIN_FORMAT_COUNT_MAX ) {
       fprintf(stderr, "Tool main formats on command line\n");

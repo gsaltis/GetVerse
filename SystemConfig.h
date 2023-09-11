@@ -1,28 +1,70 @@
 /*****************************************************************************
- * FILE NAME    : main.h
+ * FILE NAME    : SystemConfig.h
  * DATE         : September 10 2023
  * PROJECT      : GetVerse
  * COPYRIGHT    : Copyright (C) 2023 by Gregory R Saltis
  *****************************************************************************/
-#ifndef _main_h_
-#define _main_h_
+#ifndef _systemconfig_h_
+#define _systemconfig_h_
 
 /*****************************************************************************!
  * Global Headers
  *****************************************************************************/
 #include <QtCore>
-#include <QGuiApplication>
+#include <QtGui>
+#include <QWidget>
 
 /*****************************************************************************!
  * Local Headers
  *****************************************************************************/
 
 /*****************************************************************************!
- * Exported Functions
+ * Exported Macros
  *****************************************************************************/
 
 /*****************************************************************************!
- * Exported Data
+ * Exported Class : SystemConfig
  *****************************************************************************/
+class SystemConfig : public QWidget
+{
+  Q_OBJECT;
 
-#endif /* _main_h_*/
+ //! Constructors
+ public :
+  SystemConfig                  ();
+
+ //! Destructor
+ public :
+  ~SystemConfig                 ();
+
+ //! Public Methods
+ public :
+
+ //! Public Data
+ public :
+  static QString                SystemName;
+
+ //! Protected Methods
+ protected :
+
+ //! Protected Data
+ protected :
+
+ //! Private Methods
+ private :
+
+ //! Private Data
+ private :
+
+ //! Public Slots
+ public slots :
+
+ //! Public Signals
+ signals :
+
+ //! Public Actions
+ public :
+
+};
+
+#endif /* _systemconfig_h_*/

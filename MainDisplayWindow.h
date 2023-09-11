@@ -1,28 +1,73 @@
 /*****************************************************************************
- * FILE NAME    : main.h
+ * FILE NAME    : MainDisplayWindow.h
  * DATE         : September 10 2023
  * PROJECT      : GetVerse
  * COPYRIGHT    : Copyright (C) 2023 by Gregory R Saltis
  *****************************************************************************/
-#ifndef _main_h_
-#define _main_h_
+#ifndef _maindisplaywindow_h_
+#define _maindisplaywindow_h_
 
 /*****************************************************************************!
  * Global Headers
  *****************************************************************************/
 #include <QtCore>
-#include <QGuiApplication>
+#include <QtGui>
+#include <QWidget>
 
 /*****************************************************************************!
  * Local Headers
  *****************************************************************************/
 
 /*****************************************************************************!
- * Exported Functions
+ * Exported Macros
  *****************************************************************************/
 
 /*****************************************************************************!
- * Exported Data
+ * Exported Class : MainDisplayWindow
  *****************************************************************************/
+class MainDisplayWindow : public QWidget
+{
+  Q_OBJECT;
 
-#endif /* _main_h_*/
+ //! Constructors
+ public :
+  MainDisplayWindow             ();
+
+ //! Destructor
+ public :
+  ~MainDisplayWindow            ();
+
+ //! Public Methods
+ public :
+
+ //! Public Data
+ public :
+
+ //! Protected Methods
+ protected :
+
+ //! Protected Data
+ protected :
+
+ //! Private Methods
+ private :
+  void                          Initialize              ();
+  void                          InitializeSubWindows    ();
+  void                          CreateSubWindows        ();
+  void                          resizeEvent             (QResizeEvent* InEvent);
+
+ //! Private Data
+ private :
+
+ //! Public Slots
+ public slots :
+
+ //! Public Signals
+ signals :
+
+ //! Public Actions
+ public :
+
+};
+
+#endif /* _maindisplaywindow_h_*/

@@ -4,6 +4,12 @@
 
 # Junk Files
 *~
+Makefile.Release
+Makefile.Debug
 
 # Extra Directories
 Books
+GUI
+release
+debug
+.qmake.stash

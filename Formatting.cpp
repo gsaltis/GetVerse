@@ -12,9 +12,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
-#include <StringUtils.h>
-#include <MemoryManager.h>
-#include <FileUtils.h>
 
 /*****************************************************************************!
  * Local Headers
@@ -41,22 +38,18 @@ FormattingInfoListReadSQLCB
  *****************************************************************************/
 FormattingInfo*
 FormattingInfoCreate
-(int InBook, int InChapter, int InVerse, FormattingInfoType InType, string InSplitText)
+(int InBook, int InChapter, int InVerse, FormattingInfoType InType, QString InSplitText)
 {
   FormattingInfo*                       formatInfo;
-  int                                   n;
 
-  n                     = sizeof(FormattingInfo);
-  formatInfo            = (FormattingInfo*)GetMemory(n);
-  memset(formatInfo, 0x00, n);
+  formatInfo            = new FormattingInfo();
 
   formatInfo->Book      = InBook;
   formatInfo->Chapter   = InChapter;
   formatInfo->Verse     = InVerse;
   formatInfo->Type      = InType;
-  if ( InSplitText ) {
-    strcpy(formatInfo->SplitText, InSplitText);
-  }
+  formatInfo->SplitText = InSplitText;
+
   return formatInfo;
 }
 
@@ -71,7 +64,7 @@ FormattingInfoListCreate
   int                                   n;
 
   n = sizeof(FormattingInfoList);
-  list = (FormattingInfoList*)GetMemory(n);
+  list = new FormattingInfoList();
   memset(list, 0x00, n);
   return list;
 }
@@ -134,22 +127,22 @@ FormattingInfoListFind
 /*****************************************************************************!
  * Function : FormattingInfoApply
  *****************************************************************************/
-string
+QString
 FormattingInfoApply
-(FormattingInfo* InInfo, string InText)
+(FormattingInfo* InInfo, QString InText)
 {
-  string                                text;
-  if ( NULL == InInfo || NULL == InText ) {
+  QString                               text;
+  if ( NULL == InInfo || InText.isEmpty() ) {
     return NULL;
   }
   switch (InInfo->Type) {
     case FormattingInfoTypeNewParagraph : {
-      text = StringConcat(InText, "\n\n");
+      text = InText + QString("\n\n");
       break;
     }
     case FormattingInfoTypeDone : 
     case FormattingInfoTypeNone : {
-      text = StringCopy(InText);
+      text = QString(InText) + " ";
       break;
     }
   }
@@ -163,16 +156,17 @@ void
 FormattingInfoListReadSQL
 (FormattingInfoList* InList, sqlite3* InDatabase)
 {
-  string                                query =
+  QString                               query =
     "SELECT * from Formatting;";
   char*                                 error;
   int                                   n;
   
-  n = sqlite3_exec(InDatabase, query, FormattingInfoListReadSQLCB, InList, &error);
+  n = sqlite3_exec(InDatabase, query.toStdString().c_str(), FormattingInfoListReadSQLCB, InList, &error);
   if ( n == SQLITE_OK ) {
     return;
   }
-  fprintf(stderr, "%s sqlite3_exec() failed \n%s\n%s\n", __FUNCTION__, query, error);
+  fprintf(stderr, "%s sqlite3_exec() failed \n%s\n%s\n", __FUNCTION__,
+          query.toStdString().c_str(), sqlite3_errstr(n));
   
 }
 
@@ -184,8 +178,8 @@ FormattingInfoListReadSQLCB
 (void* InListP, int InColumnCount, char** InColumnValues, char** InColumnNames)
 {
   FormattingInfo*                       info;
-  int                                   type;
-  string                                splitText = "";
+  int                                   type = 0;
+  QString                               splitText = QString();
   int                                   verse = -1;
   int                                   chapter = -1;
   int                                   book = -1;
@@ -193,30 +187,30 @@ FormattingInfoListReadSQLCB
   FormattingInfoList*                   list = (FormattingInfoList*)InListP;
 
   for ( i = 0; i < InColumnCount ; i++ ) {
-    string                              columnName = InColumnNames[i];
-    string                              columnValue = InColumnValues[i];
+    QString                             columnName = InColumnNames[i];
+    QString                             columnValue = InColumnValues[i];
     
-    if ( StringEqual(columnName, "book") ) {
-      book = atoi(columnValue);
+    if ( columnName == "book" ) {
+      book = columnValue.toInt();
       continue;
     }
 
-    if ( StringEqual(columnName, "chapter") ) {
-      chapter = atoi(columnValue);
+    if ( columnName == "chapter" ) {
+      chapter = columnValue.toInt();
       continue;
     }
 
-    if ( StringEqual(columnName, "verse") ) {
-      verse = atoi(columnValue);
+    if ( columnName == "verse" ) {
+      verse = columnValue.toInt();
       continue;
     }
 
-    if ( StringEqual(columnName, "type") ) {
-      type = atoi(columnValue);
+    if ( columnName == "type" ) {
+      type = columnValue.toInt();
       continue;
     }
 
-    if ( StringEqual(columnValue, "text") ) {
+    if ( columnValue == "text" ) {
       splitText = columnValue;
       continue;
     }
@@ -228,7 +222,7 @@ FormattingInfoListReadSQLCB
     return 0;
   }
 
-  info = FormattingInfoCreate(book, chapter, verse, type, splitText);
+  info = FormattingInfoCreate(book, chapter, verse, (FormattingInfoType)type, splitText);
   if ( NULL == info ) {
     return 0;
   }

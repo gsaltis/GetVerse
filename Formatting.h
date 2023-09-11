@@ -9,11 +9,8 @@
 /*****************************************************************************!
  * Global Headers
  *****************************************************************************/
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <string.h>
+#include <QtCore>
+#include <QApplication>
 
 /*****************************************************************************!
  * Local Headers
@@ -44,7 +41,7 @@ struct _FormattingInfo
   int                                   Chapter;
   int                                   Verse;
   FormattingInfoType                    Type;
-  char                                  SplitText[1024];
+  QString                               SplitText;
   struct _FormattingInfo*               Next;
 };
 typedef struct _FormattingInfo FormattingInfo;
@@ -70,9 +67,9 @@ void
 FormattingInfoListReadSQL
 (FormattingInfoList* InList,sqlite3* InDatabase);
 
-string
+QString
 FormattingInfoApply
-(FormattingInfo* InInfo,string InText);
+(FormattingInfo* InInfo, QString InText);
 
 FormattingInfo*
 FormattingInfoListFind
@@ -92,6 +89,6 @@ FormattingInfoListCreate
 
 FormattingInfo*
 FormattingInfoCreate
-(int InBook, int InChapter, int InVerse, FormattingInfoType InType, string InSplitText);
+(int InBook, int InChapter, int InVerse, FormattingInfoType InType, QString InSplitText);
 
 #endif /* _formatting_h_*/
