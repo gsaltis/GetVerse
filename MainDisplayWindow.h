@@ -17,6 +17,9 @@
 /*****************************************************************************!
  * Local Headers
  *****************************************************************************/
+#include "BookNameWindow.h"
+#include "MainMessageWindow.h"
+#include "TextDisplayOuterWindow.h"
 
 /*****************************************************************************!
  * Exported Macros
@@ -55,9 +58,13 @@ class MainDisplayWindow : public QWidget
   void                          InitializeSubWindows    ();
   void                          CreateSubWindows        ();
   void                          resizeEvent             (QResizeEvent* InEvent);
+  void                          CreateConnections       (void);
 
  //! Private Data
  private :
+  BookNameWindow*               bookNameWindow;
+  MainMessageWindow*            messageWindow;
+  TextDisplayOuterWindow*       displayWindow;
 
  //! Public Slots
  public slots :

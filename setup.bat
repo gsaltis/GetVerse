@@ -7,3 +7,4 @@ doskey mq=qmake
 doskey ge=release\GetVerse $*
 doskey ged=debug\GetVerse $*
 title GetVerse
+set GETVERSE_DATABASE=./NASB.db

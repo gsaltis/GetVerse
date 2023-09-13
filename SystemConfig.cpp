@@ -11,6 +11,7 @@
 #include <QtCore>
 #include <QtGui>
 #include <QWidget>
+#include <QJsonDocument>
 
 /*****************************************************************************!
  * Local Headers
@@ -28,6 +29,7 @@ QString SystemConfig::SystemName = "GetVerse";
 SystemConfig::SystemConfig
 () : QWidget()
 {
+  Initialize();
 }
 
 /*****************************************************************************!
@@ -38,3 +40,60 @@ SystemConfig::~SystemConfig
 {
 }
 
+/*****************************************************************************!
+ * Function : GetMainWindowSize
+ *****************************************************************************/
+QSize
+SystemConfig::GetMainWindowSize(void)
+{
+  return MainWindowSize;  
+}
+
+/*****************************************************************************!
+ * Function : SetMainWindowSize
+ *****************************************************************************/
+void
+SystemConfig::SetMainWindowSize
+(QSize InMainWindowSize)
+{
+  MainWindowSize = InMainWindowSize;  
+}
+
+/*****************************************************************************!
+ * Function : GetMainWindowLocation
+ *****************************************************************************/
+QPoint
+SystemConfig::GetMainWindowLocation(void)
+{
+  return MainWindowLocation;  
+}
+
+/*****************************************************************************!
+ * Function : SetMainWindowLocation
+ *****************************************************************************/
+void
+SystemConfig::SetMainWindowLocation
+(QPoint InMainWindowLocation)
+{
+  MainWindowLocation = InMainWindowLocation;  
+}
+
+/*****************************************************************************!
+ * Function : ReadJSON
+ *****************************************************************************/
+void
+SystemConfig::ReadJSON
+(QString InFilename)
+{
+  (void)InFilename;
+}
+
+/*****************************************************************************!
+ * Function : Initialize
+ *****************************************************************************/
+void
+SystemConfig::Initialize(void)
+{
+  MainWindowLocation    = QPoint(560, 0);
+  MainWindowSize        = QSize(1360, 1020);
+}

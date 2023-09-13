@@ -39,6 +39,11 @@ class SystemConfig : public QWidget
 
  //! Public Methods
  public :
+  QSize                         GetMainWindowSize       (void);
+  void                          SetMainWindowSize       (QSize InMainWindowSize);
+  QPoint                        GetMainWindowLocation   (void);
+  void                          SetMainWindowLocation   (QPoint InMainWindowPosition);
+  void                          ReadJSON                (QString InFilename);
 
  //! Public Data
  public :
@@ -52,9 +57,12 @@ class SystemConfig : public QWidget
 
  //! Private Methods
  private :
+  void                          Initialize              (void);
 
  //! Private Data
  private :
+  QSize                         MainWindowSize;
+  QPoint                        MainWindowLocation;
 
  //! Public Slots
  public slots :

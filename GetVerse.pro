@@ -24,24 +24,50 @@ QMAKE_TARGET_PRODUCT            = "GetVerse"
 
 QMAKE_TARGET_COPYRIGHT          = "Copyright (C) 2023 Greg Saltis"
 
-QT                              += core gui widgets
+QT                              += core gui widgets svg svgwidgets
 
 DEFINES                         += \
 
 SOURCES                         += \
+				   BookInfo.cpp                                 \
+				   BookNameTable.cpp                            \
+				   BookNameTableInnerTable.cpp                  \
+				   BookNameTableItem.cpp                        \
+				   BookNameTableScrollArea.cpp                  \
+				   BookNameWindow.cpp                           \
+				   Formatting.cpp                               \
 				   MainDisplayWindow.cpp                        \
+				   MainMessageWindow.cpp                        \
 				   MainWindow.cpp                               \
+				   SectionHeader.cpp                            \
 				   SystemConfig.cpp                             \
+				   TextDisplayOuterWindow.cpp                   \
+				   TextDisplayReferenceWindow.cpp               \
+				   TextDisplayViewWindow.cpp                    \
+				   TextDisplayViewWindowItem.cpp                \
+				   TextDisplayViewWindowReferenceItem.cpp       \
 				   main.cpp                                     \
-                                   Formatting.cpp                               \
-                                   sqlite3.c                                    \
+				   sqlite3.c                                    \
 
 HEADERS                         += \
+				   BookInfo.h                                   \
+				   BookNameTable.h                              \
+				   BookNameTableInnerTable.h                    \
+				   BookNameTableItem.h                          \
+				   BookNameTableScrollArea.h                    \
+				   BookNameWindow.h                             \
+				   Formatting.h                                 \
 				   MainDisplayWindow.h                          \
+				   MainMessageWindow.h                          \
 				   MainWindow.h                                 \
+				   SectionHeader.h                              \
 				   SystemConfig.h                               \
-                                   Formatting.h                                 \
-                                   sqlite3.h                                    \
+				   TextDisplayOuterWindow.h                     \
+				   TextDisplayReferenceWindow.h                 \
+				   TextDisplayViewWindow.h                      \
+				   TextDisplayViewWindowItem.h                  \
+				   TextDisplayViewWindowReferenceItem.h         \
+				   sqlite3.h                                    \
 
 FORMS                           += \
 

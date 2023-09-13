@@ -26,7 +26,7 @@ MainDisplayWindow::MainDisplayWindow
   QPalette				pal;
 
   pal = palette();
-  pal.setBrush(QPalette::Window, QBrush(QColor(160, 160, 160)));
+  pal.setBrush(QPalette::Window, QBrush(QColor(160, 160, 192)));
   setPalette(pal);
   setAutoFillBackground(true);
 
@@ -49,6 +49,7 @@ MainDisplayWindow::Initialize()
 {
   InitializeSubWindows();  
   CreateSubWindows();
+  CreateConnections();
 }
 
 /*****************************************************************************!
@@ -57,7 +58,9 @@ MainDisplayWindow::Initialize()
 void
 MainDisplayWindow::InitializeSubWindows()
 {
-  
+  bookNameWindow = NULL;  
+  messageWindow = NULL;
+  displayWindow = NULL;
 }
 
 /*****************************************************************************!
@@ -66,7 +69,12 @@ MainDisplayWindow::InitializeSubWindows()
 void
 MainDisplayWindow::CreateSubWindows()
 {
-  
+  bookNameWindow = new BookNameWindow();  
+  bookNameWindow->setParent(this);
+  messageWindow = new MainMessageWindow();
+  messageWindow->setParent(this);
+  displayWindow = new TextDisplayOuterWindow();
+  displayWindow->setParent(this);
 }
 
 /*****************************************************************************!
@@ -76,6 +84,17 @@ void
 MainDisplayWindow::resizeEvent
 (QResizeEvent* InEvent)
 {
+  int                                   displayWindowH;
+  int                                   displayWindowW;
+  int                                   displayWindowY;
+  int                                   displayWindowX;
+
+  int                                   messageWindowX;
+  int                                   messageWindowY;
+  int                                   messageWindowH;
+  int                                   messageWindowW;
+
+  int                                   bookNameWindowH;
   QSize					size;  
   int					width;
   int					height;
@@ -83,6 +102,42 @@ MainDisplayWindow::resizeEvent
   size = InEvent->size();
   width = size.width();
   height = size.height();
+
+  messageWindowX = 0;
+  messageWindowY = height - MAIN_MESSAGE_WINDOW_HEIGHT;
+  messageWindowH = MAIN_MESSAGE_WINDOW_HEIGHT;
+  messageWindowW = width;
+
+  displayWindowX = BOOK_NAME_WINDOW_WIDTH;
+  displayWindowY = 0;
+  displayWindowW = width - BOOK_NAME_WINDOW_WIDTH;
+  displayWindowH = height - MAIN_MESSAGE_WINDOW_HEIGHT;;
+  
+  bookNameWindowH = height - MAIN_MESSAGE_WINDOW_HEIGHT;
   (void)height;
   (void)width;
+  if ( bookNameWindow ) {
+    bookNameWindow->move(0, 0);
+    bookNameWindow->resize(BOOK_NAME_WINDOW_WIDTH, bookNameWindowH);
+  }
+  if ( messageWindow ) {
+    messageWindow->move(messageWindowX, messageWindowY);
+    messageWindow->resize(messageWindowW, messageWindowH);
+  }
+  if ( displayWindow ) {
+    displayWindow->move(displayWindowX, displayWindowY);
+    displayWindow->resize(displayWindowW, displayWindowH);
+  }
+}
+
+/*****************************************************************************!
+ * Function : CreateConnections
+ *****************************************************************************/
+void
+MainDisplayWindow::CreateConnections(void)
+{
+  connect(bookNameWindow,
+          SIGNAL(SignalBookSelected(int)),
+          displayWindow,
+          SLOT(SlotBookSelected(int)));
 }

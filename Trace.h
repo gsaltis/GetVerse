@@ -29,6 +29,13 @@
          __FILE__, __FUNCTION__, __LINE__,                              \
          #n, (int)n);                                                   \
   
+#define TRACE_FUNCTION_BOOL(n)                                          \
+  printf("%10s %50s::%30s:%05d : "                                      \
+          "%30s %s\n",                                                  \
+         "BOOL",                                                        \
+         __FILE__, __FUNCTION__, __LINE__,                              \
+         #n, n ? "True" : "False");                                     \
+    
 #define TRACE_FUNCTION_QSTRING(n)                                       \
   printf("%10s %50s::%30s:%05d : "                                      \
          "%30s %s\n",                                                   \
@@ -53,6 +60,13 @@
          __FILE__, __FUNCTION__, __LINE__,                              \
          #n, n.x(),                                                     \
          n.y());                                                        \
+
+#define TRACE_FUNCTION_POINTER(n)                                       \
+  printf("%10s %50s::%30s:%05d : "                                      \
+         "%30s = %p\n",                                                 \
+         "POINTER",                                                     \
+         __FILE__, __FUNCTION__, __LINE__,                              \
+         #n, n);                                                        \
 
 #define TRACE_FUNCTION_LOCATION()                                       \
   printf("%10s %50s::%30s:%05d\n",                                      \

@@ -4,8 +4,11 @@
 
 # Junk Files
 *~
+
+# Tmp Files
 Makefile.Release
 Makefile.Debug
+Makefile
 
 # Extra Directories
 Books

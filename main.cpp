@@ -22,6 +22,8 @@
 #include "main.h"
 #include "Formatting.h"
 #include "Trace.h"
+#include "SystemConfig.h"
+#include "BookInfo.h"
 
 /*****************************************************************************!
  * Local Macros
@@ -54,17 +56,6 @@ struct _VerseRange
   int                                   last;
 };
 typedef struct _VerseRange VerseRange;
-
-/*****************************************************************************!
- * Exported Type : BookInfo
- *****************************************************************************/
-struct _BookInfo
-{
-  QString                               name;
-  int                                   chapters;
-  int                                   index;
-};
-typedef struct _BookInfo BookInfo;
 
 /*****************************************************************************!
  * Local Functions
@@ -185,9 +176,16 @@ QStringList
 MainProcessVerseText
 (QString InText);
 
+int
+MainInitializeGUI
+(QApplication& InApplication);
+
 /*****************************************************************************!
  * Local Data
  *****************************************************************************/
+SystemConfig*
+MainSystemConfig;
+
 QString
 MainFilename;
 
@@ -269,8 +267,8 @@ MainFileLines;;
 static VerseRange
 MainVerseRanges[VERSE_RANGES_COUNT];
 
-BookInfo
-MainBookInfo[BOOK_COUNT];
+std::vector<BookInfo*>
+MainBookInfo;
 
 /*****************************************************************************!
  * Function : main
@@ -280,12 +278,10 @@ main
 (int argc, char** argv)
 {
   QApplication 				application(argc, argv);
-  MainWindow* 				w;
 
   MainInitialize();
   ProcessCommandLine(argc, argv);
   VerifyCommandLine();
-  MainDBBReadBookInfo();
   if ( MainFormatAdd ) {
     ProcessFormatAdd();
   }
@@ -295,16 +291,33 @@ main
     MainPostProcess();
     return EXIT_SUCCESS;
   }
+  return MainInitializeGUI(application);
+}
 
-  application.setApplicationName("GetVerse");
-  application.setApplicationVersion(VERSION);
-  application.setOrganizationName("Greg Saltis");
-  application.setOrganizationDomain("www.gsaltis.com");
+/*****************************************************************************!
+ * Function : MainInitializeGUI
+ *****************************************************************************/
+int
+MainInitializeGUI
+(QApplication& InApplication)
+{
+  MainWindow* 				w;
+  QSize                                 size;
+  QPoint                                pos;
+  
+  InApplication.setApplicationName("GetVerse");
+  InApplication.setApplicationVersion(VERSION);
+  InApplication.setOrganizationName("Greg Saltis");
+  InApplication.setOrganizationDomain("www.gsaltis.com");
   w = new MainWindow(NULL);
-  w->resize(MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT);
-  w->move(MAIN_WINDOW_X, MAIN_WINDOW_Y);
+
+  size = MainSystemConfig->GetMainWindowSize();
+  pos = MainSystemConfig->GetMainWindowLocation();
+  
+  w->resize(size);
+  w->move(pos);
   w->show();
-  return application.exec();
+  return InApplication.exec();
 }
 
 /*****************************************************************************!
@@ -315,7 +328,8 @@ MainInitialize
 ()
 {
   QString                               s;
-  
+
+  MainSystemConfig      = new SystemConfig();
   MainFilename          = NULL;
   MainDatabaseFilename  = QString(DEFAULT_DB_FILENAME);
   MainBook              = NULL;
@@ -1193,27 +1207,20 @@ MainVerifyBookName
 {
   QString                               bookName;
   QString                               name;
-  int                                   i;
-  int                                   candidate = -1;
-  BookInfo*                             bookInfo;
-  int                                   n;
+  BookInfo*                             candidate = NULL;
 
   bookName = InBookName.toLower();
-  n = sizeof(MainBookInfo) / sizeof(MainBookInfo[0]);
-  for (i = 0; i < n; i++) {
-    bookInfo = &(MainBookInfo[i]);
+
+  for (BookInfo* bookInfo : MainBookInfo) {
     name = bookInfo->name.toLower();
     if ( name.startsWith(bookName) ) {
-      if ( candidate != -1 ) {
+      if ( candidate ) {
         return DUPLICATE_BOOK;
       }
-      candidate = i;
+      candidate = bookInfo;
     }
   }
-  if ( candidate == -1 ) {
-    return BOOK_NOT_FOUND;
-  }
-  return BOOK_FOUND;
+  return  ( candidate == NULL ) ? BOOK_NOT_FOUND : BOOK_FOUND;
 }
 
 /*****************************************************************************!
@@ -1225,27 +1232,19 @@ MainGetSearchableBookName
 {
   QString                               bookName;
   QString                               name;
-  int                                   i;
-  int                                   candidate = -1;
-  BookInfo*                             bookInfo;
-  int                                   n;
+  BookInfo*                             candidate = NULL;
 
   bookName = InBookName.toLower();
-  n = sizeof(MainBookInfo) / sizeof(MainBookInfo[0]);
-  for (i = 0; i < n; i++) {
-    bookInfo = &(MainBookInfo[i]);
+  for (BookInfo* bookInfo : MainBookInfo) {
     name = bookInfo->name.toLower();
     if ( name.startsWith(bookName) ) {
-      if ( candidate != -1 ) {
+      if ( candidate ) {
         return NULL;
       }
-      candidate = i;
+      candidate = bookInfo;
     }
   }
-  if ( candidate == -1 ) {
-    return NULL;
-  }
-  return &(MainBookInfo[candidate]);
+  return candidate;
 }
 
 /*****************************************************************************!
@@ -1255,7 +1254,7 @@ int
 MainDBBReadBookInfoCB
 (void*, int InColumnCount, char** InColumnValues, char** InColumnNames)
 {
-  int                                   n;
+  BookInfo*                             bookInfo;
   int                                   chapterCount;
   int                                   bookIndex;
   QString                               bookName;
@@ -1266,10 +1265,13 @@ MainDBBReadBookInfoCB
   bookIndex                     = atoi(InColumnValues[0]);
   bookName                      = QString(InColumnValues[1]);
   chapterCount                  = atoi(InColumnValues[2]);
-  n                             = bookIndex-1;
-  MainBookInfo[n].name          = bookName;
-  MainBookInfo[n].index         = bookIndex;
-  MainBookInfo[n].chapters      = chapterCount;
+
+  bookInfo = new BookInfo();
+  bookInfo->name          = bookName;
+  bookInfo->index         = bookIndex;
+  bookInfo->chapters      = chapterCount;
+
+  MainBookInfo.push_back(bookInfo);
   return 0;
 }
 
