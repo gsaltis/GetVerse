@@ -20,6 +20,7 @@
  * Local Headers
  *****************************************************************************/
 #include "BookInfo.h"
+#include "TextDisplayViewWindowItem.h"
 
 /*****************************************************************************!
  * Exported Macros
@@ -47,6 +48,8 @@ class TextDisplayViewWindow : public QWidget
  //! Public Methods
  public :
   void                          ClearText               ();
+  int                           GetTableHeight          ();
+  int                           ArrangeElements         (int InWidth);
   
  //! Public Data
  public :
@@ -65,7 +68,9 @@ class TextDisplayViewWindow : public QWidget
   void                          resizeEvent             (QResizeEvent* InEvent);
   void                          GetChapter              (int InChapter);
   static int                    GetChapterCB            (void* InThisPointer, int InColumnCount, char** InColumnValues, char** InColumnNames);
-  void                          AddLine                 (QString InReference, QString InVerseText);
+  void                          AddLine                 (int InChapter, int InVerse, QString InVerseText);
+  void                          ComputeSize             ();
+  void                          GetMaxReferenceWidth    ();
   
  //! Private Data
  private :
@@ -75,6 +80,15 @@ class TextDisplayViewWindow : public QWidget
   int                           InterLineSkip;
   int                           InterWordSkip;
   int                           rightMargin;
+  int                           leftMargin;
+  int                           bottomMargin;
+  int                           topMargin;
+  int                           lineCount;
+  QFont                         displayFont;
+  int                           referenceWidth;
+  int                           tableHeight;
+  
+  std::vector<TextDisplayViewWindowItem*>       items;
   
  //! Public Slots
  public slots :

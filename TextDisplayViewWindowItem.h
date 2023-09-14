@@ -43,12 +43,19 @@ class TextDisplayViewWindowItem : public QLabel
  public :
   ~TextDisplayViewWindowItem    ();
 
- //! Public Methods
- public :
-
  //! Public Data
  public :
-
+  enum LinePosition {
+    LinePositionNone,
+    LinePositionEOL,
+    LinePositionBOL
+  };
+  
+ //! Public Methods
+ public :
+  LinePosition                  GetLinePosition         ();
+  void                          SetLinePosition         (LinePosition InPosition);
+  
  //! Protected Methods
  protected :
 
@@ -63,6 +70,7 @@ class TextDisplayViewWindowItem : public QLabel
   void                          resizeEvent             (QResizeEvent* InEvent);
   void                          enterEvent              (QEnterEvent* InEvent);
   void                          leaveEvent              (QEvent* InEvent);
+  void                          mousePressEvent         (QMouseEvent* InEvent);
 
  //! Private Data
  private :
@@ -70,6 +78,7 @@ class TextDisplayViewWindowItem : public QLabel
   QColor                        selectedColor;
   QColor                        selectedBackgroundColor;
   QColor                        textBackgroundColor;
+  LinePosition                  linePosition;
   
  //! Public Slots
  public slots :

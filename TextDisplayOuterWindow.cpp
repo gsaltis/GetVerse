@@ -67,7 +67,7 @@ TextDisplayOuterWindow::CreateSubWindows()
   referenceWindow->setParent(this);
   referenceWindow->hide();
 
-  viewWindow = new TextDisplayViewWindow();
+  viewWindow = new TextDisplayViewScrollWindow();
   viewWindow->setParent(this);
 }
 

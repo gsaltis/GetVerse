@@ -32,6 +32,7 @@ TextDisplayViewWindowItem::TextDisplayViewWindowItem
   setText(InText);
   move(InX, InY);
   resize(InSize);
+  linePosition = LinePositionNone;
 }
 
 /*****************************************************************************!
@@ -120,5 +121,40 @@ TextDisplayViewWindowItem::leaveEvent
   pal.setBrush(QPalette::Window, QBrush(textBackgroundColor));
   setPalette(pal);
   (void)InEvent;
+}
+
+/*****************************************************************************!
+ * Function : GetLinePosition
+ *****************************************************************************/
+TextDisplayViewWindowItem::LinePosition
+TextDisplayViewWindowItem::GetLinePosition
+()
+{
+  return linePosition;
+}
+
+/*****************************************************************************!
+ * Function : SetLinePosition
+ *****************************************************************************/
+void
+TextDisplayViewWindowItem::SetLinePosition
+(TextDisplayViewWindowItem::LinePosition InPosition)
+{
+  linePosition = InPosition;
+}
+
+/*****************************************************************************!
+ * Function : mousePressEvent
+ *****************************************************************************/
+void
+TextDisplayViewWindowItem::mousePressEvent
+(QMouseEvent* )
+{
+  int                                   y;
+  QPoint                                p;
+
+  p = pos();
+  y = p.y();
+  TRACE_FUNCTION_INT(y);
 }
 

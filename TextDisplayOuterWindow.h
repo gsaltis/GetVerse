@@ -22,6 +22,7 @@
 #include "TextDisplayReferenceWindow.h"
 #include "BookInfo.h"
 #include "TextDisplayViewWindow.h"
+#include "TextDisplayViewScrollWindow.h"
 
 /*****************************************************************************!
  * Exported Macros
@@ -70,7 +71,7 @@ class TextDisplayOuterWindow : public QFrame
  private :
   SectionHeader*                header;
   TextDisplayReferenceWindow*   referenceWindow;
-  TextDisplayViewWindow*        viewWindow;
+  TextDisplayViewScrollWindow*  viewWindow;
 
  //! Public Slots
  public slots :

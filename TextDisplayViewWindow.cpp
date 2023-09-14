@@ -11,6 +11,9 @@
 #include <QtCore>
 #include <QtGui>
 #include <QWidget>
+#include <QThread>
+#include <stdio.h>
+#include <stdlib.h>
 
 /*****************************************************************************!
  * Local Headers
@@ -33,7 +36,7 @@ TextDisplayViewWindow::TextDisplayViewWindow
   setPalette(pal);
   setAutoFillBackground(true);
   initialize();
-  setFont(QFont("Arial", 11, QFont::Normal));
+  setFont(displayFont);
 }
 
 /*****************************************************************************!
@@ -52,8 +55,13 @@ TextDisplayViewWindow::initialize()
 {
   InterLineSkip = 3;
   InterWordSkip = 4;
-  rightMargin = 10;
+  rightMargin   = 10;
+  leftMargin    = 10;
+  bottomMargin  = 10;
+  topMargin     = 10;
+  tableHeight   = 0;
   
+  displayFont = QFont("Arial", 11, QFont::Normal);
   InitializeSubWindows();  
   CreateSubWindows();
 }
@@ -77,21 +85,69 @@ TextDisplayViewWindow::InitializeSubWindows()
 }
 
 /*****************************************************************************!
+ * Function : ArrangeElements
+ *****************************************************************************/
+int
+TextDisplayViewWindow::ArrangeElements
+(int InWidth)
+{
+  int                                   i;
+  TextDisplayViewWindowItem*            item;
+  int                                   itemHeight;
+  int                                   itemWidth;
+  int                                   n;
+  int                                   rItemHeight;
+  int                                   rItemWidth;
+  TextDisplayViewWindowReferenceItem*   ritem;
+  QSize                                 s2;
+  int                                   textY;
+  int                                   verseX;
+  int                                   x;
+
+  textY = topMargin;
+  n = items.size();
+  //!
+  for (i = 0; i < n; i++) {
+    x = leftMargin;
+    ritem = (TextDisplayViewWindowReferenceItem*)items[i];
+
+    ritem->move(x, textY);
+    s2 = ritem->size();
+    rItemWidth = s2.width();
+    rItemHeight = s2.height();
+    verseX = rItemWidth + InterWordSkip + leftMargin;
+    x = verseX;
+    i++;
+    while (true) {
+      item = items[i];
+      s2 = item->size();
+      itemWidth = s2.width();
+      itemHeight = s2.height();
+      if ( x + itemWidth + rightMargin > InWidth ) {
+        textY += itemHeight + InterLineSkip;
+        x = verseX;
+      }
+      item->move(x, textY);
+      x += itemWidth + InterWordSkip;
+      if ( item->GetLinePosition() == TextDisplayViewWindowItem::LinePositionEOL ) {
+        break;
+      }
+      i++;
+    } 
+    textY += rItemHeight + InterLineSkip;
+  }
+  ComputeSize();
+  return tableHeight;
+}
+  
+/*****************************************************************************!
  * Function : resizeEvent
  *****************************************************************************/
 void
 TextDisplayViewWindow::resizeEvent
 (QResizeEvent* InEvent)
 {
-  QSize					size;  
-  int					width;
-  int					height;
-
-  size = InEvent->size();
-  width = size.width();
-  height = size.height();
-  (void)height;
-  (void)width;
+  (void)InEvent;
 }
 
 /*****************************************************************************!
@@ -101,13 +157,76 @@ void
 TextDisplayViewWindow::SlotBookSelected
 (BookInfo* InBookInfo)
 {
-  QString                               name;
-
   bookInfo = InBookInfo;
-  name = InBookInfo->GetCapitalizedBookName();
-  GetChapter(1);
+  GetMaxReferenceWidth();
+  GetChapter(20);
+  ComputeSize();
 }
 
+/*****************************************************************************!
+ * Function : GetMaxReferenceWidth
+ *****************************************************************************/
+void
+TextDisplayViewWindow::GetMaxReferenceWidth
+()
+{
+  QSize                                 s2;
+  QString                               reference;
+  int                                   verse;
+  int                                   chapter;
+  QString                               bookName;
+  int                                   width;
+  int                                   retryCount;
+  sqlite3_stmt*                         sqlstmt;
+  int                                   n;
+  QString                               query;
+  QFontMetrics                          fm(displayFont);
+
+  referenceWidth = 0;
+  
+  query = 
+     QString("SELECT chapter, verse FROM Verses WHERE book is %1;\n")
+    .arg(bookInfo->index);
+
+  n = sqlite3_prepare_v2(MainDatabase,
+                         query.toStdString().c_str(),
+                         query.length(),
+                         &sqlstmt,
+                         NULL);
+  if ( n != SQLITE_OK ) {
+    return;
+  }
+
+  bookName = bookInfo->GetCapitalizedBookName();
+  retryCount = 0;
+  do {
+    n = sqlite3_step(sqlstmt);
+    if ( SQLITE_BUSY == n ) {
+      QThread::msleep(30);
+      retryCount++;
+      if ( retryCount > 10 ) {
+        break;
+      }
+      continue;
+    }
+    if ( SQLITE_DONE == n ) {
+      break;
+    }
+
+    if ( SQLITE_ROW == n ) {
+      chapter = sqlite3_column_int(sqlstmt, 0);
+      verse = sqlite3_column_int(sqlstmt, 1);
+      reference = QString("%1 %2:%3").arg(bookName).arg(chapter).arg(verse);
+      s2 = fm.size(0, reference);
+      width = s2.width();
+      if ( referenceWidth < width ) {
+        referenceWidth = width;
+      }
+    }
+  } while (true);
+  sqlite3_finalize(sqlstmt);
+}
+  
 /*****************************************************************************!
  * Function : GetChapter
  *****************************************************************************/
@@ -119,7 +238,7 @@ TextDisplayViewWindow::GetChapter
   int                                   n;
   QString                               sqlstmt;
 
-  sqlstmt = QString("SELECT * from Verses where book is %1 and chapter is %2;\n").
+  sqlstmt = QString("SELECT * from Verses where book is %1 and chapter < %2;\n").
     arg(bookInfo->index).
     arg(InChapter);
 
@@ -130,6 +249,7 @@ TextDisplayViewWindow::GetChapter
             sqlite3_errstr(n));
     return;
   }
+  ComputeSize();
 }
 
 /*****************************************************************************!
@@ -139,13 +259,15 @@ int
 TextDisplayViewWindow::GetChapterCB
 (void* InThisPointer, int InColumnCount, char** InColumnValues, char** InColumnNames)
 {
+  int                                   chapter = 0;
+  int                                   verse = 0;
   QString                               columnValue;
   QString                               columnName;
   QString                               verseText;
   QString                               reference;
   QString                               s;
   TextDisplayViewWindow*                window;
-  
+
   window = (TextDisplayViewWindow*)InThisPointer;
   
   for ( int i = 0 ; i < InColumnCount ; i++ ) {
@@ -157,13 +279,21 @@ TextDisplayViewWindow::GetChapterCB
       continue;
     }
 
+    if ( columnName == "chapter" ) {
+      chapter = columnValue.toInt();
+      continue;
+    }
+    if ( columnName == "verse" ) {
+      verse = columnValue.toInt();
+      continue;
+    }
     if ( columnName == "text" ) {
       verseText = columnValue;
       continue;
     }
   }
 
-  window->AddLine(reference, verseText);
+  window->AddLine(chapter, verse, verseText);
   return 0;
 }
 
@@ -172,45 +302,61 @@ TextDisplayViewWindow::GetChapterCB
  *****************************************************************************/
 void
 TextDisplayViewWindow::AddLine
-(QString InReference, QString InVerseText)
+(int InChapter, int InVerse, QString InVerseText)
 {
-  QString                               word;
-  int                                   i;
-  int                                   n;
-  QStringList                           words;
   QFontMetrics                          fm(font());
+  int                                   i;
+  TextDisplayViewWindowItem*            item;
+  int                                   n;
+  QString                               reference;
+  TextDisplayViewWindowReferenceItem*   ritem;
   QSize                                 s2;
-  int                                   x = 5;
+  QSize                                 s3;
   int                                   verseX;
   int                                   width;
-  QSize                                 s3;
+  QString                               word;
+  QStringList                           words;
+  int                                   x = leftMargin;
   
-  TextDisplayViewWindowItem*            item;
   s3 = size();
   width = s3.width();
+
+  reference = QString("%1 %2:%3").
+    arg(bookInfo->GetCapitalizedBookName()).
+    arg(InChapter).
+    arg(InVerse);
   
-  s2 = fm.size(0, InReference);
-  item = new TextDisplayViewWindowReferenceItem(InReference, x, textY, s2);
-  item->setParent(this);
-  x += s2.width() + InterWordSkip;
-  item->show();
+  s2 = fm.size(0, reference);
+
+  s3 = QSize(referenceWidth, s2.height());
+  ritem = new TextDisplayViewWindowReferenceItem(reference, x, textY, s3);
+  ritem->setParent(this);
+  x += referenceWidth + InterWordSkip;
+  ritem->show();
   verseX = x;
   words = InVerseText.split(" ");
   n = words.size();
-
+  ritem->SetWordCount(n);
+  items.push_back(ritem);
   for (i = 0; i < n; i++) {
     word = words[i];
     s2 = fm.size(0, word);
     if ( x + s2.width() + rightMargin > width ) {
       textY += s2.height() + InterLineSkip;
+      lineCount++;
       x = verseX;
     }
     item = new TextDisplayViewWindowItem(word, x, textY, s2);
     item->setParent(this);
     x += s2.width() + InterWordSkip;
     item->show();
+    if ( i + 1 == n ) {
+      item->SetLinePosition(TextDisplayViewWindowItem::LinePositionEOL);
+    }
+    items.push_back(item);
   }
   textY += s2.height() + InterLineSkip;
+  lineCount++;
 }
 
 /*****************************************************************************!
@@ -223,6 +369,44 @@ TextDisplayViewWindow::ClearText
   while ( QWidget* w = findChild<QWidget*>() ) {
     delete w;
   }
-  textX = 0;
-  textY = 0;
+  items.clear();
+  textY = topMargin;
+}
+
+/*****************************************************************************!
+ * Function : ComputeSize
+ *****************************************************************************/
+void
+TextDisplayViewWindow::ComputeSize
+()
+{
+  int                                   width;
+  int                                   height;
+  int                                   h1;
+  QPoint                                p;
+  QSize                                 s;
+
+  height = 0;
+  for ( auto item : items ) {
+    s = item->size();
+    p = item->pos();
+
+    h1 = s.height() + p.y();
+    if ( height < h1 ) {
+      height = h1;
+    }
+  }
+  width = size().width();
+  resize(width, height);
+  tableHeight = height + topMargin  + bottomMargin;
+}
+
+/*****************************************************************************!
+ * Function : GetTableHeight
+ *****************************************************************************/
+int
+TextDisplayViewWindow::GetTableHeight
+()
+{
+  return tableHeight;
 }

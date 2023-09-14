@@ -43,6 +43,7 @@ SOURCES                         += \
 				   SystemConfig.cpp                             \
 				   TextDisplayOuterWindow.cpp                   \
 				   TextDisplayReferenceWindow.cpp               \
+				   TextDisplayViewScrollWindow.cpp              \
 				   TextDisplayViewWindow.cpp                    \
 				   TextDisplayViewWindowItem.cpp                \
 				   TextDisplayViewWindowReferenceItem.cpp       \
@@ -64,6 +65,7 @@ HEADERS                         += \
 				   SystemConfig.h                               \
 				   TextDisplayOuterWindow.h                     \
 				   TextDisplayReferenceWindow.h                 \
+				   TextDisplayViewScrollWindow.h                \
 				   TextDisplayViewWindow.h                      \
 				   TextDisplayViewWindowItem.h                  \
 				   TextDisplayViewWindowReferenceItem.h         \

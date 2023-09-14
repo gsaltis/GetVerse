@@ -29,6 +29,8 @@ TextDisplayViewWindowReferenceItem::TextDisplayViewWindowReferenceItem
   pal.setBrush(QPalette::WindowText, QBrush(QColor(192, 0, 0)));
   setPalette(pal);
   setAutoFillBackground(true);
+  setCursor(Qt::PointingHandCursor);
+  setAlignment(Qt::AlignRight);
   initialize();
 }
 
@@ -106,3 +108,30 @@ TextDisplayViewWindowReferenceItem::leaveEvent
   (void)InEvent;
 }
 
+/*****************************************************************************!
+ * Function : mousePressEvent
+ *****************************************************************************/
+void
+TextDisplayViewWindowReferenceItem::mousePressEvent
+(QMouseEvent* )
+{
+}
+
+/*****************************************************************************!
+ * Function : GetWordCount
+ *****************************************************************************/
+int
+TextDisplayViewWindowReferenceItem::GetWordCount(void)
+{
+  return WordCount;  
+}
+
+/*****************************************************************************!
+ * Function : SetWordCount
+ *****************************************************************************/
+void
+TextDisplayViewWindowReferenceItem::SetWordCount
+(int InWordCount)
+{
+  WordCount = InWordCount;  
+}

@@ -44,6 +44,8 @@ class TextDisplayViewWindowReferenceItem : public TextDisplayViewWindowItem
 
  //! Public Methods
  public :
+  int                           GetWordCount            (void);
+  void                          SetWordCount            (int InWordCount);
 
  //! Public Data
  public :
@@ -59,12 +61,15 @@ class TextDisplayViewWindowReferenceItem : public TextDisplayViewWindowItem
   void                          initialize              ();
   void                          CreateSubWindows        ();
   void                          InitializeSubWindows    ();
+  
   void                          resizeEvent             (QResizeEvent* InEvent);
   void                          enterEvent              (QEnterEvent* InEvent);
   void                          leaveEvent              (QEvent* InEvent);
+  void                          mousePressEvent         (QMouseEvent* InEvent);
 
  //! Private Data
  private :
+  int                           WordCount;
 
  //! Public Slots
  public slots :

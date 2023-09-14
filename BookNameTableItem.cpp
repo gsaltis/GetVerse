@@ -40,6 +40,7 @@ BookNameTableItem::BookNameTableItem
 
   setPalette(pal);
   setAutoFillBackground(true);
+  setCursor(Qt::PointingHandCursor);
   initialize();
 }
 
@@ -299,10 +300,9 @@ BookNameTableItem::enterEvent
 {
   QPalette                              pal;
 
+  pal = palette();
   pal.setBrush(QPalette::Window, QBrush(selectedColor));
   pal.setBrush(QPalette::WindowText, QBrush(selectedTextColor));
-  
-  pal = palette();
   setPalette(pal);
   (void)InEvent;
 }
