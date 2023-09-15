@@ -83,6 +83,10 @@ class TextDisplayOuterWindow : public QFrame
   void                          SlotUpdateProgressBar   (int InValue);
   void                          SlotSetProgressBar      (int InMin, int InMax);
   void                          SlotWordCountChanged    (int InWordCount);
+  void                          SlotVerseCountChanged   (int InWordCount);
+  void                          SlotSetSentenceMode     (void);
+  void                          SlotSetBlockMode        (void);
+  void                          SlotSetReferenceMode    (void);
 
  //! Public Signals
  signals :
@@ -92,6 +96,10 @@ class TextDisplayOuterWindow : public QFrame
   void                          SignalSetProgressBar    (int InMin, int InMax);
   void                          SignalUpdateProgressBar (int InValue);
   void                          SignalWordCountChanged  (int InWordCount);
+  void                          SignalVerseCountChanged (int InWordCount);
+  void                          SignalSetSentenceMode   (void);
+  void                          SignalSetReferenceMode  (void);
+  void                          SignalSetBlockMode      (void);
   
  //! Public Actions
  public :

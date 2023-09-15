@@ -45,6 +45,15 @@ class TextDisplayViewWindow : public QWidget
  public :
   ~TextDisplayViewWindow        ();
 
+ //! Public Types
+ public :
+  enum DisplayMode {
+    NoneMode                   = 0,
+    ReferenceMode,
+    BlockMode,
+    SentenceMode
+  };
+    
  //! Public Methods
  public :
   void                          ClearText               ();
@@ -72,6 +81,10 @@ class TextDisplayViewWindow : public QWidget
   void                          ComputeSize             ();
   void                          GetMaxReferenceWidth    ();
   int                           GetVerseCount           ();
+  int                           ArrangeElementsSentence (int InWidth);
+  int                           ArrangeElementsReference(int InWidth);
+  int                           ArrangeElementsBlock    (int InWidth);
+  
   
  //! Private Data
  private :
@@ -91,12 +104,16 @@ class TextDisplayViewWindow : public QWidget
   int                           verseCount;
   int                           tmpVerseCount;
   int                           wordCount;
+  DisplayMode                   mode;
   
   std::vector<TextDisplayViewWindowItem*>       items;
   
  //! Public Slots
  public slots :
   void                          SlotBookSelected        (BookInfo* InBookInfo);
+  void                          SlotSetSentenceMode     (void);
+  void                          SlotSetBlockMode        (void);
+  void                          SlotSetReferenceMode    (void);
 
  //! Public Signals
  signals :
@@ -105,6 +122,10 @@ class TextDisplayViewWindow : public QWidget
   void                          SignalSetProgressBar    (int InMin, int InMax);
   void                          SignalUpdateProgressBar (int InValue);
   void                          SignalWordCountChanged  (int InWordCount);
+  void                          SignalSetSentenceMode   (void);
+  void                          SignalSetReferenceMode  (void);
+  void                          SignalSetBlockMode      (void);
+  void                          SignalVerseCountChanged (int InVerseCount);
 
  //! Public Actions
  public :

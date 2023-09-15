@@ -216,6 +216,7 @@ TextDisplayOuterWindow::CreateConnections(void)
           SIGNAL(SignalSetProgressBar(int, int)),
           this,
           SLOT(SlotSetProgressBar(int, int)));
+
   connect(viewWindow,
           SIGNAL(SignalWordCountChanged(int)),
           this,
@@ -224,6 +225,42 @@ TextDisplayOuterWindow::CreateConnections(void)
           SIGNAL(SignalWordCountChanged(int)),
           controlBar,
           SLOT(SlotWordCountChanged(int)));
+  
+  connect(viewWindow,
+          SIGNAL(SignalVerseCountChanged(int)),
+          this,
+          SLOT(SlotVerseCountChanged(int)));
+  connect(this,
+          SIGNAL(SignalVerseCountChanged(int)),
+          controlBar,
+          SLOT(SlotVerseCountChanged(int)));
+  
+  connect(controlBar,
+          SIGNAL(SignalSetSentenceMode()),
+          this,
+          SLOT(SlotSetSentenceMode()));
+  connect(controlBar,
+          SIGNAL(SignalSetReferenceMode()),
+          this,
+          SLOT(SlotSetReferenceMode()));
+  connect(controlBar,
+          SIGNAL(SignalSetBlockMode()),
+          this,
+          SLOT(SlotSetBlockMode()));
+
+  connect(this,
+          SIGNAL(SignalSetSentenceMode()),
+          viewWindow,
+          SLOT(SlotSetSentenceMode()));
+  connect(this,
+          SIGNAL(SignalSetReferenceMode()),
+          viewWindow,
+          SLOT(SlotSetReferenceMode()));
+  connect(this,
+          SIGNAL(SignalSetBlockMode()),
+          viewWindow,
+          SLOT(SlotSetBlockMode()));
+
 }
 
 /*****************************************************************************!
@@ -272,4 +309,41 @@ TextDisplayOuterWindow::SlotWordCountChanged
 (int InWordCount)
 {
   emit SignalWordCountChanged(InWordCount);
+}
+
+/*****************************************************************************!
+ * Function : SlotSetSentenceMode
+ *****************************************************************************/
+void
+TextDisplayOuterWindow::SlotSetSentenceMode(void)
+{
+  emit SignalSetSentenceMode();
+}
+
+/*****************************************************************************!
+ * Function : SlotSetBlockMode
+ *****************************************************************************/
+void
+TextDisplayOuterWindow::SlotSetBlockMode(void)
+{
+  emit SignalSetBlockMode();
+}
+
+/*****************************************************************************!
+ * Function : SlotSetReferenceMode
+ *****************************************************************************/
+void
+TextDisplayOuterWindow::SlotSetReferenceMode(void)
+{
+  emit SignalSetReferenceMode();
+}
+
+/*****************************************************************************!
+ * Function : SlotVerseCountChanged
+ *****************************************************************************/
+void
+TextDisplayOuterWindow::SlotVerseCountChanged
+(int InVerseCount)
+{
+  emit SignalVerseCountChanged(InVerseCount);
 }

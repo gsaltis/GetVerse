@@ -141,10 +141,29 @@ TextDisplayViewScrollWindow::CreateConnections(void)
           SIGNAL(SignalUpdateProgressBar(int)),
           this,
           SLOT(SlotUpdateProgressBar(int)));
+
   connect(viewWindow,
           SIGNAL(SignalWordCountChanged(int)),
           this,
           SLOT(SlotWordCountChanged(int)));
+
+  connect(viewWindow,
+          SIGNAL(SignalVerseCountChanged(int)),
+          this,
+          SLOT(SlotVerseCountChanged(int)));
+
+  connect(this,
+          SIGNAL(SignalSetSentenceMode()),
+          viewWindow,
+          SLOT(SlotSetSentenceMode()));
+  connect(this,
+          SIGNAL(SignalSetReferenceMode()),
+          viewWindow,
+          SLOT(SlotSetReferenceMode()));
+  connect(this,
+          SIGNAL(SignalSetBlockMode()),
+          viewWindow,
+          SLOT(SlotSetBlockMode()));
 }
 
 /*****************************************************************************!
@@ -193,4 +212,41 @@ TextDisplayViewScrollWindow::SlotWordCountChanged
 (int InWordCount)
 {
   emit SignalWordCountChanged(InWordCount);
+}
+
+/*****************************************************************************!
+ * Function : SlotSetSentenceMode
+ *****************************************************************************/
+void
+TextDisplayViewScrollWindow::SlotSetSentenceMode(void)
+{
+  emit SignalSetSentenceMode();
+}
+
+/*****************************************************************************!
+ * Function : SlotSetBlockMode
+ *****************************************************************************/
+void
+TextDisplayViewScrollWindow::SlotSetBlockMode(void)
+{
+  emit SignalSetBlockMode();
+}
+
+/*****************************************************************************!
+ * Function : SlotSetReferenceMode
+ *****************************************************************************/
+void
+TextDisplayViewScrollWindow::SlotSetReferenceMode(void)
+{
+  emit SignalSetReferenceMode();
+}
+
+/*****************************************************************************!
+ * Function : SlotVerseCountChanged
+ *****************************************************************************/
+void
+TextDisplayViewScrollWindow::SlotVerseCountChanged
+(int InVerseCount)
+{
+  emit SignalVerseCountChanged(InVerseCount);
 }

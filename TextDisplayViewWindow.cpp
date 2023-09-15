@@ -60,7 +60,8 @@ TextDisplayViewWindow::initialize()
   bottomMargin  = 10;
   topMargin     = 10;
   tableHeight   = 0;
-  
+
+  mode = ReferenceMode;
   displayFont = QFont("Arial", 11, QFont::Normal);
   InitializeSubWindows();  
   CreateSubWindows();
@@ -91,6 +92,101 @@ int
 TextDisplayViewWindow::ArrangeElements
 (int InWidth)
 {
+  if ( mode == ReferenceMode ) {
+    return ArrangeElementsReference(InWidth);
+  }
+  if ( mode == BlockMode ) {
+    return ArrangeElementsBlock(InWidth);
+  }
+
+  if ( mode == SentenceMode ) {
+    return ArrangeElementsSentence(InWidth);
+  }
+  return 0;
+}
+
+/*****************************************************************************!
+ * Function : ArrangeElementsBlock
+ *****************************************************************************/
+int
+TextDisplayViewWindow::ArrangeElementsBlock
+(int InWidth)
+{
+  (void)InWidth;
+  return 0;
+}
+
+/*****************************************************************************!
+ * Function : ArrangeElementsSentence
+ *****************************************************************************/
+int
+TextDisplayViewWindow::ArrangeElementsSentence
+(int InWidth)
+{
+  int                                   k;
+  QString                               ending;
+  QString                               itemText;
+  int                                   i;
+  TextDisplayViewWindowItem*            item;
+  int                                   itemHeight;
+  int                                   itemWidth;
+  int                                   n;
+  TextDisplayViewWindowReferenceItem*   ritem;
+  QSize                                 s2;
+  int                                   textY;
+  int                                   verseX;
+  int                                   x;
+
+  textY = topMargin;
+  n = items.size();
+  verseX = leftMargin;
+  x = verseX;
+  //!
+  for (i = 0; i < n; i++) {
+    ritem = (TextDisplayViewWindowReferenceItem*)items[i];
+    ritem->hide();
+    i++;
+    while (true) {
+      item = items[i];
+
+      s2 = item->size();
+      itemWidth = s2.width();
+      itemHeight = s2.height();
+
+
+      if ( x + itemWidth + rightMargin > InWidth ) {
+        textY += itemHeight + InterLineSkip;
+        x = verseX + 20;
+      }
+      item->move(x, textY);
+      x += itemWidth + InterWordSkip;
+      itemText = item->text();
+      ending = itemText.right(1);
+      if ( ending == "'" || ending == "`" || ending == "]" || ending == ")" ) {
+        k = itemText.length() - 2;
+        ending = itemText.sliced(k, 1);
+      }
+      if ( ending == "." || ending == "?" || ending == "!" ) {
+        textY += itemHeight + InterLineSkip;
+        x = verseX;
+      }
+      if ( item->GetLinePosition() == TextDisplayViewWindowItem::LinePositionEOL ) {
+        break;
+      }
+      i++;
+    } 
+  }
+  ComputeSize();
+  return tableHeight;
+}
+
+/*****************************************************************************!
+ * Function : ArrangeElementsReference
+ *****************************************************************************/
+int
+TextDisplayViewWindow::ArrangeElementsReference
+(int InWidth)
+{
   int                                   i;
   TextDisplayViewWindowItem*            item;
   int                                   itemHeight;
@@ -110,7 +206,7 @@ TextDisplayViewWindow::ArrangeElements
   for (i = 0; i < n; i++) {
     x = leftMargin;
     ritem = (TextDisplayViewWindowReferenceItem*)items[i];
-
+    ritem->show();
     ritem->move(x, textY);
     s2 = ritem->size();
     rItemWidth = s2.width();
@@ -251,6 +347,7 @@ TextDisplayViewWindow::GetBook
     return;
   }
   emit SignalWordCountChanged(wordCount);
+  emit SignalVerseCountChanged(tmpVerseCount);
   ComputeSize();
 }
 
@@ -466,3 +563,32 @@ TextDisplayViewWindow::GetVerseCount
   return verseCount;
 }
 
+/*****************************************************************************!
+ * Function : SlotSetSentenceMode
+ *****************************************************************************/
+void
+TextDisplayViewWindow::SlotSetSentenceMode(void)
+{
+  mode = SentenceMode;  
+  ArrangeElements(size().width());
+}
+
+/*****************************************************************************!
+ * Function : SlotSetBlockMode
+ *****************************************************************************/
+void
+TextDisplayViewWindow::SlotSetBlockMode(void)
+{
+  mode = BlockMode;
+  ArrangeElements(size().width());
+}
+
+/*****************************************************************************!
+ * Function : SlotSetReferenceMode
+ *****************************************************************************/
+void
+TextDisplayViewWindow::SlotSetReferenceMode(void)
+{
+  mode = ReferenceMode;
+  ArrangeElements(size().width());
+}
