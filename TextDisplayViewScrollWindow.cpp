@@ -148,6 +148,11 @@ TextDisplayViewScrollWindow::CreateConnections(void)
           SLOT(SlotWordCountChanged(int)));
 
   connect(viewWindow,
+          SIGNAL(SignalSentenceCountChanged(int)),
+          this,
+          SLOT(SlotSentenceCountChanged(int)));
+
+  connect(viewWindow,
           SIGNAL(SignalVerseCountChanged(int)),
           this,
           SLOT(SlotVerseCountChanged(int)));
@@ -249,4 +254,14 @@ TextDisplayViewScrollWindow::SlotVerseCountChanged
 (int InVerseCount)
 {
   emit SignalVerseCountChanged(InVerseCount);
+}
+
+/*****************************************************************************!
+ * Function : SlotSentenceCountChanged
+ *****************************************************************************/
+void
+TextDisplayViewScrollWindow::SlotSentenceCountChanged
+(int InSentenceCount)
+{
+  emit SignalSentenceCountChanged(InSentenceCount);
 }

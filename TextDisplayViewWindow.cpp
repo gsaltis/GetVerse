@@ -137,6 +137,7 @@ TextDisplayViewWindow::ArrangeElementsSentence
   int                                   verseX;
   int                                   x;
 
+  tmpSentenceCount = 0;
   textY = topMargin;
   n = items.size();
   verseX = leftMargin;
@@ -167,6 +168,7 @@ TextDisplayViewWindow::ArrangeElementsSentence
         ending = itemText.sliced(k, 1);
       }
       if ( ending == "." || ending == "?" || ending == "!" ) {
+        tmpSentenceCount ++;
         textY += itemHeight + InterLineSkip;
         x = verseX;
       }
@@ -177,6 +179,7 @@ TextDisplayViewWindow::ArrangeElementsSentence
     } 
   }
   ComputeSize();
+  emit SignalSentenceCountChanged(tmpSentenceCount);
   return tableHeight;
 }
 
@@ -233,6 +236,7 @@ TextDisplayViewWindow::ArrangeElementsReference
     textY += rItemHeight + InterLineSkip;
   }
   ComputeSize();
+  emit SignalSentenceCountChanged(tmpVerseCount);
   return tableHeight;
 }
   
@@ -339,6 +343,7 @@ TextDisplayViewWindow::GetBook
   wordCount = 0;
   sqlstmt = QString("SELECT * from Verses where book is %1;\n").arg(bookInfo->index);
   tmpVerseCount = 0;
+  tmpSentenceCount = 0;
   n = sqlite3_exec(MainDatabase, sqlstmt.toStdString().c_str(), GetBookCB, this, NULL);
   if ( n != SQLITE_OK ) {
     fprintf(stderr, "%s : sqlite3_exec()\n%s\n%s\n",
@@ -346,8 +351,8 @@ TextDisplayViewWindow::GetBook
             sqlite3_errstr(n));
     return;
   }
+  ArrangeElements(size().width());
   emit SignalWordCountChanged(wordCount);
-  emit SignalVerseCountChanged(tmpVerseCount);
   ComputeSize();
 }
 

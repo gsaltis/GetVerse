@@ -81,20 +81,22 @@ class TextControlBar : public QWidget
   
  //! Public Slots
  public slots :
-  void                          SlotReferenceButtonPushed (void);
-  void                          SlotEditButtonPushed    (void);
-  void                          SlotAnalyzeButtonPushed (void);
-  void                          SlotBlockViewButtonPushed (void);
-  void                          SlotSentenceViewButtonPushed (void);
-  void                          SlotWordCountChanged    (int);
-  void                          SlotVerseCountChanged   (int);
+  void                          SlotReferenceButtonPushed       (void);
+  void                          SlotEditButtonPushed            (void);
+  void                          SlotAnalyzeButtonPushed         (void);
+  void                          SlotBlockViewButtonPushed       (void);
+  void                          SlotSentenceViewButtonPushed    (void);
+  void                          SlotWordCountChanged            (int);
+  void                          SlotVerseCountChanged           (int);
+  void                          SlotSentenceCountChanged        (int);
 
  //! Public Signals
  signals :
-  void                          SignalSetSentenceMode   (void);
-  void                          SignalSetReferenceMode  (void);
-  void                          SignalSetBlockMode      (void);
-  void                          SignalVerseCountChanged (int InVerseCount);
+  void                          SignalSetSentenceMode           (void);
+  void                          SignalSetReferenceMode          (void);
+  void                          SignalSetBlockMode              (void);
+  void                          SignalVerseCountChanged         (int InVerseCount);
+  void                          SignalSentenceCountChanged      (int InVerseCount);
 
  //! Public Actions
  public :

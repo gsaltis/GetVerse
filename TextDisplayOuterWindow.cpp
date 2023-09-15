@@ -235,6 +235,15 @@ TextDisplayOuterWindow::CreateConnections(void)
           controlBar,
           SLOT(SlotVerseCountChanged(int)));
   
+  connect(viewWindow,
+          SIGNAL(SignalSentenceCountChanged(int)),
+          this,
+          SLOT(SlotSentenceCountChanged(int)));
+  connect(this,
+          SIGNAL(SignalSentenceCountChanged(int)),
+          controlBar,
+          SLOT(SlotSentenceCountChanged(int)));
+  
   connect(controlBar,
           SIGNAL(SignalSetSentenceMode()),
           this,
@@ -346,4 +355,14 @@ TextDisplayOuterWindow::SlotVerseCountChanged
 (int InVerseCount)
 {
   emit SignalVerseCountChanged(InVerseCount);
+}
+
+/*****************************************************************************!
+ * Function : SlotSentenceCountChanged
+ *****************************************************************************/
+void
+TextDisplayOuterWindow::SlotSentenceCountChanged
+(int InSentenceCount)
+{
+  emit SignalSentenceCountChanged(InSentenceCount);
 }

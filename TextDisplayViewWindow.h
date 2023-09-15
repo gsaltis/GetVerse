@@ -103,6 +103,7 @@ class TextDisplayViewWindow : public QWidget
   int                           tableHeight;
   int                           verseCount;
   int                           tmpVerseCount;
+  int                           tmpSentenceCount;
   int                           wordCount;
   DisplayMode                   mode;
   
@@ -110,22 +111,23 @@ class TextDisplayViewWindow : public QWidget
   
  //! Public Slots
  public slots :
-  void                          SlotBookSelected        (BookInfo* InBookInfo);
-  void                          SlotSetSentenceMode     (void);
-  void                          SlotSetBlockMode        (void);
-  void                          SlotSetReferenceMode    (void);
+  void                          SlotBookSelected                (BookInfo* InBookInfo);
+  void                          SlotSetSentenceMode             (void);
+  void                          SlotSetBlockMode                (void);
+  void                          SlotSetReferenceMode            (void);
 
  //! Public Signals
  signals :
-  void                          SignalHideProgressBar   (void);
-  void                          SignalShowProgressBar   (void);
-  void                          SignalSetProgressBar    (int InMin, int InMax);
-  void                          SignalUpdateProgressBar (int InValue);
-  void                          SignalWordCountChanged  (int InWordCount);
-  void                          SignalSetSentenceMode   (void);
-  void                          SignalSetReferenceMode  (void);
-  void                          SignalSetBlockMode      (void);
-  void                          SignalVerseCountChanged (int InVerseCount);
+  void                          SignalHideProgressBar           (void);
+  void                          SignalShowProgressBar           (void);
+  void                          SignalSetProgressBar            (int InMin, int InMax);
+  void                          SignalUpdateProgressBar         (int InValue);
+  void                          SignalWordCountChanged          (int InWordCount);
+  void                          SignalSetSentenceMode           (void);
+  void                          SignalSetReferenceMode          (void);
+  void                          SignalSetBlockMode              (void);
+  void                          SignalVerseCountChanged         (int InVerseCount);
+  void                          SignalSentenceCountChanged      (int InSentenceCount);
 
  //! Public Actions
  public :

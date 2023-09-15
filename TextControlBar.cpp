@@ -208,7 +208,7 @@ TextControlBar::resizeEvent
   //!
   {
     QFontMetrics                        fm(WordCountLabel->font());
-    QSize                               s = fm.size(0, WordCountLabel->text());
+    QSize                               s = fm.size(0, "000000");
     WordCountLabelW = s.width();
     WordCountLabelH = s.height();
   }
@@ -223,7 +223,7 @@ TextControlBar::resizeEvent
   //!
   {
     QFontMetrics                        fm(GroupingCountLabel->font());
-    QSize                               s = fm.size(0, GroupingCountLabel->text());
+    QSize                               s = fm.size(0, "000000");
     GroupingCountLabelW = s.width();
     GroupingCountLabelH = s.height();
   }
@@ -339,5 +339,14 @@ TextControlBar::SlotVerseCountChanged
 (int InVerseCount)
 {
   GroupingCountLabel->setText(QString("%1").arg(InVerseCount));
-  GroupingLabel->setText("Verses : ");
+}
+
+/*****************************************************************************!
+ * Function : SlotSentenceCountChanged
+ *****************************************************************************/
+void
+TextControlBar::SlotSentenceCountChanged
+(int InSentenceCount)
+{
+  GroupingCountLabel->setText(QString("%1").arg(InSentenceCount));
 }

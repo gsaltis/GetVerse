@@ -70,29 +70,31 @@ class TextDisplayViewScrollWindow : public QScrollArea
 
  //! Public Slots
  public slots :
-  void                          SlotBookSelected        (BookInfo* InBookInfo);
-  void                          SlotHideProgressBar     (void);
-  void                          SlotShowProgressBar     (void);
-  void                          SlotUpdateProgressBar   (int InValue);
-  void                          SlotSetProgressBar      (int InMin, int InMax);
-  void                          SlotWordCountChanged    (int InWordCount);
-  void                          SlotSetSentenceMode     (void);
-  void                          SlotSetBlockMode        (void);
-  void                          SlotSetReferenceMode    (void);
-  void                          SlotVerseCountChanged   (int InVerseCount);
+  void                          SlotBookSelected                (BookInfo* InBookInfo);
+  void                          SlotHideProgressBar             (void);
+  void                          SlotShowProgressBar             (void);
+  void                          SlotUpdateProgressBar           (int InValue);
+  void                          SlotSetProgressBar              (int InMin, int InMax);
+  void                          SlotWordCountChanged            (int InWordCount);
+  void                          SlotSetSentenceMode             (void);
+  void                          SlotSetBlockMode                (void);
+  void                          SlotSetReferenceMode            (void);
+  void                          SlotVerseCountChanged           (int InVerseCount);
+  void                          SlotSentenceCountChanged        (int InVerseCount);
 
  //! Public Signals
  signals :
-  void                          SignalBookSelected      (BookInfo* InBookInfo);
-  void                          SignalHideProgressBar   (void);
-  void                          SignalShowProgressBar   (void);
-  void                          SignalSetProgressBar    (int InMin, int InMax);
-  void                          SignalUpdateProgressBar (int InValue);
-  void                          SignalWordCountChanged  (int InWordCount);
-  void                          SignalSetSentenceMode   (void);
-  void                          SignalSetReferenceMode  (void);
-  void                          SignalSetBlockMode      (void);
-  void                          SignalVerseCountChanged (int InVerseCount);
+  void                          SignalBookSelected              (BookInfo* InBookInfo);
+  void                          SignalHideProgressBar           (void);
+  void                          SignalShowProgressBar           (void);
+  void                          SignalSetProgressBar            (int InMin, int InMax);
+  void                          SignalUpdateProgressBar         (int InValue);
+  void                          SignalWordCountChanged          (int InWordCount);
+  void                          SignalSetSentenceMode           (void);
+  void                          SignalSetReferenceMode          (void);
+  void                          SignalSetBlockMode              (void);
+  void                          SignalVerseCountChanged         (int InVerseCount);
+  void                          SignalSentenceCountChanged      (int InVerseCount);
 
  //! Public Actions
  public :
