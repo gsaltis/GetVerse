@@ -16,6 +16,7 @@
  * Local Headers
  *****************************************************************************/
 #include "MainMessageWindow.h"
+#include "Trace.h"
 
 /*****************************************************************************!
  * Local Macros
@@ -80,6 +81,7 @@ MainMessageWindow::CreateConnections
 void
 MainMessageWindow::CreateSubWindows()
 {
+  QPalette                              pal;
 
   //! Create label  
   message = new QLabel();
@@ -90,6 +92,10 @@ MainMessageWindow::CreateSubWindows()
   message->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
   message->setFont(QFont("Arial", 10, QFont::Normal));
 
+  pal = message->palette();
+  pal.setBrush(QPalette::Window, QBrush(QColor(128, 0, 0)));
+  message->setPalette(pal);
+  
   progressBar = new QProgressBar();
   progressBar->setParent(this);
   progressBar->hide();
@@ -212,7 +218,6 @@ MainMessageWindow::SlotTimeout(void)
 {
   ClearMessage();
 }
-
 /*****************************************************************************!
  * Function : SlotProgressBarSet
  *****************************************************************************/
@@ -230,6 +235,32 @@ MainMessageWindow::SlotProgressBarSet
 void
 MainMessageWindow::SlotProgressBarShow(void)
 {
+  QSize                                 s = size();
+  int                                   width = s.width();
+  int                                   height = s.height();
+  int                                   messageX;
+  int                                   messageY;
+  int                                   messageW;
+  int                                   messageH;
+  int                                   progressBarW;
+  int                                   progressBarH;
+  int                                   progressBarX;
+  int                                   progressBarY;
+
+  messageW = width / 8 * 7 - 5;
+  messageX = 5;
+  messageY = message->pos().y();
+  messageH = height;
+
+  progressBarW = width - (messageW + 10);
+  progressBarH = height - 4;
+  progressBarX = (messageW + messageX) + 4;
+  progressBarY = 2;
+
+  message->resize(messageW, messageH);
+  message->move(messageX, messageY);
+  progressBar->move(progressBarX, progressBarY);
+  progressBar->resize(progressBarW, progressBarH);
   progressBar->show();
 }
 
@@ -239,7 +270,23 @@ MainMessageWindow::SlotProgressBarShow(void)
 void
 MainMessageWindow::SlotProgressBarHide(void)
 {
+  QSize                                 s = size();
+  int                                   width = s.width();
+  int                                   height = s.height();
+  int                                   messageX;
+  int                                   messageY;
+  int                                   messageW;
+  int                                   messageH;
+  
+  messageW = width - 5;
+  messageX = 5;
+  messageY = message->pos().y();
+  messageH = height;
+
+  message->resize(messageW, messageH);
+  message->move(messageX, messageY);
   progressBar->hide();
+  QCoreApplication::processEvents();
 }
 
 /*****************************************************************************!
@@ -249,5 +296,6 @@ void
 MainMessageWindow::SlotProgressBarUpdate
 (int InValue)
 {
+  QCoreApplication::processEvents();
   progressBar->setValue(InValue);
 }

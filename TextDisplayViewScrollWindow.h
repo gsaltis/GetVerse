@@ -71,10 +71,18 @@ class TextDisplayViewScrollWindow : public QScrollArea
  //! Public Slots
  public slots :
   void                          SlotBookSelected        (BookInfo* InBookInfo);
+  void                          SlotHideProgressBar     (void);
+  void                          SlotShowProgressBar     (void);
+  void                          SlotUpdateProgressBar   (int InValue);
+  void                          SlotSetProgressBar      (int InMin, int InMax);
 
  //! Public Signals
  signals :
   void                          SignalBookSelected      (BookInfo* InBookInfo);
+  void                          SignalHideProgressBar   (void);
+  void                          SignalShowProgressBar   (void);
+  void                          SignalSetProgressBar    (int InMin, int InMax);
+  void                          SignalUpdateProgressBar (int InValue);
 
  //! Public Actions
  public :

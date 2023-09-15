@@ -140,4 +140,74 @@ MainDisplayWindow::CreateConnections(void)
           SIGNAL(SignalBookSelected(int)),
           displayWindow,
           SLOT(SlotBookSelected(int)));
+  connect(displayWindow,
+          SIGNAL(SignalShowProgressBar()),
+          this,
+          SLOT(SlotShowProgressBar()));
+  connect(displayWindow,
+          SIGNAL(SignalHideProgressBar()),
+          this,
+          SLOT(SlotHideProgressBar()));
+  connect(displayWindow,
+          SIGNAL(SignalSetProgressBar(int, int)),
+          this,
+          SLOT(SlotSetProgressBar(int, int)));
+  connect(displayWindow,
+          SIGNAL(SignalUpdateProgressBar(int)),
+          this,
+          SLOT(SlotUpdateProgressBar(int)));
+  connect(this,
+          SIGNAL(SignalHideProgressBar()),
+          messageWindow,
+          SLOT(SlotProgressBarHide()));
+  connect(this,
+          SIGNAL(SignalShowProgressBar()),
+          messageWindow,
+          SLOT(SlotProgressBarShow()));
+  connect(this,
+          SIGNAL(SignalUpdateProgressBar(int)),
+          messageWindow,
+          SLOT(SlotProgressBarUpdate(int)));
+  connect(this,
+          SIGNAL(SignalSetProgressBar(int, int)),
+          messageWindow,
+          SLOT(SlotProgressBarSet(int, int)));
+}
+
+/*****************************************************************************!
+ * Function : SlotShowProgressBar
+ *****************************************************************************/
+void
+MainDisplayWindow::SlotShowProgressBar(void)
+{
+  emit SignalShowProgressBar();
+}
+
+/*****************************************************************************!
+ * Function : SlotHideProgressBar
+ *****************************************************************************/
+void
+MainDisplayWindow::SlotHideProgressBar(void)
+{
+  emit SignalHideProgressBar();
+}
+
+/*****************************************************************************!
+ * Function : SlotUpdateProgressBar
+ *****************************************************************************/
+void
+MainDisplayWindow::SlotUpdateProgressBar
+(int InValue)
+{
+  emit SignalUpdateProgressBar(InValue);
+}
+
+/*****************************************************************************!
+ * Function : SlotSetProgressBar
+ *****************************************************************************/
+void
+MainDisplayWindow::SlotSetProgressBar
+(int InMin, int InMax)
+{
+  emit SignalSetProgressBar(InMin, InMax);
 }

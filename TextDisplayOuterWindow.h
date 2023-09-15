@@ -76,11 +76,19 @@ class TextDisplayOuterWindow : public QFrame
  //! Public Slots
  public slots :
   void                          SlotBookSelected        (int InBookIndex);
+  void                          SlotShowProgressBar     (void);
+  void                          SlotHideProgressBar     (void);
+  void                          SlotUpdateProgressBar   (int InValue);
+  void                          SlotSetProgressBar      (int InMin, int InMax);
 
  //! Public Signals
  signals :
   void                          SignalBookSelected      (BookInfo*);
-
+  void                          SignalHideProgressBar   (void);
+  void                          SignalShowProgressBar   (void);
+  void                          SignalSetProgressBar    (int InMin, int InMax);
+  void                          SignalUpdateProgressBar (int InValue);
+  
  //! Public Actions
  public :
 

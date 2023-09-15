@@ -11,6 +11,7 @@
 #include <QtCore>
 #include <QtGui>
 #include <QWidget>
+#include <QScrollBar>
 
 /*****************************************************************************!
  * Local Headers
@@ -104,6 +105,10 @@ void
 TextDisplayViewScrollWindow::SlotBookSelected
 (BookInfo* InBookInfo)
 {
+  QScrollBar*                           vBar;
+
+  vBar = verticalScrollBar();
+  vBar->setValue(0);
   emit SignalBookSelected(InBookInfo);
 }
 
@@ -117,4 +122,61 @@ TextDisplayViewScrollWindow::CreateConnections(void)
           SIGNAL(SignalBookSelected(BookInfo*)),
           viewWindow,
           SLOT(SlotBookSelected(BookInfo*)));
+
+  connect(viewWindow,
+          SIGNAL(SignalHideProgressBar()),
+          this,
+          SLOT(SlotHideProgressBar()));
+  connect(viewWindow,
+          SIGNAL(SignalShowProgressBar()),
+          this,
+          SLOT(SlotShowProgressBar()));
+  
+  connect(viewWindow,
+          SIGNAL(SignalSetProgressBar(int, int)),
+          this,
+          SLOT(SlotSetProgressBar(int, int)));
+  
+  connect(viewWindow,
+          SIGNAL(SignalUpdateProgressBar(int)),
+          this,
+          SLOT(SlotUpdateProgressBar(int)));
+}
+
+/*****************************************************************************!
+ * Function : SlotHideProgressBar
+ *****************************************************************************/
+void
+TextDisplayViewScrollWindow::SlotHideProgressBar(void)
+{
+  emit SignalHideProgressBar();
+}
+
+/*****************************************************************************!
+ * Function : SlotShowProgressBar
+ *****************************************************************************/
+void
+TextDisplayViewScrollWindow::SlotShowProgressBar(void)
+{
+  emit SignalShowProgressBar();
+}
+
+/*****************************************************************************!
+ * Function : SlotUpdateProgressBar
+ *****************************************************************************/
+void
+TextDisplayViewScrollWindow::SlotUpdateProgressBar
+(int InValue)
+{
+  emit SignalUpdateProgressBar(InValue);
+}
+
+/*****************************************************************************!
+ * Function : SlotSetProgressBar
+ *****************************************************************************/
+void
+TextDisplayViewScrollWindow::SlotSetProgressBar
+(int InMin, int InMax)
+{
+  emit SignalSetProgressBar(InMin, InMax);
 }

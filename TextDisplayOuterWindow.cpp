@@ -168,4 +168,58 @@ TextDisplayOuterWindow::CreateConnections(void)
           SIGNAL(SignalBookSelected(BookInfo*)),
           viewWindow,
           SLOT(SlotBookSelected(BookInfo*)));
+  connect(viewWindow,
+          SIGNAL(SignalShowProgressBar()),
+          this,
+          SLOT(SlotShowProgressBar()));
+  connect(viewWindow,
+          SIGNAL(SignalHideProgressBar()),
+          this,
+          SLOT(SlotHideProgressBar()));
+  connect(viewWindow,
+          SIGNAL(SignalUpdateProgressBar(int)),
+          this,
+          SLOT(SlotUpdateProgressBar(int)));
+  connect(viewWindow,
+          SIGNAL(SignalSetProgressBar(int, int)),
+          this,
+          SLOT(SlotSetProgressBar(int, int)));
+}
+
+/*****************************************************************************!
+ * Function : SlotShowProgressBar
+ *****************************************************************************/
+void
+TextDisplayOuterWindow::SlotShowProgressBar(void)
+{
+  emit SignalShowProgressBar();
+}
+
+/*****************************************************************************!
+ * Function : SlotHideProgressBar
+ *****************************************************************************/
+void
+TextDisplayOuterWindow::SlotHideProgressBar(void)
+{
+  emit SignalHideProgressBar();
+}
+
+/*****************************************************************************!
+ * Function : SlotUpdateProgressBar
+ *****************************************************************************/
+void
+TextDisplayOuterWindow::SlotUpdateProgressBar
+(int InValue)
+{
+  emit SignalUpdateProgressBar(InValue);
+}
+
+/*****************************************************************************!
+ * Function : SlotSetProgressBar
+ *****************************************************************************/
+void
+TextDisplayOuterWindow::SlotSetProgressBar
+(int InMin, int InMax)
+{
+  emit SignalSetProgressBar(InMin, InMax);
 }

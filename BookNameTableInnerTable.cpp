@@ -26,7 +26,7 @@ BookNameTableInnerTable::BookNameTableInnerTable
 () : QWidget()
 {
   QPalette pal;
-  topMargin = 5;
+  topMargin = 0;
   pal = palette();
   pal.setBrush(QPalette::Window, QBrush(QColor(255, 255, 255)));
   setPalette(pal);

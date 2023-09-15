@@ -56,7 +56,7 @@ TextDisplayViewWindow::initialize()
   InterLineSkip = 3;
   InterWordSkip = 4;
   rightMargin   = 10;
-  leftMargin    = 10;
+  leftMargin    = 30;
   bottomMargin  = 10;
   topMargin     = 10;
   tableHeight   = 0;
@@ -157,10 +157,14 @@ void
 TextDisplayViewWindow::SlotBookSelected
 (BookInfo* InBookInfo)
 {
+  emit SignalShowProgressBar();
   bookInfo = InBookInfo;
+  verseCount = GetVerseCount();
+  emit SignalSetProgressBar(0, verseCount);
   GetMaxReferenceWidth();
-  GetChapter(20);
+  GetBook();
   ComputeSize();
+  emit SignalHideProgressBar();
 }
 
 /*****************************************************************************!
@@ -228,21 +232,19 @@ TextDisplayViewWindow::GetMaxReferenceWidth
 }
   
 /*****************************************************************************!
- * Function : GetChapter
+ * Function : GetBook
  *****************************************************************************/
 void
-TextDisplayViewWindow::GetChapter
-(int InChapter)
+TextDisplayViewWindow::GetBook
+()
 {
   QString                               columnName;
   int                                   n;
   QString                               sqlstmt;
 
-  sqlstmt = QString("SELECT * from Verses where book is %1 and chapter < %2;\n").
-    arg(bookInfo->index).
-    arg(InChapter);
-
-  n = sqlite3_exec(MainDatabase, sqlstmt.toStdString().c_str(), GetChapterCB, this, NULL);
+  sqlstmt = QString("SELECT * from Verses where book is %1;\n").arg(bookInfo->index);
+  tmpVerseCount = 0;
+  n = sqlite3_exec(MainDatabase, sqlstmt.toStdString().c_str(), GetBookCB, this, NULL);
   if ( n != SQLITE_OK ) {
     fprintf(stderr, "%s : sqlite3_exec()\n%s\n%s\n",
             __FUNCTION__, sqlstmt.toStdString().c_str(),
@@ -253,10 +255,10 @@ TextDisplayViewWindow::GetChapter
 }
 
 /*****************************************************************************!
- * Function : GetChapterCB
+ * Function : GetBookCB
  *****************************************************************************/
 int
-TextDisplayViewWindow::GetChapterCB
+TextDisplayViewWindow::GetBookCB
 (void* InThisPointer, int InColumnCount, char** InColumnValues, char** InColumnNames)
 {
   int                                   chapter = 0;
@@ -357,6 +359,9 @@ TextDisplayViewWindow::AddLine
   }
   textY += s2.height() + InterLineSkip;
   lineCount++;
+  tmpVerseCount++;
+  emit SignalUpdateProgressBar(tmpVerseCount);
+  QCoreApplication::processEvents();
 }
 
 /*****************************************************************************!
@@ -410,3 +415,54 @@ TextDisplayViewWindow::GetTableHeight
 {
   return tableHeight;
 }
+
+/*****************************************************************************!
+ * Function : GetVerseCount
+ *****************************************************************************/
+int
+TextDisplayViewWindow::GetVerseCount
+()
+{
+  int                                   verseCount;
+  sqlite3_stmt*                         sqlstmt;
+  int                                   n;
+  int                                   len;
+  QString                               query;
+  int                                   retryCount = 0;
+  
+  query = QString("SELECT COUNT(*) FROM Verses WHERE book is %1;\n").arg(bookInfo->index);
+  len = query.length();
+  
+  n = sqlite3_prepare_v2(MainDatabase, query.toStdString().c_str(), len, &sqlstmt, NULL);
+  if ( n != SQLITE_OK ) {
+    fprintf(stderr, "%s sqlite3_prepare_v2()\n%s\n%s\n",
+            __FUNCTION__,
+            query.toStdString().c_str(),
+            sqlite3_errstr(n));
+    return 0;
+  }
+  retryCount = 0;
+  verseCount = 0;
+  do {
+    n = sqlite3_step(sqlstmt);
+    if ( SQLITE_BUSY == n ) {
+      QThread::msleep(30);
+      retryCount++;
+      if ( retryCount > 10 ) {
+        break;
+      }
+      continue;
+    }
+    if ( SQLITE_DONE == n ) {
+      break;
+    }
+
+    if ( SQLITE_ROW == n ) {
+      verseCount = sqlite3_column_int(sqlstmt, 0);
+    }
+  } while (true);
+
+  sqlite3_finalize(sqlstmt);
+  return verseCount;
+}
+

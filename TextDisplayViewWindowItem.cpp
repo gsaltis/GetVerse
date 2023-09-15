@@ -155,6 +155,5 @@ TextDisplayViewWindowItem::mousePressEvent
 
   p = pos();
   y = p.y();
-  TRACE_FUNCTION_INT(y);
 }
 

@@ -66,11 +66,12 @@ class TextDisplayViewWindow : public QWidget
   void                          CreateSubWindows        ();
   void                          InitializeSubWindows    ();
   void                          resizeEvent             (QResizeEvent* InEvent);
-  void                          GetChapter              (int InChapter);
-  static int                    GetChapterCB            (void* InThisPointer, int InColumnCount, char** InColumnValues, char** InColumnNames);
+  void                          GetBook                 ();
+  static int                    GetBookCB               (void* InThisPointer, int InColumnCount, char** InColumnValues, char** InColumnNames);
   void                          AddLine                 (int InChapter, int InVerse, QString InVerseText);
   void                          ComputeSize             ();
   void                          GetMaxReferenceWidth    ();
+  int                           GetVerseCount           ();
   
  //! Private Data
  private :
@@ -87,6 +88,8 @@ class TextDisplayViewWindow : public QWidget
   QFont                         displayFont;
   int                           referenceWidth;
   int                           tableHeight;
+  int                           verseCount;
+  int                           tmpVerseCount;
   
   std::vector<TextDisplayViewWindowItem*>       items;
   
@@ -96,6 +99,10 @@ class TextDisplayViewWindow : public QWidget
 
  //! Public Signals
  signals :
+  void                          SignalHideProgressBar   (void);
+  void                          SignalShowProgressBar   (void);
+  void                          SignalSetProgressBar    (int InMin, int InMax);
+  void                          SignalUpdateProgressBar (int InValue);
 
  //! Public Actions
  public :
