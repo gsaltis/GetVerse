@@ -69,6 +69,9 @@ TextDisplayOuterWindow::CreateSubWindows()
 
   viewWindow = new TextDisplayViewScrollWindow();
   viewWindow->setParent(this);
+  
+  controlBar = new TextControlBar();
+  controlBar->setParent(this);
 }
 
 /*****************************************************************************!
@@ -80,6 +83,7 @@ TextDisplayOuterWindow::InitializeSubWindows()
   header = NULL;
   referenceWindow = NULL;
   viewWindow = NULL;
+  controlBar = NULL;
 }
 
 /*****************************************************************************!
@@ -89,6 +93,10 @@ void
 TextDisplayOuterWindow::resizeEvent
 (QResizeEvent* InEvent)
 {
+  int                                   headerH;
+  int                                   headerW;
+  int                                   headerY;
+  int                                   headerX;
   int                                   referenceWindowX;
   int                                   referenceWindowY;
   int                                   referenceWindowW;
@@ -100,25 +108,45 @@ TextDisplayOuterWindow::resizeEvent
   QSize					size;  
   int					width;
   int					height;
-
+  int                                   controlBarX;
+  int                                   controlBarY;
+  int                                   controlBarW;
+  int                                   controlBarH;
+  
   size = InEvent->size();
   width = size.width();
   height = size.height();
 
+  //!
+  headerX = 0;
+  headerY = 0;
+  headerW = width;
+  headerH = SECTION_HEADER_HEIGHT;
+  
+  //!
+  controlBarX = 0;
+  controlBarY = SECTION_HEADER_HEIGHT;
+  controlBarH = TEXT_CONTROL_BAR_HEIGHT;
+  controlBarW = width;
+
+  //!
   referenceWindowX = 0;
-  referenceWindowY = SECTION_HEADER_HEIGHT;
+  referenceWindowY = SECTION_HEADER_HEIGHT + TEXT_CONTROL_BAR_HEIGHT;
   referenceWindowW = width;
-  referenceWindowH = height;
+  referenceWindowH = height - (TEXT_CONTROL_BAR_HEIGHT + SECTION_HEADER_HEIGHT);
 
+  //!
   viewWindowX = 0;
-  viewWindowY = SECTION_HEADER_HEIGHT;
+  viewWindowY = SECTION_HEADER_HEIGHT + TEXT_CONTROL_BAR_HEIGHT;
   viewWindowW = width;
-  viewWindowH = height;
+  viewWindowH = height - (TEXT_CONTROL_BAR_HEIGHT + SECTION_HEADER_HEIGHT);
 
+  //!
   if ( header ) {
-    header->move(0, 0);
-    header->resize(width, SECTION_HEADER_HEIGHT);
+    header->move(headerX, headerY);
+    header->resize(headerW, headerH);
   }
+
   if ( referenceWindow ) {
     referenceWindow->move(referenceWindowX, referenceWindowY);
     referenceWindow->resize(referenceWindowW, referenceWindowH);
@@ -126,6 +154,10 @@ TextDisplayOuterWindow::resizeEvent
   if ( viewWindow ) {
     viewWindow->move(viewWindowX, viewWindowY);
     viewWindow->resize(viewWindowW, viewWindowH);
+  }
+  if ( controlBar ) {
+    controlBar->move(controlBarX, controlBarY);
+    controlBar->resize(controlBarW, controlBarH);
   }
 }
 
@@ -184,6 +216,14 @@ TextDisplayOuterWindow::CreateConnections(void)
           SIGNAL(SignalSetProgressBar(int, int)),
           this,
           SLOT(SlotSetProgressBar(int, int)));
+  connect(viewWindow,
+          SIGNAL(SignalWordCountChanged(int)),
+          this,
+          SLOT(SlotWordCountChanged(int)));
+  connect(this,
+          SIGNAL(SignalWordCountChanged(int)),
+          controlBar,
+          SLOT(SlotWordCountChanged(int)));
 }
 
 /*****************************************************************************!
@@ -222,4 +262,14 @@ TextDisplayOuterWindow::SlotSetProgressBar
 (int InMin, int InMax)
 {
   emit SignalSetProgressBar(InMin, InMax);
+}
+
+/*****************************************************************************!
+ * Function : SlotWordCountChanged
+ *****************************************************************************/
+void
+TextDisplayOuterWindow::SlotWordCountChanged
+(int InWordCount)
+{
+  emit SignalWordCountChanged(InWordCount);
 }

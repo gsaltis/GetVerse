@@ -55,8 +55,8 @@ TextDisplayViewWindow::initialize()
 {
   InterLineSkip = 3;
   InterWordSkip = 4;
-  rightMargin   = 10;
-  leftMargin    = 30;
+  rightMargin   = 30;
+  leftMargin    = 10;
   bottomMargin  = 10;
   topMargin     = 10;
   tableHeight   = 0;
@@ -178,7 +178,6 @@ TextDisplayViewWindow::GetMaxReferenceWidth
   QString                               reference;
   int                                   verse;
   int                                   chapter;
-  QString                               bookName;
   int                                   width;
   int                                   retryCount;
   sqlite3_stmt*                         sqlstmt;
@@ -201,7 +200,6 @@ TextDisplayViewWindow::GetMaxReferenceWidth
     return;
   }
 
-  bookName = bookInfo->GetCapitalizedBookName();
   retryCount = 0;
   do {
     n = sqlite3_step(sqlstmt);
@@ -220,7 +218,7 @@ TextDisplayViewWindow::GetMaxReferenceWidth
     if ( SQLITE_ROW == n ) {
       chapter = sqlite3_column_int(sqlstmt, 0);
       verse = sqlite3_column_int(sqlstmt, 1);
-      reference = QString("%1 %2:%3").arg(bookName).arg(chapter).arg(verse);
+      reference = QString("%2:%3").arg(chapter).arg(verse);
       s2 = fm.size(0, reference);
       width = s2.width();
       if ( referenceWidth < width ) {
@@ -242,6 +240,7 @@ TextDisplayViewWindow::GetBook
   int                                   n;
   QString                               sqlstmt;
 
+  wordCount = 0;
   sqlstmt = QString("SELECT * from Verses where book is %1;\n").arg(bookInfo->index);
   tmpVerseCount = 0;
   n = sqlite3_exec(MainDatabase, sqlstmt.toStdString().c_str(), GetBookCB, this, NULL);
@@ -251,6 +250,7 @@ TextDisplayViewWindow::GetBook
             sqlite3_errstr(n));
     return;
   }
+  emit SignalWordCountChanged(wordCount);
   ComputeSize();
 }
 
@@ -323,8 +323,7 @@ TextDisplayViewWindow::AddLine
   s3 = size();
   width = s3.width();
 
-  reference = QString("%1 %2:%3").
-    arg(bookInfo->GetCapitalizedBookName()).
+  reference = QString("%2:%3").
     arg(InChapter).
     arg(InVerse);
   
@@ -340,6 +339,7 @@ TextDisplayViewWindow::AddLine
   n = words.size();
   ritem->SetWordCount(n);
   items.push_back(ritem);
+  wordCount += n;
   for (i = 0; i < n; i++) {
     word = words[i];
     s2 = fm.size(0, word);

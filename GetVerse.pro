@@ -26,6 +26,8 @@ QMAKE_TARGET_COPYRIGHT          = "Copyright (C) 2023 Greg Saltis"
 
 QT                              += core gui widgets svg svgwidgets
 
+RESOURCES                       += GetVerse.qrc
+
 DEFINES                         += \
 
 SOURCES                         += \
@@ -41,6 +43,7 @@ SOURCES                         += \
 				   MainWindow.cpp                               \
 				   SectionHeader.cpp                            \
 				   SystemConfig.cpp                             \
+                                   TextControlBar.cpp                           \
 				   TextDisplayOuterWindow.cpp                   \
 				   TextDisplayReferenceWindow.cpp               \
 				   TextDisplayViewScrollWindow.cpp              \
@@ -63,6 +66,7 @@ HEADERS                         += \
 				   MainWindow.h                                 \
 				   SectionHeader.h                              \
 				   SystemConfig.h                               \
+                                   TextControlBar.h                             \
 				   TextDisplayOuterWindow.h                     \
 				   TextDisplayReferenceWindow.h                 \
 				   TextDisplayViewScrollWindow.h                \

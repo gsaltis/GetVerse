@@ -23,6 +23,7 @@
 #include "BookInfo.h"
 #include "TextDisplayViewWindow.h"
 #include "TextDisplayViewScrollWindow.h"
+#include "TextControlBar.h"
 
 /*****************************************************************************!
  * Exported Macros
@@ -72,6 +73,7 @@ class TextDisplayOuterWindow : public QFrame
   SectionHeader*                header;
   TextDisplayReferenceWindow*   referenceWindow;
   TextDisplayViewScrollWindow*  viewWindow;
+  TextControlBar*               controlBar;
 
  //! Public Slots
  public slots :
@@ -80,6 +82,7 @@ class TextDisplayOuterWindow : public QFrame
   void                          SlotHideProgressBar     (void);
   void                          SlotUpdateProgressBar   (int InValue);
   void                          SlotSetProgressBar      (int InMin, int InMax);
+  void                          SlotWordCountChanged    (int InWordCount);
 
  //! Public Signals
  signals :
@@ -88,6 +91,7 @@ class TextDisplayOuterWindow : public QFrame
   void                          SignalShowProgressBar   (void);
   void                          SignalSetProgressBar    (int InMin, int InMax);
   void                          SignalUpdateProgressBar (int InValue);
+  void                          SignalWordCountChanged  (int InWordCount);
   
  //! Public Actions
  public :

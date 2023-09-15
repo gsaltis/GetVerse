@@ -90,6 +90,7 @@ class TextDisplayViewWindow : public QWidget
   int                           tableHeight;
   int                           verseCount;
   int                           tmpVerseCount;
+  int                           wordCount;
   
   std::vector<TextDisplayViewWindowItem*>       items;
   
@@ -103,6 +104,7 @@ class TextDisplayViewWindow : public QWidget
   void                          SignalShowProgressBar   (void);
   void                          SignalSetProgressBar    (int InMin, int InMax);
   void                          SignalUpdateProgressBar (int InValue);
+  void                          SignalWordCountChanged  (int InWordCount);
 
  //! Public Actions
  public :

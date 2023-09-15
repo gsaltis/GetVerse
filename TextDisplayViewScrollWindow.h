@@ -75,6 +75,7 @@ class TextDisplayViewScrollWindow : public QScrollArea
   void                          SlotShowProgressBar     (void);
   void                          SlotUpdateProgressBar   (int InValue);
   void                          SlotSetProgressBar      (int InMin, int InMax);
+  void                          SlotWordCountChanged    (int InWordCount);
 
  //! Public Signals
  signals :
@@ -83,6 +84,7 @@ class TextDisplayViewScrollWindow : public QScrollArea
   void                          SignalShowProgressBar   (void);
   void                          SignalSetProgressBar    (int InMin, int InMax);
   void                          SignalUpdateProgressBar (int InValue);
+  void                          SignalWordCountChanged  (int InWordCount);
 
  //! Public Actions
  public :

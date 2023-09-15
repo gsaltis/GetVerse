@@ -141,6 +141,10 @@ TextDisplayViewScrollWindow::CreateConnections(void)
           SIGNAL(SignalUpdateProgressBar(int)),
           this,
           SLOT(SlotUpdateProgressBar(int)));
+  connect(viewWindow,
+          SIGNAL(SignalWordCountChanged(int)),
+          this,
+          SLOT(SlotWordCountChanged(int)));
 }
 
 /*****************************************************************************!
@@ -179,4 +183,14 @@ TextDisplayViewScrollWindow::SlotSetProgressBar
 (int InMin, int InMax)
 {
   emit SignalSetProgressBar(InMin, InMax);
+}
+
+/*****************************************************************************!
+ * Function : SlotWordCountChanged
+ *****************************************************************************/
+void
+TextDisplayViewScrollWindow::SlotWordCountChanged
+(int InWordCount)
+{
+  emit SignalWordCountChanged(InWordCount);
 }
