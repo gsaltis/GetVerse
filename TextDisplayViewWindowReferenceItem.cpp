@@ -21,7 +21,7 @@
  * Function : TextDisplayViewWindowReferenceItem
  *****************************************************************************/
 TextDisplayViewWindowReferenceItem::TextDisplayViewWindowReferenceItem
-(QString InText, int InX, int InY, QSize InSize) :
+(QString InText, int InBookIndex, int InChapter, int InVerse, int InX, int InY, QSize InSize) :
   TextDisplayViewWindowItem(InText, InX, InY, InSize)
 {
   QPalette pal;
@@ -31,6 +31,11 @@ TextDisplayViewWindowReferenceItem::TextDisplayViewWindowReferenceItem
   setAutoFillBackground(true);
   setCursor(Qt::PointingHandCursor);
   setAlignment(Qt::AlignRight);
+
+  BookIndex = InBookIndex;
+  Chapter = InChapter;
+  Verse = InVerse;
+
   initialize();
 }
 
@@ -135,3 +140,34 @@ TextDisplayViewWindowReferenceItem::SetWordCount
 {
   WordCount = InWordCount;  
 }
+
+/*****************************************************************************!
+ * Function : GetBookIndex
+ *****************************************************************************/
+int
+TextDisplayViewWindowReferenceItem::GetBookIndex
+()
+{
+  return BookIndex;
+}
+
+/*****************************************************************************!
+ * Function : GetChapter
+ *****************************************************************************/
+int
+TextDisplayViewWindowReferenceItem::GetChapter
+()
+{
+  return Chapter;
+}
+
+/*****************************************************************************!
+ * Function : GetVerse
+ *****************************************************************************/
+int
+TextDisplayViewWindowReferenceItem::GetVerse
+()
+{
+  return Verse;
+}
+

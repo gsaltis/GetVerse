@@ -96,7 +96,9 @@ TextDisplayViewWindow::ArrangeElements
     return ArrangeElementsReference(InWidth);
   }
   if ( mode == BlockMode ) {
-    return ArrangeElementsBlock(InWidth);
+    int i =  ArrangeElementsBlock(InWidth);
+    TRACE_FUNCTION_INT(i);
+    return i;
   }
 
   if ( mode == SentenceMode ) {
@@ -112,8 +114,68 @@ int
 TextDisplayViewWindow::ArrangeElementsBlock
 (int InWidth)
 {
-  (void)InWidth;
-  return 0;
+  int                                   formatType;
+  QString                               ending;
+  QString                               itemText;
+  int                                   i;
+  TextDisplayViewWindowItem*            item;
+  int                                   itemHeight;
+  int                                   itemWidth;
+  int                                   n;
+  TextDisplayViewWindowReferenceItem*   ritem;
+  QSize                                 s2;
+  int                                   textY;
+  int                                   verseX;
+  int                                   x;
+
+  tmpSentenceCount = 0;
+  textY = topMargin;
+  n = items.size();
+  verseX = leftMargin;
+  x = verseX;
+  //!
+  for (i = 0; i < n; i++) {
+    ritem = (TextDisplayViewWindowReferenceItem*)items[i];
+    ritem->hide();
+    i++;
+#if 0
+    formatType = GetFormattingByReference(ritem->GetBookIndex(), ritem->GetChapter(), ritem->GetVerse());
+    printf("%d %d %d %d\n", ritem->GetBookIndex(), ritem->GetChapter(), ritem->GetVerse(), formatType);
+#endif    
+    while (true) {
+      item = items[i];
+      s2 = item->size();
+      itemWidth = s2.width();
+      itemHeight = s2.height();
+
+      if ( x + itemWidth + rightMargin > InWidth ) {
+        textY += itemHeight + InterLineSkip;
+        x = verseX;
+      }
+      item->move(x, textY);
+      x += itemWidth + InterWordSkip;
+      itemText = item->text();
+      ending = itemText.right(1);
+#if 0
+      if ( ending == "'" || ending == "`" || ending == "]" || ending == ")" ) {
+        int                             k;
+        k = itemText.length() - 2;
+        ending = itemText.sliced(k, 1);
+      }
+      if ( ending == "." || ending == "?" || ending == "!" ) {
+        tmpSentenceCount ++;
+        textY += itemHeight + InterLineSkip;
+        x = verseX;
+      }
+#endif      
+      if ( item->GetLinePosition() == TextDisplayViewWindowItem::LinePositionEOL ) {
+        break;
+      }
+      i++;
+    } 
+  }
+  ComputeSize();
+  return tableHeight;
 }
 
 /*****************************************************************************!
@@ -432,7 +494,7 @@ TextDisplayViewWindow::AddLine
   s2 = fm.size(0, reference);
 
   s3 = QSize(referenceWidth, s2.height());
-  ritem = new TextDisplayViewWindowReferenceItem(reference, x, textY, s3);
+  ritem = new TextDisplayViewWindowReferenceItem(reference, bookInfo->index, InChapter, InVerse, x, textY, s3);
   ritem->setParent(this);
   x += referenceWidth + InterWordSkip;
   ritem->show();
@@ -506,6 +568,7 @@ TextDisplayViewWindow::ComputeSize
   width = size().width();
   resize(width, height);
   tableHeight = height + topMargin  + bottomMargin;
+  TRACE_FUNCTION_INT(tableHeight);
 }
 
 /*****************************************************************************!
@@ -596,4 +659,54 @@ TextDisplayViewWindow::SlotSetReferenceMode(void)
 {
   mode = ReferenceMode;
   ArrangeElements(size().width());
+}
+
+/*****************************************************************************!
+ * Function : GetFormattingByReference
+ *****************************************************************************/
+int
+TextDisplayViewWindow::GetFormattingByReference
+(int InBook, int InChapter, int InVerse)
+{
+  int                                   type;
+  int                                   n;
+  int                                   retryCount;
+  sqlite3_stmt*                         statement;
+  QString                               query;
+  
+  query = QString("SELECT type FROM Formatting WHERE book is %1 and chapter is %2 and verse is %3;\n").
+    arg(InBook).arg(InChapter).arg(InVerse);
+
+  n = sqlite3_prepare_v2(MainDatabase, query.toStdString().c_str(),
+                         query.length(), &statement, NULL);
+  if ( n != SQLITE_OK ) {
+    fprintf(stderr, "sqlite3_prepare_v2() %s failed\n  %s\n  %s\n",
+            __FUNCTION__,
+            query.toStdString().c_str(),
+            sqlite3_errstr(n));
+    return 0;
+  }
+  type = 0;
+  retryCount = 0;
+  do {
+    n = sqlite3_step(statement);
+    if ( SQLITE_BUSY == n ) {
+      QThread::msleep(30);
+      retryCount++;
+      if ( retryCount > 10 ) {
+        break;
+      }
+      continue;
+    }
+    if ( SQLITE_DONE == n ) {
+      break;
+    }
+
+    if ( SQLITE_ROW == n ) {
+      type = sqlite3_column_int(statement, 0);
+      break;
+    }
+  } while (true);
+  sqlite3_finalize(statement);
+  return type;
 }

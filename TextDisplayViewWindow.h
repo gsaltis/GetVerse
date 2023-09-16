@@ -84,7 +84,7 @@ class TextDisplayViewWindow : public QWidget
   int                           ArrangeElementsSentence (int InWidth);
   int                           ArrangeElementsReference(int InWidth);
   int                           ArrangeElementsBlock    (int InWidth);
-  
+  int                           GetFormattingByReference(int InBook, int InChapter, int InVerse);
   
  //! Private Data
  private :

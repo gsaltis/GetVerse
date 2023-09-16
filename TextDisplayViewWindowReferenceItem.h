@@ -36,7 +36,8 @@ class TextDisplayViewWindowReferenceItem : public TextDisplayViewWindowItem
 
  //! Constructors
  public :
-  TextDisplayViewWindowReferenceItem (QString InText, int InX, int InY, QSize InSize);
+  TextDisplayViewWindowReferenceItem (QString InText, int InBookIndex, int InChapter, int InVerse,
+                                      int InX, int InY, QSize InSize);
 
  //! Destructor
  public :
@@ -46,6 +47,9 @@ class TextDisplayViewWindowReferenceItem : public TextDisplayViewWindowItem
  public :
   int                           GetWordCount            (void);
   void                          SetWordCount            (int InWordCount);
+  int                           GetVerse                ();
+  int                           GetChapter              ();
+  int                           GetBookIndex            ();
 
  //! Public Data
  public :
@@ -70,7 +74,10 @@ class TextDisplayViewWindowReferenceItem : public TextDisplayViewWindowItem
  //! Private Data
  private :
   int                           WordCount;
-
+  int                           BookIndex;
+  int                           Chapter;
+  int                           Verse;
+  
  //! Public Slots
  public slots :
 
