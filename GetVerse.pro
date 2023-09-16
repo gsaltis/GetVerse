@@ -43,8 +43,10 @@ SOURCES                         += \
 				   MainWindow.cpp                               \
 				   SectionHeader.cpp                            \
 				   SystemConfig.cpp                             \
-                                   TextControlBar.cpp                           \
+				   TextControlBar.cpp                           \
+				   TextDisplayItem.cpp                          \
 				   TextDisplayOuterWindow.cpp                   \
+				   TextDisplayReferenceItem.cpp                 \
 				   TextDisplayReferenceWindow.cpp               \
 				   TextDisplayViewScrollWindow.cpp              \
 				   TextDisplayViewWindow.cpp                    \
@@ -66,9 +68,11 @@ HEADERS                         += \
 				   MainWindow.h                                 \
 				   SectionHeader.h                              \
 				   SystemConfig.h                               \
-                                   TextControlBar.h                             \
+				   TextControlBar.h                             \
+				   TextDisplayItem.h                            \
 				   TextDisplayOuterWindow.h                     \
 				   TextDisplayReferenceWindow.h                 \
+				   TextDisplayReferenceItem.h                   \
 				   TextDisplayViewScrollWindow.h                \
 				   TextDisplayViewWindow.h                      \
 				   TextDisplayViewWindowItem.h                  \

@@ -23,6 +23,7 @@
 #include "Trace.h"
 #include "TextDisplayViewWindowItem.h"
 #include "TextDisplayViewWindowReferenceItem.h"
+#include "TextDisplayReferenceItem.h"
 
 /*****************************************************************************!
  * Function : TextDisplayViewWindow
@@ -37,6 +38,8 @@ TextDisplayViewWindow::TextDisplayViewWindow
   setAutoFillBackground(true);
   initialize();
   setFont(displayFont);
+  setMouseTracking(true);
+  lastSelectedItem = NULL;
 }
 
 /*****************************************************************************!
@@ -97,7 +100,6 @@ TextDisplayViewWindow::ArrangeElements
   }
   if ( mode == BlockMode ) {
     int i =  ArrangeElementsBlock(InWidth);
-    TRACE_FUNCTION_INT(i);
     return i;
   }
 
@@ -114,7 +116,6 @@ int
 TextDisplayViewWindow::ArrangeElementsBlock
 (int InWidth)
 {
-  int                                   formatType;
   QString                               ending;
   QString                               itemText;
   int                                   i;
@@ -303,16 +304,6 @@ TextDisplayViewWindow::ArrangeElementsReference
 }
   
 /*****************************************************************************!
- * Function : resizeEvent
- *****************************************************************************/
-void
-TextDisplayViewWindow::resizeEvent
-(QResizeEvent* InEvent)
-{
-  (void)InEvent;
-}
-
-/*****************************************************************************!
  * Function : SlotBookSelected
  *****************************************************************************/
 void
@@ -326,6 +317,7 @@ TextDisplayViewWindow::SlotBookSelected
   GetMaxReferenceWidth();
   GetBook();
   ComputeSize();
+  repaint();
   emit SignalHideProgressBar();
 }
 
@@ -402,7 +394,9 @@ TextDisplayViewWindow::GetBook
   int                                   n;
   QString                               sqlstmt;
 
+  tmpVerseCount = 0;
   wordCount = 0;
+  ClearText();
   sqlstmt = QString("SELECT * from Verses where book is %1;\n").arg(bookInfo->index);
   tmpVerseCount = 0;
   tmpSentenceCount = 0;
@@ -416,6 +410,7 @@ TextDisplayViewWindow::GetBook
   ArrangeElements(size().width());
   emit SignalWordCountChanged(wordCount);
   ComputeSize();
+  repaint();
 }
 
 /*****************************************************************************!
@@ -459,8 +454,41 @@ TextDisplayViewWindow::GetBookCB
     }
   }
 
-  window->AddLine(chapter, verse, verseText);
+  window->AddLineText(chapter, verse, verseText);
   return 0;
+}
+
+/*****************************************************************************!
+ * Function : AddLineText
+ *****************************************************************************/
+void
+TextDisplayViewWindow::AddLineText
+(int InChapter, int InVerse, QString InVerseText)
+{
+  int                                   i;
+  int                                   n;
+  QStringList                           words;
+  TextDisplayItem*                      item;
+  TextDisplayReferenceItem*             refItem;
+  QString                               referenceText;
+
+  refItem = new TextDisplayReferenceItem(bookInfo->index,
+                                         bookInfo->GetCapitalizedBookName(),
+                                         InChapter, InVerse);
+  refItem->SetFont(displayFont);
+  refItem->SetSize(QSize(referenceWidth, refItem->GetSize().height()));
+  textItems.push_back(refItem);
+  words = InVerseText.split(" ");
+  n = words.size();
+
+  for ( i = 0; i < n; i++ ) {
+    item = new TextDisplayItem(bookInfo->index, InChapter, InVerse, words[i]);
+    item->SetFont(displayFont);
+    textItems.push_back(item);
+    tmpVerseCount++;
+    emit SignalUpdateProgressBar(tmpVerseCount);
+    QCoreApplication::processEvents();
+  }    
 }
 
 /*****************************************************************************!
@@ -495,7 +523,7 @@ TextDisplayViewWindow::AddLine
 
   s3 = QSize(referenceWidth, s2.height());
   ritem = new TextDisplayViewWindowReferenceItem(reference, bookInfo->index, InChapter, InVerse, x, textY, s3);
-  ritem->setParent(this);
+  // ritem->setParent(this);
   x += referenceWidth + InterWordSkip;
   ritem->show();
   verseX = x;
@@ -513,7 +541,7 @@ TextDisplayViewWindow::AddLine
       x = verseX;
     }
     item = new TextDisplayViewWindowItem(word, x, textY, s2);
-    item->setParent(this);
+    // item->setParent(this);
     x += s2.width() + InterWordSkip;
     item->show();
     if ( i + 1 == n ) {
@@ -539,6 +567,7 @@ TextDisplayViewWindow::ClearText
     delete w;
   }
   items.clear();
+  textItems.clear();
   textY = topMargin;
 }
 
@@ -566,9 +595,9 @@ TextDisplayViewWindow::ComputeSize
     }
   }
   width = size().width();
+  height = 30000;
   resize(width, height);
   tableHeight = height + topMargin  + bottomMargin;
-  TRACE_FUNCTION_INT(tableHeight);
 }
 
 /*****************************************************************************!
@@ -709,4 +738,101 @@ TextDisplayViewWindow::GetFormattingByReference
   } while (true);
   sqlite3_finalize(statement);
   return type;
+}
+
+/*****************************************************************************!
+ * Function : resizeEvent
+ *****************************************************************************/
+void
+TextDisplayViewWindow::resizeEvent
+(QResizeEvent* InEvent)
+{
+  (void)InEvent;
+}
+
+/*****************************************************************************!
+ * Function : paintEvent
+ *****************************************************************************/
+void
+TextDisplayViewWindow::paintEvent
+(QPaintEvent* InEvent)
+{
+  QRect                                 itemR;
+  int                                   itemWidth;
+  int                                   windowWidth;
+  QSize                                 s;
+  int                                   x;
+  int                                   y;
+  QPainter                              painter(this);
+  bool                                  isFirst;
+  QRect                                 r;
+  QPoint                                topLeft;
+  QPoint                                bottomRight;
+  
+  r = InEvent->rect();
+  topLeft = r.topLeft();
+  bottomRight = r.bottomRight();
+
+  x = leftMargin;
+  y = topMargin;
+
+  windowWidth = size().width() - (leftMargin + rightMargin);
+
+  do {
+    isFirst = true;
+    for ( auto item : textItems ) {
+      s = item->GetSize();
+      itemWidth = s.width();
+      
+      if ( !isFirst && item->GetType() == TextDisplayItem::ReferenceType ) {
+        x = leftMargin;
+        y += InterLineSkip + item->GetSize().height();
+      }
+      if ( itemWidth + x >= windowWidth ) {
+        x = leftMargin + referenceWidth + InterWordSkip;
+        y += InterLineSkip + item->GetSize().height();
+      }
+      isFirst = false;
+      item->SetLocation(QPoint(x, y));
+      itemR = QRect(QPoint(x, y), s);
+      if ( r.contains(itemR) ) {
+        if ( lastSelectedItem == item ) {
+          item->DrawSelected(&painter);
+        } else {
+          item->Draw(&painter);
+        }
+      }
+      x += s.width() + InterWordSkip;
+    }
+  } while (false);
+  painter.end();
+}
+
+/*****************************************************************************!
+ * Function : mouseMoveEvent
+ *****************************************************************************/
+void
+TextDisplayViewWindow::mouseMoveEvent
+(QMouseEvent* InEvent)
+{
+  QString                               text;
+  QPoint                                p = InEvent->position().toPoint();
+
+  if ( lastSelectedItem && lastSelectedItem->Contains(p) ) {
+    return;
+  }
+  lastSelectedItem = NULL;
+  for ( auto item : textItems ) {
+    if ( item->Contains(p) ) {
+      if ( item->GetType() == TextDisplayItem::ReferenceType ) {
+        continue;
+      }
+      text = item->GetText();
+      if ( item != lastSelectedItem ) {
+        lastSelectedItem = item;
+        break;
+      }
+    }
+  }
+  repaint();
 }

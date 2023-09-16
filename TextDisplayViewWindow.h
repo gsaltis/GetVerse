@@ -21,6 +21,7 @@
  *****************************************************************************/
 #include "BookInfo.h"
 #include "TextDisplayViewWindowItem.h"
+#include "TextDisplayItem.h"
 
 /*****************************************************************************!
  * Exported Macros
@@ -75,9 +76,12 @@ class TextDisplayViewWindow : public QWidget
   void                          CreateSubWindows        ();
   void                          InitializeSubWindows    ();
   void                          resizeEvent             (QResizeEvent* InEvent);
+  void                          paintEvent              (QPaintEvent* InEvent);
+  void                          mouseMoveEvent          (QMouseEvent* InEvent);
   void                          GetBook                 ();
   static int                    GetBookCB               (void* InThisPointer, int InColumnCount, char** InColumnValues, char** InColumnNames);
   void                          AddLine                 (int InChapter, int InVerse, QString InVerseText);
+  void                          AddLineText             (int InChapter, int InVerse, QString InVerseText);
   void                          ComputeSize             ();
   void                          GetMaxReferenceWidth    ();
   int                           GetVerseCount           ();
@@ -106,8 +110,12 @@ class TextDisplayViewWindow : public QWidget
   int                           tmpSentenceCount;
   int                           wordCount;
   DisplayMode                   mode;
+  TextDisplayItem*              lastSelectedItem;
+  bool                          repaintOnlySelected;
+  
   
   std::vector<TextDisplayViewWindowItem*>       items;
+  std::vector<TextDisplayItem*> textItems;
   
  //! Public Slots
  public slots :
