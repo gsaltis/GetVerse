@@ -57,7 +57,7 @@ void
 TextDisplayViewWindow::initialize()
 {
   InterLineSkip = 3;
-  InterParagraphSkip = 30;
+  InterParagraphSkip = 10;
   InterWordSkip = 4;
   rightMargin   = 30;
   leftMargin    = 10;
@@ -200,10 +200,69 @@ int
 TextDisplayViewWindow::ArrangeItemsBlock
 (int InX, int InY, int InWindowWidth)
 {
-  (void)InX;
-  (void)InY;
-  (void)InWindowWidth;
-  return 0;
+  TextDisplayReferenceItem*             referenceItem;
+  bool                                  breakAfter;
+  int                                   formatting;
+  int                                   verse;
+  int                                   chapter;
+  int                                   book;
+  QString                               ending;
+  int                                   itemHeight;
+  QString                               itemText;
+  int                                   itemWidth;
+  QSize                                 s;
+  int                                   windowHeight;
+  int                                   x;
+  int                                   y;
+  
+  x             = InX;
+  y             = InY;
+  windowHeight  = 0;
+
+  breakAfter = false;
+  do {
+    for ( auto item : textItems ) {
+      s = item->GetSize();
+      itemWidth = s.width();
+      itemHeight = s.height();
+      itemText = item->GetText();
+      ending = itemText.right(1);
+      
+      if ( item->GetType() == TextDisplayItem::ReferenceType ) {
+        if ( breakAfter ) {
+          x = leftMargin;
+          y += itemHeight + InterParagraphSkip;
+          windowHeight = y + itemHeight;
+          breakAfter = false;
+        }
+        referenceItem = (TextDisplayReferenceItem*)item;
+        verse = referenceItem->GetVerse();
+        chapter = referenceItem->GetChapter();
+        book = bookInfo->index;
+        formatting = GetFormattingByReference(book, chapter, verse);
+        if ( formatting == 1 ) {
+          breakAfter = true;
+          continue;
+        }
+        if ( formatting == 2 ) {
+          x = leftMargin;
+          y += itemHeight + InterParagraphSkip;
+          windowHeight = y + itemHeight;
+          continue;
+        }
+        continue;
+      }
+      if ( itemWidth + x >= InWindowWidth ) {
+        x = leftMargin;
+        y += itemHeight;
+        windowHeight = y + itemHeight;
+      }
+      item->SetLocation(QPoint(x, y));
+      x += s.width() + InterWordSkip;
+    }
+  } while (false);
+  windowHeight += bottomMargin;
+  return windowHeight;
 }
 
 /*****************************************************************************!
@@ -253,11 +312,11 @@ TextDisplayViewWindow::ArrangeItemsSentence
         tmpSentenceCount ++;
         y += itemHeight + InterLineSkip * 2;
         x = leftMargin;
+        windowHeight = y + itemHeight;
       }
     }
   } while (false);
   windowHeight += bottomMargin;
-  TRACE_FUNCTION_INT(windowHeight);
   return windowHeight;
 }
 
@@ -685,7 +744,6 @@ TextDisplayViewWindow::PaintSentenceMode
 (QPainter* InPainter, QRect InRect)
 {
   QRect                                 itemR;
-
   
   for ( auto item : textItems ) {
     if ( item->GetType() == TextDisplayItem::ReferenceType ) {
@@ -709,68 +767,21 @@ void
 TextDisplayViewWindow::PaintBlockMode
 (QPainter* InPainter, QRect InRect)
 {
-  (void)InPainter;
-  (void)InRect;
-#if 0  
-  int                                   itemHeight;
-  QString                               itemText;
-  QString                               ending;
   QRect                                 itemR;
-  int                                   itemWidth;
-  int                                   windowWidth;
-  QSize                                 s;
-  int                                   x;
-  int                                   y;
-  QPainter                              painter(this);
-  QRect                                 r;
-  QPoint                                topLeft;
-  QPoint                                bottomRight;
-  int                                   formatType;
   
-  r = InEvent->rect();
-  topLeft = r.topLeft();
-  bottomRight = r.bottomRight();
-
-  x = leftMargin;
-  y = topMargin;
-
-  //!
-  windowWidth = size().width() - (leftMargin + rightMargin);
-  do {
-    for ( auto item : textItems ) {
-      s = item->GetSize();
-      itemWidth = s.width();
-      itemHeight = s.height();      
-      
-      if ( item->GetType() == TextDisplayItem::ReferenceType ) {
-        formatType = GetFormattingByReference(item->GetBook(), item->GetChapter(), item->GetVerse());
-        if ( formatType == 1 ) {
-          x = leftMargin;
-          y += InterParagraphSkip + itemHeight;
-        }
-        continue;
+  for ( auto item : textItems ) {
+    if ( item->GetType() == TextDisplayItem::ReferenceType ) {
+      continue;
+    }
+    itemR = QRect(item->GetBoundingRect());
+    if ( InRect.contains(itemR) ) {
+      if ( lastSelectedItem == item ) {
+        item->DrawSelected(InPainter);
+      } else {
+        item->Draw(InPainter);
       }
-      itemText = item->GetText();
-      ending = itemText.right(1);
-      if ( itemWidth + x >= windowWidth ) {
-        x = leftMargin;
-        y += InterLineSkip + itemHeight;
-      }
-      item->SetLocation(QPoint(x, y));
-      itemR = QRect(QPoint(x, y), s);
-      if ( r.contains(itemR) ) {
-        if ( lastSelectedItem == item ) {
-          item->DrawSelected(&painter);
-        } else {
-          item->Draw(&painter);
-        }
-      }
-      x += s.width() + InterWordSkip;
     }
   } while (false);
-  painter.end();
-#endif
-  (void)InPainter;
 }
 
 /*****************************************************************************!
