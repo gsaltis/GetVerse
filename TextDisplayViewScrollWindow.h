@@ -67,7 +67,8 @@ class TextDisplayViewScrollWindow : public QScrollArea
  //! Private Data
  private :
   TextDisplayViewWindow*        viewWindow;
-
+  QScrollBar*                   verticalBar;
+  
  //! Public Slots
  public slots :
   void                          SlotBookSelected                (BookInfo* InBookInfo);
@@ -81,7 +82,8 @@ class TextDisplayViewScrollWindow : public QScrollArea
   void                          SlotSetReferenceMode            (void);
   void                          SlotVerseCountChanged           (int InVerseCount);
   void                          SlotSentenceCountChanged        (int InVerseCount);
-
+  void                          SlotVerticalScrolled            (int InScrollAmount);
+  
  //! Public Signals
  signals :
   void                          SignalBookSelected              (BookInfo* InBookInfo);
@@ -95,7 +97,8 @@ class TextDisplayViewScrollWindow : public QScrollArea
   void                          SignalSetBlockMode              (void);
   void                          SignalVerseCountChanged         (int InVerseCount);
   void                          SignalSentenceCountChanged      (int InVerseCount);
-
+  void                          SignalVerticalScrolled          ();
+  
  //! Public Actions
  public :
 

@@ -46,6 +46,7 @@ TextDisplayViewScrollWindow::~TextDisplayViewScrollWindow
 void
 TextDisplayViewScrollWindow::initialize()
 {
+  verticalBar = verticalScrollBar();
   InitializeSubWindows();  
   CreateSubWindows();
   CreateConnections();
@@ -83,7 +84,7 @@ TextDisplayViewScrollWindow::resizeEvent
 
   size = InEvent->size();
   width = size.width();
-  viewWindowH = viewWindow->ArrangeElements(width);
+  viewWindowH = viewWindow->GetTableHeight();
   if ( viewWindow ) {
     viewWindow->resize(width, viewWindowH);
   }
@@ -169,6 +170,16 @@ TextDisplayViewScrollWindow::CreateConnections(void)
           SIGNAL(SignalSetBlockMode()),
           viewWindow,
           SLOT(SlotSetBlockMode()));
+
+  connect(verticalBar,
+          SIGNAL(valueChanged(int)),
+          this,
+          SLOT(SlotVerticalScrolled(int)));
+
+  connect(this,
+          SIGNAL(SignalVerticalScrolled()),
+          viewWindow,
+          SLOT(SlotVerticalScrolled()));
 }
 
 /*****************************************************************************!
@@ -265,3 +276,14 @@ TextDisplayViewScrollWindow::SlotSentenceCountChanged
 {
   emit SignalSentenceCountChanged(InSentenceCount);
 }
+
+/*****************************************************************************!
+ * Function : SlotVerticalScrolled
+ *****************************************************************************/
+void
+TextDisplayViewScrollWindow::SlotVerticalScrolled
+(int)
+{
+  emit SignalVerticalScrolled();
+}
+

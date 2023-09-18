@@ -162,7 +162,7 @@ TextDisplayItem::DrawSelected
   t = r.top() + 0;
 
   r2 = QRect(QPoint(l, t), QSize(w, h));
-  InPainter->drawRoundedRect(r2, 3, 3);
+  InPainter->drawRoundedRect(r2, 20, 20);
   
   InPainter->setPen(QPen(QColor(128, 0, 0)));
   InPainter->drawText(QPoint(Location.x(), Location.y() + Size.height()), Text);
