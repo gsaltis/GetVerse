@@ -64,7 +64,7 @@ TextDisplayViewWindow::initialize()
   bottomMargin  = 10;
   topMargin     = 10;
   tableSize     = QSize();
-
+  sentenceIndent = 30;
   mode = ReferenceMode;
   displayFont = QFont("Arial", 11, QFont::Normal);
   InitializeSubWindows();  
@@ -203,7 +203,6 @@ TextDisplayViewWindow::ArrangeItemsBlock
   (void)InX;
   (void)InY;
   (void)InWindowWidth;
-
   return 0;
 }
 
@@ -214,10 +213,52 @@ int
 TextDisplayViewWindow::ArrangeItemsSentence
 (int InX, int InY, int InWindowWidth)
 {
-  (void)InX;
-  (void)InY;
-  (void)InWindowWidth;
-  return 0;
+  QString                               ending;
+  int                                   itemHeight;
+  QString                               itemText;
+  int                                   itemWidth;
+  int                                   k;
+  QSize                                 s;
+  int                                   windowHeight;
+  int                                   x;
+  int                                   y;
+  
+  x             = InX;
+  y             = InY;
+  windowHeight  = 0;
+  
+  do {
+    for ( auto item : textItems ) {
+      s = item->GetSize();
+      itemWidth = s.width();
+      itemHeight = s.height();
+      itemText = item->GetText();
+      ending = itemText.right(1);
+      
+      if ( item->GetType() == TextDisplayItem::ReferenceType ) {
+        continue;
+      }
+      if ( itemWidth + x >= InWindowWidth ) {
+        x = leftMargin + sentenceIndent;
+        y += itemHeight;
+        windowHeight = y + itemHeight;
+      }
+      item->SetLocation(QPoint(x, y));
+      x += s.width() + InterWordSkip;
+      if ( ending == "'" || ending == "`" || ending == "]" || ending == ")" ) {
+        k = itemText.length() - 2;
+        ending = itemText.sliced(k, 1);
+      }
+      if ( ending == "." || ending == "?" || ending == "!" ) {
+        tmpSentenceCount ++;
+        y += itemHeight + InterLineSkip * 2;
+        x = leftMargin;
+      }
+    }
+  } while (false);
+  windowHeight += bottomMargin;
+  TRACE_FUNCTION_INT(windowHeight);
+  return windowHeight;
 }
 
 /*****************************************************************************!
@@ -494,7 +535,8 @@ TextDisplayViewWindow::GetVerseCount
 void
 TextDisplayViewWindow::SlotSetSentenceMode(void)
 {
-  mode = SentenceMode;  
+  mode = SentenceMode;
+  ArrangeItems();
   repaint();
 }
 
@@ -505,6 +547,7 @@ void
 TextDisplayViewWindow::SlotSetBlockMode(void)
 {
   mode = BlockMode;
+  ArrangeItems();
   repaint();
 }
 
@@ -515,6 +558,7 @@ void
 TextDisplayViewWindow::SlotSetReferenceMode(void)
 {
   mode = ReferenceMode;
+  ArrangeItems();
   repaint();
 }
 
@@ -640,72 +684,22 @@ void
 TextDisplayViewWindow::PaintSentenceMode
 (QPainter* InPainter, QRect InRect)
 {
-  (void)InPainter;
-  (void)InRect;
-#if 0  
-  int                                   itemHeight;
-  int                                   k;
-  QString                               itemText;
-  QString                               ending;
   QRect                                 itemR;
-  int                                   itemWidth;
-  int                                   windowWidth;
-  QSize                                 s;
-  int                                   x;
-  int                                   y;
-  QPainter                              painter(this);
-  QRect                                 r;
-  QPoint                                topLeft;
-  QPoint                                bottomRight;
+
   
-  r = InEvent->rect();
-  topLeft = r.topLeft();
-  bottomRight = r.bottomRight();
-
-  x = leftMargin;
-  y = topMargin;
-
-  windowWidth = size().width() - (leftMargin + rightMargin);
-
-  do {
-    for ( auto item : textItems ) {
-      s = item->GetSize();
-      itemWidth = s.width();
-      
-      if ( item->GetType() == TextDisplayItem::ReferenceType ) {
-        continue;
-      }
-      itemText = item->GetText();
-      itemHeight = item->GetSize().height();      
-      ending = itemText.right(1);
-      if ( itemWidth + x >= windowWidth ) {
-        x = leftMargin + 30;
-        y += InterLineSkip + itemHeight;
-      }
-      item->SetLocation(QPoint(x, y));
-      itemR = QRect(QPoint(x, y), s);
-      if ( r.contains(itemR) ) {
-        if ( lastSelectedItem == item ) {
-          item->DrawSelected(&painter);
-        } else {
-          item->Draw(&painter);
-        }
-      }
-      x += s.width() + InterWordSkip;
-      if ( ending == "'" || ending == "`" || ending == "]" || ending == ")" ) {
-        k = itemText.length() - 2;
-        ending = itemText.sliced(k, 1);
-      }
-      if ( ending == "." || ending == "?" || ending == "!" ) {
-        tmpSentenceCount ++;
-        y += itemHeight + InterLineSkip * 2;
-        x = leftMargin;
+  for ( auto item : textItems ) {
+    if ( item->GetType() == TextDisplayItem::ReferenceType ) {
+      continue;
+    }
+    itemR = QRect(item->GetBoundingRect());
+    if ( InRect.contains(itemR) ) {
+      if ( lastSelectedItem == item ) {
+        item->DrawSelected(InPainter);
+      } else {
+        item->Draw(InPainter);
       }
     }
   } while (false);
-  painter.end();
-#endif
-  (void)InPainter;
 }
 
 /*****************************************************************************!

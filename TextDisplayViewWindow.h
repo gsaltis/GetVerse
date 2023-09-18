@@ -117,8 +117,9 @@ class TextDisplayViewWindow : public QWidget
   bool                          repaintOnlySelected;
   QSize                         tableSize;
   std::vector<TextDisplayItem*> textItems;
-  QSize                         windowSize;
-  
+  QSize                         windowSize;  
+  int                           sentenceIndent;
+
  //! Public Slots
  public slots :
   void                          SlotBookSelected                (BookInfo* InBookInfo);
