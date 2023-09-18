@@ -99,6 +99,7 @@ TextDisplayViewWindow::SlotBookSelected
   emit SignalShowProgressBar();
   bookInfo = InBookInfo;
   verseCount = GetVerseCount();
+  emit SignalVerseCountChanged(verseCount);
   emit SignalSetProgressBar(0, verseCount);
   GetMaxReferenceWidth();
   SetBook();
@@ -126,14 +127,13 @@ TextDisplayViewWindow::ArrangeItems
   x             = leftMargin;  
   height        = 0;
   windowWidth   = tableWidth - (leftMargin + rightMargin);
-  TRACE_FUNCTION_INT(windowWidth);
-  TRACE_FUNCTION_INT(tableWidth);
   switch (mode) {
     case NoneMode : {
       break;
     }
     case ReferenceMode : {
       height = ArrangeItemsReference(x, y, windowWidth);
+      emit SignalVerseCountChanged(GetVerseCount());
       break;
     }
     case BlockMode : {
@@ -142,6 +142,7 @@ TextDisplayViewWindow::ArrangeItems
     }
     case SentenceMode : {
       height = ArrangeItemsSentence(x, y, windowWidth);
+      emit SignalSentenceCountChanged(tmpSentenceCount);
       break;
     }
   }
@@ -484,6 +485,7 @@ TextDisplayViewWindow::AddLineText
     item->SetFont(displayFont);
     textItems.push_back(item);
     tmpVerseCount++;
+    wordCount++;
     emit SignalUpdateProgressBar(tmpVerseCount);
     QCoreApplication::processEvents();
   }    

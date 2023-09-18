@@ -211,7 +211,7 @@ QString
 ProgramName = "GetVerse";
 
 bool
-MainUseGUI = false;
+MainUseGUI = true;
 
 bool
 MainApplyFormatting = false;
@@ -382,8 +382,8 @@ ProcessCommandLine
       continue;
     }
     
-    if ( command == "-g" || command == "--gui" ) {
-      MainUseGUI = true;
+    if ( command == "-n" || command == "--nogui" ) {
+      MainUseGUI = false;
       continue;
     }
     
@@ -519,8 +519,8 @@ DisplayHelp
   printf("  -e, --easysplit         : Specifies whether to split lines only at end of sentence\n");
   printf("  -f, --file filename     : Specify the input filename\n");
   printf("  -F, --format            : Apply formatting\n");
-  printf("  -g, --gui               : Use GUI\n");
   printf("  -h, --help              : Display this information\n");
+  printf("  -n, --nogui             : Don't use GUI\n");
   printf("  -p, --populate filename : Specify the database filename (Default %s)\n", DEFAULT_DB_FILENAME);
   printf("                            Requires that '-f, --filename' is specified\n");
   printf("  -r, --reference         : Specifies whether to display the verse reference\n");
