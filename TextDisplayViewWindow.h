@@ -108,13 +108,13 @@ class TextDisplayViewWindow : public QWidget
   QFont                         displayFont;
   int                           referenceWidth;
   int                           tableHeight;
+  int                           tableWidth;
   int                           verseCount;
   int                           tmpVerseCount;
   int                           tmpSentenceCount;
   int                           wordCount;
   DisplayMode                   mode;
   TextDisplayItem*              lastSelectedItem;
-  bool                          repaintOnlySelected;
   QSize                         tableSize;
   std::vector<TextDisplayItem*> textItems;
   QSize                         windowSize;  

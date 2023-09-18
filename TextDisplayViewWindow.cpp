@@ -125,8 +125,9 @@ TextDisplayViewWindow::ArrangeItems
   y             = topMargin;
   x             = leftMargin;  
   height        = 0;
-  windowWidth   = size().width() - (leftMargin + rightMargin);
-
+  windowWidth   = tableWidth - (leftMargin + rightMargin);
+  TRACE_FUNCTION_INT(windowWidth);
+  TRACE_FUNCTION_INT(tableWidth);
   switch (mode) {
     case NoneMode : {
       break;
@@ -144,7 +145,7 @@ TextDisplayViewWindow::ArrangeItems
       break;
     }
   }
-  windowSize = QSize(windowWidth, height);
+  windowSize = QSize(tableWidth, height);
   resize(windowSize);
 }
 
@@ -681,6 +682,7 @@ TextDisplayViewWindow::resizeEvent
   QSize                                 s;
 
   s = InEvent->size();
+  tableWidth = s.width();
 }
 
 /*****************************************************************************!
