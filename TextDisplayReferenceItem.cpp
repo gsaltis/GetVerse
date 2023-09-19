@@ -47,10 +47,22 @@ void
 TextDisplayReferenceItem::Draw
 (QPainter* InPainter)
 {
-  (void)InPainter;
+  int                                   d;
+  QFontMetrics                          fm(Font);
+  QSize                                 s;
+  int                                   textWidth;
+  int                                   x;
+
+  s = fm.size(0, Text);
+  textWidth = s.width();
+  x = Location.x();
+  
+  d = Size.width() - textWidth;
+  if ( d > 0 ) {
+    x += d;
+  }
   InPainter->setFont(Font);
   InPainter->setPen(QPen(Foreground));
-  InPainter->drawText(QPoint(Location.x(), Location.y() + Size.height()),
-                      Text);
+  InPainter->drawText(QPoint(x, Location.y() + Size.height()), Text);
 }
 

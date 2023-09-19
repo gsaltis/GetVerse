@@ -88,6 +88,7 @@ class TextDisplayOuterWindow : public QFrame
   void                          SlotSetSentenceMode             (void);
   void                          SlotSetBlockMode                (void);
   void                          SlotSetReferenceMode            (void);
+  void                          SlotSetEditMode                 (void);
 
  //! Public Signals
  signals :
@@ -101,6 +102,7 @@ class TextDisplayOuterWindow : public QFrame
   void                          SignalSentenceCountChanged      (int InWordCount);
   void                          SignalSetSentenceMode           (void);
   void                          SignalSetReferenceMode          (void);
+  void                          SignalSetEditMode               (void);
   void                          SignalSetBlockMode              (void);
   
  //! Public Actions

@@ -253,6 +253,10 @@ TextDisplayOuterWindow::CreateConnections(void)
           this,
           SLOT(SlotSetReferenceMode()));
   connect(controlBar,
+          SIGNAL(SignalSetEditMode()),
+          this,
+          SLOT(SlotSetEditMode()));
+  connect(controlBar,
           SIGNAL(SignalSetBlockMode()),
           this,
           SLOT(SlotSetBlockMode()));
@@ -265,6 +269,10 @@ TextDisplayOuterWindow::CreateConnections(void)
           SIGNAL(SignalSetReferenceMode()),
           viewWindow,
           SLOT(SlotSetReferenceMode()));
+  connect(this,
+          SIGNAL(SignalSetEditMode()),
+          viewWindow,
+          SLOT(SlotSetEditMode()));
   connect(this,
           SIGNAL(SignalSetBlockMode()),
           viewWindow,
@@ -345,6 +353,15 @@ void
 TextDisplayOuterWindow::SlotSetReferenceMode(void)
 {
   emit SignalSetReferenceMode();
+}
+
+/*****************************************************************************!
+ * Function : SlotSetEditMode
+ *****************************************************************************/
+void
+TextDisplayOuterWindow::SlotSetEditMode(void)
+{
+  emit SignalSetEditMode();
 }
 
 /*****************************************************************************!

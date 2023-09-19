@@ -52,6 +52,7 @@ class TextDisplayViewWindow : public QWidget
     NoneMode                   = 0,
     ReferenceMode,
     BlockMode,
+    EditMode,
     SentenceMode
   };
     
@@ -84,12 +85,16 @@ class TextDisplayViewWindow : public QWidget
   void                          GetMaxReferenceWidth    ();
   int                           GetVerseCount           ();
   int                           GetFormattingByReference(int InBook, int InChapter, int InVerse);
+
   void                          PaintReferenceMode      (QPainter* InPainter, QRect InRect);
   void                          PaintSentenceMode       (QPainter* InPainter, QRect InRect);
   void                          PaintBlockMode          (QPainter* InPainter, QRect InRect);
+  void                          PaintEditMode          (QPainter* InPainter, QRect InRect);
+
   void                          ArrangeItems            ();
   int                           ArrangeItemsReference   (int InX, int InY, int InWindowWidth);
   int                           ArrangeItemsBlock       (int InX, int InY, int InWindowWidth);
+  int                           ArrangeItemsEdit        (int InX, int InY, int InWindowWidth);
   int                           ArrangeItemsSentence    (int InX, int InY, int InWindowWidth);
 
  //! Private Data
@@ -126,6 +131,7 @@ class TextDisplayViewWindow : public QWidget
   void                          SlotSetSentenceMode             (void);
   void                          SlotSetBlockMode                (void);
   void                          SlotSetReferenceMode            (void);
+  void                          SlotSetEditMode                 (void);
   void                          SlotVerticalScrolled            (void);
   
  //! Public Signals
@@ -135,9 +141,12 @@ class TextDisplayViewWindow : public QWidget
   void                          SignalSetProgressBar            (int InMin, int InMax);
   void                          SignalUpdateProgressBar         (int InValue);
   void                          SignalWordCountChanged          (int InWordCount);
+
   void                          SignalSetSentenceMode           (void);
   void                          SignalSetReferenceMode          (void);
   void                          SignalSetBlockMode              (void);
+  void                          SignalSetViewMode               (void);
+
   void                          SignalVerseCountChanged         (int InVerseCount);
   void                          SignalSentenceCountChanged      (int InSentenceCount);
 

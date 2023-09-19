@@ -96,7 +96,7 @@ TextControlBar::CreateSubWindows()
   BlockViewButton->resize(ButtonWidth, ButtonHeight);
   BlockViewButton->setCheckable(true);
   connect(BlockViewButton, SIGNAL(pressed()), this, SLOT(SlotBlockViewButtonPushed()));
-  x += ButtonWidth + 6;
+  x += ButtonWidth + 1;
 
   //! Create the EditButton button
   EditButton = new QPushButton();
@@ -106,7 +106,7 @@ TextControlBar::CreateSubWindows()
   EditButton->resize(ButtonWidth, ButtonHeight);
   EditButton->setCheckable(true);
   connect(EditButton, SIGNAL(pressed()), this, SLOT(SlotEditButtonPushed()));
-  x += ButtonWidth + 1;
+  x += ButtonWidth + 6;
 
   //! Create the AnalyzeButton button
   AnalyzeButton = new QPushButton();
@@ -268,6 +268,7 @@ TextControlBar::SlotReferenceButtonPushed(void)
 {
   GroupingLabel->setText("Verses :");
   GroupingCountLabel->setText("0");
+  EditButton->setChecked(false);  
   BlockViewButton->setChecked(false);
   SentenceViewButton->setChecked(false);  
   GroupingLabel->show();
@@ -283,6 +284,7 @@ TextControlBar::SlotBlockViewButtonPushed(void)
 {
   ReferenceButton->setChecked(false);
   SentenceViewButton->setChecked(false);  
+  EditButton->setChecked(false);  
   GroupingLabel->hide();
   GroupingCountLabel->hide();
   emit SignalSetBlockMode();
@@ -296,6 +298,7 @@ TextControlBar::SlotSentenceViewButtonPushed(void)
 {
   GroupingLabel->setText("Sentences :");
   GroupingCountLabel->setText("0");
+  EditButton->setChecked(false);  
   GroupingLabel->show();
   GroupingCountLabel->show();
   ReferenceButton->setChecked(false);
@@ -309,7 +312,14 @@ TextControlBar::SlotSentenceViewButtonPushed(void)
 void
 TextControlBar::SlotEditButtonPushed(void)
 {
-  
+  GroupingLabel->setText("Verses :");
+  GroupingCountLabel->setText("0");
+  BlockViewButton->setChecked(false);
+  SentenceViewButton->setChecked(false);  
+  EditButton->setChecked(true);  
+  GroupingLabel->show();
+  GroupingCountLabel->show();
+  emit SignalSetEditMode();
 }
 
 /*****************************************************************************!

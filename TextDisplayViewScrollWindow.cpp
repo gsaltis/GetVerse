@@ -163,6 +163,10 @@ TextDisplayViewScrollWindow::CreateConnections(void)
           viewWindow,
           SLOT(SlotSetSentenceMode()));
   connect(this,
+          SIGNAL(SignalSetEditMode()),
+          viewWindow,
+          SLOT(SlotSetEditMode()));
+  connect(this,
           SIGNAL(SignalSetReferenceMode()),
           viewWindow,
           SLOT(SlotSetReferenceMode()));
@@ -255,6 +259,15 @@ void
 TextDisplayViewScrollWindow::SlotSetReferenceMode(void)
 {
   emit SignalSetReferenceMode();
+}
+
+/*****************************************************************************!
+ * Function : SlotSetEditMode
+ *****************************************************************************/
+void
+TextDisplayViewScrollWindow::SlotSetEditMode(void)
+{
+  emit SignalSetEditMode();
 }
 
 /*****************************************************************************!

@@ -140,6 +140,10 @@ TextDisplayViewWindow::ArrangeItems
       height = ArrangeItemsBlock(x, y, windowWidth);
       break;
     }
+    case EditMode : {
+      height = ArrangeItemsEdit(x, y, windowWidth);
+      break;
+    }
     case SentenceMode : {
       height = ArrangeItemsSentence(x, y, windowWidth);
       emit SignalSentenceCountChanged(tmpSentenceCount);
@@ -189,6 +193,57 @@ TextDisplayViewWindow::ArrangeItemsReference
       isFirst = false;
       item->SetLocation(QPoint(x, y));
       x += s.width() + InterWordSkip;
+    }
+  } while (false);
+  windowHeight += bottomMargin;
+  return windowHeight;
+}
+
+/*****************************************************************************!
+ * Function : ArrangeItemsEdit
+ *****************************************************************************/
+int
+TextDisplayViewWindow::ArrangeItemsEdit
+(int InX, int InY, int InWindowWidth)
+{
+  QSize                                 s;
+  int                                   itemWidth;
+  int                                   itemHeight;
+  int                                   windowHeight;
+  int                                   x;
+  int                                   y;
+  bool                                  isFirst;
+  int                                   wordSkip;
+  
+  x             = InX;
+  y             = InY;
+  windowHeight  = 0;
+
+  do {
+    isFirst = true;
+    for ( auto item : textItems ) {
+      wordSkip = InterWordSkip;
+      
+      s = item->GetSize();
+      itemWidth = s.width();
+      itemHeight = s.height();
+      
+      if ( !isFirst && item->GetType() == TextDisplayItem::ReferenceType ) {
+        x = leftMargin;
+        y += InterLineSkip + itemHeight;
+        windowHeight = y + itemHeight;
+      }
+      if ( itemWidth + x >= InWindowWidth ) {
+        x = leftMargin + referenceWidth + InterWordSkip * 3;
+        y += InterLineSkip + itemHeight;
+        windowHeight = y + itemHeight;
+      }
+      isFirst = false;
+      item->SetLocation(QPoint(x, y));
+      if ( item->GetType() == TextDisplayItem::ReferenceType ) {
+        wordSkip += InterWordSkip * 2;
+      }
+      x += s.width() + wordSkip;
     }
   } while (false);
   windowHeight += bottomMargin;
@@ -625,6 +680,17 @@ TextDisplayViewWindow::SlotSetReferenceMode(void)
 }
 
 /*****************************************************************************!
+ * Function : SlotSetReferenceMode
+ *****************************************************************************/
+void
+TextDisplayViewWindow::SlotSetEditMode(void)
+{
+  mode = EditMode;
+  ArrangeItems();
+  repaint();
+}
+
+/*****************************************************************************!
  * Function : GetFormattingByReference
  *****************************************************************************/
 int
@@ -685,6 +751,7 @@ TextDisplayViewWindow::resizeEvent
 
   s = InEvent->size();
   tableWidth = s.width();
+  repaint();
 }
 
 /*****************************************************************************!
@@ -710,6 +777,10 @@ TextDisplayViewWindow::paintEvent
       PaintBlockMode(&painter, rect);
       break;
     }
+    case EditMode : {
+      PaintEditMode(&painter, rect);
+      break;
+    }
     case NoneMode : {
       break;
     }
@@ -726,7 +797,6 @@ TextDisplayViewWindow::PaintReferenceMode
 {
   QRect                                 itemR;
 
-  
   for ( auto item : textItems ) {
     itemR = QRect(item->GetBoundingRect());
     if ( InRect.contains(itemR) ) {
@@ -739,6 +809,23 @@ TextDisplayViewWindow::PaintReferenceMode
   } while (false);
 }
 
+/*****************************************************************************!
+ * Function : PaintEditMode
+ *****************************************************************************/
+void
+TextDisplayViewWindow::PaintEditMode
+(QPainter* InPainter, QRect InRect)
+{
+  QRect                                 itemR;
+
+  
+  for ( auto item : textItems ) {
+    itemR = QRect(item->GetBoundingRect());
+    if ( InRect.contains(itemR) ) {
+      item->Draw(InPainter);
+    }
+  }
+}
 
 /*****************************************************************************!
  * Function : PaintSentenceMode
@@ -798,6 +885,9 @@ TextDisplayViewWindow::mouseMoveEvent
   QString                               text;
   QPoint                                p = InEvent->position().toPoint();
 
+  if ( mode == EditMode ) {
+    return;
+  }
   if ( lastSelectedItem && lastSelectedItem->Contains(p) ) {
     return;
   }

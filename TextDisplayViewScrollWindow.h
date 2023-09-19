@@ -77,9 +77,12 @@ class TextDisplayViewScrollWindow : public QScrollArea
   void                          SlotUpdateProgressBar           (int InValue);
   void                          SlotSetProgressBar              (int InMin, int InMax);
   void                          SlotWordCountChanged            (int InWordCount);
+
   void                          SlotSetSentenceMode             (void);
   void                          SlotSetBlockMode                (void);
   void                          SlotSetReferenceMode            (void);
+  void                          SlotSetEditMode                 (void);
+  
   void                          SlotVerseCountChanged           (int InVerseCount);
   void                          SlotSentenceCountChanged        (int InVerseCount);
   void                          SlotVerticalScrolled            (int InScrollAmount);
@@ -92,9 +95,12 @@ class TextDisplayViewScrollWindow : public QScrollArea
   void                          SignalSetProgressBar            (int InMin, int InMax);
   void                          SignalUpdateProgressBar         (int InValue);
   void                          SignalWordCountChanged          (int InWordCount);
+
+  void                          SignalSetEditMode               (void);
   void                          SignalSetSentenceMode           (void);
   void                          SignalSetReferenceMode          (void);
   void                          SignalSetBlockMode              (void);
+
   void                          SignalVerseCountChanged         (int InVerseCount);
   void                          SignalSentenceCountChanged      (int InVerseCount);
   void                          SignalVerticalScrolled          ();

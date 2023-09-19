@@ -95,6 +95,7 @@ class TextControlBar : public QWidget
   void                          SignalSetSentenceMode           (void);
   void                          SignalSetReferenceMode          (void);
   void                          SignalSetBlockMode              (void);
+  void                          SignalSetEditMode               (void);
   void                          SignalVerseCountChanged         (int InVerseCount);
   void                          SignalSentenceCountChanged      (int InVerseCount);
 
