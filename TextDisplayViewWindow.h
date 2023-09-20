@@ -23,6 +23,8 @@
 #include "TextDisplayViewWindowItem.h"
 #include "TextDisplayItem.h"
 #include "TextDisplayFormattingItem.h"
+#include "TextDisplayReferenceItem.h"
+#include "TextDisplayWordItem.h"
 
 /*****************************************************************************!
  * Exported Macros
@@ -68,6 +70,9 @@ class TextDisplayViewWindow : public QWidget
  //! Protected Methods
  protected :
   void                          paintEvent              (QPaintEvent* InEvent);
+  void                          mousePressEvent         (QMouseEvent* InEvent);
+  void                          resizeEvent             (QResizeEvent* InEvent);
+  void                          mouseMoveEvent          (QMouseEvent* InEvent);
 
  //! Protected Data
  protected :
@@ -77,8 +82,6 @@ class TextDisplayViewWindow : public QWidget
   void                          initialize              ();
   void                          CreateSubWindows        ();
   void                          InitializeSubWindows    ();
-  void                          resizeEvent             (QResizeEvent* InEvent);
-  void                          mouseMoveEvent          (QMouseEvent* InEvent);
   void                          SetBook                 ();
   static int                    SetBookCB               (void* InThisPointer, int InColumnCount, char** InColumnValues, char** InColumnNames);
   void                          AddLineText             (int InChapter, int InVerse, QString InVerseText);
@@ -103,7 +106,13 @@ class TextDisplayViewWindow : public QWidget
   void                          LineJustifyWords        (int InLineRemaining, int InLineStartIndex, int InLineEndIndex);
   inline bool                   WordEndsInPunctuation   (QString InWord);
   void                          EditModeMouseMove       (QPoint InLocation);
-    
+  void                          EditModeMousePress      (QPoint InLocation);
+  void                          EditModeReferenceMouseSelect    (TextDisplayReferenceItem* InItem);
+  void                          EditModeWordMouseSelect (TextDisplayWordItem* InItem);
+  void                          AddFormatting           (int InBook, int InChapter, int InVerse, int InWord, int InFormatting);
+
+  TextDisplayItem*              FindSelectedItem        (QPoint InLocation);
+
  //! Private Data
  private :
   BookInfo*                     bookInfo;

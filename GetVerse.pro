@@ -41,11 +41,12 @@ SOURCES                         += \
 				   MainDisplayWindow.cpp                        \
 				   MainMessageWindow.cpp                        \
 				   MainWindow.cpp                               \
+				   SQLStatement.cpp                             \
 				   SectionHeader.cpp                            \
 				   SystemConfig.cpp                             \
 				   TextControlBar.cpp                           \
-				   TextDisplayItem.cpp                          \
 				   TextDisplayFormattingItem.cpp                \
+				   TextDisplayItem.cpp                          \
 				   TextDisplayOuterWindow.cpp                   \
 				   TextDisplayReferenceItem.cpp                 \
 				   TextDisplayReferenceWindow.cpp               \
@@ -53,6 +54,7 @@ SOURCES                         += \
 				   TextDisplayViewWindow.cpp                    \
 				   TextDisplayViewWindowItem.cpp                \
 				   TextDisplayViewWindowReferenceItem.cpp       \
+				   TextDisplayWordItem.cpp                      \
 				   main.cpp                                     \
 				   sqlite3.c                                    \
 
@@ -67,18 +69,20 @@ HEADERS                         += \
 				   MainDisplayWindow.h                          \
 				   MainMessageWindow.h                          \
 				   MainWindow.h                                 \
+				   SQLStatement.h                               \
 				   SectionHeader.h                              \
 				   SystemConfig.h                               \
 				   TextControlBar.h                             \
-				   TextDisplayItem.h                            \
 				   TextDisplayFormattingItem.h                  \
+				   TextDisplayItem.h                            \
 				   TextDisplayOuterWindow.h                     \
-				   TextDisplayReferenceWindow.h                 \
 				   TextDisplayReferenceItem.h                   \
+				   TextDisplayReferenceWindow.h                 \
 				   TextDisplayViewScrollWindow.h                \
 				   TextDisplayViewWindow.h                      \
 				   TextDisplayViewWindowItem.h                  \
 				   TextDisplayViewWindowReferenceItem.h         \
+				   TextDisplayWordItem.h                        \
 				   sqlite3.h                                    \
 
 FORMS                           += \

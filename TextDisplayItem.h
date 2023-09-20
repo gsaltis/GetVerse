@@ -39,9 +39,10 @@ class TextDisplayItem
  //! Public Types
   enum DisplayType {
     None                = 0,
-    ReferenceType       = 1,
-    TextType            = 2,
-    FormattingType      = 3
+    ReferenceType,
+    WordType,
+    TextType,
+    FormattingType
   };
   enum ParagraphPosition {
     MidParagraph        = 0,
@@ -60,15 +61,15 @@ class TextDisplayItem
   void                          SetSize                 (QSize InSize);
   QPoint                        GetLocation             (void);
   void                          SetLocation             (QPoint InLocation);
-  void                          SetFont                 (QFont InFont);
+  virtual void                  SetFont                 (QFont InFont);
   QColor                        GetBackground           (void);
   void                          SetBackground           (QColor InBackground);
   QColor                        GetForeground           (void);
   void                          SetForeground           (QColor InForeground);
   virtual void                  Draw                    (QPainter* InPainter);
   virtual void                  DrawSelected            (QPainter* InPainter);
+  virtual bool                  Contains                (QPoint InPaint);
   DisplayType                   GetType                 ();
-  bool                          Contains                (QPoint InPaint);
   QRect                         GetBoundingRect         ();
   bool                          IsReference             (const int InBook, const int InChapter, const int InVerse);
   void                          SetParagraphPosition    (ParagraphPosition InPosition);

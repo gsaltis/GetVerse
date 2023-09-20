@@ -30,7 +30,7 @@ TextDisplayItem::TextDisplayItem
   Text = QString(InText);
   Foreground = QColor(0, 0, 0);
   Background = QColor(255, 255, 255);
-  Font = QFont("Arial", 10, QFont::Normal);
+  Font = QFont("Arial", 12, QFont::Normal);
   Type = TextType;
   position = MidParagraph;
 }

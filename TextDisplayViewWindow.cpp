@@ -24,6 +24,8 @@
 #include "TextDisplayViewWindowItem.h"
 #include "TextDisplayViewWindowReferenceItem.h"
 #include "TextDisplayReferenceItem.h"
+#include "TextDisplayWordItem.h"
+#include "SQLStatement.h"
 
 /*****************************************************************************!
  * Function : TextDisplayViewWindow
@@ -78,7 +80,7 @@ TextDisplayViewWindow::initialize()
   }
   
   mode                          = ReferenceMode;
-  displayFont                   = QFont("Arial", 11, QFont::Normal);
+  displayFont                   = QFont("Arial", 12, QFont::Normal);
   
   InitializeSubWindows();  
   CreateSubWindows();
@@ -394,7 +396,7 @@ TextDisplayViewWindow::AddLineText
   n = words.size();
 
   for ( i = 0; i < n; i++ ) {
-    item = new TextDisplayItem(bookInfo->index, InChapter, InVerse, words[i]);
+    item = new TextDisplayWordItem(bookInfo->index, InChapter, InVerse, words[i], i + 1);
     item->SetFont(displayFont);
     textItems.push_back(item);
     tmpVerseCount++;
@@ -623,6 +625,7 @@ TextDisplayViewWindow::paintEvent
   QPainter                              painter(this);
   QRect                                 rect = InEvent->rect();
 
+  painter.setRenderHints(QPainter::Antialiasing);
   switch (mode) {
     case ReferenceMode : {
       PaintReferenceMode(&painter, rect);
@@ -891,7 +894,6 @@ TextDisplayViewWindow::ArrangeItemsBlock
             item2 = textItems[k];
             if ( item2->GetType() == TextDisplayItem::TextType ) {
               item2->SetParagraphPosition(TextDisplayItem::EndOfParagraph);
-              TRACE_FUNCTION_LOCATION(); 
               break;
             }
             k--;
@@ -912,7 +914,6 @@ TextDisplayViewWindow::ArrangeItemsBlock
             item2 = textItems[k];
             if ( item2->GetType() == TextDisplayItem::TextType ) {
               item2->SetParagraphPosition(TextDisplayItem::EndOfParagraph);
-              TRACE_FUNCTION_LOCATION(); 
               break;
             }
             k--;
@@ -979,6 +980,126 @@ TextDisplayViewWindow::PaintBlockMode
   } while (false);
 }
 
+/*****************************************************************************!
+ * Function : mousePressEvent
+ *****************************************************************************/
+void
+TextDisplayViewWindow::mousePressEvent
+(QMouseEvent* InEvent)
+{
+  QPoint                                p = InEvent->position().toPoint();
+  if ( mode == EditMode ) {
+    EditModeMousePress(p);
+    return;
+  }
+}
+
+/*****************************************************************************!
+ * Function : EditModeMousePress
+ *****************************************************************************/
+void
+TextDisplayViewWindow::EditModeMousePress
+(QPoint InPoint)
+{
+  TextDisplayItem*                      item;
+  TextDisplayItem::DisplayType          type;
+
+  item = FindSelectedItem(InPoint);
+  if ( NULL == item ) {
+    return;
+  }
+  type = item->GetType();
+  if ( type == TextDisplayItem::ReferenceType ) {
+    EditModeReferenceMouseSelect((TextDisplayReferenceItem*)item);
+    return;
+  }
+  if ( type == TextDisplayItem::WordType ) {
+    EditModeWordMouseSelect((TextDisplayWordItem*)item);
+    return;
+  }
+}
+
+/*****************************************************************************!
+ * Function : FindSelectedItem
+ *****************************************************************************/
+TextDisplayItem*
+TextDisplayViewWindow::FindSelectedItem
+(QPoint InLocation)
+{
+  for ( auto item : textItems ) {
+    if ( item->Contains(InLocation) ) {
+      return item;
+    }
+  }
+  return NULL;
+}
+    
+/*****************************************************************************!
+ * Function : EditModeReferenceMouseSelect
+ *****************************************************************************/
+void
+TextDisplayViewWindow::EditModeReferenceMouseSelect
+(TextDisplayReferenceItem* InItem)
+{
+  int                                   verse;
+  int                                   chapter;
+  int                                   book;
+  QString                               itemText;
+
+  itemText = InItem->GetText();
+  TRACE_FUNCTION_QSTRING(itemText);
+  book = InItem->GetBook();
+  chapter = InItem->GetChapter();
+  verse = InItem->GetVerse();
+
+  AddFormatting(book, chapter, verse, 0, 2);
+}
+
+/*****************************************************************************!
+ * Function : AddFormatting
+ *****************************************************************************/
+void
+TextDisplayViewWindow::AddFormatting
+(int InBook, int InChapter, int InVerse, int InWord, int InFormatting)
+{
+  int                                   m;
+  char                                  sqlstatement[1024];
+  QString                               insertStatment;
+
+  insertStatment = SQLStatement::GetFormattingInsert();
+  sprintf(sqlstatement,
+          insertStatment.toStdString().c_str(),
+          InBook,
+          InChapter,
+          InVerse,
+          InWord,
+          QString(),
+          InFormatting);
+  m  = sqlite3_exec(MainDatabase, sqlstatement, NULL, NULL, NULL);
+  if ( m != SQLITE_OK ) {
+    fprintf(stderr, "sqlite_exec() failed\n %s\n %d : %s\n", sqlstatement, m, sqlite3_errstr(m));
+    return;
+  }
+  return;
+}
+
+
+/*****************************************************************************!
+ * Function : EditModeWordMouseSelect
+ *****************************************************************************/
+void
+TextDisplayViewWindow::EditModeWordMouseSelect
+(TextDisplayWordItem* InItem)
+{
+  QString                               word;
+  int                                   wordIndex;
+
+  word = InItem->GetWord();
+  wordIndex = InItem->GetWordIndex();
+  TRACE_FUNCTION_QSTRING(word);
+  TRACE_FUNCTION_INT(wordIndex);  
+}
+  
 /*****************************************************************************!
  * Function : mouseMoveEvent
  *****************************************************************************/
@@ -1102,7 +1223,6 @@ TextDisplayViewWindow::LineJustifyPunctuation
     item = textItems[i];
     itemText = item->GetText();
     if ( item->GetParagraphPosition() == TextDisplayItem::EndOfParagraph ) {
-      TRACE_FUNCTION_QSTRING(itemText);
       continue;
     }
     ending = itemText.right(1);

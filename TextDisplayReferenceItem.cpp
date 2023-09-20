@@ -28,7 +28,7 @@ TextDisplayReferenceItem::TextDisplayReferenceItem
   Foreground = QColor(192, 0, 0);
   Background = QColor(255, 255, 255);
   BookName = InBookName;
-  Font = QFont("Arial", 10, QFont::Normal);
+  Font = QFont("Arial", 12, QFont::Normal);
   Type = ReferenceType;
 }
 
