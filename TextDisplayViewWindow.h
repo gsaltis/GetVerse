@@ -22,6 +22,7 @@
 #include "BookInfo.h"
 #include "TextDisplayViewWindowItem.h"
 #include "TextDisplayItem.h"
+#include "TextDisplayFormattingItem.h"
 
 /*****************************************************************************!
  * Exported Macros
@@ -96,7 +97,12 @@ class TextDisplayViewWindow : public QWidget
   int                           ArrangeItemsBlock       (int InX, int InY, int InWindowWidth);
   int                           ArrangeItemsEdit        (int InX, int InY, int InWindowWidth);
   int                           ArrangeItemsSentence    (int InX, int InY, int InWindowWidth);
-
+  TextDisplayFormattingItem*    FindFormattingItem      (int InBook, int InChapter, int InVerse);
+  void                          LineJustify             (int InWindowWidth, int InLineEnd, int InLineStartIndex, int InLineEndIndex);
+  int                           LineJustifyPunctuation  (int InLineRemaining, int InLineStartIndex, int InLineEndIndex);
+  void                          LineJustifyWords        (int InLineRemaining, int InLineStartIndex, int InLineEndIndex);
+  inline bool                   WordEndsInPunctuation   (QString InWord);
+    
  //! Private Data
  private :
   BookInfo*                     bookInfo;
@@ -122,9 +128,19 @@ class TextDisplayViewWindow : public QWidget
   TextDisplayItem*              lastSelectedItem;
   QSize                         tableSize;
   std::vector<TextDisplayItem*> textItems;
+  std::vector<TextDisplayFormattingItem*>       formattingItems;
+  
   QSize                         windowSize;  
   int                           sentenceIndent;
+  int                           EditViewReferenceIndent;
+  
+  int                           BlockLeftMargin;
+  int                           BlockRightMargin;
+  int                           DotsPerInchX;
 
+  int                           EndOfSentencePadding;
+  int                           EndOfPhrasePadding;
+  
  //! Public Slots
  public slots :
   void                          SlotBookSelected                (BookInfo* InBookInfo);

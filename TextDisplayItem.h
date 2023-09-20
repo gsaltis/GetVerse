@@ -38,9 +38,15 @@ class TextDisplayItem
 
  //! Public Types
   enum DisplayType {
-    None = 0,
-    ReferenceType = 1,
-    TextType = 2
+    None                = 0,
+    ReferenceType       = 1,
+    TextType            = 2,
+    FormattingType      = 3
+  };
+  enum ParagraphPosition {
+    MidParagraph        = 0,
+    StartOfParagraph,
+    EndOfParagraph
   };
   
  //! Public Methods
@@ -64,6 +70,9 @@ class TextDisplayItem
   DisplayType                   GetType                 ();
   bool                          Contains                (QPoint InPaint);
   QRect                         GetBoundingRect         ();
+  bool                          IsReference             (const int InBook, const int InChapter, const int InVerse);
+  void                          SetParagraphPosition    (ParagraphPosition InPosition);
+  ParagraphPosition             GetParagraphPosition    ();
   
  //! Public Data
  public :
@@ -83,6 +92,7 @@ class TextDisplayItem
   QColor                        Background;
   QColor                        Foreground;
   DisplayType                   Type;
+  ParagraphPosition             position;
   
  //! Private Methods
  private :

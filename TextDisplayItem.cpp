@@ -32,6 +32,7 @@ TextDisplayItem::TextDisplayItem
   Background = QColor(255, 255, 255);
   Font = QFont("Arial", 10, QFont::Normal);
   Type = TextType;
+  position = MidParagraph;
 }
 
 /*****************************************************************************!
@@ -152,7 +153,11 @@ TextDisplayItem::DrawSelected
   
   InPainter->setFont(Font);
   InPainter->setPen(QPen(QColor(160, 160, 160)));
-  InPainter->setBrush(QBrush(QColor(224, 224, 224)));
+  if ( position == EndOfParagraph ) {
+    InPainter->setBrush(QBrush(QColor(0, 224, 224)));
+  } else {
+    InPainter->setBrush(QBrush(QColor(224, 224, 224)));
+  }
   r = GetBoundingRect();
 
   h = r.height() + 6;
@@ -247,4 +252,37 @@ TextDisplayItem::GetBoundingRect
 ()
 {
   return QRect(Location, Size);
+}
+
+/*****************************************************************************!
+ * Function : IsReference
+ *****************************************************************************/
+bool
+TextDisplayItem::IsReference
+(const int InBook, const int InChapter, const int InVerse)
+{
+  if ( InBook == Book && InChapter == Chapter && InVerse == Verse ) {
+    return true;
+  }
+  return false;
+}
+
+/*****************************************************************************!
+ * Function : GetParagraphPosition
+ *****************************************************************************/
+TextDisplayItem::ParagraphPosition
+TextDisplayItem::GetParagraphPosition
+()
+{
+  return position;
+}
+
+/*****************************************************************************!
+ * Function : SetParagraphPosition
+ *****************************************************************************/
+void
+TextDisplayItem::SetParagraphPosition
+(TextDisplayItem::ParagraphPosition InPosition)
+{
+  position = InPosition;
 }

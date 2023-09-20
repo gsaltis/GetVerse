@@ -56,17 +56,30 @@ TextDisplayViewWindow::~TextDisplayViewWindow
 void
 TextDisplayViewWindow::initialize()
 {
-  InterLineSkip = 3;
-  InterParagraphSkip = 10;
-  InterWordSkip = 4;
-  rightMargin   = 30;
-  leftMargin    = 10;
-  bottomMargin  = 10;
-  topMargin     = 10;
-  tableSize     = QSize();
-  sentenceIndent = 30;
-  mode = ReferenceMode;
-  displayFont = QFont("Arial", 11, QFont::Normal);
+  EditViewReferenceIndent       = 40;
+  InterLineSkip                 = 3;
+  InterParagraphSkip            = 10;
+  InterWordSkip                 = 4;
+  bottomMargin                  = 10;
+  leftMargin                    = 10;
+  rightMargin                   = 30;
+  sentenceIndent                = 30;
+  tableSize                     = QSize();
+  topMargin                     = 10;
+  DotsPerInchX                  = (int)screen()->logicalDotsPerInch();
+  BlockLeftMargin               = 100;
+  BlockRightMargin              = 100;
+  EndOfSentencePadding          = 3;
+  EndOfPhrasePadding            = 2;
+  
+  if ( DotsPerInchX ) {
+    BlockLeftMargin             = DotsPerInchX;
+    BlockRightMargin            = DotsPerInchX;
+  }
+  
+  mode                          = ReferenceMode;
+  displayFont                   = QFont("Arial", 11, QFont::Normal);
+  
   InitializeSubWindows();  
   CreateSubWindows();
 }
@@ -137,7 +150,8 @@ TextDisplayViewWindow::ArrangeItems
       break;
     }
     case BlockMode : {
-      height = ArrangeItemsBlock(x, y, windowWidth);
+      windowWidth = tableWidth - (BlockLeftMargin + BlockRightMargin);
+      height = ArrangeItemsBlock(BlockLeftMargin, y, windowWidth);
       break;
     }
     case EditMode : {
@@ -152,174 +166,6 @@ TextDisplayViewWindow::ArrangeItems
   }
   windowSize = QSize(tableWidth, height);
   resize(windowSize);
-}
-
-/*****************************************************************************!
- * Function : ArrangeItemsReference
- *****************************************************************************/
-int
-TextDisplayViewWindow::ArrangeItemsReference
-(int InX, int InY, int InWindowWidth)
-{
-  QSize                                 s;
-  int                                   itemWidth;
-  int                                   itemHeight;
-  int                                   windowHeight;
-  int                                   x;
-  int                                   y;
-  bool                                  isFirst;
-
-  x             = InX;
-  y             = InY;
-  windowHeight  = 0;
-  
-  do {
-    isFirst = true;
-    for ( auto item : textItems ) {
-      s = item->GetSize();
-      itemWidth = s.width();
-      itemHeight = s.height();
-      
-      if ( !isFirst && item->GetType() == TextDisplayItem::ReferenceType ) {
-        x = leftMargin;
-        y += InterLineSkip + itemHeight;
-        windowHeight = y + itemHeight;
-      }
-      if ( itemWidth + x >= InWindowWidth ) {
-        x = leftMargin + referenceWidth + InterWordSkip;
-        y += InterLineSkip + itemHeight;
-        windowHeight = y + itemHeight;
-      }
-      isFirst = false;
-      item->SetLocation(QPoint(x, y));
-      x += s.width() + InterWordSkip;
-    }
-  } while (false);
-  windowHeight += bottomMargin;
-  return windowHeight;
-}
-
-/*****************************************************************************!
- * Function : ArrangeItemsEdit
- *****************************************************************************/
-int
-TextDisplayViewWindow::ArrangeItemsEdit
-(int InX, int InY, int InWindowWidth)
-{
-  QSize                                 s;
-  int                                   itemWidth;
-  int                                   itemHeight;
-  int                                   windowHeight;
-  int                                   x;
-  int                                   y;
-  bool                                  isFirst;
-  int                                   wordSkip;
-  
-  x             = InX;
-  y             = InY;
-  windowHeight  = 0;
-
-  do {
-    isFirst = true;
-    for ( auto item : textItems ) {
-      wordSkip = InterWordSkip;
-      
-      s = item->GetSize();
-      itemWidth = s.width();
-      itemHeight = s.height();
-      
-      if ( !isFirst && item->GetType() == TextDisplayItem::ReferenceType ) {
-        x = leftMargin;
-        y += InterLineSkip + itemHeight;
-        windowHeight = y + itemHeight;
-      }
-      if ( itemWidth + x >= InWindowWidth ) {
-        x = leftMargin + referenceWidth + InterWordSkip * 3;
-        y += InterLineSkip + itemHeight;
-        windowHeight = y + itemHeight;
-      }
-      isFirst = false;
-      item->SetLocation(QPoint(x, y));
-      if ( item->GetType() == TextDisplayItem::ReferenceType ) {
-        wordSkip += InterWordSkip * 2;
-      }
-      x += s.width() + wordSkip;
-    }
-  } while (false);
-  windowHeight += bottomMargin;
-  return windowHeight;
-}
-
-/*****************************************************************************!
- * Function : ArrangeItemsBlock
- *****************************************************************************/
-int
-TextDisplayViewWindow::ArrangeItemsBlock
-(int InX, int InY, int InWindowWidth)
-{
-  TextDisplayReferenceItem*             referenceItem;
-  bool                                  breakAfter;
-  int                                   formatting;
-  int                                   verse;
-  int                                   chapter;
-  int                                   book;
-  QString                               ending;
-  int                                   itemHeight;
-  QString                               itemText;
-  int                                   itemWidth;
-  QSize                                 s;
-  int                                   windowHeight;
-  int                                   x;
-  int                                   y;
-  
-  x             = InX;
-  y             = InY;
-  windowHeight  = 0;
-
-  breakAfter = false;
-  do {
-    for ( auto item : textItems ) {
-      s = item->GetSize();
-      itemWidth = s.width();
-      itemHeight = s.height();
-      itemText = item->GetText();
-      ending = itemText.right(1);
-      
-      if ( item->GetType() == TextDisplayItem::ReferenceType ) {
-        if ( breakAfter ) {
-          x = leftMargin;
-          y += itemHeight + InterParagraphSkip;
-          windowHeight = y + itemHeight;
-          breakAfter = false;
-        }
-        referenceItem = (TextDisplayReferenceItem*)item;
-        verse = referenceItem->GetVerse();
-        chapter = referenceItem->GetChapter();
-        book = bookInfo->index;
-        formatting = GetFormattingByReference(book, chapter, verse);
-        if ( formatting == 1 ) {
-          breakAfter = true;
-          continue;
-        }
-        if ( formatting == 2 ) {
-          x = leftMargin;
-          y += itemHeight + InterParagraphSkip;
-          windowHeight = y + itemHeight;
-          continue;
-        }
-        continue;
-      }
-      if ( itemWidth + x >= InWindowWidth ) {
-        x = leftMargin;
-        y += itemHeight;
-        windowHeight = y + itemHeight;
-      }
-      item->SetLocation(QPoint(x, y));
-      x += s.width() + InterWordSkip;
-    }
-  } while (false);
-  windowHeight += bottomMargin;
-  return windowHeight;
 }
 
 /*****************************************************************************!
@@ -519,16 +365,28 @@ void
 TextDisplayViewWindow::AddLineText
 (int InChapter, int InVerse, QString InVerseText)
 {
+  int                                   formatting;
   int                                   i;
   int                                   n;
   QStringList                           words;
   TextDisplayItem*                      item;
   TextDisplayReferenceItem*             refItem;
+  TextDisplayFormattingItem*            formattingItem;
   QString                               referenceText;
 
   refItem = new TextDisplayReferenceItem(bookInfo->index,
                                          bookInfo->GetCapitalizedBookName(),
                                          InChapter, InVerse);
+
+  formatting = GetFormattingByReference(bookInfo->index, InChapter, InVerse);
+  if ( formatting ) {
+    formattingItem = new TextDisplayFormattingItem(bookInfo->index,
+                                                   bookInfo->GetCapitalizedBookName(),
+                                                   InChapter,
+                                                   InVerse,
+                                                   formatting);
+    formattingItems.push_back(formattingItem);
+  }
   refItem->SetFont(displayFont);
   refItem->SetSize(QSize(referenceWidth, refItem->GetSize().height()));
   textItems.push_back(refItem);
@@ -556,6 +414,7 @@ TextDisplayViewWindow::ClearText
   while ( QWidget* w = findChild<QWidget*>() ) {
     delete w;
   }
+  formattingItems.clear();
   textItems.clear();
   textY = topMargin;
 }
@@ -789,6 +648,51 @@ TextDisplayViewWindow::paintEvent
 }
 
 /*****************************************************************************!
+ * Function : ArrangeItemsReference
+ *****************************************************************************/
+int
+TextDisplayViewWindow::ArrangeItemsReference
+(int InX, int InY, int InWindowWidth)
+{
+  QSize                                 s;
+  int                                   itemWidth;
+  int                                   itemHeight;
+  int                                   windowHeight;
+  int                                   x;
+  int                                   y;
+  bool                                  isFirst;
+
+  x             = InX;
+  y             = InY;
+  windowHeight  = 0;
+  
+  do {
+    isFirst = true;
+    for ( auto item : textItems ) {
+      s = item->GetSize();
+      itemWidth = s.width();
+      itemHeight = s.height();
+      
+      if ( !isFirst && item->GetType() == TextDisplayItem::ReferenceType ) {
+        x = leftMargin;
+        y += InterLineSkip + itemHeight;
+        windowHeight = y + itemHeight;
+      }
+      if ( itemWidth + x >= InWindowWidth ) {
+        x = leftMargin + referenceWidth + InterWordSkip;
+        y += InterLineSkip + itemHeight;
+        windowHeight = y + itemHeight;
+      }
+      isFirst = false;
+      item->SetLocation(QPoint(x, y));
+      x += s.width() + InterWordSkip;
+    }
+  } while (false);
+  windowHeight += bottomMargin;
+  return windowHeight;
+}
+
+/*****************************************************************************!
  * Function : PaintReferenceMode
  *****************************************************************************/
 void
@@ -810,6 +714,67 @@ TextDisplayViewWindow::PaintReferenceMode
 }
 
 /*****************************************************************************!
+ * Function : ArrangeItemsEdit
+ *****************************************************************************/
+int
+TextDisplayViewWindow::ArrangeItemsEdit
+(int InX, int InY, int InWindowWidth)
+{
+  TextDisplayFormattingItem*            formattingItem;
+  bool                                  isFirst;
+  int                                   itemHeight;
+  int                                   itemWidth;
+  QSize                                 s;
+  int                                   windowHeight;
+  int                                   wordSkip;
+  int                                   x;
+  int                                   y;
+  
+  x             = InX;
+  y             = InY;
+  windowHeight  = 0;
+
+  isFirst = false;
+  do {
+    for ( auto item : textItems ) {
+      wordSkip = InterWordSkip;
+      
+      s = item->GetSize();
+      itemWidth = s.width();
+      itemHeight = s.height();
+      
+      if ( item->GetType() == TextDisplayItem::ReferenceType ) {
+        x = leftMargin + EditViewReferenceIndent;
+        if ( isFirst ) {
+          y += InterLineSkip + itemHeight;
+        }
+        formattingItem = FindFormattingItem(item->GetBook(), item->GetChapter(), item->GetVerse());
+        if ( formattingItem ) {
+          formattingItem->SetLocation(QPoint(leftMargin, y + InterLineSkip));
+          formattingItem->SetSize(QSize(EditViewReferenceIndent - leftMargin, itemHeight));
+        }
+        isFirst = true;
+        windowHeight = y + itemHeight;
+        item->SetLocation(QPoint(x, y));
+        x += s.width() + wordSkip;
+        continue;
+      }
+
+      if ( itemWidth + x >= InWindowWidth ) {
+        x = leftMargin + referenceWidth + InterWordSkip + EditViewReferenceIndent;
+        y += InterLineSkip + itemHeight;
+        windowHeight = y + itemHeight;
+      }
+
+      item->SetLocation(QPoint(x, y));
+      x += s.width() + wordSkip;
+    }
+  } while (false);
+  windowHeight += bottomMargin;
+  return windowHeight;
+}
+
+/*****************************************************************************!
  * Function : PaintEditMode
  *****************************************************************************/
 void
@@ -820,6 +785,13 @@ TextDisplayViewWindow::PaintEditMode
 
   
   for ( auto item : textItems ) {
+    itemR = QRect(item->GetBoundingRect());
+    if ( InRect.contains(itemR) ) {
+      item->Draw(InPainter);
+    }
+  }
+
+  for ( auto item : formattingItems ) {
     itemR = QRect(item->GetBoundingRect());
     if ( InRect.contains(itemR) ) {
       item->Draw(InPainter);
@@ -849,6 +821,134 @@ TextDisplayViewWindow::PaintSentenceMode
       }
     }
   } while (false);
+}
+
+/*****************************************************************************!
+ * Function : ArrangeItemsBlock
+ *****************************************************************************/
+int
+TextDisplayViewWindow::ArrangeItemsBlock
+(int InX, int InY, int InWindowWidth)
+{
+  int                                   k;
+  TextDisplayItem*                      item2;
+  int                                   book;
+  bool                                  breakAfter;
+  int                                   chapter;
+  QString                               ending;
+  int                                   formatting;
+  int                                   i;
+  TextDisplayItem*                      item;
+  int                                   itemHeight;
+  QString                               itemText;
+  int                                   itemWidth;
+  int                                   n;
+  TextDisplayReferenceItem*             referenceItem;
+  QSize                                 s;
+  int                                   verse;
+  int                                   windowHeight;
+  int                                   x;
+  int                                   y;
+  int                                   lineEnd;
+  int                                   lineStartIndex;
+  int                                   lineEndIndex;
+  QPoint                                location;
+  TextDisplayItem::ParagraphPosition    paragraphPosition;
+  
+  lineEnd       = InX;
+  x             = InX;
+  y             = InY;
+  windowHeight  = 0;
+  breakAfter = false;
+  lineStartIndex = 1;
+  lineEndIndex = 0;
+  n = textItems.size();
+  paragraphPosition = TextDisplayItem::MidParagraph;
+  
+  do {
+    for (i = 0; i < n; i++) {
+      item = textItems[i];
+      s = item->GetSize();
+      itemWidth = s.width();
+      itemHeight = s.height();
+      itemText = item->GetText();
+      ending = itemText.right(1);
+      
+      //!
+      if ( item->GetType() == TextDisplayItem::ReferenceType ) {
+        if ( breakAfter ) {
+          x = InX;
+          y += itemHeight + InterParagraphSkip;
+          windowHeight = y + itemHeight;
+          breakAfter = false;
+          paragraphPosition = TextDisplayItem::StartOfParagraph;
+          k = i - 1;
+          while ( k > 1 ) {
+            item2 = textItems[k];
+            if ( item2->GetType() == TextDisplayItem::TextType ) {
+              item2->SetParagraphPosition(TextDisplayItem::EndOfParagraph);
+              TRACE_FUNCTION_LOCATION(); 
+              break;
+            }
+            k--;
+          }
+        }
+        referenceItem = (TextDisplayReferenceItem*)item;
+        verse = referenceItem->GetVerse();
+        chapter = referenceItem->GetChapter();
+        book = bookInfo->index;
+        formatting = GetFormattingByReference(book, chapter, verse);
+        if ( formatting == 1 ) {
+          breakAfter = true;
+          continue;
+        }
+        if ( formatting == 2 ) {
+          k = i - 1;
+          while ( k > 1 ) {
+            item2 = textItems[k];
+            if ( item2->GetType() == TextDisplayItem::TextType ) {
+              item2->SetParagraphPosition(TextDisplayItem::EndOfParagraph);
+              TRACE_FUNCTION_LOCATION(); 
+              break;
+            }
+            k--;
+          }
+          x = InX;
+          y += itemHeight + InterParagraphSkip;
+          windowHeight = y + itemHeight;
+          paragraphPosition = TextDisplayItem::StartOfParagraph;
+          continue;
+        }
+        continue;
+      }
+      //!
+      if ( itemWidth + x >= InWindowWidth ) {
+        LineJustify(InWindowWidth, lineEnd, lineStartIndex, lineEndIndex);
+        x = InX;
+        lineEnd = x;
+        y += itemHeight;
+        windowHeight = y + itemHeight;
+        lineStartIndex = i;
+        location = QPoint(x, y);
+        item->SetLocation(QPoint(x, y));
+        x += itemWidth + InterWordSkip;
+        lineEnd = x - InterWordSkip;
+        lineEndIndex = i;
+        continue;
+      }
+
+      //!
+      location = QPoint(x, y);
+      item->SetLocation(location);
+      item->SetParagraphPosition(paragraphPosition);
+      x += itemWidth + InterWordSkip;
+      lineEnd = x - InterWordSkip;
+      lineEndIndex = i;
+      paragraphPosition = TextDisplayItem::MidParagraph;
+    }
+  } while (false);
+  windowHeight += bottomMargin;
+  return windowHeight;
 }
 
 /*****************************************************************************!
@@ -882,6 +982,8 @@ void
 TextDisplayViewWindow::mouseMoveEvent
 (QMouseEvent* InEvent)
 {
+  QString                               itemText;
+  QPoint                                location;
   QString                               text;
   QPoint                                p = InEvent->position().toPoint();
 
@@ -897,6 +999,8 @@ TextDisplayViewWindow::mouseMoveEvent
       if ( item->GetType() == TextDisplayItem::ReferenceType ) {
         continue;
       }
+      location = item->GetLocation();
+      itemText = item->GetText();
       text = item->GetText();
       if ( item != lastSelectedItem ) {
         lastSelectedItem = item;
@@ -916,3 +1020,184 @@ TextDisplayViewWindow::SlotVerticalScrolled(void)
   lastSelectedItem = NULL;
   repaint();
 }
+
+/*****************************************************************************!
+ * Function : FindFormattingItem
+ *****************************************************************************/
+TextDisplayFormattingItem*
+TextDisplayViewWindow::FindFormattingItem
+(int InBook, int InChapter, int InVerse)
+{
+  for ( auto item : formattingItems ) {
+    if ( item->IsReference(InBook, InChapter, InVerse) ) {
+      return item;
+    }
+  }
+  return NULL;
+}
+
+/*****************************************************************************!
+ * Function : LineJustify
+ *****************************************************************************/
+void
+TextDisplayViewWindow::LineJustify
+(int InWindowWidth, int InLineEnd, int InLineStartIndex, int InLineEndIndex)
+{
+  int                                   lineRemaining;
+
+  lineRemaining = InWindowWidth - InLineEnd;
+  lineRemaining = LineJustifyPunctuation(lineRemaining, InLineStartIndex, InLineEndIndex);
+  LineJustifyWords(lineRemaining, InLineStartIndex, InLineEndIndex);
+}
+
+/*****************************************************************************!
+ * Function : LineJustifyPunctuation
+ *****************************************************************************/
+int
+TextDisplayViewWindow::LineJustifyPunctuation
+(int InLineRemaining, int InLineStartIndex, int InLineEndIndex)
+{
+  QPoint                                Location;
+  QString                               ending;
+  TextDisplayItem*                      item;
+  QString                               itemText;
+  int                                   k;
+  int                                   lineRemaining;
+
+  //!
+  lineRemaining = InLineRemaining;
+  for ( int i = InLineStartIndex ; lineRemaining > 0 && i < InLineEndIndex ; i++ ) {
+    item = textItems[i];
+    itemText = item->GetText();
+    if ( item->GetParagraphPosition() == TextDisplayItem::EndOfParagraph ) {
+      TRACE_FUNCTION_QSTRING(itemText);
+      continue;
+    }
+    ending = itemText.right(1);
+    Location = item->GetLocation();
+    if ( ending == "'" || ending == "`" || ending == "]" || ending == ")" ) {
+      k = itemText.length() - 2;
+      ending = itemText.sliced(k, 1);
+
+      //!
+      if ( ending == "." || ending == "?" || ending == "!" ) {
+        for ( int j = i + 1 ; j <= InLineEndIndex ; j++ ) {
+          TextDisplayItem*              item1 = textItems[j];
+          if ( item1->GetParagraphPosition() == TextDisplayItem::StartOfParagraph ) {
+            continue;
+          }
+          Location = item1->GetLocation();
+          Location += QPoint(EndOfSentencePadding, 0);
+          item1->SetLocation(Location);
+        }
+        lineRemaining -= EndOfSentencePadding;
+        continue;
+      }
+
+      //!
+      if ( ending == ":" || ending == ";" || ending == "," ) {
+        for ( int j = i + 1 ; j <= InLineEndIndex ; j++ ) {
+          TextDisplayItem*              item1 = textItems[j];
+          if ( item1->GetParagraphPosition() == TextDisplayItem::StartOfParagraph ) {
+            continue;
+          }
+          Location = item1->GetLocation();
+          Location += QPoint(EndOfPhrasePadding, 0);
+          item1->SetLocation(Location);
+        }
+        lineRemaining -= EndOfPhrasePadding;
+        continue;
+      }
+    }
+
+    //!
+    if ( ending == "." || ending == "?" || ending == "!" ) {
+      for ( int j = i + 1 ; j <= InLineEndIndex ; j++ ) {
+        TextDisplayItem*              item1 = textItems[j];
+        if ( item1->GetParagraphPosition() == TextDisplayItem::StartOfParagraph ) {
+          continue;
+        }
+        Location = item1->GetLocation();
+        Location += QPoint(EndOfSentencePadding, 0);
+        item1->SetLocation(Location);
+      }
+      lineRemaining -= EndOfSentencePadding;
+      continue;
+    }
+
+    //!
+    if ( ending == ":" || ending == ";" || ending == "," ) {
+      for ( int j = i + 1 ; j <= InLineEndIndex ; j++ ) {
+        TextDisplayItem*              item1 = textItems[j];
+        Location = item1->GetLocation();
+        if ( item1->GetParagraphPosition() == TextDisplayItem::StartOfParagraph ) {
+          continue;
+        }
+        Location += QPoint(EndOfPhrasePadding, 0);
+        item1->SetLocation(Location);
+      }
+      lineRemaining -= EndOfPhrasePadding;
+      continue;
+    }
+  }
+  return lineRemaining;
+}
+
+/*****************************************************************************!
+ * Function : LineJustifyWords
+ *****************************************************************************/
+void
+TextDisplayViewWindow::LineJustifyWords
+(int InLineRemaining, int InLineStartIndex, int InLineEndIndex)
+{
+  QSize                                 Size;
+  QPoint                                Location;
+  QString                               itemText;
+  int                                   lineRemaining;
+  TextDisplayItem*                      item;
+  QString                               ending;
+
+  lineRemaining = InLineRemaining;
+  wordCount = InLineEndIndex - InLineStartIndex;
+  while ( lineRemaining > 0 ) {
+    for ( int i = InLineStartIndex ;  lineRemaining > 0 && i < InLineEndIndex ; i++ ) {
+      item = textItems[i];
+      itemText = item->GetText();
+      ending = itemText.right(1);
+      
+      if ( WordEndsInPunctuation(itemText) ) {
+        continue;
+      }
+      for ( int j = i + 1 ; lineRemaining > 0 && j <= InLineEndIndex ; j++ ) {
+        TextDisplayItem*              item1 = textItems[j];
+        if ( item1->GetParagraphPosition() == TextDisplayItem::StartOfParagraph ) {
+          continue;
+        }
+        Location = item1->GetLocation();
+        itemText = item1->GetText();
+        Location += QPoint(1, 0);
+        Size = item1->GetSize();
+        item1->SetLocation(Location);
+      }
+      lineRemaining--;
+    }
+  }
+}
+
+/*****************************************************************************!
+ * Function : WordEndsInPunctuation
+ *****************************************************************************/
+bool
+TextDisplayViewWindow::WordEndsInPunctuation
+(QString InWord)
+{
+  QString ending =                      InWord.right(1);
+
+  if ( ending == "'" || ending == "`" || ending == "]" || ending == ")" ||
+       ending == ":" || ending == ";" || ending == "," ||
+       ending == "." || ending == "?" || ending == "!" ) {
+    return true;
+  }
+  return false;
+}
+

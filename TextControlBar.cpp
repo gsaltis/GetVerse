@@ -314,11 +314,14 @@ TextControlBar::SlotEditButtonPushed(void)
 {
   GroupingLabel->setText("Verses :");
   GroupingCountLabel->setText("0");
+
   BlockViewButton->setChecked(false);
   SentenceViewButton->setChecked(false);  
-  EditButton->setChecked(true);  
+  ReferenceButton->setChecked(false);  
+
   GroupingLabel->show();
   GroupingCountLabel->show();
+
   emit SignalSetEditMode();
 }
 

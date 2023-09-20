@@ -28,6 +28,7 @@
          "INT",                                                         \
          __FILE__, __FUNCTION__, __LINE__,                              \
          #n, (int)n);                                                   \
+  fflush(stdout);                                                       \
   
 #define TRACE_FUNCTION_BOOL(n)                                          \
   printf("%10s %50s::%30s:%05d : "                                      \
@@ -35,6 +36,7 @@
          "BOOL",                                                        \
          __FILE__, __FUNCTION__, __LINE__,                              \
          #n, n ? "True" : "False");                                     \
+  fflush(stdout);                                                       \
     
 #define TRACE_FUNCTION_QSTRING(n)                                       \
   printf("%10s %50s::%30s:%05d : "                                      \
@@ -42,6 +44,7 @@
          "QSTRING",                                                     \
          __FILE__, __FUNCTION__, __LINE__,                              \
          #n, n.toStdString().c_str());                                  \
+  fflush(stdout);                                                       \
 
 #define TRACE_FUNCTION_QSIZE(n)                                         \
   printf("%10s %50s::%30s:%05d : "                                      \
@@ -51,6 +54,7 @@
          __FILE__, __FUNCTION__, __LINE__,                              \
          #n, n.width(),                                                 \
          n.height());                                                   \
+  fflush(stdout);                                                       \
 
 #define TRACE_FUNCTION_QPOINT(n)                                        \
   printf("%10s %50s::%30s:%05d : "                                      \
@@ -60,6 +64,7 @@
          __FILE__, __FUNCTION__, __LINE__,                              \
          #n, n.x(),                                                     \
          n.y());                                                        \
+  fflush(stdout);                                                       \
 
 #define TRACE_FUNCTION_POINTER(n)                                       \
   printf("%10s %50s::%30s:%05d : "                                      \
@@ -67,21 +72,32 @@
          "POINTER",                                                     \
          __FILE__, __FUNCTION__, __LINE__,                              \
          #n, n);                                                        \
+  fflush(stdout);                                                       \
 
 #define TRACE_FUNCTION_LOCATION()                                       \
   printf("%10s %50s::%30s:%05d\n",                                      \
          "LOCATION",                                                    \
          __FILE__, __FUNCTION__, __LINE__);                             \
+  fflush(stdout);                                                       \
+ 
+#define TRACE_FUNCTION_SEPARATOR()                                      \
+  printf("%10s %50s::%30s:%05d"                                         \
+         " --------------------------------------------------------\n", \
+         " ",                                                           \
+         __FILE__, __FUNCTION__, __LINE__);                             \
+  fflush(stdout);                                                       \
  
 #define TRACE_FUNCTION_START()                                          \
   printf("%10s %50s::%30s:%05d\n",                                      \
          "START",                                                       \
          __FILE__, __FUNCTION__, __LINE__);                             \
+  fflush(stdout);                                                       \
  
 #define TRACE_FUNCTION_END()                                            \
   printf("%10s %50s::%30s:%05d\n",                                      \
          "END",                                                         \
          __FILE__, __FUNCTION__, __LINE__);                             \
+  fflush(stdout);                                                       \
  
 /*****************************************************************************!
  * Exported Data
