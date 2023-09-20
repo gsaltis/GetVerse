@@ -102,6 +102,7 @@ class TextDisplayViewWindow : public QWidget
   int                           LineJustifyPunctuation  (int InLineRemaining, int InLineStartIndex, int InLineEndIndex);
   void                          LineJustifyWords        (int InLineRemaining, int InLineStartIndex, int InLineEndIndex);
   inline bool                   WordEndsInPunctuation   (QString InWord);
+  void                          EditModeMouseMove       (QPoint InLocation);
     
  //! Private Data
  private :

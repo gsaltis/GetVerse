@@ -1,2 +1,30 @@
-sqlite3 NASB.db "DROP TABLE BookFormat;"
-sqlite3 NASB.db "CREATE TABLE BookFormat (bookIndex number, GroupNumber number, TextColor string, BackgroundColor string, GroupEnd int);"
+PRAGMA foreign_keys=OFF;
+BEGIN TRANSACTION;
+DROP TABLE Formatting;
+CREATE TABLE Formatting (book number, chapter number, verse number, word number, text string, type number);
+INSERT INTO Formatting VALUES(1,1,5,0,'',1);
+INSERT INTO Formatting VALUES(1,1,7,0,'',1);
+INSERT INTO Formatting VALUES(1,1,10,0,'',1);
+INSERT INTO Formatting VALUES(1,1,13,0,'',1);
+INSERT INTO Formatting VALUES(1,1,19,0,'',1);
+INSERT INTO Formatting VALUES(1,1,25,0,'',1);
+INSERT INTO Formatting VALUES(1,1,27,0,'',1);
+INSERT INTO Formatting VALUES(1,1,28,0,'',1);
+INSERT INTO Formatting VALUES(1,2,3,0,'',1);
+INSERT INTO Formatting VALUES(1,2,6,0,'',1);
+INSERT INTO Formatting VALUES(1,2,7,0,'',1);
+INSERT INTO Formatting VALUES(1,2,9,0,'',1);
+INSERT INTO Formatting VALUES(1,2,14,0,'',1);
+INSERT INTO Formatting VALUES(1,2,17,0,'',1);
+INSERT INTO Formatting VALUES(1,2,18,0,'',1);
+INSERT INTO Formatting VALUES(1,2,20,0,'',1);
+INSERT INTO Formatting VALUES(1,2,24,0,'',1);
+INSERT INTO Formatting VALUES(31,1,2,0,'',2);
+INSERT INTO Formatting VALUES(31,1,5,0,'',2);
+INSERT INTO Formatting VALUES(31,1,7,0,'',2);
+INSERT INTO Formatting VALUES(31,1,10,0,'',2);
+INSERT INTO Formatting VALUES(31,1,12,0,'',2);
+INSERT INTO Formatting VALUES(31,1,15,0,'',2);
+INSERT INTO Formatting VALUES(31,1,17,0,'',2);
+INSERT INTO Formatting VALUES(31,1,19,0,'',2);
+COMMIT;

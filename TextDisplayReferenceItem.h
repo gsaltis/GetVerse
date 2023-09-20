@@ -39,6 +39,7 @@ class TextDisplayReferenceItem : public TextDisplayItem
  //! Public Methods
  public :
   virtual void                  Draw                    (QPainter* InPainter);
+  virtual void                  DrawSelected            (QPainter* InPainter);
   
  //! Public Data
  public :

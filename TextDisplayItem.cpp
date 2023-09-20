@@ -153,11 +153,7 @@ TextDisplayItem::DrawSelected
   
   InPainter->setFont(Font);
   InPainter->setPen(QPen(QColor(160, 160, 160)));
-  if ( position == EndOfParagraph ) {
-    InPainter->setBrush(QBrush(QColor(0, 224, 224)));
-  } else {
-    InPainter->setBrush(QBrush(QColor(224, 224, 224)));
-  }
+  InPainter->setBrush(QBrush(QColor(224, 224, 224)));
   r = GetBoundingRect();
 
   h = r.height() + 6;

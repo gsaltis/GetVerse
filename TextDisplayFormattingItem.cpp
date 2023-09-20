@@ -80,9 +80,12 @@ TextDisplayFormattingItem::Draw
   y += (yd - 3);
 
   InPainter->setFont(Font);
+
   InPainter->setPen(QPen(Foreground));
   InPainter->setBrush(QBrush(Background));
   InPainter->drawRect(QRect(Location, Size));
+    
+  InPainter->setPen(QPen(Foreground));
   InPainter->drawText(QPoint(x, y), st);
 }
 

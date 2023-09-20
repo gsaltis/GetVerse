@@ -66,3 +66,41 @@ TextDisplayReferenceItem::Draw
   InPainter->drawText(QPoint(x, Location.y() + Size.height()), Text);
 }
 
+/*****************************************************************************!
+ * Function : DrawSelected
+ *****************************************************************************/
+void
+TextDisplayReferenceItem::DrawSelected
+(QPainter* InPainter)
+{
+  int                                   x;
+  QRect                                 r;
+  QRect                                 r2;
+  int                                   h;
+  int                                   w;
+  int                                   y;
+  QFontMetrics                          fm(Font);
+  QSize                                 s;
+  int                                   textWidth;
+
+  s = fm.size(0, Text);
+  textWidth = s.width();
+  
+  InPainter->setFont(Font);
+  InPainter->setPen(QPen(QColor(160, 160, 160)));
+  InPainter->setBrush(QBrush(QColor(224, 224, 224)));
+
+  r = GetBoundingRect();
+
+  x = Location.x() + (Size.width() - s.width());
+  y = r.top() + 0;
+  w = textWidth + 8;
+  h = r.height() + 6;
+
+  r2 = QRect(QPoint(x-3, y), QSize(w, h));
+  InPainter->drawRoundedRect(r2, 20, 20);
+
+  InPainter->setPen(QPen(QColor(128, 0, 0)));
+  InPainter->drawText(QPoint(x, Location.y() + Size.height()), Text);
+}
+

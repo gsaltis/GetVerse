@@ -786,11 +786,15 @@ TextDisplayViewWindow::PaintEditMode
   
   for ( auto item : textItems ) {
     itemR = QRect(item->GetBoundingRect());
-    if ( InRect.contains(itemR) ) {
+    if ( ! InRect.contains(itemR) ) {
+      continue;
+    }
+    if ( lastSelectedItem == item ) {
+      item->DrawSelected(InPainter);
+    } else {
       item->Draw(InPainter);
     }
   }
-
   for ( auto item : formattingItems ) {
     itemR = QRect(item->GetBoundingRect());
     if ( InRect.contains(itemR) ) {
@@ -988,11 +992,13 @@ TextDisplayViewWindow::mouseMoveEvent
   QPoint                                p = InEvent->position().toPoint();
 
   if ( mode == EditMode ) {
+    EditModeMouseMove(p);
     return;
   }
   if ( lastSelectedItem && lastSelectedItem->Contains(p) ) {
     return;
   }
+
   lastSelectedItem = NULL;
   for ( auto item : textItems ) {
     if ( item->Contains(p) ) {
@@ -1002,6 +1008,32 @@ TextDisplayViewWindow::mouseMoveEvent
       location = item->GetLocation();
       itemText = item->GetText();
       text = item->GetText();
+      if ( item != lastSelectedItem ) {
+        lastSelectedItem = item;
+        break;
+      }
+    }
+  }
+  repaint();
+}
+
+/*****************************************************************************!
+ * Function : EditModeMouseMove
+ *****************************************************************************/
+void
+TextDisplayViewWindow::EditModeMouseMove
+(QPoint InLocation)
+{
+  QPoint                                location;
+
+  if ( lastSelectedItem && lastSelectedItem->Contains(InLocation) ) {
+    return;
+  }
+
+  lastSelectedItem = NULL;
+  for ( auto item : textItems ) {
+    if ( item->Contains(InLocation) ) {
+      location = item->GetLocation();
       if ( item != lastSelectedItem ) {
         lastSelectedItem = item;
         break;
