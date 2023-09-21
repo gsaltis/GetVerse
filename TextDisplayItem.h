@@ -55,25 +55,26 @@ class TextDisplayItem
   int                           GetBook                 (void);
   int                           GetChapter              (void);
   int                           GetVerse                (void);
-  QString                       GetText                 (void);
   void                          SetText                 (QString InText);
   QSize                         GetSize                 (void);
   void                          SetSize                 (QSize InSize);
   QPoint                        GetLocation             (void);
   void                          SetLocation             (QPoint InLocation);
-  virtual void                  SetFont                 (QFont InFont);
   QColor                        GetBackground           (void);
   void                          SetBackground           (QColor InBackground);
   QColor                        GetForeground           (void);
   void                          SetForeground           (QColor InForeground);
-  virtual void                  Draw                    (QPainter* InPainter);
-  virtual void                  DrawSelected            (QPainter* InPainter);
-  virtual bool                  Contains                (QPoint InPaint);
   DisplayType                   GetType                 ();
   QRect                         GetBoundingRect         ();
   bool                          IsReference             (const int InBook, const int InChapter, const int InVerse);
   void                          SetParagraphPosition    (ParagraphPosition InPosition);
   ParagraphPosition             GetParagraphPosition    ();
+
+  virtual void                  SetFont                 (QFont InFont);
+  virtual QString               GetText                 (void);
+  virtual void                  Draw                    (QPainter* InPainter);
+  virtual void                  DrawSelected            (QPainter* InPainter);
+  virtual bool                  Contains                (QPoint InPaint);
   
  //! Public Data
  public :

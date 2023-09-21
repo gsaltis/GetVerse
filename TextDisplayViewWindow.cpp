@@ -187,41 +187,44 @@ TextDisplayViewWindow::ArrangeItemsSentence
   int                                   windowHeight;
   int                                   x;
   int                                   y;
+  int                                   i;
+  int                                   n;
+  TextDisplayItem*                      item;
   
   x             = InX;
   y             = InY;
   windowHeight  = 0;
-  
-  do {
-    for ( auto item : textItems ) {
-      s = item->GetSize();
-      itemWidth = s.width();
-      itemHeight = s.height();
-      itemText = item->GetText();
-      ending = itemText.right(1);
-      
-      if ( item->GetType() == TextDisplayItem::ReferenceType ) {
-        continue;
-      }
-      if ( itemWidth + x >= InWindowWidth ) {
-        x = leftMargin + sentenceIndent;
-        y += itemHeight;
-        windowHeight = y + itemHeight;
-      }
-      item->SetLocation(QPoint(x, y));
-      x += s.width() + InterWordSkip;
-      if ( ending == "'" || ending == "`" || ending == "]" || ending == ")" ) {
-        k = itemText.length() - 2;
-        ending = itemText.sliced(k, 1);
-      }
-      if ( ending == "." || ending == "?" || ending == "!" ) {
-        tmpSentenceCount ++;
-        y += itemHeight + InterLineSkip * 2;
-        x = leftMargin;
-        windowHeight = y + itemHeight;
-      }
+
+  n = textItems.size();
+  for ( i = 0 ; i < n ; i++ ) {
+    item = textItems[i];
+    s = item->GetSize();
+    itemWidth = s.width();
+    itemHeight = s.height();
+    itemText = item->GetText();
+    ending = itemText.right(1);
+
+    if ( item->GetType() == TextDisplayItem::ReferenceType ) {
+      continue;
     }
-  } while (false);
+    if ( itemWidth + x >= InWindowWidth ) {
+      x = InX + sentenceIndent;
+      y += itemHeight;
+      windowHeight = y + itemHeight;
+    }
+    item->SetLocation(QPoint(x, y));
+    x += s.width() + InterWordSkip;
+    if ( ending == "'" || ending == "`" || ending == "]" || ending == ")" ) {
+      k = itemText.length() - 2;
+      ending = itemText.sliced(k, 1);
+    }
+    if ( ending == "." || ending == "?" || ending == "!" ) {
+      tmpSentenceCount ++;
+      y += itemHeight + InterLineSkip * 2;
+      x = InX;
+      windowHeight = y + itemHeight;
+    }
+  }
   windowHeight += bottomMargin;
   return windowHeight;
 }

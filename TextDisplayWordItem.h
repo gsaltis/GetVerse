@@ -44,6 +44,7 @@ class TextDisplayWordItem : public TextDisplayItem
   virtual void                  DrawSelected            (QPainter* InPainter);
   virtual void                  SetFont                 (QFont InFont);
   virtual bool                  Contains                (QPoint InPaint);
+  virtual QString               GetText                 (void);
   QString                       GetWord                 (void);
   void                          SetWord                 (QString InWord);
   
