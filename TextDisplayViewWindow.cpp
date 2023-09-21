@@ -390,7 +390,7 @@ TextDisplayViewWindow::AddLineText
                                                    bookInfo->GetCapitalizedBookName(),
                                                    InChapter,
                                                    InVerse,
-                                                   formatting);
+                                                   (TextDisplayFormattingItem::FormatType)formatting);
     formattingItems.push_back(formattingItem);
   }
   refItem->SetFont(displayFont);
@@ -558,7 +558,7 @@ TextDisplayViewWindow::SlotSetEditMode(void)
 /*****************************************************************************!
  * Function : GetFormattingByReference
  *****************************************************************************/
-int
+TextDisplayFormattingItem::FormatType
 TextDisplayViewWindow::GetFormattingByReference
 (int InBook, int InChapter, int InVerse)
 {
@@ -578,7 +578,7 @@ TextDisplayViewWindow::GetFormattingByReference
             __FUNCTION__,
             query.toStdString().c_str(),
             sqlite3_errstr(n));
-    return 0;
+    return TextDisplayFormattingItem::FormatTypeNone;
   }
   type = 0;
   retryCount = 0;
@@ -602,7 +602,7 @@ TextDisplayViewWindow::GetFormattingByReference
     }
   } while (true);
   sqlite3_finalize(statement);
-  return type;
+  return (TextDisplayFormattingItem::FormatType)type;
 }
 
 /*****************************************************************************!
@@ -847,7 +847,7 @@ TextDisplayViewWindow::ArrangeItemsBlock
   bool                                  breakAfter;
   int                                   chapter;
   QString                               ending;
-  int                                   formatting;
+  TextDisplayFormattingItem::FormatType formatting;
   int                                   i;
   TextDisplayItem*                      item;
   int                                   itemHeight;
@@ -908,11 +908,11 @@ TextDisplayViewWindow::ArrangeItemsBlock
         chapter = referenceItem->GetChapter();
         book = bookInfo->index;
         formatting = GetFormattingByReference(book, chapter, verse);
-        if ( formatting == 1 ) {
+        if ( formatting == TextDisplayFormattingItem::FormatTypePostVerse ) {
           breakAfter = true;
           continue;
         }
-        if ( formatting == 2 ) {
+        if ( formatting == TextDisplayFormattingItem::FormatTypePreVerse ) {
           k = i - 1;
           while ( k > 1 ) {
             item2 = textItems[k];
@@ -970,6 +970,11 @@ TextDisplayViewWindow::PaintBlockMode
 (QPainter* InPainter, QRect InRect)
 {
   QRect                                 itemR;
+
+  QBrush                                brush = QBrush(MainSystemConfig->GetBlockWindowBackgroundColor());
+  QSize                                 s = size();
+  InPainter->setBrush(brush);
+  InPainter->drawRect(QRect(QPoint(0, 0), s));
   
   for ( auto item : textItems ) {
     if ( item->GetType() == TextDisplayItem::ReferenceType ) {
@@ -1057,7 +1062,7 @@ TextDisplayViewWindow::EditModeReferenceMouseSelect
   chapter = InItem->GetChapter();
   verse = InItem->GetVerse();
 
-  AddFormatting(book, chapter, verse, 0, 2);
+  AddFormatting(book, chapter, verse, 0, TextDisplayFormattingItem::FormatTypePreVerse);
 }
 
 /*****************************************************************************!
@@ -1090,7 +1095,8 @@ TextDisplayViewWindow::AddFormatting
   if ( bookInfo == NULL ) {
     return;
   }
-  formattingItem = new TextDisplayFormattingItem(InBook, bookInfo->name, InChapter, InVerse, InFormatting);
+  formattingItem = new TextDisplayFormattingItem(InBook, bookInfo->name, InChapter, InVerse,
+                                                 (TextDisplayFormattingItem::FormatType)InFormatting);
   formattingItems.push_back(formattingItem);
   ArrangeItems();
   repaint();
@@ -1105,14 +1111,14 @@ void
 TextDisplayViewWindow::EditModeWordMouseSelect
 (TextDisplayWordItem* InItem)
 {
-  (void)InItem;
-#if 0
+  QString                               st;
   QString                               word;
   int                                   wordIndex;
 
   word = InItem->GetWord();
   wordIndex = InItem->GetWordIndex();
-#endif
+  st = QString("%1:%2").arg(word).arg(wordIndex);
+  emit SignalSetMessage(st);
 }
   
 /*****************************************************************************!

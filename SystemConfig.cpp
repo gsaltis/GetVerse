@@ -85,7 +85,49 @@ void
 SystemConfig::ReadJSON
 (QString InFilename)
 {
-  (void)InFilename;
+  int                                   blue;
+  int                                   green;
+  int                                   red;
+  QJsonObject                           blockWindowObj;
+  QJsonObject                           blockWindowBackgroundObj;
+  QJsonObject                           mainWindowLocation;
+  QJsonObject                           mainWindowSize;
+  int                                   h;
+  int                                   w;
+  int                                   y;
+  int                                   x;
+  QFile                                 file(InFilename);
+  QByteArray                            bytes;
+  QJsonDocument                         doc;
+  QJsonObject                           obj;
+  QJsonObject                           mainWindowObj;
+
+  if ( ! file.open(QIODevice::ReadOnly) ) {
+    return;
+  }
+  bytes = file.readAll();
+  file.close();
+  doc = QJsonDocument::fromJson(bytes);
+  obj = doc.object();
+  mainWindowObj = obj["MainWindow"].toObject();
+
+  mainWindowLocation = mainWindowObj["Location"].toObject();
+  x = mainWindowLocation["x"].toInt();
+  y = mainWindowLocation["y"].toInt();
+
+  mainWindowSize = mainWindowObj["Size"].toObject();
+  w = mainWindowSize["width"].toInt();
+  h = mainWindowSize["height"].toInt();
+
+  MainWindowLocation = QPoint(x, y);
+  MainWindowSize = QSize(w, h);
+
+  blockWindowObj = obj["BlockWindow"].toObject();
+  blockWindowBackgroundObj = blockWindowObj["Background"].toObject();
+  red = blockWindowBackgroundObj["red"].toInt();
+  green = blockWindowBackgroundObj["green"].toInt();
+  blue = blockWindowBackgroundObj["blue"].toInt();
+  BlockWindowBackgroundColor = QColor(red, green, blue);
 }
 
 /*****************************************************************************!
@@ -94,6 +136,26 @@ SystemConfig::ReadJSON
 void
 SystemConfig::Initialize(void)
 {
-  MainWindowLocation    = QPoint(560, 0);
-  MainWindowSize        = QSize(1360, 1020);
+  MainWindowLocation    = QPoint(0, 0);
+  MainWindowSize        = QSize(1920, 1020);
+  BlockWindowBackgroundColor = QColor(255, 255, 255);
+}
+
+/*****************************************************************************!
+ * Function : GetBlockWindowBackgroundColor
+ *****************************************************************************/
+QColor
+SystemConfig::GetBlockWindowBackgroundColor(void)
+{
+  return BlockWindowBackgroundColor;  
+}
+
+/*****************************************************************************!
+ * Function : SetBlockWindowBackgroundColor
+ *****************************************************************************/
+void
+SystemConfig::SetBlockWindowBackgroundColor
+(QColor InBlockWindowBackgroundColor)
+{
+  BlockWindowBackgroundColor = InBlockWindowBackgroundColor;  
 }

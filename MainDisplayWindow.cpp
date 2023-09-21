@@ -149,6 +149,12 @@ MainDisplayWindow::CreateConnections(void)
           SIGNAL(SignalHideProgressBar()),
           this,
           SLOT(SlotHideProgressBar()));
+
+  connect(displayWindow,
+          SIGNAL(SignalSetMessage(QString)),
+          messageWindow,
+          SLOT(SlotSetMessageNormal(QString)));
+  
   connect(displayWindow,
           SIGNAL(SignalSetProgressBar(int, int)),
           this,

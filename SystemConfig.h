@@ -44,6 +44,8 @@ class SystemConfig : public QWidget
   QPoint                        GetMainWindowLocation   (void);
   void                          SetMainWindowLocation   (QPoint InMainWindowPosition);
   void                          ReadJSON                (QString InFilename);
+  QColor                        GetBlockWindowBackgroundColor (void);
+  void                          SetBlockWindowBackgroundColor (QColor InBlockWindowBackgroundColor);
 
  //! Public Data
  public :
@@ -63,6 +65,7 @@ class SystemConfig : public QWidget
  private :
   QSize                         MainWindowSize;
   QPoint                        MainWindowLocation;
+  QColor                        BlockWindowBackgroundColor;
 
  //! Public Slots
  public slots :

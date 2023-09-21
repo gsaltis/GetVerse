@@ -212,6 +212,10 @@ TextDisplayOuterWindow::CreateConnections(void)
           viewWindow,
           SLOT(SlotBookSelected(BookInfo*)));
   connect(viewWindow,
+          SIGNAL(SignalSetMessage(QString)),
+          this,
+          SLOT(SlotSetMessage(QString)));
+  connect(viewWindow,
           SIGNAL(SignalShowProgressBar()),
           this,
           SLOT(SlotShowProgressBar()));
@@ -408,4 +412,14 @@ TextDisplayOuterWindow::FindBookInfoByName
     }
   }
   return NULL;
+}
+
+/*****************************************************************************!
+ * Function : SlotSetMessage
+ *****************************************************************************/
+void
+TextDisplayOuterWindow::SlotSetMessage
+(QString InMessage)
+{
+  emit SignalSetMessage(InMessage);
 }

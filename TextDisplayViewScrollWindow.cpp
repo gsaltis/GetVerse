@@ -125,6 +125,11 @@ TextDisplayViewScrollWindow::CreateConnections(void)
           SLOT(SlotBookSelected(BookInfo*)));
 
   connect(viewWindow,
+          SIGNAL(SignalSetMessage(QString)),
+          this,
+          SLOT(SlotSetMessage(QString)));
+
+  connect(viewWindow,
           SIGNAL(SignalHideProgressBar()),
           this,
           SLOT(SlotHideProgressBar()));
@@ -300,3 +305,12 @@ TextDisplayViewScrollWindow::SlotVerticalScrolled
   emit SignalVerticalScrolled();
 }
 
+/*****************************************************************************!
+ * Function : SlotSetMessage
+ *****************************************************************************/
+void
+TextDisplayViewScrollWindow::SlotSetMessage
+(QString InMessage)
+{
+  emit SignalSetMessage(InMessage);
+}

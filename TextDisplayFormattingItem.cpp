@@ -22,13 +22,14 @@
  * Function : TextDisplayFormattingItem
  *****************************************************************************/
 TextDisplayFormattingItem::TextDisplayFormattingItem
-(int InBook, QString InBookName, int InChapter, int InVerse, int InFormatting) :
+(int InBook, QString InBookName, int InChapter, int InVerse,
+ TextDisplayFormattingItem::FormatType InFormatting) :
   TextDisplayItem(InBook, InChapter, InVerse, QString())
 {
   Foreground    = QColor(0, 0, 0);
   Background    = QColor(240, 240, 240);
   BookName      = InBookName;
-  Type          = FormattingType;
+  Type          = FormattingVerseType;
   Formatting    = InFormatting;
   Font = QFont("Arial", 14, QFont::Normal);
 }
@@ -60,15 +61,15 @@ TextDisplayFormattingItem::Draw
   y = Location.y();
 
   switch ( Formatting ) {
-    case 1 : {
-      st = QChar(0x25B2);
+    case FormatTypePreVerse : {
+      st = QChar(0x25BC);
       xd = Size.width() - si.width();
       xd /= 4;
       x += xd;
       break;
     }
-    case 2 : {
-      st = QChar(0x25BC);
+    case FormatTypePostVerse : {
+      st = QChar(0x25B2);
       xd = Size.width() - si.width();
       xd /= 4;
       x += xd;

@@ -42,7 +42,8 @@ class TextDisplayItem
     ReferenceType,
     WordType,
     TextType,
-    FormattingType
+    FormattingVerseType,
+    FormattingWordType
   };
   enum ParagraphPosition {
     MidParagraph        = 0,

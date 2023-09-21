@@ -30,6 +30,7 @@
  *****************************************************************************/
 #define DEFAULT_FILENAME                        "NASB.txt"
 #define DEFAULT_DB_FILENAME                     "NASB.db"
+#define DEFAULT_CONFIG_FILENAME                 "GetVerse.json"
 #define DATABASE_ENV_LOCATION                   "GETVERSE_DATABASE"
 #define VERSION					"1.0.1"
 #define ALL_VERSES_STRING                       "1-1000"
@@ -185,6 +186,9 @@ MainInitializeGUI
  *****************************************************************************/
 SystemConfig*
 MainSystemConfig;
+
+QString
+MainConfigFilename = DEFAULT_CONFIG_FILENAME;
 
 QString
 MainFilename;
@@ -348,6 +352,8 @@ MainInitialize
   QString                               s;
 
   MainSystemConfig      = new SystemConfig();
+  MainSystemConfig->ReadJSON(MainConfigFilename);
+  
   MainFilename          = NULL;
   MainDatabaseFilename  = QString(DEFAULT_DB_FILENAME);
   MainBook              = NULL;

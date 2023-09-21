@@ -21,6 +21,7 @@
  *****************************************************************************/
 #include "BookInfo.h"
 #include "sqlite3.h"
+#include "SystemConfig.h"
 
 /*****************************************************************************!
  * Exported Macros
@@ -34,6 +35,9 @@ MainBookInfo;
 
 extern sqlite3*
 MainDatabase;
+
+extern SystemConfig*
+MainSystemConfig;
 
 /*****************************************************************************!
  * Exported Functions

@@ -88,8 +88,8 @@ class TextDisplayViewWindow : public QWidget
   QSize                         ComputeSize             ();
   void                          GetMaxReferenceWidth    ();
   int                           GetVerseCount           ();
-  int                           GetFormattingByReference(int InBook, int InChapter, int InVerse);
-
+  TextDisplayFormattingItem::FormatType
+                                GetFormattingByReference(int InBook, int InChapter, int InVerse);
   void                          PaintReferenceMode      (QPainter* InPainter, QRect InRect);
   void                          PaintSentenceMode       (QPainter* InPainter, QRect InRect);
   void                          PaintBlockMode          (QPainter* InPainter, QRect InRect);
@@ -178,6 +178,7 @@ class TextDisplayViewWindow : public QWidget
 
   void                          SignalVerseCountChanged         (int InVerseCount);
   void                          SignalSentenceCountChanged      (int InSentenceCount);
+  void                          SignalSetMessage                (QString InMessage);
 
  //! Public Actions
  public :

@@ -28,10 +28,26 @@
  *****************************************************************************/
 class TextDisplayFormattingItem : public TextDisplayItem
 {
+ //! Public Types
+ public :
+  enum FormatType {
+    FormatTypeNone          = 0,
+    FormatTypePostVerse,
+    FormatTypePreVerse,
+    FormatTypeMidVerse,
+    FormatTypeMidVerseIndent,
+    FormatTypeSection,
+    FormatTypeWordBreak,
+    FormatTypeWordLower,
+    FormatTypeWordUpper,
+    FormatTypeWordCaptilize,
+  };
+
+  
  //! Constructors
  public :
   TextDisplayFormattingItem     (int InBook, QString InBookName, int InChapter, int InVerse,
-                                 int InFormatting);
+                                 enum FormatType InFormatting);
 
  //! Destructor
  public :

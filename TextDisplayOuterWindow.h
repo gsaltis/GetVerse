@@ -92,6 +92,7 @@ class TextDisplayOuterWindow : public QFrame
   void                          SlotSetBlockMode                (void);
   void                          SlotSetReferenceMode            (void);
   void                          SlotSetEditMode                 (void);
+  void                          SlotSetMessage          (QString InMessage);
 
  //! Public Signals
  signals :
@@ -107,6 +108,7 @@ class TextDisplayOuterWindow : public QFrame
   void                          SignalSetReferenceMode          (void);
   void                          SignalSetEditMode               (void);
   void                          SignalSetBlockMode              (void);
+  void                          SignalSetMessage        (QString InMessage);
   
  //! Public Actions
  public :

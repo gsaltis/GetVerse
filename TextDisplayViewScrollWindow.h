@@ -86,6 +86,7 @@ class TextDisplayViewScrollWindow : public QScrollArea
   void                          SlotVerseCountChanged           (int InVerseCount);
   void                          SlotSentenceCountChanged        (int InVerseCount);
   void                          SlotVerticalScrolled            (int InScrollAmount);
+  void                          SlotSetMessage                  (QString InMessage);
   
  //! Public Signals
  signals :
@@ -104,6 +105,7 @@ class TextDisplayViewScrollWindow : public QScrollArea
   void                          SignalVerseCountChanged         (int InVerseCount);
   void                          SignalSentenceCountChanged      (int InVerseCount);
   void                          SignalVerticalScrolled          ();
+  void                          SignalSetMessage                (QString InMessage);
   
  //! Public Actions
  public :

@@ -1,0 +1,19 @@
+{
+  "MainWindow" : {
+    "Location" : {
+      "x" : 530,
+      "y" : 0
+    },
+    "Size" : {
+      "width" : 1380,
+      "height" : 1020
+    }
+  },
+  "BlockWindow" : {
+    "Background" : {
+      "red"      : 255,
+      "green" : 218,
+      "blue" : 185
+    }
+  }
+}
