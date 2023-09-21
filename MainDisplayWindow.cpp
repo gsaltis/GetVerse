@@ -21,10 +21,11 @@
  * Function : MainDisplayWindow
  *****************************************************************************/
 MainDisplayWindow::MainDisplayWindow
-() : QWidget()
+(QString InBookName) : QWidget()
 {
   QPalette				pal;
 
+  BookName = InBookName;
   pal = palette();
   pal.setBrush(QPalette::Window, QBrush(QColor(160, 160, 192)));
   setPalette(pal);
@@ -73,7 +74,7 @@ MainDisplayWindow::CreateSubWindows()
   bookNameWindow->setParent(this);
   messageWindow = new MainMessageWindow();
   messageWindow->setParent(this);
-  displayWindow = new TextDisplayOuterWindow();
+  displayWindow = new TextDisplayOuterWindow(BookName);
   displayWindow->setParent(this);
 }
 

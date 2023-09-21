@@ -34,7 +34,7 @@ class MainDisplayWindow : public QWidget
 
  //! Constructors
  public :
-  MainDisplayWindow             ();
+  MainDisplayWindow             (QString InBookName);
 
  //! Destructor
  public :
@@ -65,6 +65,7 @@ class MainDisplayWindow : public QWidget
   BookNameWindow*               bookNameWindow;
   MainMessageWindow*            messageWindow;
   TextDisplayOuterWindow*       displayWindow;
+  QString                       BookName;
 
  //! Public Slots
  public slots :

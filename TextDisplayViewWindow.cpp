@@ -73,6 +73,7 @@ TextDisplayViewWindow::initialize()
   BlockRightMargin              = 100;
   EndOfSentencePadding          = 3;
   EndOfPhrasePadding            = 2;
+  BlockLinesAreJustified        = false;
   
   if ( DotsPerInchX ) {
     BlockLeftMargin             = DotsPerInchX;
@@ -80,7 +81,7 @@ TextDisplayViewWindow::initialize()
   }
   
   mode                          = ReferenceMode;
-  displayFont                   = QFont("Arial", 12, QFont::Normal);
+  displayFont                   = QFont("Times New Roman ", 16, QFont::Normal);
   
   InitializeSubWindows();  
   CreateSubWindows();
@@ -137,7 +138,7 @@ TextDisplayViewWindow::ArrangeItems
   int                                   x;
   int                                   y;
   int                                   windowWidth;
-  
+
   y             = topMargin;
   x             = leftMargin;  
   height        = 0;
@@ -609,9 +610,9 @@ TextDisplayViewWindow::resizeEvent
 (QResizeEvent* InEvent)
 {
   QSize                                 s;
-
   s = InEvent->size();
   tableWidth = s.width();
+  ArrangeItems();
   repaint();
 }
 
@@ -928,7 +929,9 @@ TextDisplayViewWindow::ArrangeItemsBlock
       }
       //!
       if ( itemWidth + x >= InWindowWidth ) {
-        LineJustify(InWindowWidth, lineEnd, lineStartIndex, lineEndIndex);
+        if ( BlockLinesAreJustified ) {
+          LineJustify(InWindowWidth, lineEnd, lineStartIndex, lineEndIndex);
+        }
         x = InX;
         lineEnd = x;
         y += itemHeight;
@@ -1047,7 +1050,6 @@ TextDisplayViewWindow::EditModeReferenceMouseSelect
   QString                               itemText;
 
   itemText = InItem->GetText();
-  TRACE_FUNCTION_QSTRING(itemText);
   book = InItem->GetBook();
   chapter = InItem->GetChapter();
   verse = InItem->GetVerse();
@@ -1065,7 +1067,8 @@ TextDisplayViewWindow::AddFormatting
   int                                   m;
   char                                  sqlstatement[1024];
   QString                               insertStatment;
-
+  TextDisplayFormattingItem*            formattingItem;
+  
   insertStatment = SQLStatement::GetFormattingInsert();
   sprintf(sqlstatement,
           insertStatment.toStdString().c_str(),
@@ -1080,6 +1083,14 @@ TextDisplayViewWindow::AddFormatting
     fprintf(stderr, "sqlite_exec() failed\n %s\n %d : %s\n", sqlstatement, m, sqlite3_errstr(m));
     return;
   }
+  bookInfo = FindBookInfoByIndex(InBook);
+  if ( bookInfo == NULL ) {
+    return;
+  }
+  formattingItem = new TextDisplayFormattingItem(InBook, bookInfo->name, InChapter, InVerse, InFormatting);
+  formattingItems.push_back(formattingItem);
+  ArrangeItems();
+  repaint();
   return;
 }
 
@@ -1091,13 +1102,14 @@ void
 TextDisplayViewWindow::EditModeWordMouseSelect
 (TextDisplayWordItem* InItem)
 {
+  (void)InItem;
+#if 0
   QString                               word;
   int                                   wordIndex;
 
   word = InItem->GetWord();
   wordIndex = InItem->GetWordIndex();
-  TRACE_FUNCTION_QSTRING(word);
-  TRACE_FUNCTION_INT(wordIndex);  
+#endif
 }
   
 /*****************************************************************************!
@@ -1353,3 +1365,17 @@ TextDisplayViewWindow::WordEndsInPunctuation
   return false;
 }
 
+/*****************************************************************************!
+ * Function : FindBookInfoByIndex
+ *****************************************************************************/
+BookInfo*
+TextDisplayViewWindow::FindBookInfoByIndex
+(int InBookIndex)
+{
+  for ( auto bookInfo : MainBookInfo ) {
+    if ( bookInfo->index == InBookIndex ) {
+      return bookInfo;
+    }
+  }
+  return NULL;
+}

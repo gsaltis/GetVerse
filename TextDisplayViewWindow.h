@@ -112,6 +112,7 @@ class TextDisplayViewWindow : public QWidget
   void                          AddFormatting           (int InBook, int InChapter, int InVerse, int InWord, int InFormatting);
 
   TextDisplayItem*              FindSelectedItem        (QPoint InLocation);
+  BookInfo*                     FindBookInfoByIndex     (int InBookIndex);
 
  //! Private Data
  private :
@@ -150,6 +151,8 @@ class TextDisplayViewWindow : public QWidget
 
   int                           EndOfSentencePadding;
   int                           EndOfPhrasePadding;
+
+  bool                          BlockLinesAreJustified;
   
  //! Public Slots
  public slots :

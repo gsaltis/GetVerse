@@ -301,15 +301,33 @@ int
 MainInitializeGUI
 (QApplication& InApplication)
 {
+  int                                   b;
   MainWindow* 				w;
   QSize                                 size;
   QPoint                                pos;
-  
+
+  if ( ! MainBook.isEmpty() ) {
+    b = MainVerifyBookName(MainBook);
+    switch (b) {
+      case BOOK_NOT_FOUND : {
+        fprintf(stderr, "%s was not found\n", MainBook.toStdString().c_str());
+        exit(EXIT_FAILURE);
+        break;
+      }
+      case DUPLICATE_BOOK : {
+        fprintf(stderr, "%s references duplicate bookd\n", MainBook.toStdString().c_str());
+        exit(EXIT_FAILURE);
+        break;
+      }
+    }
+    MainSearchBook = MainGetSearchableBookName(MainBook);
+  }
+    
   InApplication.setApplicationName("GetVerse");
   InApplication.setApplicationVersion(VERSION);
   InApplication.setOrganizationName("Greg Saltis");
   InApplication.setOrganizationDomain("www.gsaltis.com");
-  w = new MainWindow(NULL);
+  w = new MainWindow(MainSearchBook->name);
 
   size = MainSystemConfig->GetMainWindowSize();
   pos = MainSystemConfig->GetMainWindowLocation();
@@ -460,12 +478,11 @@ ProcessCommandLine
     return;
   }
 
-  if ( MainUseGUI ) {
-    return;
-  }
   if ( i == argc ) {
-    fprintf(stderr, "Missing book reference\n");
-    exit(EXIT_FAILURE);
+    if ( ! MainUseGUI ) {
+      fprintf(stderr, "Missing book reference\n");
+      exit(EXIT_FAILURE);
+    }
   }
 
   MainBook = QString(argv[i]);

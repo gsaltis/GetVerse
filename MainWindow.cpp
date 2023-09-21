@@ -41,6 +41,20 @@ MainWindow::MainWindow
 }
 
 /*****************************************************************************!
+ * Function : MainWindow
+ *****************************************************************************/
+MainWindow::MainWindow
+(QString InBookName)
+{
+  BookName = InBookName;
+  Initialize();
+  CreateActions();
+  CreateMenus();
+  InitializeSubWindows();
+  CreateSubWindows();
+}
+
+/*****************************************************************************!
  * Function : ~MainWindow
  *****************************************************************************/
 MainWindow::~MainWindow
@@ -64,7 +78,7 @@ MainWindow::Initialize()
 void
 MainWindow::CreateSubWindows()
 {
-  displayWindow = new MainDisplayWindow();  
+  displayWindow = new MainDisplayWindow(BookName);
   displayWindow->setParent(this);
   statusbar = statusBar();
 }

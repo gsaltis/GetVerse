@@ -61,14 +61,14 @@ TextDisplayFormattingItem::Draw
 
   switch ( Formatting ) {
     case 1 : {
-      st = QChar(0x25BC);
+      st = QChar(0x25B2);
       xd = Size.width() - si.width();
       xd /= 4;
       x += xd;
       break;
     }
     case 2 : {
-      st = QChar(0x25B2);
+      st = QChar(0x25BC);
       xd = Size.width() - si.width();
       xd /= 4;
       x += xd;

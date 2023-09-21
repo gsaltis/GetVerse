@@ -22,9 +22,17 @@
  * Function : TextDisplayOuterWindow
  *****************************************************************************/
 TextDisplayOuterWindow::TextDisplayOuterWindow
-() : QFrame()
+(QString InBookName) : QFrame()
 {
   QPalette pal;
+  BookInfo*                     bookInfo;
+
+  BookInfoIndex = -1;
+  BookName = InBookName;
+  bookInfo = FindBookInfoByName(InBookName);
+  if ( bookInfo ) {
+   BookInfoIndex = bookInfo->index;
+  }
   pal = palette();
   pal.setBrush(QPalette::Window, QBrush(QColor(224, 224, 224)));
   setPalette(pal);
@@ -32,6 +40,9 @@ TextDisplayOuterWindow::TextDisplayOuterWindow
   setFrameShadow(QFrame::Sunken);
   setFrameStyle(QFrame::Panel);
   initialize();
+  if ( BookInfoIndex > -1 ) {
+    SlotBookSelected(BookInfoIndex);
+  }
 }
 
 /*****************************************************************************!
@@ -382,4 +393,19 @@ TextDisplayOuterWindow::SlotSentenceCountChanged
 (int InSentenceCount)
 {
   emit SignalSentenceCountChanged(InSentenceCount);
+}
+
+/*****************************************************************************!
+ * Function : FindBookInfoByName
+ *****************************************************************************/
+BookInfo*
+TextDisplayOuterWindow::FindBookInfoByName
+(QString InBookName)
+{
+  for ( auto bookInfo : MainBookInfo ) {
+    if ( bookInfo->name == InBookName ) {
+      return bookInfo;
+    }
+  }
+  return NULL;
 }

@@ -42,7 +42,7 @@ class TextDisplayOuterWindow : public QFrame
 
  //! Constructors
  public :
-  TextDisplayOuterWindow        ();
+  TextDisplayOuterWindow        (QString InBookName);
 
  //! Destructor
  public :
@@ -67,6 +67,7 @@ class TextDisplayOuterWindow : public QFrame
   void                          InitializeSubWindows    ();
   void                          resizeEvent             (QResizeEvent* InEvent);
   void                          CreateConnections       (void);
+  BookInfo*                     FindBookInfoByName      (QString InBookName);
 
  //! Private Data
  private :
@@ -74,7 +75,9 @@ class TextDisplayOuterWindow : public QFrame
   TextDisplayReferenceWindow*   referenceWindow;
   TextDisplayViewScrollWindow*  viewWindow;
   TextControlBar*               controlBar;
-
+  QString                       BookName;
+  int                           BookInfoIndex;
+  
  //! Public Slots
  public slots :
   void                          SlotBookSelected                (int InBookIndex);
