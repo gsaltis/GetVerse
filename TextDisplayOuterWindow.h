@@ -93,6 +93,8 @@ class TextDisplayOuterWindow : public QFrame
   void                          SlotSetReferenceMode            (void);
   void                          SlotSetEditMode                 (void);
   void                          SlotSetMessage          (QString InMessage);
+  void                          SlotChapterScrolled             (int InChapter);
+  void                          SlotChapterSelected             (int InChapter);
 
  //! Public Signals
  signals :
@@ -108,7 +110,9 @@ class TextDisplayOuterWindow : public QFrame
   void                          SignalSetReferenceMode          (void);
   void                          SignalSetEditMode               (void);
   void                          SignalSetBlockMode              (void);
-  void                          SignalSetMessage        (QString InMessage);
+  void                          SignalSetMessage                (QString InMessage);
+  void                          SignalChapterSelected           (int InCurrentChapter);
+  void                          SignalChapterScrolled           (int InCurrentChapter);
   
  //! Public Actions
  public :

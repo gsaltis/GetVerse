@@ -51,6 +51,7 @@ SOURCES                         += \
 				   TextDisplayReferenceItem.cpp                 \
 				   TextDisplayReferenceWindow.cpp               \
 				   TextDisplayViewScrollWindow.cpp              \
+				   TextDisplayViewScrollBar.cpp                 \
 				   TextDisplayViewWindow.cpp                    \
 				   TextDisplayViewWindowItem.cpp                \
 				   TextDisplayViewWindowReferenceItem.cpp       \
@@ -78,6 +79,7 @@ HEADERS                         += \
 				   TextDisplayOuterWindow.h                     \
 				   TextDisplayReferenceItem.h                   \
 				   TextDisplayReferenceWindow.h                 \
+				   TextDisplayViewScrollBar.h                   \
 				   TextDisplayViewScrollWindow.h                \
 				   TextDisplayViewWindow.h                      \
 				   TextDisplayViewWindowItem.h                  \

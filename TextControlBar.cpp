@@ -152,6 +152,12 @@ TextControlBar::CreateSubWindows()
   GroupingCountLabel->setText("00000000");
   GroupingCountLabel->setAlignment(Qt::AlignLeft);
   GroupingCountLabel->setFont(QFont("Arial", 10, QFont::Normal));
+
+  //! Add Chapter Pull Down
+  ChapterSelect = new QSpinBox();
+  ChapterSelect->setParent(this);
+  ChapterSelect->resize(120, 20);
+  ChapterSelect->move(0, 0);
 }
 
 /*****************************************************************************!
@@ -191,6 +197,11 @@ TextControlBar::resizeEvent
   int                                   GroupingCountLabelY;
   int                                   GroupingCountLabelW;
   int                                   GroupingCountLabelH;
+
+  int                                   ChapterSelectX;
+  int                                   ChapterSelectY;
+  int                                   ChapterSelectW;
+  int                                   ChapterSelectH;
   
   size = InEvent->size();
   height = size.height();
@@ -253,6 +264,16 @@ TextControlBar::resizeEvent
   GroupingCountLabel->move(GroupingCountLabelX, GroupingCountLabelY);
   GroupingCountLabel->resize(GroupingCountLabelW, GroupingCountLabelH);
 
+  //!
+  ChapterSelectW = 60;
+  ChapterSelectH = height - 4;
+
+  ChapterSelectY = 2;
+  ChapterSelectX =  width - (GroupingLabelW + GroupingCountLabelW + WordLabelW + WordCountLabelW + ChapterSelectW + 5 + RightMargin);
+
+  ChapterSelect->move(ChapterSelectX, ChapterSelectY);
+  ChapterSelect->resize(ChapterSelectW, ChapterSelectH);
+  
   grad.setColorAt(0, QColor(137, 137, 145));
   grad.setColorAt(1, QColor(241, 244, 255));
   pal = palette();
@@ -362,4 +383,26 @@ TextControlBar::SlotSentenceCountChanged
 (int InSentenceCount)
 {
   GroupingCountLabel->setText(QString("%1").arg(InSentenceCount));
+}
+
+/*****************************************************************************!
+ * Function : SlotSetChapter
+ *****************************************************************************/
+void
+TextControlBar::SlotSetChapter
+(int InChapter)
+{
+  ChapterSelect->setValue(InChapter);
+}
+
+/*****************************************************************************!
+ * Function : SetChapterSelectMax
+ *****************************************************************************/
+void
+TextControlBar::SlotSetChapterSelectMax
+(int InChapter)
+{
+  ChapterSelect->setMaximum(InChapter);
+  ChapterSelect->setMinimum(1);
+  ChapterSelect->setValue(1);
 }

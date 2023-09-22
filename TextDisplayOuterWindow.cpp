@@ -194,6 +194,7 @@ TextDisplayOuterWindow::SlotBookSelected
   }
   header->SetText(bookInfo->GetCapitalizedBookName());
   viewWindow->ClearText();
+  emit controlBar->SlotSetChapter(bookInfo->chapters);
   emit SignalBookSelected(bookInfo);
 }
 
@@ -203,6 +204,26 @@ TextDisplayOuterWindow::SlotBookSelected
 void
 TextDisplayOuterWindow::CreateConnections(void)
 {
+  connect(viewWindow,
+          SIGNAL(SignalChapterSelected(int)),
+          this,          
+          SLOT(SlotChapterSelected(int)));
+  
+  connect(viewWindow,
+          SIGNAL(SignalChapterScrolled(int)),
+          this,
+          SLOT(SlotChapterScrolled(int)));
+
+  connect(this,
+          SIGNAL(SignalChapterScrolled(int)),
+          controlBar,
+          SLOT(SlotSetChapter(int)));
+  
+  connect(this,
+          SIGNAL(SignalChapterSelected(int)),
+          controlBar,
+          SLOT(SlotSetChapter(int)));
+  
   connect(this,
           SIGNAL(SignalBookSelected(BookInfo*)),
           referenceWindow,
@@ -422,4 +443,24 @@ TextDisplayOuterWindow::SlotSetMessage
 (QString InMessage)
 {
   emit SignalSetMessage(InMessage);
+}
+
+/*****************************************************************************!
+ * Function : SlotChapterScrolled
+ *****************************************************************************/
+void
+TextDisplayOuterWindow::SlotChapterSelected
+(int InChapter)
+{
+  emit SignalChapterSelected(InChapter);
+}
+
+/*****************************************************************************!
+ * Function : SlotChapterScrolled
+ *****************************************************************************/
+void
+TextDisplayOuterWindow::SlotChapterScrolled
+(int InChapter)
+{
+  emit SignalChapterScrolled(InChapter);
 }

@@ -113,6 +113,7 @@ class TextDisplayViewWindow : public QWidget
 
   TextDisplayItem*              FindSelectedItem        (QPoint InLocation);
   BookInfo*                     FindBookInfoByIndex     (int InBookIndex);
+  TextDisplayReferenceItem*     FindDisplayReferenceByChapterVerse      (int InChapter, int InVerse);
 
  //! Private Data
  private :
@@ -162,6 +163,7 @@ class TextDisplayViewWindow : public QWidget
   void                          SlotSetReferenceMode            (void);
   void                          SlotSetEditMode                 (void);
   void                          SlotVerticalScrolled            (void);
+  void                          SlotSelectChapter       (int InChapter);
   
  //! Public Signals
  signals :
@@ -179,6 +181,7 @@ class TextDisplayViewWindow : public QWidget
   void                          SignalVerseCountChanged         (int InVerseCount);
   void                          SignalSentenceCountChanged      (int InSentenceCount);
   void                          SignalSetMessage                (QString InMessage);
+  void                          SignalLocationSelected  (QPoint InLocation);
 
  //! Public Actions
  public :

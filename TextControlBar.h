@@ -16,6 +16,8 @@
 #include <QPushButton>
 #include <QAction>
 #include <QLabel>
+#include <QSlider>
+#include <QSpinBox>
 
 /*****************************************************************************!
  * Local Headers
@@ -78,6 +80,7 @@ class TextControlBar : public QWidget
   int                           ButtonHeight;
   QLabel*                       GroupingLabel;
   QLabel*                       GroupingCountLabel;
+  QSpinBox*                     ChapterSelect;
   
  //! Public Slots
  public slots :
@@ -89,6 +92,8 @@ class TextControlBar : public QWidget
   void                          SlotWordCountChanged            (int);
   void                          SlotVerseCountChanged           (int);
   void                          SlotSentenceCountChanged        (int);
+  void                          SlotSetChapter                  (int InChapter);
+  void                          SlotSetChapterSelectMax         (int InChapter);
 
  //! Public Signals
  signals :

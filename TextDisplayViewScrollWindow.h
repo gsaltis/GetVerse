@@ -19,6 +19,7 @@
  * Local Headers
  *****************************************************************************/
 #include "TextDisplayViewWindow.h"
+#include "TextDisplayViewScrollBar.h"
 
 /*****************************************************************************!
  * Exported Macros
@@ -68,7 +69,8 @@ class TextDisplayViewScrollWindow : public QScrollArea
  private :
   TextDisplayViewWindow*        viewWindow;
   QScrollBar*                   verticalBar;
-  
+  TextDisplayViewScrollBar*     VScrollBar;
+
  //! Public Slots
  public slots :
   void                          SlotBookSelected                (BookInfo* InBookInfo);
@@ -87,6 +89,9 @@ class TextDisplayViewScrollWindow : public QScrollArea
   void                          SlotSentenceCountChanged        (int InVerseCount);
   void                          SlotVerticalScrolled            (int InScrollAmount);
   void                          SlotSetMessage                  (QString InMessage);
+  void                          SlotChapterScrolled             (int InChapter);
+  void                          SlotChapterSelected             (int InChapter);
+  void                          SlotLocationSelected    (QPoint InLocation);
   
  //! Public Signals
  signals :
@@ -106,6 +111,9 @@ class TextDisplayViewScrollWindow : public QScrollArea
   void                          SignalSentenceCountChanged      (int InVerseCount);
   void                          SignalVerticalScrolled          ();
   void                          SignalSetMessage                (QString InMessage);
+
+  void                          SignalChapterSelected           (int InCurrentChapter);
+  void                          SignalChapterScrolled           (int InCurrentChapter);
   
  //! Public Actions
  public :

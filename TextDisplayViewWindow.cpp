@@ -1388,3 +1388,39 @@ TextDisplayViewWindow::FindBookInfoByIndex
   }
   return NULL;
 }
+
+/*****************************************************************************!
+ * Function : SlotSelectChapter
+ *****************************************************************************/
+void
+TextDisplayViewWindow::SlotSelectChapter
+(int InChapter)
+{
+  QPoint                                loc;
+  TextDisplayReferenceItem*             item;
+
+  item = FindDisplayReferenceByChapterVerse(InChapter, 1);
+  if ( NULL == item ) {
+    return;
+  }
+
+  loc = item->GetLocation();
+  emit SignalLocationSelected(loc);
+}
+
+/*****************************************************************************!
+ * Function : FindDisplayReferenceByChapterVerse
+ *****************************************************************************/
+TextDisplayReferenceItem*
+TextDisplayViewWindow::FindDisplayReferenceByChapterVerse
+(int InChapter, int InVerse)
+{
+  for ( auto item : textItems ) {
+    if ( item->GetType() == TextDisplayItem::ReferenceType ) {
+      if ( item->GetChapter() == InChapter && item->GetVerse() == InVerse ) {
+        return (TextDisplayReferenceItem*)item;
+      }
+    }
+  }
+  return NULL;
+}

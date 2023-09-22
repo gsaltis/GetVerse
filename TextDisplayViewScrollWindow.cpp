@@ -46,9 +46,9 @@ TextDisplayViewScrollWindow::~TextDisplayViewScrollWindow
 void
 TextDisplayViewScrollWindow::initialize()
 {
-  verticalBar = verticalScrollBar();
   InitializeSubWindows();  
   CreateSubWindows();
+  verticalBar = verticalScrollBar();
   CreateConnections();
 }
 
@@ -60,6 +60,9 @@ TextDisplayViewScrollWindow::CreateSubWindows()
 {
   viewWindow = new TextDisplayViewWindow();
   setWidget(viewWindow);
+
+  VScrollBar = new TextDisplayViewScrollBar();
+  setVerticalScrollBar(VScrollBar);
 }
 
 /*****************************************************************************!
@@ -108,6 +111,7 @@ TextDisplayViewScrollWindow::SlotBookSelected
 {
   QScrollBar*                           vBar;
 
+  VScrollBar->SetChapterCount(InBookInfo->chapters);
   vBar = verticalScrollBar();
   vBar->setValue(0);
   emit SignalBookSelected(InBookInfo);
@@ -119,6 +123,26 @@ TextDisplayViewScrollWindow::SlotBookSelected
 void
 TextDisplayViewScrollWindow::CreateConnections(void)
 {
+  connect(VScrollBar,
+          SIGNAL(SignalChapterSelected(int)),
+          this,
+          SLOT(SlotChapterSelected(int)));
+
+  connect(VScrollBar,
+          SIGNAL(SignalChapterSelected(int)),
+          viewWindow,
+          SLOT(SlotSelectChapter(int)));
+
+  connect(VScrollBar,
+          SIGNAL(SignalChapterScrolled(int)),
+          this,
+          SLOT(SlotChapterScrolled(int)));
+
+  connect(viewWindow,
+          SIGNAL(SignalLocationSelected(QPoint)),
+          this,
+          SLOT(SlotLocationSelected(QPoint)));
+  
   connect(this,
           SIGNAL(SignalBookSelected(BookInfo*)),
           viewWindow,
@@ -313,4 +337,34 @@ TextDisplayViewScrollWindow::SlotSetMessage
 (QString InMessage)
 {
   emit SignalSetMessage(InMessage);
+}
+
+/*****************************************************************************!
+ * Function : SlotChapterScrolled
+ *****************************************************************************/
+void
+TextDisplayViewScrollWindow::SlotChapterSelected
+(int InChapter)
+{
+  emit SignalChapterSelected(InChapter);
+}
+
+/*****************************************************************************!
+ * Function : SlotChapterScrolled
+ *****************************************************************************/
+void
+TextDisplayViewScrollWindow::SlotChapterScrolled
+(int InChapter)
+{
+  emit SignalChapterScrolled(InChapter);
+}
+
+/*****************************************************************************!
+ * Function : SlotLocationSelected
+ *****************************************************************************/
+void
+TextDisplayViewScrollWindow::SlotLocationSelected
+(QPoint InLocation)
+{
+  VScrollBar->setValue(InLocation.y());
 }
