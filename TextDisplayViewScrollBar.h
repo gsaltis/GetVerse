@@ -53,8 +53,10 @@ class TextDisplayViewScrollBar : public QScrollBar
  //! Protected Methods
  protected :
   void                          mousePressEvent         (QMouseEvent* InEvent);
+  void                          mouseReleaseEvent       (QMouseEvent* InEvent);
   void                          mouseMoveEvent          (QMouseEvent* InEvent);
   void                          resizeEvent             (QResizeEvent* InEvent);
+  void                          keyReleaseEvent         (QKeyEvent* InEvent);
   
  //! Protected Data
  protected :
@@ -65,11 +67,16 @@ class TextDisplayViewScrollBar : public QScrollBar
   void                          CreateSubWindows        ();
   void                          InitializeSubWindows    ();
   void                          MouseChapterSelect      (QPoint InPoint);
+  void                          leaveEvent              (QEvent* InEvent);
+  void                          paintEvent              (QPaintEvent* InEvent);
   
  //! Private Data
  private :
   int                           ChapterCount;
-
+  bool                          ChapterScrollingMode;
+  QPoint                        currentMouseLocation;
+  bool                          MouseDown;
+  
  //! Public Slots
  public slots :
 
