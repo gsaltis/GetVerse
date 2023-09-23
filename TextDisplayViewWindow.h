@@ -88,6 +88,7 @@ class TextDisplayViewWindow : public QWidget
   QSize                         ComputeSize             ();
   void                          GetMaxReferenceWidth    ();
   int                           GetVerseCount           ();
+  
   TextDisplayFormattingItem::FormatType
                                 GetFormattingByReference(int InBook, int InChapter, int InVerse);
   void                          PaintReferenceMode      (QPainter* InPainter, QRect InRect);
@@ -100,7 +101,8 @@ class TextDisplayViewWindow : public QWidget
   int                           ArrangeItemsBlock       (int InX, int InY, int InWindowWidth);
   int                           ArrangeItemsEdit        (int InX, int InY, int InWindowWidth);
   int                           ArrangeItemsSentence    (int InX, int InY, int InWindowWidth);
-  TextDisplayFormattingItem*    FindFormattingItem      (int InBook, int InChapter, int InVerse);
+  TextDisplayFormattingItem*    FindReferenceFormattingItem (int InBook, int InChapter, int InVerse, int InWord);
+  TextDisplayFormattingItem*    FindWordFormattingItem  (int InBook, int InChapter, int InVerse, int InWord);
   void                          LineJustify             (int InWindowWidth, int InLineEnd, int InLineStartIndex, int InLineEndIndex);
   int                           LineJustifyPunctuation  (int InLineRemaining, int InLineStartIndex, int InLineEndIndex);
   void                          LineJustifyWords        (int InLineRemaining, int InLineStartIndex, int InLineEndIndex);

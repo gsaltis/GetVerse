@@ -45,6 +45,7 @@ class TextDisplayWordItem : public TextDisplayItem
   virtual void                  SetFont                 (QFont InFont);
   virtual bool                  Contains                (QPoint InPaint);
   virtual QString               GetText                 (void);
+  virtual bool                  IsReference             (const int InBook, const int InChapter, const int InVerse, const int InWord);
   QString                       GetWord                 (void);
   void                          SetWord                 (QString InWord);
   

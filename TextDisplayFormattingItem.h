@@ -56,6 +56,7 @@ class TextDisplayFormattingItem : public TextDisplayItem
  //! Public Methods
  public :
   virtual void                  Draw                    (QPainter* InPainter);
+  FormatType                    GetFormattingType       ();
   
  //! Public Data
  public :

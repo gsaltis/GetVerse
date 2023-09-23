@@ -255,7 +255,7 @@ TextDisplayItem::GetBoundingRect
  *****************************************************************************/
 bool
 TextDisplayItem::IsReference
-(const int InBook, const int InChapter, const int InVerse)
+(const int InBook, const int InChapter, const int InVerse, const int)
 {
   if ( InBook == Book && InChapter == Chapter && InVerse == Verse ) {
     return true;

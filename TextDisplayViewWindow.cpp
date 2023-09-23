@@ -755,7 +755,7 @@ TextDisplayViewWindow::ArrangeItemsEdit
         if ( isFirst ) {
           y += InterLineSkip + itemHeight;
         }
-        formattingItem = FindFormattingItem(item->GetBook(), item->GetChapter(), item->GetVerse());
+        formattingItem = FindReferenceFormattingItem(item->GetBook(), item->GetChapter(), item->GetVerse(), 0);
         if ( formattingItem ) {
           formattingItem->SetLocation(QPoint(leftMargin, y + InterLineSkip));
           formattingItem->SetSize(QSize(EditViewReferenceIndent - leftMargin, itemHeight));
@@ -767,6 +767,24 @@ TextDisplayViewWindow::ArrangeItemsEdit
         continue;
       }
 
+      if ( item->GetType() == TextDisplayItem::WordType ) {
+        TextDisplayWordItem*                    wordItem = (TextDisplayWordItem*)item;
+        
+        formattingItem = FindWordFormattingItem(wordItem->GetBook(), wordItem->GetChapter(), wordItem->GetVerse(),
+                                                wordItem->GetWordIndex());
+        if ( formattingItem ) {
+          TRACE_FUNCTION_LOCATION();
+          formattingItem->SetLocation(QPoint(x, y + InterLineSkip));
+          formattingItem->SetSize(QSize(3, itemHeight));
+          x += 4;
+          item->SetLocation(QPoint(x, y));
+          x += s.width() + 4 + wordSkip;
+          continue;
+        }
+        item->SetLocation(QPoint(x, y));
+        x += s.width() + 4 + wordSkip;
+        continue;
+      }
       if ( itemWidth + x >= InWindowWidth ) {
         x = leftMargin + referenceWidth + InterWordSkip + EditViewReferenceIndent;
         y += InterLineSkip + itemHeight;
@@ -865,7 +883,8 @@ TextDisplayViewWindow::ArrangeItemsBlock
   int                                   lineEndIndex;
   QPoint                                location;
   TextDisplayItem::ParagraphPosition    paragraphPosition;
-  
+
+  //!
   lineEnd       = InX;
   x             = InX;
   y             = InY;
@@ -875,7 +894,8 @@ TextDisplayViewWindow::ArrangeItemsBlock
   lineEndIndex = 0;
   n = textItems.size();
   paragraphPosition = TextDisplayItem::MidParagraph;
-  
+
+  //!
   do {
     for (i = 0; i < n; i++) {
       item = textItems[i];
@@ -1115,6 +1135,8 @@ TextDisplayViewWindow::EditModeWordMouseSelect
   QString                               word;
   int                                   wordIndex;
 
+  AddFormatting(InItem->GetBook(), InItem->GetChapter(), InItem->GetVerse(), InItem->GetWordIndex(),
+                TextDisplayFormattingItem::FormatTypeWordBreak);
   word = InItem->GetWord();
   wordIndex = InItem->GetWordIndex();
   st = QString("%1:%2").arg(word).arg(wordIndex);
@@ -1196,15 +1218,41 @@ TextDisplayViewWindow::SlotVerticalScrolled(void)
 }
 
 /*****************************************************************************!
- * Function : FindFormattingItem
+ * Function : FindWordFormattingItem
  *****************************************************************************/
 TextDisplayFormattingItem*
-TextDisplayViewWindow::FindFormattingItem
-(int InBook, int InChapter, int InVerse)
+TextDisplayViewWindow::FindWordFormattingItem
+(int InBook, int InChapter, int InVerse, int InWord)
 {
+  TextDisplayFormattingItem::FormatType         formattingType;
+  
   for ( auto item : formattingItems ) {
-    if ( item->IsReference(InBook, InChapter, InVerse) ) {
-      return item;
+    if ( item->IsReference(InBook, InChapter, InVerse, InWord) ) {
+      formattingType = item->GetFormattingType();
+      if ( formattingType == TextDisplayFormattingItem::FormatTypeWordBreak ) {
+        return item;
+      }
+    }
+  }
+  return NULL;
+}
+
+/*****************************************************************************!
+ * Function : FindReferenceFormattingItem
+ *****************************************************************************/
+TextDisplayFormattingItem*
+TextDisplayViewWindow::FindReferenceFormattingItem
+(int InBook, int InChapter, int InVerse, int InWord)
+{
+  TextDisplayFormattingItem::FormatType         formattingType;
+  
+  for ( auto item : formattingItems ) {
+    if ( item->IsReference(InBook, InChapter, InVerse, InWord) ) {
+      formattingType = item->GetFormattingType();
+      if ( formattingType == TextDisplayFormattingItem::FormatTypePostVerse ||
+           formattingType == TextDisplayFormattingItem::FormatTypePreVerse ) {
+        return item;
+      }
     }
   }
   return NULL;

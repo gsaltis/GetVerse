@@ -67,10 +67,10 @@ class TextDisplayItem
   void                          SetForeground           (QColor InForeground);
   DisplayType                   GetType                 ();
   QRect                         GetBoundingRect         ();
-  bool                          IsReference             (const int InBook, const int InChapter, const int InVerse);
   void                          SetParagraphPosition    (ParagraphPosition InPosition);
   ParagraphPosition             GetParagraphPosition    ();
 
+  virtual bool                  IsReference             (const int InBook, const int InChapter, const int InVerse, const int InWord);
   virtual void                  SetFont                 (QFont InFont);
   virtual QString               GetText                 (void);
   virtual void                  Draw                    (QPainter* InPainter);

@@ -90,3 +90,13 @@ TextDisplayFormattingItem::Draw
   InPainter->drawText(QPoint(x, y), st);
 }
 
+
+/*****************************************************************************!
+ * Function : GetFormattingType
+ *****************************************************************************/
+TextDisplayFormattingItem::FormatType
+TextDisplayFormattingItem::GetFormattingType
+()
+{
+  return (TextDisplayFormattingItem::FormatType)Formatting;
+}
