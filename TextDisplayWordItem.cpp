@@ -154,7 +154,6 @@ TextDisplayWordItem::Contains
   return r.contains(InPoint);
 }
 
-
 /*****************************************************************************!
  * Function : IsReference
  *****************************************************************************/
@@ -162,7 +161,6 @@ bool
 TextDisplayWordItem::IsReference
 (const int InBook, const int InChapter, const int InVerse, const int InWord)
 {
-  TRACE_FUNCTION_LOCATION();
   if ( InBook == Book && InChapter == Chapter && InVerse == Verse && InWord == WordIndex ) {
     return true;
   }

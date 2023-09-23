@@ -91,6 +91,8 @@ class TextDisplayViewWindow : public QWidget
   
   TextDisplayFormattingItem::FormatType
                                 GetFormattingByReference(int InBook, int InChapter, int InVerse);
+  TextDisplayFormattingItem::FormatType
+                                GetWordFormattingByReference    (int InBook, int InChapter, int InVerse, int InWord);
   void                          PaintReferenceMode      (QPainter* InPainter, QRect InRect);
   void                          PaintSentenceMode       (QPainter* InPainter, QRect InRect);
   void                          PaintBlockMode          (QPainter* InPainter, QRect InRect);
@@ -101,7 +103,7 @@ class TextDisplayViewWindow : public QWidget
   int                           ArrangeItemsBlock       (int InX, int InY, int InWindowWidth);
   int                           ArrangeItemsEdit        (int InX, int InY, int InWindowWidth);
   int                           ArrangeItemsSentence    (int InX, int InY, int InWindowWidth);
-  TextDisplayFormattingItem*    FindReferenceFormattingItem (int InBook, int InChapter, int InVerse, int InWord);
+  TextDisplayFormattingItem*    FindReferenceFormattingItem (int InBook, int InChapter, int InVerse);
   TextDisplayFormattingItem*    FindWordFormattingItem  (int InBook, int InChapter, int InVerse, int InWord);
   void                          LineJustify             (int InWindowWidth, int InLineEnd, int InLineStartIndex, int InLineEndIndex);
   int                           LineJustifyPunctuation  (int InLineRemaining, int InLineStartIndex, int InLineEndIndex);

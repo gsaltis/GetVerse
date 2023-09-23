@@ -24,6 +24,7 @@
 #include "TextDisplayViewWindowItem.h"
 #include "TextDisplayViewWindowReferenceItem.h"
 #include "TextDisplayReferenceItem.h"
+#include "TextDisplayWordFormattingItem.h"
 #include "TextDisplayWordItem.h"
 #include "SQLStatement.h"
 
@@ -400,9 +401,21 @@ TextDisplayViewWindow::AddLineText
   n = words.size();
 
   for ( i = 0; i < n; i++ ) {
+    TextDisplayWordFormattingItem*              formattingItem;
     item = new TextDisplayWordItem(bookInfo->index, InChapter, InVerse, words[i], i + 1);
     item->SetFont(displayFont);
     textItems.push_back(item);
+    formatting = GetWordFormattingByReference(bookInfo->index, InChapter, InVerse, i + 1);
+    if ( formatting ) {
+      formattingItem = new TextDisplayWordFormattingItem(bookInfo->index,
+                                                         bookInfo->GetCapitalizedBookName(),
+                                                         InChapter,
+                                                         InVerse,
+                                                         i + 1,
+                                                         (TextDisplayFormattingItem::FormatType)formatting);
+      formattingItems.push_back(formattingItem);
+  }
+    
     tmpVerseCount++;
     wordCount++;
     emit SignalUpdateProgressBar(tmpVerseCount);
@@ -568,8 +581,58 @@ TextDisplayViewWindow::GetFormattingByReference
   sqlite3_stmt*                         statement;
   QString                               query;
   
-  query = QString("SELECT type FROM Formatting WHERE book is %1 and chapter is %2 and verse is %3;\n").
+  query = QString("SELECT type FROM Formatting WHERE book is %1 and chapter is %2 and verse is %3 and word is 0;\n").
     arg(InBook).arg(InChapter).arg(InVerse);
+
+  n = sqlite3_prepare_v2(MainDatabase, query.toStdString().c_str(),
+                         query.length(), &statement, NULL);
+  if ( n != SQLITE_OK ) {
+    fprintf(stderr, "sqlite3_prepare_v2() %s failed\n  %s\n  %s\n",
+            __FUNCTION__,
+            query.toStdString().c_str(),
+            sqlite3_errstr(n));
+    return TextDisplayFormattingItem::FormatTypeNone;
+  }
+  type = 0;
+  retryCount = 0;
+  do {
+    n = sqlite3_step(statement);
+    if ( SQLITE_BUSY == n ) {
+      QThread::msleep(30);
+      retryCount++;
+      if ( retryCount > 10 ) {
+        break;
+      }
+      continue;
+    }
+    if ( SQLITE_DONE == n ) {
+      break;
+    }
+
+    if ( SQLITE_ROW == n ) {
+      type = sqlite3_column_int(statement, 0);
+      break;
+    }
+  } while (true);
+  sqlite3_finalize(statement);
+  return (TextDisplayFormattingItem::FormatType)type;
+}
+
+/*****************************************************************************!
+ * Function : GetWordFormattingByReference
+ *****************************************************************************/
+TextDisplayFormattingItem::FormatType
+TextDisplayViewWindow::GetWordFormattingByReference
+(int InBook, int InChapter, int InVerse, int InWord)
+{
+  int                                   type;
+  int                                   n;
+  int                                   retryCount;
+  sqlite3_stmt*                         statement;
+  QString                               query;
+  
+  query = QString("SELECT type FROM Formatting WHERE book is %1 and chapter is %2 and verse is %3 and word is %4;\n").
+    arg(InBook).arg(InChapter).arg(InVerse).arg(InWord);
 
   n = sqlite3_prepare_v2(MainDatabase, query.toStdString().c_str(),
                          query.length(), &statement, NULL);
@@ -736,26 +799,32 @@ TextDisplayViewWindow::ArrangeItemsEdit
   int                                   wordSkip;
   int                                   x;
   int                                   y;
+  int                                   i;
+  int                                   n;
+  TextDisplayItem*                      item;
   
   x             = InX;
   y             = InY;
   windowHeight  = 0;
 
+  n = textItems.size();
   isFirst = false;
   do {
-    for ( auto item : textItems ) {
+    for ( i = 0 ; i < n; i++ ) {
+      item = textItems[i];
       wordSkip = InterWordSkip;
       
       s = item->GetSize();
       itemWidth = s.width();
       itemHeight = s.height();
-      
+
+      //!
       if ( item->GetType() == TextDisplayItem::ReferenceType ) {
         x = leftMargin + EditViewReferenceIndent;
         if ( isFirst ) {
           y += InterLineSkip + itemHeight;
         }
-        formattingItem = FindReferenceFormattingItem(item->GetBook(), item->GetChapter(), item->GetVerse(), 0);
+        formattingItem = FindReferenceFormattingItem(item->GetBook(), item->GetChapter(), item->GetVerse());
         if ( formattingItem ) {
           formattingItem->SetLocation(QPoint(leftMargin, y + InterLineSkip));
           formattingItem->SetSize(QSize(EditViewReferenceIndent - leftMargin, itemHeight));
@@ -767,13 +836,12 @@ TextDisplayViewWindow::ArrangeItemsEdit
         continue;
       }
 
+      //!
       if ( item->GetType() == TextDisplayItem::WordType ) {
         TextDisplayWordItem*                    wordItem = (TextDisplayWordItem*)item;
-        
         formattingItem = FindWordFormattingItem(wordItem->GetBook(), wordItem->GetChapter(), wordItem->GetVerse(),
                                                 wordItem->GetWordIndex());
         if ( formattingItem ) {
-          TRACE_FUNCTION_LOCATION();
           formattingItem->SetLocation(QPoint(x, y + InterLineSkip));
           formattingItem->SetSize(QSize(3, itemHeight));
           x += 4;
@@ -808,7 +876,12 @@ TextDisplayViewWindow::PaintEditMode
 {
   QRect                                 itemR;
 
-  
+  QPoint                                TL;
+  QPoint                                BR;
+
+  TL = InRect.topLeft();
+  BR = InRect.bottomRight();
+
   for ( auto item : textItems ) {
     itemR = QRect(item->GetBoundingRect());
     if ( ! InRect.contains(itemR) ) {
@@ -821,9 +894,23 @@ TextDisplayViewWindow::PaintEditMode
     }
   }
   for ( auto item : formattingItems ) {
+    TextDisplayFormattingItem*          formattingItem;
+    TextDisplayWordFormattingItem*      wordFormattingItem;
+    
+    formattingItem = (TextDisplayFormattingItem*)item;
+    auto formatting = formattingItem->GetFormattingType();
     itemR = QRect(item->GetBoundingRect());
+
     if ( InRect.contains(itemR) ) {
-      item->Draw(InPainter);
+      if ( formatting == TextDisplayFormattingItem::FormatTypeWordBreak ) {
+        wordFormattingItem = (TextDisplayWordFormattingItem*)item;
+        wordFormattingItem->Draw(InPainter);
+      } else {
+        item->Draw(InPainter);
+      } 
+    }
+    if ( formatting == TextDisplayFormattingItem::FormatTypeWordBreak ) {
+      wordFormattingItem = (TextDisplayWordFormattingItem*)item;
     }
   }
 }
@@ -1095,7 +1182,6 @@ TextDisplayViewWindow::AddFormatting
   int                                   m;
   char                                  sqlstatement[1024];
   QString                               insertStatment;
-  TextDisplayFormattingItem*            formattingItem;
   
   insertStatment = SQLStatement::GetFormattingInsert();
   sprintf(sqlstatement,
@@ -1115,9 +1201,18 @@ TextDisplayViewWindow::AddFormatting
   if ( bookInfo == NULL ) {
     return;
   }
-  formattingItem = new TextDisplayFormattingItem(InBook, bookInfo->name, InChapter, InVerse,
-                                                 (TextDisplayFormattingItem::FormatType)InFormatting);
-  formattingItems.push_back(formattingItem);
+
+  if ( InWord == 0 ) {
+    TextDisplayFormattingItem*          formattingItem;
+    formattingItem = new TextDisplayFormattingItem(InBook, bookInfo->name, InChapter, InVerse,
+                                                   (TextDisplayFormattingItem::FormatType)InFormatting);
+    formattingItems.push_back(formattingItem);
+  } else {
+    TextDisplayWordFormattingItem*      formattingItem;
+    formattingItem = new TextDisplayWordFormattingItem(InBook, bookInfo->name, InChapter, InVerse, InWord,
+                                                       (TextDisplayFormattingItem::FormatType)InFormatting);
+    formattingItems.push_back(formattingItem);
+  }
   ArrangeItems();
   repaint();
   return;
@@ -1140,6 +1235,8 @@ TextDisplayViewWindow::EditModeWordMouseSelect
   word = InItem->GetWord();
   wordIndex = InItem->GetWordIndex();
   st = QString("%1:%2").arg(word).arg(wordIndex);
+  ArrangeItems();
+  repaint();
   emit SignalSetMessage(st);
 }
   
@@ -1225,12 +1322,14 @@ TextDisplayViewWindow::FindWordFormattingItem
 (int InBook, int InChapter, int InVerse, int InWord)
 {
   TextDisplayFormattingItem::FormatType         formattingType;
-  
+  TextDisplayWordFormattingItem*                f;
+
   for ( auto item : formattingItems ) {
-    if ( item->IsReference(InBook, InChapter, InVerse, InWord) ) {
-      formattingType = item->GetFormattingType();
+    f = (TextDisplayWordFormattingItem*)item;
+    if ( f->IsReferenceWord(InBook, InChapter, InVerse, InWord) ) {
+      formattingType = f->GetFormattingType();
       if ( formattingType == TextDisplayFormattingItem::FormatTypeWordBreak ) {
-        return item;
+        return f;
       }
     }
   }
@@ -1242,12 +1341,12 @@ TextDisplayViewWindow::FindWordFormattingItem
  *****************************************************************************/
 TextDisplayFormattingItem*
 TextDisplayViewWindow::FindReferenceFormattingItem
-(int InBook, int InChapter, int InVerse, int InWord)
+(int InBook, int InChapter, int InVerse)
 {
   TextDisplayFormattingItem::FormatType         formattingType;
   
   for ( auto item : formattingItems ) {
-    if ( item->IsReference(InBook, InChapter, InVerse, InWord) ) {
+    if ( item->IsReference(InBook, InChapter, InVerse, 0) ) {
       formattingType = item->GetFormattingType();
       if ( formattingType == TextDisplayFormattingItem::FormatTypePostVerse ||
            formattingType == TextDisplayFormattingItem::FormatTypePreVerse ) {

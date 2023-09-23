@@ -286,6 +286,9 @@ main
   MainInitialize();
   ProcessCommandLine(argc, argv);
   VerifyCommandLine();
+
+  MainSystemConfig->ReadJSON(MainConfigFilename);
+
   if ( MainFormatAdd ) {
     ProcessFormatAdd();
   }
@@ -352,7 +355,6 @@ MainInitialize
   QString                               s;
 
   MainSystemConfig      = new SystemConfig();
-  MainSystemConfig->ReadJSON(MainConfigFilename);
   
   MainFilename          = NULL;
   MainDatabaseFilename  = QString(DEFAULT_DB_FILENAME);
@@ -441,6 +443,17 @@ ProcessCommandLine
         DisplayHelp();
       }
       MainDatabaseFilename = QString(argv[i]);
+      continue;
+    }
+    
+    //!
+    if ( command == "-c" || command == "--config" ) {
+      i++;
+      if ( i == argc ) {
+        fprintf(stderr, "Missing config file name\n");
+        DisplayHelp();
+      }
+      MainConfigFilename = QString(argv[i]);
       continue;
     }
     
@@ -538,6 +551,7 @@ DisplayHelp
   printf("options book chapter verse \n");
   printf("  -a, --addformatting     : Add formatting to database\n");
   printf("  -b, --block             : Specify the block output style\n");
+  printf("  -c, --config filename   : Specify the system configuration file\n");
   printf("  -d, --database          : Populates the database\n");
   printf("  -e, --easysplit         : Specifies whether to split lines only at end of sentence\n");
   printf("  -f, --file filename     : Specify the input filename\n");

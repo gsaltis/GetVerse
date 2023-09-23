@@ -55,7 +55,7 @@ class TextDisplayFormattingItem : public TextDisplayItem
 
  //! Public Methods
  public :
-  virtual void                  Draw                    (QPainter* InPainter);
+  virtual void                  Draw                    (QPainter* InPainter) override;
   FormatType                    GetFormattingType       ();
   
  //! Public Data
@@ -66,14 +66,14 @@ class TextDisplayFormattingItem : public TextDisplayItem
 
  //! Protected Data
  protected :
+  QString                       BookName;
+  int                           Formatting;
 
  //! Private Methods
  private :
 
  //! Private Data
  private :
-  QString                       BookName;
-  int                           Formatting;
   
 };
 
