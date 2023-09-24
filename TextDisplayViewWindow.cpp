@@ -208,6 +208,7 @@ TextDisplayViewWindow::ArrangeItemsSentence
     if ( item->GetType() == TextDisplayItem::ReferenceType ) {
       continue;
     }
+
     if ( itemWidth + x >= InWindowWidth ) {
       x = InX + sentenceIndent;
       y += itemHeight;
@@ -869,18 +870,15 @@ TextDisplayViewWindow::ArrangeItemsEdit
           x += s.width() + 4 + wordSkip;
           continue;
         }
+        if ( itemWidth + x >= InWindowWidth ) {
+          x = leftMargin + referenceWidth + InterWordSkip + EditViewReferenceIndent;
+          y += InterLineSkip + itemHeight;
+          windowHeight = y + itemHeight;
+        }
         item->SetLocation(QPoint(x, y));
         x += s.width() + 4 + wordSkip;
         continue;
       }
-      if ( itemWidth + x >= InWindowWidth ) {
-        x = leftMargin + referenceWidth + InterWordSkip + EditViewReferenceIndent;
-        y += InterLineSkip + itemHeight;
-        windowHeight = y + itemHeight;
-      }
-
-      item->SetLocation(QPoint(x, y));
-      x += s.width() + wordSkip;
     }
   } while (false);
   windowHeight += bottomMargin;
