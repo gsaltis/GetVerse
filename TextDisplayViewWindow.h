@@ -90,9 +90,12 @@ class TextDisplayViewWindow : public QWidget
   int                           GetVerseCount           ();
   
   TextDisplayFormattingItem::FormatType
-                                GetFormattingByReference(int InBook, int InChapter, int InVerse);
+                                GetFormattingByReference        (int InBook, int InChapter, int InVerse);
   TextDisplayFormattingItem::FormatType
                                 GetWordFormattingByReference    (int InBook, int InChapter, int InVerse, int InWord);
+  TextDisplayFormattingItem::FormatType
+                                GetWordFormattingByReference    (TextDisplayWordItem* InItem);
+    
   void                          PaintReferenceMode      (QPainter* InPainter, QRect InRect);
   void                          PaintSentenceMode       (QPainter* InPainter, QRect InRect);
   void                          PaintBlockMode          (QPainter* InPainter, QRect InRect);

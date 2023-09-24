@@ -46,6 +46,7 @@ SOURCES                         += \
 				   SystemConfig.cpp                             \
 				   TextControlBar.cpp                           \
 				   TextDisplayFormattingItem.cpp                \
+				   TextDisplayWordFormattingItem.cpp            \
 				   TextDisplayItem.cpp                          \
 				   TextDisplayOuterWindow.cpp                   \
 				   TextDisplayReferenceItem.cpp                 \
@@ -75,6 +76,7 @@ HEADERS                         += \
 				   SystemConfig.h                               \
 				   TextControlBar.h                             \
 				   TextDisplayFormattingItem.h                  \
+				   TextDisplayWordFormattingItem.h              \
 				   TextDisplayItem.h                            \
 				   TextDisplayOuterWindow.h                     \
 				   TextDisplayReferenceItem.h                   \

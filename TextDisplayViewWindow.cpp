@@ -623,6 +623,26 @@ TextDisplayViewWindow::GetFormattingByReference
  *****************************************************************************/
 TextDisplayFormattingItem::FormatType
 TextDisplayViewWindow::GetWordFormattingByReference
+(TextDisplayWordItem* InItem)
+{
+  int                                   verse;
+  int                                   chapter;
+  int                                   book;
+  int                                   word;
+
+  word          = InItem->GetWordIndex();
+  book          = InItem->GetBook();
+  chapter       = InItem->GetChapter();
+  verse         = InItem->GetVerse();
+
+  return GetWordFormattingByReference(book, chapter, verse, word);
+}
+
+/*****************************************************************************!
+ * Function : GetWordFormattingByReference
+ *****************************************************************************/
+TextDisplayFormattingItem::FormatType
+TextDisplayViewWindow::GetWordFormattingByReference
 (int InBook, int InChapter, int InVerse, int InWord)
 {
   int                                   type;
@@ -1019,6 +1039,8 @@ TextDisplayViewWindow::ArrangeItemsBlock
           breakAfter = true;
           continue;
         }
+
+        //!
         if ( formatting == TextDisplayFormattingItem::FormatTypePreVerse ) {
           k = i - 1;
           while ( k > 1 ) {
@@ -1037,6 +1059,30 @@ TextDisplayViewWindow::ArrangeItemsBlock
         }
         continue;
       }
+
+      //! Word level formatting
+      formatting = GetWordFormattingByReference((TextDisplayWordItem*)item);
+      if ( formatting == TextDisplayFormattingItem::FormatTypeWordBreak ) {
+        k = i - 1;
+        while ( k > 1 ) {
+          item2 = textItems[k];
+          if ( item2->GetType() == TextDisplayItem::TextType ) {
+            item2->SetParagraphPosition(TextDisplayItem::EndOfParagraph);
+            break;
+          }
+          k--;
+        }
+        x = InX;
+        y += itemHeight + InterParagraphSkip/2;
+        location = QPoint(x, y);
+        item->SetLocation(location);
+        item->SetParagraphPosition(paragraphPosition);
+        windowHeight = y + itemHeight;
+        paragraphPosition = TextDisplayItem::MidParagraph;
+        x += itemWidth + InterWordSkip;
+        continue;
+      }
+      
       //!
       if ( itemWidth + x >= InWindowWidth ) {
         if ( BlockLinesAreJustified ) {

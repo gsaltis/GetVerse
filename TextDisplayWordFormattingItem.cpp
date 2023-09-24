@@ -27,7 +27,7 @@ TextDisplayWordFormattingItem::TextDisplayWordFormattingItem
   TextDisplayFormattingItem(InBook, InBookName, InChapter, InVerse, InWordFormatting)
 {
   Foreground            = QColor(0, 0, 0);
-  Background            = QColor(240, 240, 240);
+  Background            = QColor(240, 0, 0);
   Type                  = FormattingWordType;
   WordIndex             = InWord;
   Font                  = QFont("Arial", 14, QFont::Normal);
