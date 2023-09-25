@@ -35,7 +35,7 @@ class TextDisplayFormattingItem : public TextDisplayItem
     FormatTypePostVerse,
     FormatTypePreVerse,
     FormatTypeMidVerse,
-    FormatTypeMidVerseIndent,
+    FormatTypeWordBreakIndent,
     FormatTypeSection,
     FormatTypeWordBreak,
     FormatTypeWordLower,

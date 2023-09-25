@@ -55,6 +55,8 @@ TextDisplayWordFormattingItem::Draw
   QString                               st;
   QFontMetrics                          fm(Font);
   QSize                                 si = fm.size(0, st);
+  QColor                                fore;
+  QColor                                back;
 
   x = Location.x();
   y = Location.y();
@@ -64,6 +66,16 @@ TextDisplayWordFormattingItem::Draw
       xd = Size.width() - si.width();
       xd /= 4;
       x += xd;
+      fore = Foreground;
+      back = Background;
+      break;
+    }
+    case FormatTypeWordBreakIndent : {
+      xd = Size.width() - si.width();
+      xd /= 4;
+      x += xd;
+      fore = QColor(0, 128, 0);
+      back = QColor(0, 244, 0);;
       break;
     }
   }
@@ -73,12 +85,9 @@ TextDisplayWordFormattingItem::Draw
 
   InPainter->setFont(Font);
 
-  InPainter->setPen(QPen(Foreground));
-  InPainter->setBrush(QBrush(Background));
+  InPainter->setPen(QPen(fore));
+  InPainter->setBrush(QBrush(back));
   InPainter->drawRect(QRect(Location, Size));
-    
-  InPainter->setPen(QPen(Foreground));
-  InPainter->drawText(QPoint(x, y), st);
 }
 
 /*****************************************************************************!

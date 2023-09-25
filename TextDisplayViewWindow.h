@@ -160,6 +160,7 @@ class TextDisplayViewWindow : public QWidget
   int                           EndOfSentencePadding;
   int                           EndOfPhrasePadding;
 
+  int                           WordBreakIndent;
   bool                          BlockLinesAreJustified;
   
  //! Public Slots

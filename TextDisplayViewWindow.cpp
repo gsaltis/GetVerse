@@ -75,6 +75,7 @@ TextDisplayViewWindow::initialize()
   EndOfSentencePadding          = 3;
   EndOfPhrasePadding            = 2;
   BlockLinesAreJustified        = false;
+  WordBreakIndent               = 50;
   
   if ( DotsPerInchX ) {
     BlockLeftMargin             = DotsPerInchX;
@@ -403,16 +404,18 @@ TextDisplayViewWindow::AddLineText
 
   for ( i = 0; i < n; i++ ) {
     TextDisplayWordFormattingItem*              formattingItem;
-    item = new TextDisplayWordItem(bookInfo->index, InChapter, InVerse, words[i], i + 1);
+    int                                         word;
+    word = i + 1;
+    item = new TextDisplayWordItem(bookInfo->index, InChapter, InVerse, words[i], word);
     item->SetFont(displayFont);
     textItems.push_back(item);
-    formatting = GetWordFormattingByReference(bookInfo->index, InChapter, InVerse, i + 1);
+    formatting = GetWordFormattingByReference(bookInfo->index, InChapter, InVerse, word);
     if ( formatting ) {
       formattingItem = new TextDisplayWordFormattingItem(bookInfo->index,
                                                          bookInfo->GetCapitalizedBookName(),
                                                          InChapter,
                                                          InVerse,
-                                                         i + 1,
+                                                         word,
                                                          (TextDisplayFormattingItem::FormatType)formatting);
       formattingItems.push_back(formattingItem);
   }
@@ -920,15 +923,13 @@ TextDisplayViewWindow::PaintEditMode
     itemR = QRect(item->GetBoundingRect());
 
     if ( InRect.contains(itemR) ) {
-      if ( formatting == TextDisplayFormattingItem::FormatTypeWordBreak ) {
+      if ( formatting == TextDisplayFormattingItem::FormatTypeWordBreak ||
+           formatting == TextDisplayFormattingItem::FormatTypeWordBreakIndent ) {
         wordFormattingItem = (TextDisplayWordFormattingItem*)item;
         wordFormattingItem->Draw(InPainter);
       } else {
         item->Draw(InPainter);
       } 
-    }
-    if ( formatting == TextDisplayFormattingItem::FormatTypeWordBreak ) {
-      wordFormattingItem = (TextDisplayWordFormattingItem*)item;
     }
   }
 }
@@ -1071,6 +1072,28 @@ TextDisplayViewWindow::ArrangeItemsBlock
           k--;
         }
         x = InX;
+        y += itemHeight + InterParagraphSkip/2;
+        location = QPoint(x, y);
+        item->SetLocation(location);
+        item->SetParagraphPosition(paragraphPosition);
+        windowHeight = y + itemHeight;
+        paragraphPosition = TextDisplayItem::MidParagraph;
+        x += itemWidth + InterWordSkip;
+        continue;
+      }
+      
+      //!
+      if ( formatting == TextDisplayFormattingItem::FormatTypeWordBreakIndent ) {
+        k = i - 1;
+        while ( k > 1 ) {
+          item2 = textItems[k];
+          if ( item2->GetType() == TextDisplayItem::TextType ) {
+            item2->SetParagraphPosition(TextDisplayItem::EndOfParagraph);
+            break;
+          }
+          k--;
+        }
+        x = InX + WordBreakIndent;
         y += itemHeight + InterParagraphSkip/2;
         location = QPoint(x, y);
         item->SetLocation(location);
@@ -1372,7 +1395,8 @@ TextDisplayViewWindow::FindWordFormattingItem
     f = (TextDisplayWordFormattingItem*)item;
     if ( f->IsReferenceWord(InBook, InChapter, InVerse, InWord) ) {
       formattingType = f->GetFormattingType();
-      if ( formattingType == TextDisplayFormattingItem::FormatTypeWordBreak ) {
+      if ( formattingType == TextDisplayFormattingItem::FormatTypeWordBreak ||
+           formattingType == TextDisplayFormattingItem::FormatTypeWordBreakIndent ) {
         return f;
       }
     }
