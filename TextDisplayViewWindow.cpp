@@ -170,7 +170,6 @@ TextDisplayViewWindow::ArrangeItems
     }
   }
   windowSize = QSize(tableWidth, height);
-  resize(windowSize);
 }
 
 /*****************************************************************************!
@@ -814,6 +813,7 @@ int
 TextDisplayViewWindow::ArrangeItemsEdit
 (int InX, int InY, int InWindowWidth)
 {
+  int                                   formattingWidth;
   TextDisplayFormattingItem*            formattingItem;
   bool                                  isFirst;
   int                                   itemHeight;
@@ -865,21 +865,23 @@ TextDisplayViewWindow::ArrangeItemsEdit
         TextDisplayWordItem*                    wordItem = (TextDisplayWordItem*)item;
         formattingItem = FindWordFormattingItem(wordItem->GetBook(), wordItem->GetChapter(), wordItem->GetVerse(),
                                                 wordItem->GetWordIndex());
+        formattingWidth = 0;
         if ( formattingItem ) {
-          formattingItem->SetLocation(QPoint(x, y + InterLineSkip));
-          formattingItem->SetSize(QSize(3, itemHeight));
-          x += 4;
-          item->SetLocation(QPoint(x, y));
-          x += s.width() + 4 + wordSkip;
-          continue;
+          formattingWidth = 4;
         }
-        if ( itemWidth + x >= InWindowWidth ) {
+        if ( itemWidth + x + formattingWidth >= InWindowWidth ) {
           x = leftMargin + referenceWidth + InterWordSkip + EditViewReferenceIndent;
           y += InterLineSkip + itemHeight;
           windowHeight = y + itemHeight;
         }
+        if ( formattingItem ) {
+          formattingItem->SetLocation(QPoint(x, y + InterLineSkip));
+          formattingItem->SetSize(QSize(3, itemHeight));
+          x += 4;
+        }
+        
         item->SetLocation(QPoint(x, y));
-        x += s.width() + 4 + wordSkip;
+        x += s.width() + formattingWidth + wordSkip;
         continue;
       }
     }
