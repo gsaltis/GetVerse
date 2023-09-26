@@ -87,7 +87,6 @@ TextDisplayWordItem::DrawFormatted
 
   color = Foreground;
   formatType = InFormatting->GetFormattingType();
-  TRACE_FUNCTION_INT(formatType);
   if ( formatType == TextDisplayWordFormattingItem::FormatTypeWordHighlight ) {
     color = QColor(255, 0, 0);
   }
