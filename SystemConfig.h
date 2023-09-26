@@ -39,14 +39,19 @@ class SystemConfig : public QWidget
 
  //! Public Methods
  public :
-  QSize                         GetMainWindowSize       (void);
-  void                          SetMainWindowSize       (QSize InMainWindowSize);
-  QPoint                        GetMainWindowLocation   (void);
-  void                          SetMainWindowLocation   (QPoint InMainWindowPosition);
-  void                          ReadJSON                (QString InFilename);
-  QColor                        GetBlockWindowBackgroundColor (void);
-  void                          SetBlockWindowBackgroundColor (QColor InBlockWindowBackgroundColor);
-
+  QSize                         GetMainWindowSize               (void);
+  void                          SetMainWindowSize               (QSize InMainWindowSize);
+  QPoint                        GetMainWindowLocation           (void);
+  void                          SetMainWindowLocation           (QPoint InMainWindowPosition);
+  void                          ReadJSON                        (QString InFilename);
+  QColor                        GetBlockWindowBackgroundColor   (void);
+  void                          SetBlockWindowBackgroundColor   (QColor InBlockWindowBackgroundColor);
+  QFont                         GetWordItemFont                 ();
+  void                          SetWordItemFont                 (QFont InFont);
+  void                          SetWordItemFontFamily           (QString InFontFamily);
+  void                          SetWordItemFontSize             (int InFontSize);
+  void                          SetWordItemFontBold             (bool InFontBold);
+  
  //! Public Data
  public :
   static QString                SystemName;
@@ -59,14 +64,15 @@ class SystemConfig : public QWidget
 
  //! Private Methods
  private :
-  void                          Initialize              (void);
+  void                          Initialize                      (void);
 
  //! Private Data
  private :
   QSize                         MainWindowSize;
   QPoint                        MainWindowLocation;
   QColor                        BlockWindowBackgroundColor;
-
+  QFont                         WordItemFont;
+  
  //! Public Slots
  public slots :
 

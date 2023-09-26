@@ -17,7 +17,7 @@
  *****************************************************************************/
 #include "TextDisplayWordItem.h"
 #include "Trace.h"
-
+#include "common.h"
 /*****************************************************************************!
  * Function : TextDisplayWordItem
  *****************************************************************************/
@@ -160,8 +160,6 @@ TextDisplayWordItem::CreateStrippedWord
     s += ch;
   }
   StrippedWord = s;
-  TRACE_FUNCTION_QSTRING(Word);
-  TRACE_FUNCTION_QSTRING(StrippedWord);
 }
 
 /*****************************************************************************!

@@ -101,7 +101,8 @@ SystemConfig::ReadJSON
   QJsonDocument                         doc;
   QJsonObject                           obj;
   QJsonObject                           mainWindowObj;
-
+  QJsonObject                           wordItemObj;
+  
   if ( ! file.open(QIODevice::ReadOnly) ) {
     return;
   }
@@ -128,6 +129,11 @@ SystemConfig::ReadJSON
   green = blockWindowBackgroundObj["green"].toInt();
   blue = blockWindowBackgroundObj["blue"].toInt();
   BlockWindowBackgroundColor = QColor(red, green, blue);
+
+  wordItemObj = obj["WordItem"].toObject();
+  SetWordItemFontFamily(wordItemObj["Family"].toString());
+  SetWordItemFontSize(wordItemObj["Size"].toInt());
+  SetWordItemFontBold(wordItemObj["Bold"].toBool());
 }
 
 /*****************************************************************************!
@@ -136,9 +142,10 @@ SystemConfig::ReadJSON
 void
 SystemConfig::Initialize(void)
 {
-  MainWindowLocation    = QPoint(0, 0);
-  MainWindowSize        = QSize(1920, 1020);
-  BlockWindowBackgroundColor = QColor(255, 255, 255);
+  MainWindowLocation            = QPoint(0, 0);
+  MainWindowSize                = QSize(1920, 1020);
+  BlockWindowBackgroundColor    = QColor(255, 255, 255);
+  WordItemFont                  = QFont();
 }
 
 /*****************************************************************************!
@@ -159,3 +166,54 @@ SystemConfig::SetBlockWindowBackgroundColor
 {
   BlockWindowBackgroundColor = InBlockWindowBackgroundColor;  
 }
+
+/*****************************************************************************!
+ * Function : GetWordItemFont
+ *****************************************************************************/
+QFont
+SystemConfig::GetWordItemFont
+()
+{
+  return WordItemFont;
+}
+
+/*****************************************************************************!
+ * Function : SetWordItemFont
+ *****************************************************************************/
+void
+SystemConfig::SetWordItemFont
+(QFont InFont)
+{
+  WordItemFont = QFont(InFont);
+}
+
+/*****************************************************************************!
+ * Function : SetWordItemFontFamily
+ *****************************************************************************/
+void
+SystemConfig::SetWordItemFontFamily
+(QString InFontFamily)
+{
+  WordItemFont.setFamily(InFontFamily);
+}
+
+/*****************************************************************************!
+ * Function : SetWordItemFontSize
+ *****************************************************************************/
+void
+SystemConfig::SetWordItemFontSize
+(int InFontSize)
+{
+  WordItemFont.setPointSize(InFontSize);
+}
+
+/*****************************************************************************!
+ * Function : SetWordItemFontBold
+ *****************************************************************************/
+void
+SystemConfig::SetWordItemFontBold
+(bool InFontBold)
+{
+  WordItemFont.setWeight(InFontBold ? QFont::Bold : QFont::Normal);
+}
+

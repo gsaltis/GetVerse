@@ -85,7 +85,7 @@ TextDisplayViewWindow::initialize()
   }
   
   mode                          = ReferenceMode;
-  displayFont                   = QFont("Times New Roman ", 16, QFont::Normal);
+  displayFont                   = MainSystemConfig->GetWordItemFont();
   
   InitializeSubWindows();  
   CreateSubWindows();
@@ -123,9 +123,12 @@ TextDisplayViewWindow::SlotBookSelected
   emit SignalSetProgressBar(0, verseCount);
   GetMaxReferenceWidth();
   SetBook();
+  ItemsArranged = false;
   ArrangeItems();
   ComputeSize();
-  // resize(tableSize);
+  ItemsArranged = true;
+  resize(tableSize);
+  ItemsArranged = false;
   repaint();
   s = size();
   emit SignalHideProgressBar();
@@ -703,7 +706,9 @@ TextDisplayViewWindow::resizeEvent
   QSize                                 s;
   s = InEvent->size();
   tableWidth = s.width();
-  ArrangeItems();
+  if ( ! ItemsArranged ) {
+    ArrangeItems();
+  }
   repaint();
 }
 

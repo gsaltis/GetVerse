@@ -9,11 +9,18 @@
       "height" : 1020
     }
   },
+  
   "BlockWindow" : {
     "Background" : {
       "red"      : 255,
       "green" : 218,
       "blue" : 185
     }
+  },
+
+  "WordItem" : {
+    "Family" : "Times New Roman",
+    "Size" : 16,
+    "Bold" : false
   }
 }

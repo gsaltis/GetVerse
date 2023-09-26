@@ -79,15 +79,15 @@ class TextDisplayViewWindow : public QWidget
 
  //! Private Methods
  private :
-  void                          initialize              ();
-  void                          CreateSubWindows        ();
-  void                          InitializeSubWindows    ();
-  void                          SetBook                 ();
-  static int                    SetBookCB               (void* InThisPointer, int InColumnCount, char** InColumnValues, char** InColumnNames);
-  void                          AddLineText             (int InChapter, int InVerse, QString InVerseText);
-  QSize                         ComputeSize             ();
-  void                          GetMaxReferenceWidth    ();
-  int                           GetVerseCount           ();
+  void                          initialize                      ();
+  void                          CreateSubWindows                ();
+  void                          InitializeSubWindows            ();
+  void                          SetBook                         ();
+  static int                    SetBookCB                       (void* InThisPointer, int InColumnCount, char** InColumnValues, char** InColumnNames);
+  void                          AddLineText                     (int InChapter, int InVerse, QString InVerseText);
+  QSize                         ComputeSize                     ();
+  void                          GetMaxReferenceWidth            ();
+  int                           GetVerseCount                   ();
   
   TextDisplayFormattingItem::FormatType
                                 GetFormattingByReference        (int InBook, int InChapter, int InVerse);
@@ -96,74 +96,75 @@ class TextDisplayViewWindow : public QWidget
   TextDisplayFormattingItem::FormatType
                                 GetWordFormattingByReference    (TextDisplayWordItem* InItem);
     
-  void                          PaintReferenceMode      (QPainter* InPainter, QRect InRect);
-  void                          PaintSentenceMode       (QPainter* InPainter, QRect InRect);
-  void                          PaintBlockMode          (QPainter* InPainter, QRect InRect);
-  void                          PaintEditMode          (QPainter* InPainter, QRect InRect);
+  void                          PaintReferenceMode              (QPainter* InPainter, QRect InRect);
+  void                          PaintSentenceMode               (QPainter* InPainter, QRect InRect);
+  void                          PaintBlockMode                  (QPainter* InPainter, QRect InRect);
+  void                          PaintEditMode                   (QPainter* InPainter, QRect InRect);
 
-  void                          ArrangeItems            ();
-  int                           ArrangeItemsReference   (int InX, int InY, int InWindowWidth);
-  int                           ArrangeItemsBlock       (int InX, int InY, int InWindowWidth);
-  int                           ArrangeItemsEdit        (int InX, int InY, int InWindowWidth);
-  int                           ArrangeItemsSentence    (int InX, int InY, int InWindowWidth);
-  TextDisplayFormattingItem*    FindReferenceFormattingItem (int InBook, int InChapter, int InVerse);
-  TextDisplayFormattingItem*    FindWordFormattingItem  (int InBook, int InChapter, int InVerse, int InWord);
-  TextDisplayFormattingItem*    FindWordFormattingItem  (TextDisplayWordItem* InItem);
-  void                          LineJustify             (int InWindowWidth, int InLineEnd, int InLineStartIndex, int InLineEndIndex);
-  int                           LineJustifyPunctuation  (int InLineRemaining, int InLineStartIndex, int InLineEndIndex);
-  void                          LineJustifyWords        (int InLineRemaining, int InLineStartIndex, int InLineEndIndex);
-  inline bool                   WordEndsInPunctuation   (QString InWord);
-  void                          EditModeMouseMove       (QPoint InLocation);
-  void                          EditModeMousePress      (QPoint InLocation);
+  void                          ArrangeItems                    ();
+  int                           ArrangeItemsReference           (int InX, int InY, int InWindowWidth);
+  int                           ArrangeItemsBlock               (int InX, int InY, int InWindowWidth);
+  int                           ArrangeItemsEdit                (int InX, int InY, int InWindowWidth);
+  int                           ArrangeItemsSentence            (int InX, int InY, int InWindowWidth);
+  TextDisplayFormattingItem*    FindReferenceFormattingItem     (int InBook, int InChapter, int InVerse);
+  TextDisplayFormattingItem*    FindWordFormattingItem          (int InBook, int InChapter, int InVerse, int InWord);
+  TextDisplayFormattingItem*    FindWordFormattingItem          (TextDisplayWordItem* InItem);
+  void                          LineJustify                     (int InWindowWidth, int InLineEnd, int InLineStartIndex, int InLineEndIndex);
+  int                           LineJustifyPunctuation          (int InLineRemaining, int InLineStartIndex, int InLineEndIndex);
+  void                          LineJustifyWords                (int InLineRemaining, int InLineStartIndex, int InLineEndIndex);
+  inline bool                   WordEndsInPunctuation           (QString InWord);
+  void                          EditModeMouseMove               (QPoint InLocation);
+  void                          EditModeMousePress              (QPoint InLocation);
   void                          EditModeReferenceMouseSelect    (TextDisplayReferenceItem* InItem);
-  void                          EditModeWordMouseSelect (TextDisplayWordItem* InItem);
-  void                          AddFormatting           (int InBook, int InChapter, int InVerse, int InWord, int InFormatting);
+  void                          EditModeWordMouseSelect         (TextDisplayWordItem* InItem);
+  void                          AddFormatting                   (int InBook, int InChapter, int InVerse, int InWord, int InFormatting);
 
-  TextDisplayItem*              FindSelectedItem        (QPoint InLocation);
-  BookInfo*                     FindBookInfoByIndex     (int InBookIndex);
+  TextDisplayItem*              FindSelectedItem                (QPoint InLocation);
+  BookInfo*                     FindBookInfoByIndex             (int InBookIndex);
   TextDisplayReferenceItem*     FindDisplayReferenceByChapterVerse      (int InChapter, int InVerse);
 
  //! Private Data
  private :
-  BookInfo*                     bookInfo;
-  int                           textX;
-  int                           textY;
-  int                           InterLineSkip;
-  int                           InterWordSkip;
-  int                           InterParagraphSkip;
-  int                           rightMargin;
-  int                           leftMargin;
-  int                           bottomMargin;
-  int                           topMargin;
-  int                           lineCount;
-  QFont                         displayFont;
-  int                           referenceWidth;
-  int                           tableHeight;
-  int                           tableWidth;
-  int                           verseCount;
-  int                           tmpVerseCount;
-  int                           tmpSentenceCount;
-  int                           wordCount;
-  DisplayMode                   mode;
-  TextDisplayItem*              lastSelectedItem;
-  QSize                         tableSize;
-  std::vector<TextDisplayItem*> textItems;
-  std::vector<TextDisplayFormattingItem*>       formattingItems;
+  BookInfo*                                                     bookInfo;
+  int                                                           textX;
+  int                                                           textY;
+  int                                                           InterLineSkip;
+  int                                                           InterWordSkip;
+  int                                                           InterParagraphSkip;
+  int                                                           rightMargin;
+  int                                                           leftMargin;
+  int                                                           bottomMargin;
+  int                                                           topMargin;
+  int                                                           lineCount;
+  QFont                                                         displayFont;
+  int                                                           referenceWidth;
+  int                                                           tableHeight;
+  int                                                           tableWidth;
+  int                                                           verseCount;
+  int                                                           tmpVerseCount;
+  int                                                           tmpSentenceCount;
+  int                                                           wordCount;
+  DisplayMode                                                   mode;
+  TextDisplayItem*                                              lastSelectedItem;
+  QSize                                                         tableSize;
+  std::vector<TextDisplayItem*>                                 textItems;
+  std::vector<TextDisplayFormattingItem*>                       formattingItems;
   
-  QSize                         windowSize;  
-  int                           sentenceIndent;
-  int                           EditViewReferenceIndent;
+  QSize                                                         windowSize;  
+  int                                                           sentenceIndent;
+  int                                                           EditViewReferenceIndent;
   
-  int                           BlockLeftMargin;
-  int                           BlockRightMargin;
-  int                           DotsPerInchX;
+  int                                                           BlockLeftMargin;
+  int                                                           BlockRightMargin;
+  int                                                           DotsPerInchX;
 
-  int                           EndOfSentencePadding;
-  int                           EndOfPhrasePadding;
+  int                                                           EndOfSentencePadding;
+  int                                                           EndOfPhrasePadding;
 
-  int                           WordBreakIndent;
-  bool                          BlockLinesAreJustified;
-  TextDisplayFormattingItem::FormatType         FormattingType;
+  int                                                           WordBreakIndent;
+  bool                                                          BlockLinesAreJustified;
+  bool                                                          ItemsArranged;
+  TextDisplayFormattingItem::FormatType                         FormattingType;
   
  //! Public Slots
  public slots :
