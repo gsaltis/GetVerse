@@ -62,12 +62,14 @@ class TextDisplayWordItem : public TextDisplayItem
 
  //! Private Methods
  private :
-
+  void                          CreateStrippedWord      ();
+  
  //! Private Data
  private :
-  
+  bool                          StripQuotes;
   int                           WordIndex;
   QString                       Word;
+  QString                       StrippedWord;
 
 };
 

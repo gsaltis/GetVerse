@@ -25,6 +25,7 @@ TextDisplayWordItem::TextDisplayWordItem
 (int InBook, int InChapter, int InVerse, QString InWord, int InWordIndex) :
   TextDisplayItem(InBook, InChapter, InVerse, QString())
 {
+  StripQuotes = true;
   Text = QString("%2:%3").arg(InChapter).arg(InVerse); 
   Foreground = QColor(64, 64, 64);
   Background = QColor(255, 255, 255);
@@ -32,6 +33,7 @@ TextDisplayWordItem::TextDisplayWordItem
   Type = WordType;
   WordIndex = InWordIndex;
   Word = InWord;
+  CreateStrippedWord();
 }
 
 /*****************************************************************************!
@@ -72,7 +74,7 @@ TextDisplayWordItem::Draw
   InPainter->setPen(QPen(Foreground));
   InPainter->setBrush(QBrush(Background));
   InPainter->drawText(QPoint(Location.x(), Location.y() + Size.height()),
-                      Word);
+                      GetWord());
 }
 
 /*****************************************************************************!
@@ -94,7 +96,7 @@ TextDisplayWordItem::DrawFormatted
   InPainter->setPen(QPen(color));
   InPainter->setBrush(QBrush(Background));
   InPainter->drawText(QPoint(Location.x(), Location.y() + Size.height()),
-                      Word);
+                      GetWord());
 }
 
 /*****************************************************************************!
@@ -122,7 +124,7 @@ TextDisplayWordItem::DrawSelected
   InPainter->drawRoundedRect(r2, 20, 20);
   
   InPainter->setPen(QPen(QColor(255, 255, 255)));
-  InPainter->drawText(QPoint(Location.x(), Location.y() + Size.height()), Word);
+  InPainter->drawText(QPoint(Location.x(), Location.y() + Size.height()), GetWord());
 }
 
 /*****************************************************************************!
@@ -131,7 +133,35 @@ TextDisplayWordItem::DrawSelected
 QString
 TextDisplayWordItem::GetWord(void)
 {
-  return Word;  
+  if ( ! StripQuotes ) {
+    return Word;
+  }
+  return StrippedWord;
+}
+
+/*****************************************************************************!
+ * Function : CreateStrippedWord
+ *****************************************************************************/
+void
+TextDisplayWordItem::CreateStrippedWord
+()
+{
+  QString                       s;
+  int                           n = Word.length();
+  QChar                         ch;
+  int                           i;
+
+  s = QString();
+  for (i = 0; i < n; i++) {
+    ch = Word[i];
+    if ( ch == '\'' || ch == '`' ) {
+      continue;
+    }
+    s += ch;
+  }
+  StrippedWord = s;
+  TRACE_FUNCTION_QSTRING(Word);
+  TRACE_FUNCTION_QSTRING(StrippedWord);
 }
 
 /*****************************************************************************!
@@ -140,7 +170,7 @@ TextDisplayWordItem::GetWord(void)
 QString
 TextDisplayWordItem::GetText(void)
 {
-  return Word;  
+  return GetWord();  
 }
 
 /*****************************************************************************!
@@ -151,6 +181,7 @@ TextDisplayWordItem::SetWord
 (QString InWord)
 {
   Word = InWord;
+  CreateStrippedWord();
 }
 
 /*****************************************************************************!
@@ -162,7 +193,7 @@ TextDisplayWordItem::SetFont
 {
   QFontMetrics                          fm(InFont);
   Font = QFont(InFont);
-  Size = fm.size(0, Word);
+  Size = fm.size(0, GetWord());
 }
 
 /*****************************************************************************!
