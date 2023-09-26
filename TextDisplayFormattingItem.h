@@ -41,6 +41,7 @@ class TextDisplayFormattingItem : public TextDisplayItem
     FormatTypeWordLower,
     FormatTypeWordUpper,
     FormatTypeWordCaptilize,
+    FormatTypeWordHighlight
   };
 
   

@@ -16,6 +16,8 @@
  * Local Headers
  *****************************************************************************/
 #include "TextControlBar.h"
+#include "TextDisplayFormattingItem.h"
+#include "Trace.h"
 
 /*****************************************************************************!
  * Function : TextControlBar
@@ -139,7 +141,7 @@ TextControlBar::CreateSubWindows()
   GroupingLabel = new QLabel();
   GroupingLabel->setParent(this);
   GroupingLabel->move(10, 10);
-  GroupingLabel->resize(100, 20);
+  GroupingLabel->resize(70, 20);
   GroupingLabel->setText("Verses :");
   GroupingLabel->setAlignment(Qt::AlignRight);
   GroupingLabel->setFont(QFont("Arial", 10, QFont::Normal));
@@ -158,6 +160,28 @@ TextControlBar::CreateSubWindows()
   ChapterSelect->setParent(this);
   ChapterSelect->resize(120, 20);
   ChapterSelect->move(0, 0);
+  ChapterSelect->hide();
+  
+  
+    //! Create WordBreakTypeCombo Combobox
+  WordBreakTypeCombo = new QComboBox();
+  WordBreakTypeCombo->setParent(this);
+  WordBreakTypeCombo->move(0,0);
+  WordBreakTypeCombo->resize(120,20);
+  WordBreakTypeCombo->addItems(WordBreakTypeComboAddItems());
+  WordBreakTypeCombo->hide();
+  WordBreakTypeCombo->setCurrentIndex(0);
+  connect(WordBreakTypeCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(SlotWordBreakTypeComboSelectedItem(int)));
+
+  //! Create label
+  WordBreakTypeLabel = new QLabel();
+  WordBreakTypeLabel->setParent(this);
+  WordBreakTypeLabel->move(10, 10);
+  WordBreakTypeLabel->resize(100, 20);
+  WordBreakTypeLabel->setText("Word Break :");
+  WordBreakTypeLabel->setAlignment(Qt::AlignRight);
+  WordBreakTypeLabel->hide();
+  WordBreakTypeLabel->setFont(QFont("Arial", 10, QFont::Normal));
 }
 
 /*****************************************************************************!
@@ -176,6 +200,17 @@ void
 TextControlBar::resizeEvent
 (QResizeEvent* InEvent)
 {
+  int                                   WordBreakTypeComboX;
+  int                                   WordBreakTypeComboY;
+  int                                   WordBreakTypeComboW;
+  int                                   WordBreakTypeComboH;
+
+  int                                   WordBreakTypeLabelX;
+  int                                   WordBreakTypeLabelY;
+  int                                   WordBreakTypeLabelW;
+  int                                   WordBreakTypeLabelH;
+  QFontMetrics                          WordBreakTypeLabelFontMetrics(WordBreakTypeLabel->font());
+  
   QPalette                              pal;
   QSize					size;  
   int					height;
@@ -240,6 +275,14 @@ TextControlBar::resizeEvent
   }
   
   //!
+  {
+    QFontMetrics                        fm(WordBreakTypeLabel->font());
+    QSize                               s = fm.size(0, WordBreakTypeLabel->text());
+    WordBreakTypeLabelW = s.width();
+    WordBreakTypeLabelH = s.height();
+  }
+  
+  //!
   WordCountLabelX = width - (WordCountLabelW + RightMargin);
   WordCountLabelY = (height - WordCountLabelH) / 2;
 
@@ -273,7 +316,24 @@ TextControlBar::resizeEvent
 
   ChapterSelect->move(ChapterSelectX, ChapterSelectY);
   ChapterSelect->resize(ChapterSelectW, ChapterSelectH);
+
+  //!
+  WordBreakTypeComboW = 130;
+  WordBreakTypeComboH = height - 4;
+  WordBreakTypeComboX = width - (GroupingLabelW + GroupingCountLabelW + WordLabelW + WordCountLabelW + WordBreakTypeComboW + 5 + RightMargin);
+  WordBreakTypeComboY = 2;
+  WordBreakTypeCombo->move(WordBreakTypeComboX, WordBreakTypeComboY);
+  WordBreakTypeCombo->resize(WordBreakTypeComboW, WordBreakTypeComboH);
+
+  //!
+  WordBreakTypeLabelW = WordBreakTypeLabelFontMetrics.size(0, WordBreakTypeLabel->text()).width();
+  WordBreakTypeLabelX = WordBreakTypeComboX - (WordBreakTypeLabelW + 10);
+  WordBreakTypeLabelY = (height - WordBreakTypeLabelH) / 2;
   
+  WordBreakTypeLabel->move(WordBreakTypeLabelX, WordBreakTypeLabelY);
+  WordBreakTypeLabel->resize(WordBreakTypeLabelW, WordBreakTypeLabelH);
+
+  //!
   grad.setColorAt(0, QColor(137, 137, 145));
   grad.setColorAt(1, QColor(241, 244, 255));
   pal = palette();
@@ -294,6 +354,8 @@ TextControlBar::SlotReferenceButtonPushed(void)
   SentenceViewButton->setChecked(false);  
   GroupingLabel->show();
   GroupingCountLabel->show();
+  WordBreakTypeCombo->hide();
+  WordBreakTypeLabel->hide();
   emit SignalSetReferenceMode();
 }
 
@@ -308,6 +370,8 @@ TextControlBar::SlotBlockViewButtonPushed(void)
   EditButton->setChecked(false);  
   GroupingLabel->hide();
   GroupingCountLabel->hide();
+  WordBreakTypeCombo->hide();
+  WordBreakTypeLabel->hide();
   emit SignalSetBlockMode();
 }
 
@@ -324,6 +388,8 @@ TextControlBar::SlotSentenceViewButtonPushed(void)
   GroupingCountLabel->show();
   ReferenceButton->setChecked(false);
   BlockViewButton->setChecked(false);
+  WordBreakTypeCombo->hide();
+  WordBreakTypeLabel->hide();
   emit SignalSetSentenceMode();
 }
 
@@ -342,6 +408,8 @@ TextControlBar::SlotEditButtonPushed(void)
 
   GroupingLabel->show();
   GroupingCountLabel->show();
+  WordBreakTypeCombo->show();
+  WordBreakTypeLabel->show();
 
   emit SignalSetEditMode();
 }
@@ -405,4 +473,35 @@ TextControlBar::SlotSetChapterSelectMax
   ChapterSelect->setMaximum(InChapter);
   ChapterSelect->setMinimum(1);
   ChapterSelect->setValue(1);
+}
+
+/*****************************************************************************!
+ * Function : WordBreakTypeComboAddItems
+ *****************************************************************************/
+QStringList
+TextControlBar::WordBreakTypeComboAddItems
+(void)
+{
+  QStringList                   selections;
+
+  selections << QString("Word Break") << QString("Word Break Indent") << QString("Word Highlight");
+  return selections;
+}
+
+/*****************************************************************************!
+ * Function : slotWordBreakTypeCombo_selected_item
+ *****************************************************************************/
+void
+TextControlBar::SlotWordBreakTypeComboSelectedItem
+(int InSelectedIndex)
+{
+  if ( InSelectedIndex == 0 ) {
+    emit SignalSetFormattingType(TextDisplayFormattingItem::FormatTypeWordBreak);
+  }
+  else if ( InSelectedIndex == 1 ) {
+    emit SignalSetFormattingType(TextDisplayFormattingItem::FormatTypeWordBreakIndent);
+  }
+  else if ( InSelectedIndex == 2 ) {
+    emit SignalSetFormattingType(TextDisplayFormattingItem::FormatTypeWordHighlight);
+  }
 }

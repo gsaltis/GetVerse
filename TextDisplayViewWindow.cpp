@@ -43,6 +43,7 @@ TextDisplayViewWindow::TextDisplayViewWindow
   setFont(displayFont);
   setMouseTracking(true);
   lastSelectedItem = NULL;
+  FormattingType = TextDisplayFormattingItem::FormatTypeWordBreak;
 }
 
 /*****************************************************************************!
@@ -76,6 +77,7 @@ TextDisplayViewWindow::initialize()
   EndOfPhrasePadding            = 2;
   BlockLinesAreJustified        = false;
   WordBreakIndent               = 50;
+  FormattingType                = TextDisplayFormattingItem::FormatTypeWordBreak;
   
   if ( DotsPerInchX ) {
     BlockLeftMargin             = DotsPerInchX;
@@ -899,6 +901,7 @@ TextDisplayViewWindow::PaintEditMode
 
   QPoint                                TL;
   QPoint                                BR;
+  TextDisplayFormattingItem*            formattingItem;
 
   TL = InRect.topLeft();
   BR = InRect.bottomRight();
@@ -911,11 +914,18 @@ TextDisplayViewWindow::PaintEditMode
     if ( lastSelectedItem == item ) {
       item->DrawSelected(InPainter);
     } else {
-      item->Draw(InPainter);
+      TextDisplayWordItem*                      wordItem = (TextDisplayWordItem*)item;
+      TextDisplayFormattingItem*                wordItemFormatting;
+      
+      wordItemFormatting = FindWordFormattingItem(wordItem);
+      if ( wordItemFormatting ) {
+        wordItem->DrawFormatted(InPainter, (TextDisplayWordFormattingItem*)wordItemFormatting);
+      } else {
+        item->Draw(InPainter);
+      }
     }
   }
   for ( auto item : formattingItems ) {
-    TextDisplayFormattingItem*          formattingItem;
     TextDisplayWordFormattingItem*      wordFormattingItem;
     
     formattingItem = (TextDisplayFormattingItem*)item;
@@ -1143,6 +1153,7 @@ void
 TextDisplayViewWindow::PaintBlockMode
 (QPainter* InPainter, QRect InRect)
 {
+  TextDisplayFormattingItem*            formatType;
   QRect                                 itemR;
 
   QBrush                                brush = QBrush(MainSystemConfig->GetBlockWindowBackgroundColor());
@@ -1154,12 +1165,18 @@ TextDisplayViewWindow::PaintBlockMode
     if ( item->GetType() == TextDisplayItem::ReferenceType ) {
       continue;
     }
+    TextDisplayWordItem*                    wordItem = (TextDisplayWordItem*)item;
+    formatType = FindWordFormattingItem(wordItem);
     itemR = QRect(item->GetBoundingRect());
     if ( InRect.contains(itemR) ) {
       if ( lastSelectedItem == item ) {
         item->DrawSelected(InPainter);
       } else {
-        item->Draw(InPainter);
+        if ( formatType ) {
+          wordItem->DrawFormatted(InPainter, (TextDisplayWordFormattingItem*)formatType);
+        } else {
+          wordItem->Draw(InPainter);
+        }
       }
     }
   } while (false);
@@ -1298,7 +1315,7 @@ TextDisplayViewWindow::EditModeWordMouseSelect
   int                                   wordIndex;
 
   AddFormatting(InItem->GetBook(), InItem->GetChapter(), InItem->GetVerse(), InItem->GetWordIndex(),
-                TextDisplayFormattingItem::FormatTypeWordBreak);
+                FormattingType);
   word = InItem->GetWord();
   wordIndex = InItem->GetWordIndex();
   st = QString("%1:%2").arg(word).arg(wordIndex);
@@ -1386,6 +1403,19 @@ TextDisplayViewWindow::SlotVerticalScrolled(void)
  *****************************************************************************/
 TextDisplayFormattingItem*
 TextDisplayViewWindow::FindWordFormattingItem
+(TextDisplayWordItem* InItem)
+{
+  return FindWordFormattingItem(InItem->GetBook(),
+                                InItem->GetChapter(),
+                                InItem->GetVerse(),
+                                InItem->GetWordIndex());
+}
+
+/*****************************************************************************!
+ * Function : FindWordFormattingItem
+ *****************************************************************************/
+TextDisplayFormattingItem*
+TextDisplayViewWindow::FindWordFormattingItem
 (int InBook, int InChapter, int InVerse, int InWord)
 {
   TextDisplayFormattingItem::FormatType         formattingType;
@@ -1396,7 +1426,8 @@ TextDisplayViewWindow::FindWordFormattingItem
     if ( f->IsReferenceWord(InBook, InChapter, InVerse, InWord) ) {
       formattingType = f->GetFormattingType();
       if ( formattingType == TextDisplayFormattingItem::FormatTypeWordBreak ||
-           formattingType == TextDisplayFormattingItem::FormatTypeWordBreakIndent ) {
+           formattingType == TextDisplayFormattingItem::FormatTypeWordBreakIndent ||
+           formattingType == TextDisplayFormattingItem::FormatTypeWordHighlight ) {
         return f;
       }
     }
@@ -1638,4 +1669,14 @@ TextDisplayViewWindow::FindDisplayReferenceByChapterVerse
     }
   }
   return NULL;
+}
+
+/*****************************************************************************!
+ * Function : SlotSetFormattingType
+ *****************************************************************************/
+void
+TextDisplayViewWindow::SlotSetFormattingType
+(TextDisplayFormattingItem::FormatType InFormattingType)
+{
+  FormattingType = InFormattingType;
 }

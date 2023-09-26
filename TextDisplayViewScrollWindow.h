@@ -20,6 +20,7 @@
  *****************************************************************************/
 #include "TextDisplayViewWindow.h"
 #include "TextDisplayViewScrollBar.h"
+#include "TextDisplayFormattingItem.h"
 
 /*****************************************************************************!
  * Exported Macros
@@ -92,6 +93,7 @@ class TextDisplayViewScrollWindow : public QScrollArea
   void                          SlotChapterScrolled             (int InChapter);
   void                          SlotChapterSelected             (int InChapter);
   void                          SlotLocationSelected    (QPoint InLocation);
+  void                          SlotSetFormattingType   (TextDisplayFormattingItem::FormatType InFormattingType);
   
  //! Public Signals
  signals :
@@ -114,6 +116,7 @@ class TextDisplayViewScrollWindow : public QScrollArea
 
   void                          SignalChapterSelected           (int InCurrentChapter);
   void                          SignalChapterScrolled           (int InCurrentChapter);
+  void                          SignalSetFormattingType (TextDisplayFormattingItem::FormatType InFormattingType);
   
  //! Public Actions
  public :

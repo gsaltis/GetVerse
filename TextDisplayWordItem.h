@@ -18,6 +18,7 @@
  * Local Headers
  *****************************************************************************/
 #include "TextDisplayItem.h"
+#include "TextDisplayWordFormattingItem.h"
 
 /*****************************************************************************!
  * Exported Macros
@@ -40,6 +41,7 @@ class TextDisplayWordItem : public TextDisplayItem
  public :
   int                           GetWordIndex            (void);
   void                          SetWordIndex            (int InWordIndex);
+  void                          DrawFormatted           (QPainter* InPainter, TextDisplayWordFormattingItem* InFormatting);
   virtual void                  Draw                    (QPainter* InPainter);
   virtual void                  DrawSelected            (QPainter* InPainter);
   virtual void                  SetFont                 (QFont InFont);

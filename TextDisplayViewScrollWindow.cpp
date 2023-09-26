@@ -123,6 +123,11 @@ TextDisplayViewScrollWindow::SlotBookSelected
 void
 TextDisplayViewScrollWindow::CreateConnections(void)
 {
+  connect(this,
+          SIGNAL(SignalSetFormattingType(TextDisplayFormattingItem::FormatType)),
+          viewWindow,
+          SLOT(SlotSetFormattingType(TextDisplayFormattingItem::FormatType)));
+  
   connect(VScrollBar,
           SIGNAL(SignalChapterSelected(int)),
           this,
@@ -367,4 +372,14 @@ TextDisplayViewScrollWindow::SlotLocationSelected
 (QPoint InLocation)
 {
   VScrollBar->setValue(InLocation.y());
+}
+
+/*****************************************************************************!
+ * Function : SlotSetFormattingType
+ *****************************************************************************/
+void
+TextDisplayViewScrollWindow::SlotSetFormattingType
+(TextDisplayFormattingItem::FormatType InFormattingType)
+{
+  emit SignalSetFormattingType(InFormattingType);
 }

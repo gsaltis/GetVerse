@@ -204,6 +204,11 @@ TextDisplayOuterWindow::SlotBookSelected
 void
 TextDisplayOuterWindow::CreateConnections(void)
 {
+  connect(controlBar,
+          SIGNAL(SignalSetFormattingType(TextDisplayFormattingItem::FormatType)),
+          viewWindow,
+          SLOT(SlotSetFormattingType(TextDisplayFormattingItem::FormatType)));
+  
   connect(viewWindow,
           SIGNAL(SignalChapterSelected(int)),
           this,          
@@ -463,4 +468,14 @@ TextDisplayOuterWindow::SlotChapterScrolled
 (int InChapter)
 {
   emit SignalChapterScrolled(InChapter);
+}
+
+/*****************************************************************************!
+ * Function : SlotSetFormattingType
+ *****************************************************************************/
+void
+TextDisplayOuterWindow::SlotSetFormattingType
+(TextDisplayFormattingItem::FormatType InFormattingType)
+{
+  emit SignalSetFormattingType(InFormattingType);
 }

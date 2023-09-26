@@ -76,6 +76,29 @@ TextDisplayWordItem::Draw
 }
 
 /*****************************************************************************!
+ * Function : DrawFormatted
+ *****************************************************************************/
+void
+TextDisplayWordItem::DrawFormatted
+(QPainter* InPainter, TextDisplayWordFormattingItem* InFormatting) 
+{
+  QColor                                        color;
+  TextDisplayFormattingItem::FormatType         formatType;
+
+  color = Foreground;
+  formatType = InFormatting->GetFormattingType();
+  TRACE_FUNCTION_INT(formatType);
+  if ( formatType == TextDisplayWordFormattingItem::FormatTypeWordHighlight ) {
+    color = QColor(255, 0, 0);
+  }
+  InPainter->setFont(Font);
+  InPainter->setPen(QPen(color));
+  InPainter->setBrush(QBrush(Background));
+  InPainter->drawText(QPoint(Location.x(), Location.y() + Size.height()),
+                      Word);
+}
+
+/*****************************************************************************!
  * Function : DrawSelected
  *****************************************************************************/
 void

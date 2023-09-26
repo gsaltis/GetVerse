@@ -95,6 +95,7 @@ class TextDisplayOuterWindow : public QFrame
   void                          SlotSetMessage          (QString InMessage);
   void                          SlotChapterScrolled             (int InChapter);
   void                          SlotChapterSelected             (int InChapter);
+  void                          SlotSetFormattingType           (TextDisplayFormattingItem::FormatType InFormattingType);
 
  //! Public Signals
  signals :
@@ -113,6 +114,7 @@ class TextDisplayOuterWindow : public QFrame
   void                          SignalSetMessage                (QString InMessage);
   void                          SignalChapterSelected           (int InCurrentChapter);
   void                          SignalChapterScrolled           (int InCurrentChapter);
+  void                          SignalSetFormattingType         (TextDisplayFormattingItem::FormatType InFormattingType);
   
  //! Public Actions
  public :

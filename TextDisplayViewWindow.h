@@ -108,6 +108,7 @@ class TextDisplayViewWindow : public QWidget
   int                           ArrangeItemsSentence    (int InX, int InY, int InWindowWidth);
   TextDisplayFormattingItem*    FindReferenceFormattingItem (int InBook, int InChapter, int InVerse);
   TextDisplayFormattingItem*    FindWordFormattingItem  (int InBook, int InChapter, int InVerse, int InWord);
+  TextDisplayFormattingItem*    FindWordFormattingItem  (TextDisplayWordItem* InItem);
   void                          LineJustify             (int InWindowWidth, int InLineEnd, int InLineStartIndex, int InLineEndIndex);
   int                           LineJustifyPunctuation  (int InLineRemaining, int InLineStartIndex, int InLineEndIndex);
   void                          LineJustifyWords        (int InLineRemaining, int InLineStartIndex, int InLineEndIndex);
@@ -162,6 +163,7 @@ class TextDisplayViewWindow : public QWidget
 
   int                           WordBreakIndent;
   bool                          BlockLinesAreJustified;
+  TextDisplayFormattingItem::FormatType         FormattingType;
   
  //! Public Slots
  public slots :
@@ -172,6 +174,7 @@ class TextDisplayViewWindow : public QWidget
   void                          SlotSetEditMode                 (void);
   void                          SlotVerticalScrolled            (void);
   void                          SlotSelectChapter       (int InChapter);
+  void                          SlotSetFormattingType   (TextDisplayFormattingItem::FormatType InFormattingType);
   
  //! Public Signals
  signals :

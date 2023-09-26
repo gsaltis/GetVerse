@@ -18,10 +18,12 @@
 #include <QLabel>
 #include <QSlider>
 #include <QSpinBox>
+#include <QComboBox>
 
 /*****************************************************************************!
  * Local Headers
  *****************************************************************************/
+#include "TextDisplayFormattingItem.h"
 
 /*****************************************************************************!
  * Exported Macros
@@ -64,6 +66,7 @@ class TextControlBar : public QWidget
   void                          CreateSubWindows        ();
   void                          InitializeSubWindows    ();
   void                          resizeEvent             (QResizeEvent* InEvent);
+  QStringList                   WordBreakTypeComboAddItems (void);
 
  //! Private Data
  private :
@@ -82,6 +85,9 @@ class TextControlBar : public QWidget
   QLabel*                       GroupingCountLabel;
   QSpinBox*                     ChapterSelect;
   
+  QComboBox*                    WordBreakTypeCombo;
+  QLabel*                       WordBreakTypeLabel;
+
  //! Public Slots
  public slots :
   void                          SlotReferenceButtonPushed       (void);
@@ -94,6 +100,7 @@ class TextControlBar : public QWidget
   void                          SlotSentenceCountChanged        (int);
   void                          SlotSetChapter                  (int InChapter);
   void                          SlotSetChapterSelectMax         (int InChapter);
+  void                          SlotWordBreakTypeComboSelectedItem (int InSelectedIndex);
 
  //! Public Signals
  signals :
@@ -103,6 +110,7 @@ class TextControlBar : public QWidget
   void                          SignalSetEditMode               (void);
   void                          SignalVerseCountChanged         (int InVerseCount);
   void                          SignalSentenceCountChanged      (int InVerseCount);
+  void                          SignalSetFormattingType         (TextDisplayFormattingItem::FormatType InFormattingType);
 
  //! Public Actions
  public :
