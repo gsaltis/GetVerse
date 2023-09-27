@@ -113,10 +113,13 @@ class TextDisplayViewWindow : public QWidget
   int                           LineJustifyPunctuation          (int InLineRemaining, int InLineStartIndex, int InLineEndIndex);
   void                          LineJustifyWords                (int InLineRemaining, int InLineStartIndex, int InLineEndIndex);
   inline bool                   WordEndsInPunctuation           (QString InWord);
+
   void                          EditModeMouseMove               (QPoint InLocation);
   void                          EditModeMousePress              (QPoint InLocation);
   void                          EditModeReferenceMouseSelect    (TextDisplayReferenceItem* InItem);
   void                          EditModeWordMouseSelect         (TextDisplayWordItem* InItem);
+  void                          EditModeFormattingMouseSelect   (TextDisplayWordFormattingItem* InItem);
+  
   void                          AddFormatting                   (int InBook, int InChapter, int InVerse, int InWord, int InFormatting);
 
   TextDisplayItem*              FindSelectedItem                (QPoint InLocation);

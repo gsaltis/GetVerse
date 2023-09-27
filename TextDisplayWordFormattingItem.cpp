@@ -18,6 +18,7 @@
  *****************************************************************************/
 #include "TextDisplayWordFormattingItem.h"
 #include "Trace.h"
+#include "Common.h"
 
 /*****************************************************************************!
  * Function : TextDisplayWordFormattingItem
@@ -30,7 +31,8 @@ TextDisplayWordFormattingItem::TextDisplayWordFormattingItem
   Background            = QColor(240, 0, 0);
   Type                  = FormattingWordType;
   WordIndex             = InWord;
-  Font                  = QFont("Arial", 14, QFont::Normal);
+  Font                  = MainSystemConfig->GetWordItemFont();
+  Size                  = QSize(10, 20);
 }
 
 /*****************************************************************************!
@@ -52,19 +54,20 @@ TextDisplayWordFormattingItem::Draw
   int                                   yd;
   int                                   y;
   int                                   x;
-  QString                               st;
+  QString                               st = QString("aa");
   QFontMetrics                          fm(Font);
   QSize                                 si = fm.size(0, st);
   QColor                                fore;
   QColor                                back;
-
+  QPolygon                              poly;
+  
   x = Location.x();
   y = Location.y();
 
+  Size = QSize(10, Size.height());
   switch ( Formatting ) {
     case FormatTypeWordBreak : {
       xd = Size.width() - si.width();
-      xd /= 4;
       x += xd;
       fore = Foreground;
       back = Background;
@@ -72,7 +75,6 @@ TextDisplayWordFormattingItem::Draw
     }
     case FormatTypeWordBreakIndent : {
       xd = Size.width() - si.width();
-      xd /= 4;
       x += xd;
       fore = QColor(0, 128, 0);
       back = QColor(0, 244, 0);;
@@ -85,6 +87,11 @@ TextDisplayWordFormattingItem::Draw
 
   InPainter->setFont(Font);
 
+  poly << QPoint(Location.x(),                Size.height() / 2)
+       << QPoint(Location.x() + Size.width(), Location.y())
+       << QPoint(Location.x() + Size.width(), Location.y() + Size.height())
+       << QPoint(Location.x(),                Size.height() / 2);
+  
   InPainter->setPen(QPen(fore));
   InPainter->setBrush(QBrush(back));
   InPainter->drawRect(QRect(Location, Size));
@@ -126,4 +133,3 @@ TextDisplayWordFormattingItem::IsReferenceWord
   }
   return false;
 }
-

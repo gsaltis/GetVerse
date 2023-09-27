@@ -20,6 +20,13 @@
 #define SQL_STATEMENT_INSERT_FORMATTING         \
   "INSERT INTO Formatting VALUES(%d, %d, %d, %d, '%s', %d);\n"
 
+#define SQL_STATEMENT_DELETE_FORMATTING         \
+  "DELETE FROM Formatting where book is %d "    \
+  "and chapter is %d "                          \
+  "and verse is %d "                            \
+  "and word is %d "                             \
+  "and type is %d;"
+
 /*****************************************************************************!
  * Function : SQLStatement
  *****************************************************************************/
@@ -43,4 +50,13 @@ QString
 SQLStatement::GetFormattingInsert(void)
 {
   return QString(SQL_STATEMENT_INSERT_FORMATTING);
+}
+
+/*****************************************************************************!
+ * Function : GetFormattingDelete
+ *****************************************************************************/
+QString
+SQLStatement::GetFormattingDelete(void)
+{
+  return QString(SQL_STATEMENT_DELETE_FORMATTING);
 }

@@ -101,3 +101,15 @@ TextDisplayFormattingItem::GetFormattingType
 {
   return (TextDisplayFormattingItem::FormatType)Formatting;
 }
+
+/*****************************************************************************!
+ * Function : Contains
+ *****************************************************************************/
+bool
+TextDisplayFormattingItem::Contains
+(QPoint InPoint)
+{
+  QRect                         r = QRect(Location, Size);
+  return r.contains(InPoint);
+}
+

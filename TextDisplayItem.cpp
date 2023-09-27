@@ -282,3 +282,23 @@ TextDisplayItem::SetParagraphPosition
 {
   position = InPosition;
 }
+
+/*****************************************************************************!
+ * Function : SetHeight
+ *****************************************************************************/
+void
+TextDisplayItem::SetHeight
+(int InHeight)
+{
+  Size.setHeight(InHeight);
+}
+
+/*****************************************************************************!
+ * Function : GetWidth 
+ *****************************************************************************/
+int
+TextDisplayItem::GetWidth
+()
+{
+  return Size.width();
+}

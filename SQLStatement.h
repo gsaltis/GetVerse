@@ -41,6 +41,7 @@ class SQLStatement : public QWidget
  //! Public Methods
  public :
   static QString                GetFormattingInsert     (void);
+  static QString                GetFormattingDelete     (void);
 
  //! Public Data
  public :

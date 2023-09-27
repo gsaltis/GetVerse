@@ -69,7 +69,9 @@ class TextDisplayItem
   QRect                         GetBoundingRect         ();
   void                          SetParagraphPosition    (ParagraphPosition InPosition);
   ParagraphPosition             GetParagraphPosition    ();
-
+  int                           GetWidth                ();
+  void                          SetHeight               (int InHeight);
+ 
   virtual bool                  IsReference             (const int InBook, const int InChapter, const int InVerse, const int InWord);
   virtual void                  SetFont                 (QFont InFont);
   virtual QString               GetText                 (void);

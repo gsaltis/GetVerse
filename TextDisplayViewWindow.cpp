@@ -175,6 +175,7 @@ TextDisplayViewWindow::ArrangeItems
     }
   }
   windowSize = QSize(tableWidth, height);
+  resize(windowSize);
 }
 
 /*****************************************************************************!
@@ -883,8 +884,8 @@ TextDisplayViewWindow::ArrangeItemsEdit
         }
         if ( formattingItem ) {
           formattingItem->SetLocation(QPoint(x, y + InterLineSkip));
-          formattingItem->SetSize(QSize(3, itemHeight));
-          x += 4;
+          formattingItem->SetHeight(itemHeight);
+          x += formattingItem->GetWidth();
         }
         
         item->SetLocation(QPoint(x, y));
@@ -1226,6 +1227,55 @@ TextDisplayViewWindow::EditModeMousePress
     EditModeWordMouseSelect((TextDisplayWordItem*)item);
     return;
   }
+
+  if ( type == TextDisplayItem::FormattingWordType ) {
+    EditModeFormattingMouseSelect((TextDisplayWordFormattingItem*)item);
+    return;
+  }
+}
+
+/*****************************************************************************!
+ * Function : EditModeFormattingMouseSelect
+ *****************************************************************************/
+void
+TextDisplayViewWindow::EditModeFormattingMouseSelect
+(TextDisplayWordFormattingItem* InItem)
+{
+  int                                   m;
+  int                                   book;
+  int                                   chapter;
+  int                                   verse;
+  int                                   word;
+  int                                   type;
+  char                                  sqlstatement[1024];
+  
+  book          = InItem->GetBook();
+  chapter       = InItem->GetChapter();
+  verse         = InItem->GetVerse();
+  word          = InItem->GetWordIndex();
+  type          = (int)InItem->GetFormattingType();
+
+  sprintf(sqlstatement,
+          SQLStatement::GetFormattingDelete().toStdString().c_str(),
+          book,
+          chapter,
+          verse,
+          word,
+          type);
+  m  = sqlite3_exec(MainDatabase, sqlstatement, NULL, NULL, NULL);
+  if ( m != SQLITE_OK ) {
+    fprintf(stderr, "sqlite_exec() failed\n %s\n %d : %s\n", sqlstatement, m, sqlite3_errstr(m));
+    return;
+  }
+
+  for ( auto i = formattingItems.begin() ; i != formattingItems.end(); i++ ) {
+    if (*i == (TextDisplayFormattingItem*)InItem ) {
+      formattingItems.erase(i);
+      break;
+    }
+  }
+  ArrangeItems();
+  repaint();
 }
 
 /*****************************************************************************!
@@ -1236,6 +1286,11 @@ TextDisplayViewWindow::FindSelectedItem
 (QPoint InLocation)
 {
   for ( auto item : textItems ) {
+    if ( item->Contains(InLocation) ) {
+      return item;
+    }
+  }
+  for ( auto item : formattingItems ) {
     if ( item->Contains(InLocation) ) {
       return item;
     }

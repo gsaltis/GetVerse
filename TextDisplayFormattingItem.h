@@ -57,6 +57,7 @@ class TextDisplayFormattingItem : public TextDisplayItem
  //! Public Methods
  public :
   virtual void                  Draw                    (QPainter* InPainter) override;
+  virtual bool                  Contains                (QPoint InPaint);
   FormatType                    GetFormattingType       ();
   
  //! Public Data
