@@ -29,9 +29,11 @@ TextDisplayOuterWindow::TextDisplayOuterWindow
 
   BookInfoIndex = -1;
   BookName = InBookName;
-  bookInfo = FindBookInfoByName(InBookName);
-  if ( bookInfo ) {
-   BookInfoIndex = bookInfo->index;
+  if ( !BookName.isEmpty() ) {
+    bookInfo = FindBookInfoByName(InBookName);
+    if ( bookInfo ) {
+      BookInfoIndex = bookInfo->index;
+    }
   }
   pal = palette();
   pal.setBrush(QPalette::Window, QBrush(QColor(224, 224, 224)));

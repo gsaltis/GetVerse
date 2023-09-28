@@ -334,7 +334,7 @@ MainInitializeGUI
   InApplication.setApplicationVersion(VERSION);
   InApplication.setOrganizationName("Greg Saltis");
   InApplication.setOrganizationDomain("www.gsaltis.com");
-  w = new MainWindow(MainSearchBook->name);
+  w = new MainWindow(MainSearchBook ? MainSearchBook->name : QString(""));
 
   size = MainSystemConfig->GetMainWindowSize();
   pos = MainSystemConfig->GetMainWindowLocation();
