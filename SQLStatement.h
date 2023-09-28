@@ -40,8 +40,9 @@ class SQLStatement : public QWidget
 
  //! Public Methods
  public :
-  static QString                GetFormattingInsert     (void);
-  static QString                GetFormattingDelete     (void);
+  static QString                GetFormattingInsert             (void);
+  static QString                GetWordFormattingDelete         (void);
+  static QString                GetVerseFormattingDelete        (void);
 
  //! Public Data
  public :

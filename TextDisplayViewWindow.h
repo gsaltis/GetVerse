@@ -119,12 +119,15 @@ class TextDisplayViewWindow : public QWidget
   void                          EditModeReferenceMouseSelect    (TextDisplayReferenceItem* InItem);
   void                          EditModeWordMouseSelect         (TextDisplayWordItem* InItem);
   void                          EditModeFormattingMouseSelect   (TextDisplayWordFormattingItem* InItem);
-  
+  void                          EditModeReferenceFormattingMouseSelect  (TextDisplayFormattingItem* InItem);
   void                          AddFormatting                   (int InBook, int InChapter, int InVerse, int InWord, int InFormatting);
 
   TextDisplayItem*              FindSelectedItem                (QPoint InLocation);
   BookInfo*                     FindBookInfoByIndex             (int InBookIndex);
   TextDisplayReferenceItem*     FindDisplayReferenceByChapterVerse      (int InChapter, int InVerse);
+  void                          RemoveWordFormattingItem        (TextDisplayWordFormattingItem* InItem);
+  void                          RemoveVerseFormattingItem       (TextDisplayFormattingItem* InItem);
+  
 
  //! Private Data
  private :

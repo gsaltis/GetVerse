@@ -46,6 +46,14 @@
          #n, n.toStdString().c_str());                                  \
   fflush(stdout);                                                       \
 
+#define TRACE_FUNCTION_STRING(n)                                        \
+  printf("%10s %50s::%30s:%05d : "                                      \
+         "%30s %s\n",                                                   \
+         "STRING",                                                      \
+         __FILE__, __FUNCTION__, __LINE__,                              \
+         #n, n);                                                        \
+  fflush(stdout);                                                       \
+
 #define TRACE_FUNCTION_QSIZE(n)                                         \
   printf("%10s %50s::%30s:%05d : "                                      \
          "%30s width = %d  "                                            \

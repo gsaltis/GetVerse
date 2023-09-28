@@ -1219,6 +1219,12 @@ TextDisplayViewWindow::EditModeMousePress
     return;
   }
   type = item->GetType();
+
+  if ( type == TextDisplayItem::FormattingVerseType ) {
+    EditModeReferenceFormattingMouseSelect((TextDisplayFormattingItem*)item);
+    return;
+  }
+  
   if ( type == TextDisplayItem::ReferenceType ) {
     EditModeReferenceMouseSelect((TextDisplayReferenceItem*)item);
     return;
@@ -1234,11 +1240,32 @@ TextDisplayViewWindow::EditModeMousePress
   }
 }
 
+
 /*****************************************************************************!
  * Function : EditModeFormattingMouseSelect
  *****************************************************************************/
 void
 TextDisplayViewWindow::EditModeFormattingMouseSelect
+(TextDisplayWordFormattingItem* InItem)
+{
+  RemoveWordFormattingItem(InItem);
+}
+
+/*****************************************************************************!
+ * Function : EditModeReferenceMouseSelect
+ *****************************************************************************/
+void
+TextDisplayViewWindow::EditModeReferenceFormattingMouseSelect
+(TextDisplayFormattingItem* InItem)
+{
+  RemoveVerseFormattingItem(InItem);
+}
+
+/*****************************************************************************!
+ * Function : RemoveWordFormattingItem
+ *****************************************************************************/
+void
+TextDisplayViewWindow::RemoveWordFormattingItem
 (TextDisplayWordFormattingItem* InItem)
 {
   int                                   m;
@@ -1256,11 +1283,52 @@ TextDisplayViewWindow::EditModeFormattingMouseSelect
   type          = (int)InItem->GetFormattingType();
 
   sprintf(sqlstatement,
-          SQLStatement::GetFormattingDelete().toStdString().c_str(),
+          SQLStatement::GetWordFormattingDelete().toStdString().c_str(),
           book,
           chapter,
           verse,
           word,
+          type);
+  m  = sqlite3_exec(MainDatabase, sqlstatement, NULL, NULL, NULL);
+  if ( m != SQLITE_OK ) {
+    fprintf(stderr, "sqlite_exec() failed\n %s\n %d : %s\n", sqlstatement, m, sqlite3_errstr(m));
+    return;
+  }
+
+  for ( auto i = formattingItems.begin() ; i != formattingItems.end(); i++ ) {
+    if (*i == (TextDisplayFormattingItem*)InItem ) {
+      formattingItems.erase(i);
+      break;
+    }
+  }
+  ArrangeItems();
+  repaint();
+}
+
+/*****************************************************************************!
+ * Function : RemoveVerseFormattingItem
+ *****************************************************************************/
+void
+TextDisplayViewWindow::RemoveVerseFormattingItem
+(TextDisplayFormattingItem* InItem)
+{
+  int                                   m;
+  int                                   book;
+  int                                   chapter;
+  int                                   verse;
+  int                                   type;
+  char                                  sqlstatement[1024];
+  
+  book          = InItem->GetBook();
+  chapter       = InItem->GetChapter();
+  verse         = InItem->GetVerse();
+  type          = (int)InItem->GetFormattingType();
+
+  sprintf(sqlstatement,
+          SQLStatement::GetVerseFormattingDelete().toStdString().c_str(),
+          book,
+          chapter,
+          verse,
           type);
   m  = sqlite3_exec(MainDatabase, sqlstatement, NULL, NULL, NULL);
   if ( m != SQLITE_OK ) {
@@ -1363,7 +1431,6 @@ TextDisplayViewWindow::AddFormatting
   repaint();
   return;
 }
-
 
 /*****************************************************************************!
  * Function : EditModeWordMouseSelect
@@ -1742,3 +1809,4 @@ TextDisplayViewWindow::SlotSetFormattingType
 {
   FormattingType = InFormattingType;
 }
+
