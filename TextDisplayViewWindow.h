@@ -56,7 +56,8 @@ class TextDisplayViewWindow : public QWidget
     ReferenceMode,
     BlockMode,
     EditMode,
-    SentenceMode
+    SentenceMode,
+    InterlinearMode
   };
     
  //! Public Methods
@@ -99,11 +100,13 @@ class TextDisplayViewWindow : public QWidget
   void                          PaintReferenceMode              (QPainter* InPainter, QRect InRect);
   void                          PaintSentenceMode               (QPainter* InPainter, QRect InRect);
   void                          PaintBlockMode                  (QPainter* InPainter, QRect InRect);
+  void                          PaintInterlinearMode            (QPainter* InPainter, QRect InRect);
   void                          PaintEditMode                   (QPainter* InPainter, QRect InRect);
 
   void                          ArrangeItems                    ();
   int                           ArrangeItemsReference           (int InX, int InY, int InWindowWidth);
   int                           ArrangeItemsBlock               (int InX, int InY, int InWindowWidth);
+  int                           ArrangeItemsInterlinear         (int InX, int InY, int InWindowWidth);
   int                           ArrangeItemsEdit                (int InX, int InY, int InWindowWidth);
   int                           ArrangeItemsSentence            (int InX, int InY, int InWindowWidth);
   TextDisplayFormattingItem*    FindReferenceFormattingItem     (int InBook, int InChapter, int InVerse);
@@ -177,11 +180,12 @@ class TextDisplayViewWindow : public QWidget
   void                          SlotBookSelected                (BookInfo* InBookInfo);
   void                          SlotSetSentenceMode             (void);
   void                          SlotSetBlockMode                (void);
+  void                          SlotSetInterlinearMode          (void);
   void                          SlotSetReferenceMode            (void);
   void                          SlotSetEditMode                 (void);
   void                          SlotVerticalScrolled            (void);
-  void                          SlotSelectChapter       (int InChapter);
-  void                          SlotSetFormattingType   (TextDisplayFormattingItem::FormatType InFormattingType);
+  void                          SlotSelectChapter               (int InChapter);
+  void                          SlotSetFormattingType           (TextDisplayFormattingItem::FormatType InFormattingType);
   
  //! Public Signals
  signals :
@@ -194,12 +198,13 @@ class TextDisplayViewWindow : public QWidget
   void                          SignalSetSentenceMode           (void);
   void                          SignalSetReferenceMode          (void);
   void                          SignalSetBlockMode              (void);
+  void                          SignalSetInterlinearMode        (void);
   void                          SignalSetViewMode               (void);
 
   void                          SignalVerseCountChanged         (int InVerseCount);
   void                          SignalSentenceCountChanged      (int InSentenceCount);
   void                          SignalSetMessage                (QString InMessage);
-  void                          SignalLocationSelected  (QPoint InLocation);
+  void                          SignalLocationSelected          (QPoint InLocation);
 
  //! Public Actions
  public :

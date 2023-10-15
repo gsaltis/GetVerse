@@ -159,6 +159,11 @@ TextDisplayViewWindow::ArrangeItems
       emit SignalVerseCountChanged(GetVerseCount());
       break;
     }
+    case InterlinearMode : {
+      height = ArrangeItemsInterlinear(x, y, windowWidth);
+      emit SignalVerseCountChanged(GetVerseCount());
+      break;
+    }
     case BlockMode : {
       windowWidth = tableWidth - (BlockLeftMargin + BlockRightMargin);
       height = ArrangeItemsBlock(BlockLeftMargin, y, windowWidth);
@@ -306,24 +311,61 @@ void
 TextDisplayViewWindow::SetBook
 ()
 {
+  int                                   len;
   QString                               columnName;
   int                                   n;
-  QString                               sqlstmt;
-
+  QString                               query;
+  sqlite3_stmt*                         sqlstmt;
+  int                                   retryCount;
+  int                                   verseID;
+  
   tmpVerseCount = 0;
   wordCount = 0;
   ClearText();
-  sqlstmt = QString("SELECT * from Verses where book is %1;\n").arg(bookInfo->index);
+  query = QString("SELECT * from Verses where book is %1;\n").arg(bookInfo->index);
   tmpVerseCount = 0;
   tmpSentenceCount = 0;
-  n = sqlite3_exec(MainDatabase, sqlstmt.toStdString().c_str(), SetBookCB, this, NULL);
+  n = sqlite3_exec(MainDatabase, query.toStdString().c_str(), SetBookCB, this, NULL);
   if ( n != SQLITE_OK ) {
     fprintf(stderr, "%s : sqlite3_exec()\n%s\n%s\n",
-            __FUNCTION__, sqlstmt.toStdString().c_str(),
+            __FUNCTION__, query.toStdString().c_str(),
             sqlite3_errstr(n));
     return;
   }
 
+  verseID = 0;
+  query = QString("SELECT ID FROM VERSE WHERE BOOK_NUMBER IS %1 AND CHAPTER_NUMBER IS 1 AND VERSE_NUMBER IS 1;").arg(bookInfo->index);
+  len = query.length();
+  
+  n = sqlite3_prepare_v2(MainInterlinearDatabase, query.toStdString().c_str(), len, &sqlstmt, NULL);
+  if ( n != SQLITE_OK ) {
+    fprintf(stderr, "%s sqlite3_prepare_v2()\n%s\n%s\n",
+            __FUNCTION__,
+            query.toStdString().c_str(),
+            sqlite3_errstr(n));
+    return;
+  }
+  retryCount = 0;
+  do {
+    n = sqlite3_step(sqlstmt);
+    if ( SQLITE_BUSY == n ) {
+      QThread::msleep(30);
+      retryCount++;
+      if ( retryCount > 10 ) {
+        break;
+      }
+      continue;
+    }
+    if ( SQLITE_DONE == n ) {
+      break;
+    }
+
+    if ( SQLITE_ROW == n ) {
+      verseID = sqlite3_column_int(sqlstmt, 0);
+    }
+  } while (true);
+  sqlite3_finalize(sqlstmt);
+  TRACE_FUNCTION_INT(verseID);
   emit SignalWordCountChanged(wordCount);
 }
 
@@ -556,6 +598,19 @@ TextDisplayViewWindow::SlotSetBlockMode(void)
 }
 
 /*****************************************************************************!
+ * Function : SlotSetInterlinearMode
+ *****************************************************************************/
+void
+TextDisplayViewWindow::SlotSetInterlinearMode(void)
+{
+  TRACE_FUNCTION_START();
+  mode = InterlinearMode;
+  ArrangeItems();
+  repaint();
+  TRACE_FUNCTION_END();
+}
+
+/*****************************************************************************!
  * Function : SlotSetReferenceMode
  *****************************************************************************/
 void
@@ -735,6 +790,10 @@ TextDisplayViewWindow::paintEvent
     }
     case BlockMode : {
       PaintBlockMode(&painter, rect);
+      break;
+    }
+    case InterlinearMode : {
+      PaintInterlinearMode(&painter, rect);
       break;
     }
     case EditMode : {
@@ -977,6 +1036,20 @@ TextDisplayViewWindow::PaintSentenceMode
 }
 
 /*****************************************************************************!
+ * Function : ArrangeItemsInterlinear
+ *****************************************************************************/
+int
+TextDisplayViewWindow::ArrangeItemsInterlinear
+(int InX, int InY, int InWindowWidth)
+{
+
+  (void)InX;
+  (void)InY;
+  (void)InWindowWidth;
+  return 10000;
+}
+
+/*****************************************************************************!
  * Function : ArrangeItemsBlock
  *****************************************************************************/
 int
@@ -1154,6 +1227,22 @@ TextDisplayViewWindow::ArrangeItemsBlock
   return windowHeight;
 }
 
+/*****************************************************************************!
+ * Function : PaintInterlinearMode
+ *****************************************************************************/
+void
+TextDisplayViewWindow::PaintInterlinearMode
+(QPainter* InPainter, QRect InRect)
+{
+  QRect                                 itemR;
+
+  (void)InRect;
+  QBrush                                brush = QBrush(QColor(0, 0, 0));
+  QSize                                 s = size();
+  InPainter->setBrush(brush);
+  InPainter->drawRect(QRect(QPoint(0, 0), s));
+}
+  
 /*****************************************************************************!
  * Function : PaintBlockMode
  *****************************************************************************/

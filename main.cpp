@@ -30,6 +30,7 @@
  *****************************************************************************/
 #define DEFAULT_FILENAME                        "NASB.txt"
 #define DEFAULT_DB_FILENAME                     "NASB.db"
+#define DEFAULT_INTERLINEAR_DB_FILENAME         "HGIB.db"
 #define DEFAULT_CONFIG_FILENAME                 "GetVerse.json"
 #define DATABASE_ENV_LOCATION                   "GETVERSE_DATABASE"
 #define VERSION					"1.0.1"
@@ -200,6 +201,9 @@ QString
 MainDatabaseFilename;
 
 QString
+MainInterlinearDatabaseFilename;
+
+QString
 MainBook;
 
 int
@@ -264,6 +268,9 @@ MainFormatCount = 0;
 
 sqlite3*
 MainDatabase;
+
+sqlite3*
+MainInterlinearDatabase;
 
 static QStringList
 MainFileLines;;
@@ -354,14 +361,16 @@ MainInitialize
 {
   QString                               s;
 
-  MainSystemConfig      = new SystemConfig();
+  MainSystemConfig                      = new SystemConfig();
   
-  MainFilename          = NULL;
-  MainDatabaseFilename  = QString(DEFAULT_DB_FILENAME);
-  MainBook              = NULL;
-  MainVerseRangesCount  = 0;
-  MainFormatInfos       = FormattingInfoListCreate();
-  MainBlockOutputText   = QString("");
+  MainFilename                          = NULL;
+  MainDatabaseFilename                  = QString(DEFAULT_DB_FILENAME);
+  MainInterlinearDatabaseFilename       = QString(DEFAULT_INTERLINEAR_DB_FILENAME);
+  
+  MainBook                              = NULL;
+  MainVerseRangesCount                  = 0;
+  MainFormatInfos                       = FormattingInfoListCreate();
+  MainBlockOutputText                   = QString("");
   
   s = getenv(DATABASE_ENV_LOCATION);
   if ( ! s.isEmpty() ) {
@@ -1160,6 +1169,12 @@ VerifyCommandLine
     exit(EXIT_FAILURE);
   }
 
+  n = sqlite3_open(MainInterlinearDatabaseFilename.toStdString().c_str(), &MainInterlinearDatabase);
+  if ( n != SQLITE_OK ) {
+    fprintf(stderr, "Could not open database %s : %s\n", MainInterlinearDatabaseFilename.toStdString().c_str(), sqlite3_errstr(n));
+    exit(EXIT_FAILURE);
+  }
+  
   n = sqlite3_open(MainDatabaseFilename.toStdString().c_str(), &MainDatabase);
   if ( n != SQLITE_OK ) {
     fprintf(stderr, "Could not open database %s : %s\n", MainDatabaseFilename.toStdString().c_str(), sqlite3_errstr(n));

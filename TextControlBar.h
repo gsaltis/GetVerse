@@ -74,6 +74,7 @@ class TextControlBar : public QWidget
   QPushButton*                  EditButton;
   QPushButton*                  AnalyzeButton;
   QPushButton*                  BlockViewButton;
+  QPushButton*                  InterlinearButton;
   QPushButton*                  SentenceViewButton;
   QLabel*                       WordLabel;
   QLabel*                       WordCountLabel;
@@ -94,6 +95,7 @@ class TextControlBar : public QWidget
   void                          SlotEditButtonPushed            (void);
   void                          SlotAnalyzeButtonPushed         (void);
   void                          SlotBlockViewButtonPushed       (void);
+  void                          SlotInterlinearButtonPushed     (void);
   void                          SlotSentenceViewButtonPushed    (void);
   void                          SlotWordCountChanged            (int);
   void                          SlotVerseCountChanged           (int);
@@ -107,6 +109,7 @@ class TextControlBar : public QWidget
   void                          SignalSetSentenceMode           (void);
   void                          SignalSetReferenceMode          (void);
   void                          SignalSetBlockMode              (void);
+  void                          SignalSetInterlinearMode        (void);
   void                          SignalSetEditMode               (void);
   void                          SignalVerseCountChanged         (int InVerseCount);
   void                          SignalSentenceCountChanged      (int InVerseCount);

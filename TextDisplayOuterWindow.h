@@ -90,9 +90,10 @@ class TextDisplayOuterWindow : public QFrame
   void                          SlotSentenceCountChanged        (int InWordCount);
   void                          SlotSetSentenceMode             (void);
   void                          SlotSetBlockMode                (void);
+  void                          SlotSetInterlinearMode          (void);
   void                          SlotSetReferenceMode            (void);
   void                          SlotSetEditMode                 (void);
-  void                          SlotSetMessage          (QString InMessage);
+  void                          SlotSetMessage                  (QString InMessage);
   void                          SlotChapterScrolled             (int InChapter);
   void                          SlotChapterSelected             (int InChapter);
   void                          SlotSetFormattingType           (TextDisplayFormattingItem::FormatType InFormattingType);
@@ -111,6 +112,7 @@ class TextDisplayOuterWindow : public QFrame
   void                          SignalSetReferenceMode          (void);
   void                          SignalSetEditMode               (void);
   void                          SignalSetBlockMode              (void);
+  void                          SignalSetInterlinearMode        (void);
   void                          SignalSetMessage                (QString InMessage);
   void                          SignalChapterSelected           (int InCurrentChapter);
   void                          SignalChapterScrolled           (int InCurrentChapter);

@@ -304,6 +304,11 @@ TextDisplayOuterWindow::CreateConnections(void)
           this,
           SLOT(SlotSetBlockMode()));
 
+  connect(controlBar,
+          SIGNAL(SignalSetInterlinearMode()),
+          this,
+          SLOT(SlotSetInterlinearMode()));
+
   connect(this,
           SIGNAL(SignalSetSentenceMode()),
           viewWindow,
@@ -320,6 +325,10 @@ TextDisplayOuterWindow::CreateConnections(void)
           SIGNAL(SignalSetBlockMode()),
           viewWindow,
           SLOT(SlotSetBlockMode()));
+  connect(this,
+          SIGNAL(SignalSetInterlinearMode()),
+          viewWindow,
+          SLOT(SlotSetInterlinearMode()));
 
 }
 
@@ -387,6 +396,15 @@ void
 TextDisplayOuterWindow::SlotSetBlockMode(void)
 {
   emit SignalSetBlockMode();
+}
+
+/*****************************************************************************!
+ * Function : SlotSetInterlinearMode
+ *****************************************************************************/
+void
+TextDisplayOuterWindow::SlotSetInterlinearMode(void)
+{
+  emit SignalSetInterlinearMode();
 }
 
 /*****************************************************************************!

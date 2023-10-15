@@ -36,6 +36,9 @@ MainBookInfo;
 extern sqlite3*
 MainDatabase;
 
+extern sqlite3*
+MainInterlinearDatabase;
+
 extern SystemConfig*
 MainSystemConfig;
 

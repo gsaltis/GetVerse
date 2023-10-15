@@ -100,7 +100,17 @@ TextControlBar::CreateSubWindows()
   connect(BlockViewButton, SIGNAL(pressed()), this, SLOT(SlotBlockViewButtonPushed()));
   x += ButtonWidth + 1;
 
-  //! Create the EditButton button
+  //! Create the Interlinear button
+  InterlinearButton = new QPushButton();
+  InterlinearButton->setParent(this);
+  InterlinearButton->setText("I");
+  InterlinearButton->move(x, 0);
+  InterlinearButton->resize(ButtonWidth, ButtonHeight);
+  InterlinearButton->setCheckable(true);
+  connect(InterlinearButton, SIGNAL(pressed()), this, SLOT(SlotInterlinearButtonPushed()));
+  x += ButtonWidth + 1;
+
+  //! Create the EditButton button 
   EditButton = new QPushButton();
   EditButton->setParent(this);
   EditButton->setText("E");
@@ -351,6 +361,7 @@ TextControlBar::SlotReferenceButtonPushed(void)
   GroupingCountLabel->setText("0");
   EditButton->setChecked(false);  
   BlockViewButton->setChecked(false);
+  InterlinearButton->setChecked(false);
   SentenceViewButton->setChecked(false);  
   GroupingLabel->show();
   GroupingCountLabel->show();
@@ -368,6 +379,7 @@ TextControlBar::SlotBlockViewButtonPushed(void)
   ReferenceButton->setChecked(false);
   SentenceViewButton->setChecked(false);  
   EditButton->setChecked(false);  
+  InterlinearButton->setChecked(false);  
   GroupingLabel->hide();
   GroupingCountLabel->hide();
   WordBreakTypeCombo->hide();
@@ -388,6 +400,7 @@ TextControlBar::SlotSentenceViewButtonPushed(void)
   GroupingCountLabel->show();
   ReferenceButton->setChecked(false);
   BlockViewButton->setChecked(false);
+  InterlinearButton->setChecked(false);
   WordBreakTypeCombo->hide();
   WordBreakTypeLabel->hide();
   emit SignalSetSentenceMode();
@@ -402,6 +415,7 @@ TextControlBar::SlotEditButtonPushed(void)
   GroupingLabel->setText("Verses :");
   GroupingCountLabel->setText("0");
 
+  InterlinearButton->setChecked(false);
   BlockViewButton->setChecked(false);
   SentenceViewButton->setChecked(false);  
   ReferenceButton->setChecked(false);  
@@ -412,6 +426,28 @@ TextControlBar::SlotEditButtonPushed(void)
   WordBreakTypeLabel->show();
 
   emit SignalSetEditMode();
+}
+
+/*****************************************************************************!
+ * Function : SlotInterlinearButtonPushed
+ *****************************************************************************/
+void
+TextControlBar::SlotInterlinearButtonPushed(void)
+{
+  GroupingLabel->setText("Verses :");
+  GroupingCountLabel->setText("0");
+
+  EditButton->setChecked(false);
+  BlockViewButton->setChecked(false);
+  SentenceViewButton->setChecked(false);  
+  ReferenceButton->setChecked(false);  
+
+  GroupingLabel->hide();
+  GroupingCountLabel->hide();
+  WordBreakTypeCombo->hide();
+  WordBreakTypeLabel->hide();
+
+  emit SignalSetInterlinearMode();
 }
 
 /*****************************************************************************!

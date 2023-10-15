@@ -83,6 +83,7 @@ class TextDisplayViewScrollWindow : public QScrollArea
 
   void                          SlotSetSentenceMode             (void);
   void                          SlotSetBlockMode                (void);
+  void                          SlotSetInterlinearMode          (void);
   void                          SlotSetReferenceMode            (void);
   void                          SlotSetEditMode                 (void);
   
@@ -108,6 +109,7 @@ class TextDisplayViewScrollWindow : public QScrollArea
   void                          SignalSetSentenceMode           (void);
   void                          SignalSetReferenceMode          (void);
   void                          SignalSetBlockMode              (void);
+  void                          SignalSetInterlinearMode        (void);
 
   void                          SignalVerseCountChanged         (int InVerseCount);
   void                          SignalSentenceCountChanged      (int InVerseCount);

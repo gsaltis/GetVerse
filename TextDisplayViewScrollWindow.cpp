@@ -209,6 +209,11 @@ TextDisplayViewScrollWindow::CreateConnections(void)
           viewWindow,
           SLOT(SlotSetBlockMode()));
 
+  connect(this,
+          SIGNAL(SignalSetInterlinearMode()),
+          viewWindow,
+          SLOT(SlotSetInterlinearMode()));
+
   connect(verticalBar,
           SIGNAL(valueChanged(int)),
           this,
@@ -284,6 +289,15 @@ void
 TextDisplayViewScrollWindow::SlotSetBlockMode(void)
 {
   emit SignalSetBlockMode();
+}
+
+/*****************************************************************************!
+ * Function : SlotSetInterlinearMode
+ *****************************************************************************/
+void
+TextDisplayViewScrollWindow::SlotSetInterlinearMode(void)
+{
+  emit SignalSetInterlinearMode();
 }
 
 /*****************************************************************************!

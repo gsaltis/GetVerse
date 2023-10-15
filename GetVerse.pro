@@ -38,6 +38,8 @@ SOURCES                         += \
 				   BookNameTableScrollArea.cpp                  \
 				   BookNameWindow.cpp                           \
 				   Formatting.cpp                               \
+				   InterlinearVerse.cpp                         \
+				   InterlinearWord.cpp                          \
 				   MainDisplayWindow.cpp                        \
 				   MainMessageWindow.cpp                        \
 				   MainWindow.cpp                               \
@@ -46,16 +48,16 @@ SOURCES                         += \
 				   SystemConfig.cpp                             \
 				   TextControlBar.cpp                           \
 				   TextDisplayFormattingItem.cpp                \
-				   TextDisplayWordFormattingItem.cpp            \
 				   TextDisplayItem.cpp                          \
 				   TextDisplayOuterWindow.cpp                   \
 				   TextDisplayReferenceItem.cpp                 \
 				   TextDisplayReferenceWindow.cpp               \
-				   TextDisplayViewScrollWindow.cpp              \
 				   TextDisplayViewScrollBar.cpp                 \
+				   TextDisplayViewScrollWindow.cpp              \
 				   TextDisplayViewWindow.cpp                    \
 				   TextDisplayViewWindowItem.cpp                \
 				   TextDisplayViewWindowReferenceItem.cpp       \
+				   TextDisplayWordFormattingItem.cpp            \
 				   TextDisplayWordItem.cpp                      \
 				   main.cpp                                     \
 				   sqlite3.c                                    \
@@ -68,6 +70,8 @@ HEADERS                         += \
 				   BookNameTableScrollArea.h                    \
 				   BookNameWindow.h                             \
 				   Formatting.h                                 \
+				   InterlinearVerse.h                           \
+				   InterlinearWord.h                            \
 				   MainDisplayWindow.h                          \
 				   MainMessageWindow.h                          \
 				   MainWindow.h                                 \
@@ -76,7 +80,6 @@ HEADERS                         += \
 				   SystemConfig.h                               \
 				   TextControlBar.h                             \
 				   TextDisplayFormattingItem.h                  \
-				   TextDisplayWordFormattingItem.h              \
 				   TextDisplayItem.h                            \
 				   TextDisplayOuterWindow.h                     \
 				   TextDisplayReferenceItem.h                   \
@@ -86,6 +89,7 @@ HEADERS                         += \
 				   TextDisplayViewWindow.h                      \
 				   TextDisplayViewWindowItem.h                  \
 				   TextDisplayViewWindowReferenceItem.h         \
+				   TextDisplayWordFormattingItem.h              \
 				   TextDisplayWordItem.h                        \
 				   sqlite3.h                                    \
 
