@@ -4,11 +4,13 @@
 
 # Junk Files
 *~
+*.txt
 
 # Tmp Files
 Makefile.Release
 Makefile.Debug
 Makefile
+object_script*
 
 # Extra Directories
 Books
