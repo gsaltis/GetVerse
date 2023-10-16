@@ -48,6 +48,7 @@ SOURCES                         += \
 				   SystemConfig.cpp                             \
 				   TextControlBar.cpp                           \
 				   TextDisplayFormattingItem.cpp                \
+                                   TextDisplayInterlinearItem.cpp               \
 				   TextDisplayItem.cpp                          \
 				   TextDisplayOuterWindow.cpp                   \
 				   TextDisplayReferenceItem.cpp                 \
@@ -80,6 +81,7 @@ HEADERS                         += \
 				   SystemConfig.h                               \
 				   TextControlBar.h                             \
 				   TextDisplayFormattingItem.h                  \
+                                   TextDisplayInterlinearItem.h                 \
 				   TextDisplayItem.h                            \
 				   TextDisplayOuterWindow.h                     \
 				   TextDisplayReferenceItem.h                   \

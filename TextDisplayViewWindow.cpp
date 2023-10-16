@@ -2102,3 +2102,15 @@ TextDisplayViewWindow::SlotSetFormattingType
   FormattingType = InFormattingType;
 }
 
+/*****************************************************************************!
+ * Function : AddInterlinearItem
+ *****************************************************************************/
+void
+TextDisplayViewWindow::AddInterlinearItem
+(TextDisplayInterlinearItem* InItem)
+{
+  if ( NULL == InItem ) {
+    return;
+  }
+  interlinearItems.push_back(InItem);
+}
