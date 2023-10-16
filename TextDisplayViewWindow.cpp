@@ -36,6 +36,7 @@ TextDisplayViewWindow::TextDisplayViewWindow
 {
   QPalette pal;
   pal = palette();
+  bookInfo = NULL;
   pal.setBrush(QPalette::Window, QBrush(QColor(255, 255, 255)));
   setPalette(pal);
   setAutoFillBackground(true);
@@ -78,6 +79,7 @@ TextDisplayViewWindow::initialize()
   BlockLinesAreJustified        = false;
   WordBreakIndent               = 50;
   FormattingType                = TextDisplayFormattingItem::FormatTypeWordBreak;
+  interlinearVerse              = NULL;
   
   if ( DotsPerInchX ) {
     BlockLeftMargin             = DotsPerInchX;
@@ -150,6 +152,9 @@ TextDisplayViewWindow::ArrangeItems
   x             = leftMargin;  
   height        = 0;
   windowWidth   = tableWidth - (leftMargin + rightMargin);
+  if ( bookInfo == NULL ) {
+    return;
+  }
   switch (mode) {
     case NoneMode : {
       break;
@@ -311,13 +316,10 @@ void
 TextDisplayViewWindow::SetBook
 ()
 {
-  int                                   len;
   QString                               columnName;
   int                                   n;
-  QString                               query;
-  sqlite3_stmt*                         sqlstmt;
-  int                                   retryCount;
   int                                   verseID;
+  QString                               query;
   
   tmpVerseCount = 0;
   wordCount = 0;
@@ -333,8 +335,138 @@ TextDisplayViewWindow::SetBook
     return;
   }
 
+  verseID = GetInterlinearVerseNumber(bookInfo->index, 1, 1);
+  if ( interlinearVerse ) {
+    delete interlinearVerse;
+  }
+  interlinearVerse = GetInterlinearVerse(verseID);
+  emit SignalWordCountChanged(wordCount);
+}
+
+/*****************************************************************************!
+ * Function : GetInterlinearVerse
+ *****************************************************************************/
+InterlinearVerse*
+TextDisplayViewWindow::GetInterlinearVerse
+(int InID)
+{
+  QString                               query;
+  int                                   n;
+  InterlinearVerse*                     verse;
+
+  verse = new InterlinearVerse();
+  query = QString("SELECT * from INTERLINEAR_WORD WHERE VERSE_ID is %1 ORDER BY ID;\n").arg(InID);
+  n = sqlite3_exec(MainInterlinearDatabase, query.toStdString().c_str(), GetInterlinearVerseCB, verse, NULL);
+  if ( n != SQLITE_OK ) {
+    fprintf(stderr, "%s : sqlite3_exec()\n%s\n%s\n",
+            __FUNCTION__, query.toStdString().c_str(),
+            sqlite3_errstr(n));
+    return NULL;
+  }
+
+  return verse;
+}
+
+/*****************************************************************************!
+ * Function : GetInterlinearVerseCB
+ *****************************************************************************/
+int
+TextDisplayViewWindow::GetInterlinearVerseCB
+(void* InPointer, int InColumnCount, char** InColumnValues, char** InColumnNames)
+{
+  InterlinearVerse*                     verse;
+  InterlinearWord*                      word;
+  int                                   id;
+  int                                   verseID;
+  QString                               contextualForm;
+  QString                               transliteratedContextualForm;
+  QString                               morphologyID;
+  QString                               strongsWordID;
+  QString                               english;
+  
+  verse = (InterlinearVerse*)InPointer;
+
+  id = 0;
   verseID = 0;
-  query = QString("SELECT ID FROM VERSE WHERE BOOK_NUMBER IS %1 AND CHAPTER_NUMBER IS 1 AND VERSE_NUMBER IS 1;").arg(bookInfo->index);
+  for ( int i = 0 ; i < InColumnCount ; i++ ) {
+    QString                             columnName = QString(InColumnNames[i]);
+    QString                             columnValue = QString(InColumnValues[i]);
+    
+    if ( columnName == QString("ID") ) {
+      id = columnValue.toInt();
+      continue;
+    }
+    
+    if ( columnName == QString("VERSE_ID") ) {
+      verseID = columnValue.toInt();
+      continue;
+    }
+    
+    if ( columnName == QString("CONTEXTUAL_FORM") ) {
+      contextualForm = columnValue;
+      continue;
+    }
+    
+    if ( columnName == QString("TRANSLITERATED_CONTEXTUAL_FORM") ) {
+      transliteratedContextualForm = columnValue;
+      continue;
+    }
+    
+    if ( columnName == QString("MORPHOLOGY_ID") ) {
+      morphologyID = columnValue;
+      continue;
+    }
+    
+    if ( columnName == QString("STRONGS_WORD_ID") ) {
+      strongsWordID = columnValue;
+      continue;
+    }
+    
+    if ( columnName == QString("ENGLISH") ) {
+      english = columnValue;
+      continue;
+    }
+  }
+  if ( id == 0 ||
+       verseID == 0 ||
+       contextualForm.isEmpty() ||
+       transliteratedContextualForm.isEmpty() ||
+       morphologyID.isEmpty() ||
+       strongsWordID.isEmpty() ||
+       english.isEmpty() ) {
+    return 0;
+  }
+  word = new InterlinearWord();
+  word->SetVerseID(verseID);
+  word->SetID(id);
+  word->SetContextualForm(contextualForm);
+  word->SetTransliteratedContextualForm(transliteratedContextualForm);
+  word->SetMorphologyID(morphologyID);
+  word->SetStrongsWordID(strongsWordID);
+  word->SetEnglish(english);
+  verse->AddWord(word);
+  return 0;
+}
+
+
+/*****************************************************************************!
+ * Function : GetInterlinearVerseNumber
+ *****************************************************************************/
+int
+TextDisplayViewWindow::GetInterlinearVerseNumber
+(int InBookNumber, int InChapterNumber, int InVerseNumber)
+{
+  QString                               query;
+  int                                   n;
+  sqlite3_stmt*                         sqlstmt;
+  int                                   retryCount;
+  int                                   verseID;
+  int                                   len;
+  
+  query = QString("SELECT ID FROM VERSE WHERE BOOK_NUMBER IS %1 AND CHAPTER_NUMBER IS %2 AND VERSE_NUMBER IS %3;")
+    .arg(InBookNumber)
+    .arg(InChapterNumber)
+    .arg(InVerseNumber);
   len = query.length();
   
   n = sqlite3_prepare_v2(MainInterlinearDatabase, query.toStdString().c_str(), len, &sqlstmt, NULL);
@@ -343,9 +475,10 @@ TextDisplayViewWindow::SetBook
             __FUNCTION__,
             query.toStdString().c_str(),
             sqlite3_errstr(n));
-    return;
+    return 0;
   }
   retryCount = 0;
+  verseID = 0;
   do {
     n = sqlite3_step(sqlstmt);
     if ( SQLITE_BUSY == n ) {
@@ -365,8 +498,7 @@ TextDisplayViewWindow::SetBook
     }
   } while (true);
   sqlite3_finalize(sqlstmt);
-  TRACE_FUNCTION_INT(verseID);
-  emit SignalWordCountChanged(wordCount);
+  return verseID;
 }
 
 /*****************************************************************************!
@@ -603,11 +735,9 @@ TextDisplayViewWindow::SlotSetBlockMode(void)
 void
 TextDisplayViewWindow::SlotSetInterlinearMode(void)
 {
-  TRACE_FUNCTION_START();
   mode = InterlinearMode;
   ArrangeItems();
   repaint();
-  TRACE_FUNCTION_END();
 }
 
 /*****************************************************************************!
@@ -1234,13 +1364,86 @@ void
 TextDisplayViewWindow::PaintInterlinearMode
 (QPainter* InPainter, QRect InRect)
 {
+  QString                               english;
+  QString                               hebrew;
   QRect                                 itemR;
-
-  (void)InRect;
+  int                                   n;
   QBrush                                brush = QBrush(QColor(0, 0, 0));
   QSize                                 s = size();
+  InterlinearWord*                      word;
+  QFont                                 font;
+  QFont                                 font2;
+  int                                   x;
+  int                                   ix;
+  int                                   w;
+  int                                   w2;
+  int                                   h;
+  int                                   h2;
+  int                                   i1, i2;
+  
+  QRect                                 rect;
+  QRect                                 rect2;
+
+  int                                   windowWidth;
+
+  windowWidth = size().width();
+  (void)InRect;
   InPainter->setBrush(brush);
   InPainter->drawRect(QRect(QPoint(0, 0), s));
+  font = InPainter->font();
+
+  font.setPointSize(20);
+  QFontMetrics                          fm(font);
+
+  font2 = QFont(font);
+  font2.setPointSize(12);
+  font2.setItalic(true);
+  QFontMetrics                          fm2(font2);
+  
+  InPainter->setFont(font);
+  if ( interlinearVerse == NULL ) {
+    return;
+  }
+  word = interlinearVerse->GetWordByIndex(0);
+  hebrew = word->GetContextualForm();
+  english = word->GetEnglish();
+  
+  rect = fm.boundingRect(hebrew);
+  rect2 = fm2.boundingRect(english);
+  h = rect.height();
+  h2 = rect2.height();
+  
+  x = windowWidth - 10;
+  n = interlinearVerse->GetWordCount();
+  for ( int i = 0 ; i < n ; i++ ) {
+    word = interlinearVerse->GetWordByIndex(i);
+    hebrew = word->GetContextualForm();
+    english = word->GetEnglish();
+    
+    rect = fm.boundingRect(hebrew);
+    rect2 = fm2.boundingRect(english);
+    w = rect.width();
+    w2 = rect2.width();
+    if ( w < w2 ) {
+      i1 = w2 - w;
+      w = w2;
+      i2 = 0;
+    } else {
+      i1 = 0;
+      i2 = w - w2;
+    }
+    ix = x - w;
+    InPainter->setPen(QPen(QColor(255, 255, 255)));
+    InPainter->setBrush(QBrush(QColor(255, 255, 255)));
+    InPainter->setFont(font);
+    InPainter->drawText(ix + i1, h + 10, hebrew);
+
+    InPainter->setPen(QPen(QColor(240, 0, 0)));
+    InPainter->setBrush(QBrush(QColor(128, 0, 0)));
+    InPainter->setFont(font2);
+    InPainter->drawText(ix + i2, h + h2 + 10, english);
+    x = ix - 10;
+  }
 }
   
 /*****************************************************************************!

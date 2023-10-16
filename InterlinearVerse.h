@@ -17,6 +17,7 @@
 /*****************************************************************************!
  * Local Headers
  *****************************************************************************/
+#include "InterlinearWord.h"
 
 /*****************************************************************************!
  * Exported Macros
@@ -37,7 +38,11 @@ class InterlinearVerse
 
  //! Public Methods
  public :
-
+  void                          AddWord         (InterlinearWord* InWord);
+  int                           GetWordCount    ();
+  InterlinearWord*              GetWordByIndex  (int InIndex);
+  InterlinearWord*              GetWordByID     (int InID);
+  
  //! Public Data
  public :
 
@@ -52,6 +57,7 @@ class InterlinearVerse
 
  //! Private Data
  private :
+  QList<InterlinearWord*>       words;
 
 };
 

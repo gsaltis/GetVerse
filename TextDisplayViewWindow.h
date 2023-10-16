@@ -25,6 +25,7 @@
 #include "TextDisplayFormattingItem.h"
 #include "TextDisplayReferenceItem.h"
 #include "TextDisplayWordItem.h"
+#include "InterlinearVerse.h"
 
 /*****************************************************************************!
  * Exported Macros
@@ -80,8 +81,13 @@ class TextDisplayViewWindow : public QWidget
 
  //! Private Methods
  private :
+  int                           GetInterlinearVerseNumber       (int InBookNumnber, int InChapterNumber, int InVerseNumber);
+  
   void                          initialize                      ();
   void                          CreateSubWindows                ();
+  InterlinearVerse*             GetInterlinearVerse             (int InID);
+  static int                    GetInterlinearVerseCB           (void* InPointer, int InColumnCount, char** InColumnValues, char** InColumnNames);
+  
   void                          InitializeSubWindows            ();
   void                          SetBook                         ();
   static int                    SetBookCB                       (void* InThisPointer, int InColumnCount, char** InColumnValues, char** InColumnNames);
@@ -174,6 +180,7 @@ class TextDisplayViewWindow : public QWidget
   bool                                                          BlockLinesAreJustified;
   bool                                                          ItemsArranged;
   TextDisplayFormattingItem::FormatType                         FormattingType;
+  InterlinearVerse*                                             interlinearVerse;
   
  //! Public Slots
  public slots :

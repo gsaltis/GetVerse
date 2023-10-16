@@ -82,9 +82,9 @@ void
 TextDisplayViewWindowItem::resizeEvent
 (QResizeEvent* InEvent)
 {
-  QSize					size;  
-  int					width;
-  int					height;
+  QSize                                 size;  
+  int                                   width;
+  int                                   height;
 
   size = InEvent->size();
   width = size.width();
@@ -155,5 +155,6 @@ TextDisplayViewWindowItem::mousePressEvent
 
   p = pos();
   y = p.y();
+  (void)y;
 }
 
