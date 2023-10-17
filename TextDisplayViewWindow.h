@@ -92,6 +92,8 @@ class TextDisplayViewWindow : public QWidget
   void                          InitializeSubWindows            ();
   void                          SetBook                         ();
   static int                    SetBookCB                       (void* InThisPointer, int InColumnCount, char** InColumnValues, char** InColumnNames);
+  static int                    AddInterlinerChapterCB          (void* InPointer, int InColumnCount, char** InColumnValues, char** InColumnNames);
+
   void                          AddLineText                     (int InChapter, int InVerse, QString InVerseText);
   QSize                         ComputeSize                     ();
   void                          GetMaxReferenceWidth            ();

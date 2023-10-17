@@ -335,12 +335,45 @@ TextDisplayViewWindow::SetBook
     return;
   }
 
+  AddInterlinerChapter(bookInfo->index, 1)
   verseID = GetInterlinearVerseNumber(bookInfo->index, 1, 1);
   if ( interlinearVerse ) {
     delete interlinearVerse;
   }
   interlinearVerse = GetInterlinearVerse(verseID);
   emit SignalWordCountChanged(wordCount);
+}
+
+/*****************************************************************************!
+ * Function : AddInterlinerChapter
+ *****************************************************************************/
+void
+TextDisplayViewWindow::AddInterlinerChapter
+(int InBookIndex, int InChapterNumber)
+{
+  QString                               query;
+  
+  query = QString("SELECT * FROM VERSE WHERE BOOK_NUMBER is %1 and CHAPTER_NUMBER IS %2;").
+    arg(InBookIndex).arg(InChapterNumber);
+  
+  n = sqlite3_exec(MainInterlinearDatabase, query.toStdString().c_str(), AddInterlinerChapterCB, NULL, NULL);
+  if ( n != SQLITE_OK ) {
+    fprintf(stderr, "%s\n : sqlite3_exec()\n%s\n%s\n",
+            __FUNCTION__, query.toStdString(),c_str(),
+            sqlite3_errstr(n));
+    return ;
+  }
+}
+
+/*****************************************************************************!
+ * Function : AddInterlinerChapterCB
+ *****************************************************************************/
+int
+TextDisplayViewWindow::AddInterlinerChapterCB
+(void* InPointer, int InColumnCount, char** InColumnValues, char** InColumnNames)
+{
+
+
 }
 
 /*****************************************************************************!
