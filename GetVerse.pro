@@ -38,9 +38,10 @@ SOURCES                         += \
 				   BookNameTableScrollArea.cpp                  \
 				   BookNameWindow.cpp                           \
 				   Formatting.cpp                               \
+				   InterlinearChapter.cpp                       \
 				   InterlinearVerse.cpp                         \
 				   InterlinearWord.cpp                          \
-				   InterlinearChapter.cpp                       \
+				   InterlinearWordText.cpp                      \
 				   MainDisplayWindow.cpp                        \
 				   MainMessageWindow.cpp                        \
 				   MainWindow.cpp                               \
@@ -72,9 +73,10 @@ HEADERS                         += \
 				   BookNameTableScrollArea.h                    \
 				   BookNameWindow.h                             \
 				   Formatting.h                                 \
+				   InterlinearChapter.h                         \
 				   InterlinearVerse.h                           \
 				   InterlinearWord.h                            \
-				   InterlinearChapter.h                         \
+				   InterlinearWordText.h                        \
 				   MainDisplayWindow.h                          \
 				   MainMessageWindow.h                          \
 				   MainWindow.h                                 \

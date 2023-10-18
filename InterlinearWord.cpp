@@ -26,7 +26,13 @@ InterlinearWord::InterlinearWord
   BookIndex     = InBookIndex;
   ChapterNumber = InChapterNumber;
   VerseNumber   = InVerseNumber;
-  VerseID       = InVerseID; 
+  VerseID       = InVerseID;
+
+  ContextualForm                = new InterlinearWordText();
+  TransliteratedContextualForm  = new InterlinearWordText();
+  MorphologyID                  = new InterlinearWordText();
+  StrongsWordID                 = new InterlinearWordText();
+  English                       = new InterlinearWordText();
 }
 
 /*****************************************************************************!
@@ -64,7 +70,7 @@ QString
 InterlinearWord::GetContextualForm
 ()
 {
-  return ContextualForm;
+  return ContextualForm->GetText();
 }
 
 /*****************************************************************************!
@@ -74,7 +80,7 @@ QString
 InterlinearWord::GetTransliteratedContextualForm
 ()
 {
-  return TransliteratedContextualForm;
+  return TransliteratedContextualForm->GetText();
 }
 
 /*****************************************************************************!
@@ -84,7 +90,7 @@ QString
 InterlinearWord::GetMorphologyID
 ()
 {
-  return MorphologyID;
+  return MorphologyID->GetText();
 }
 
 /*****************************************************************************!
@@ -94,7 +100,7 @@ QString
 InterlinearWord::GetStrongsWordID
 ()
 {
-  return StrongsWordID;
+  return StrongsWordID->GetText();
 }
 
 /*****************************************************************************!
@@ -104,7 +110,7 @@ QString
 InterlinearWord::GetEnglish
 ()
 {
-  return English;
+  return English->GetText();
 }
 
 /*****************************************************************************!
@@ -134,7 +140,7 @@ void
 InterlinearWord::SetContextualForm
 (QString InContextualForm)
 {
-  ContextualForm = InContextualForm;
+  ContextualForm->SetText(InContextualForm);
 }
 
 /*****************************************************************************!
@@ -144,7 +150,7 @@ void
 InterlinearWord::SetTransliteratedContextualForm
 (QString InTransliteratedContextualForm)
 {
-  TransliteratedContextualForm = InTransliteratedContextualForm;
+  TransliteratedContextualForm->SetText(InTransliteratedContextualForm);
 }
 
 /*****************************************************************************!
@@ -154,7 +160,7 @@ void
 InterlinearWord::SetMorphologyID
 (QString InMorphologyID)
 {
-  MorphologyID = InMorphologyID;
+  MorphologyID->SetText(InMorphologyID);
 }
 
 /*****************************************************************************!
@@ -164,7 +170,7 @@ void
 InterlinearWord::SetStrongsWordID
 (QString InStrongsWordID)
 {
-  StrongsWordID = InStrongsWordID;
+  StrongsWordID->SetText(InStrongsWordID);
 }
 
 /*****************************************************************************!
@@ -174,6 +180,6 @@ void
 InterlinearWord::SetEnglish
 (QString InEnglish)
 {
-  English = InEnglish;
+  English->SetText(InEnglish);
 }
 

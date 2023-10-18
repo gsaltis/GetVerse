@@ -15,6 +15,7 @@
 /*****************************************************************************!
  * Local Headers
  *****************************************************************************/
+#include "InterlinearWordText.h"
 
 /*****************************************************************************!
  * Exported Macros
@@ -70,11 +71,11 @@ class InterlinearWord
   int                           VerseNumber;
   int                           ChapterNumber;
   int                           BookIndex; 
-  QString                       ContextualForm;
-  QString                       TransliteratedContextualForm;
-  QString                       MorphologyID;
-  QString                       StrongsWordID;
-  QString                       English;
+  InterlinearWordText*          ContextualForm;
+  InterlinearWordText*          TransliteratedContextualForm;
+  InterlinearWordText*          MorphologyID;
+  InterlinearWordText*          StrongsWordID;
+  InterlinearWordText*          English;
 };
 
 #endif /* _interlinearword_h_*/
