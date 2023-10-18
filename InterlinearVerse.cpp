@@ -21,8 +21,12 @@
  * Function : InterlinearVerse
  *****************************************************************************/
 InterlinearVerse::InterlinearVerse
-()
+(int InBookIndex, int InChapterNumber, int InVerseNumber, int InVerseID)
 {
+  bookIndex     = InBookIndex;
+  chapterNumber = InChapterNumber;
+  verseNumber   = InVerseNumber;
+  verseID       = InVerseID;
 }
 
 /*****************************************************************************!
@@ -87,3 +91,44 @@ InterlinearVerse::GetWordByID
   }
   return NULL;
 }
+
+/*****************************************************************************!
+ * Function : GetVerseID
+ *****************************************************************************/
+int
+InterlinearVerse::GetVerseID
+()
+{
+  return verseID;
+}
+
+/*****************************************************************************!
+ * Function : GetVerseNumber
+ *****************************************************************************/
+int
+InterlinearVerse::GetVerseNumber
+()
+{
+  return verseNumber;
+}
+
+/*****************************************************************************!
+ * Function : GetChapterNumber
+ *****************************************************************************/
+int
+InterlinearVerse::GetChapterNumber
+()
+{
+  return chapterNumber;
+}
+
+/*****************************************************************************!
+ * Function : GetBookIndex
+ *****************************************************************************/
+int
+InterlinearVerse::GetBookIndex
+()
+{
+  return bookIndex;
+}
+

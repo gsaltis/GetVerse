@@ -21,8 +21,12 @@
  * Function : InterlinearWord
  *****************************************************************************/
 InterlinearWord::InterlinearWord
-()
+(int InBookIndex, int InChapterNumber, int InVerseNumber, int InVerseID)
 {
+  BookIndex     = InBookIndex;
+  ChapterNumber = InChapterNumber;
+  VerseNumber   = InVerseNumber;
+  VerseID       = InVerseID; 
 }
 
 /*****************************************************************************!

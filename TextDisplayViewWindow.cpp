@@ -27,6 +27,16 @@
 #include "TextDisplayWordFormattingItem.h"
 #include "TextDisplayWordItem.h"
 #include "SQLStatement.h"
+#include "InterlinearChapter.h"
+
+/*****************************************************************************!
+ * Local Type : ThisChapter
+ *****************************************************************************/
+struct _ThisChapter {
+  TextDisplayViewWindow*                thisPointer;
+  InterlinearChapter*                   chapter;
+};
+typedef struct _ThisChapter ThisChapter;
 
 /*****************************************************************************!
  * Function : TextDisplayViewWindow
@@ -335,7 +345,7 @@ TextDisplayViewWindow::SetBook
     return;
   }
 
-  AddInterlinerChapter(bookInfo->index, 1)
+  AddInterlinerChapter(bookInfo->index, 1);
   verseID = GetInterlinearVerseNumber(bookInfo->index, 1, 1);
   if ( interlinearVerse ) {
     delete interlinearVerse;
@@ -352,16 +362,22 @@ TextDisplayViewWindow::AddInterlinerChapter
 (int InBookIndex, int InChapterNumber)
 {
   QString                               query;
-  
+  int                                   n;
+  InterlinearChapter*                   chapter;
+  ThisChapter                           thisChapter;
+
+  chapter = new InterlinearChapter(InBookIndex, InChapterNumber);
+  thisChapter.thisPointer = this;
+  thisChapter.chapter = chapter;
+
   query = QString("SELECT * FROM VERSE WHERE BOOK_NUMBER is %1 and CHAPTER_NUMBER IS %2;").
     arg(InBookIndex).arg(InChapterNumber);
   
-  n = sqlite3_exec(MainInterlinearDatabase, query.toStdString().c_str(), AddInterlinerChapterCB, NULL, NULL);
+  n = sqlite3_exec(MainInterlinearDatabase, query.toStdString().c_str(), AddInterlinerChapterCB, &thisChapter, NULL);
   if ( n != SQLITE_OK ) {
     fprintf(stderr, "%s\n : sqlite3_exec()\n%s\n%s\n",
-            __FUNCTION__, query.toStdString(),c_str(),
+            __FUNCTION__, query.toStdString().c_str(),
             sqlite3_errstr(n));
-    return ;
   }
 }
 
@@ -372,8 +388,125 @@ int
 TextDisplayViewWindow::AddInterlinerChapterCB
 (void* InPointer, int InColumnCount, char** InColumnValues, char** InColumnNames)
 {
+  int                                   i;
+  int                                   id;
+  QString                               columnName;
+  QString                               columnValue;
+  InterlinearChapter*                   chapter;
+  InterlinearVerse*                     verse;
+  int                                   verseNumber;
+  TextDisplayViewWindow*                thisPointer;
+  ThisChapter*                          thisChapter;
+  
+  thisChapter   = (ThisChapter*)InPointer;
+  thisPointer   = thisChapter->thisPointer;
+  chapter       = thisChapter->chapter;
+  verseNumber   = 0;
+  id            = 0;
+  
+  for (i = 0; i < InColumnCount; i++) {
+    columnName = InColumnNames[i];
+    columnValue = InColumnValues[i];
+    if ( columnName == "ID" ) {
+      id = columnValue.toInt();
+      continue;
+    }
 
+    if ( columnName == "VERSE_NUMBER" ) {
+      verseNumber = columnValue.toInt();
+      continue;
+    }
+  }
+  verse = new InterlinearVerse(chapter->GetBookIndex(), chapter->GetChapterNumber(), verseNumber, id);
+  chapter->AddVerse(verse);
+  thisPointer->AddInterlinearVerse(verse);
+  return 0;
+}
 
+/*****************************************************************************!
+ * Function: AddInterlinearVerse
+ *****************************************************************************/
+void
+TextDisplayViewWindow::AddInterlinearVerse
+(InterlinearVerse* InVerse)
+{
+  QString                               query;
+  int                                   n;
+
+  query = QString("SELECT * FROM INTERLINEAR_WORD ID is %1 ORDER BY VERSE_ID;").arg(InVerse->GetVerseID());
+  n = sqlite3_exec(MainInterlinearDatabase, query.toStdString().c_str(), AddInterlinearVerseCB, InVerse, NULL);
+  if ( n != SQLITE_OK ) {
+    fprintf(stderr, "%s\n : sqlite3_exec()\n%s\n%s\n",
+            __FUNCTION__, query.toStdString().c_str(),
+            sqlite3_errstr(n));
+  }
+}
+
+/*****************************************************************************!
+ * Function : AddInterlinearVerseCB
+ *****************************************************************************/
+int
+TextDisplayViewWindow::AddInterlinearVerseCB
+(void* InPointer, int InColumnCount, char** InColumnValues, char** InColumnNames)
+{
+  QString                               columnName;
+  QString                               columnValue;
+  int                                   verseID;
+  QString                               contextualForm ;
+  QString                               transliteratedContextualForm;
+  QString                               morphologyID;
+  QString                               strongsWordID;
+  QString                               english;
+  InterlinearVerse*                     verse;
+  InterlinearWord*                      word;
+  
+  verse  = (InterlinearVerse*)InPointer;
+  verseID = 0;
+  for (int i = 0 ; i < InColumnCount; i++) {
+
+    columnName = InColumnNames[i];
+    columnValue = InColumnValues[i];
+
+    if ( columnName == "VERSE_ID" ) {
+      verseID = columnValue.toInt();
+      continue;
+    }
+    
+    if ( columnName == "CONTEXTUAL_FORM" ) {
+      contextualForm = columnValue;
+      continue;
+    }
+    
+    if ( columnName == "TRANSLITERATED_CONTEXTUAL_FORM" ) {
+      transliteratedContextualForm = columnValue;
+      continue;
+    }
+    
+    if ( columnName == "MORPHOLOGY_ID" ) {
+      morphologyID = columnValue;
+      continue;
+    }
+    
+    if ( columnName == "STRONGS_WORD_ID" ) {
+      strongsWordID = columnValue;
+      continue;
+    }
+    
+    if ( columnName == "ENGLISH" ) {
+      english = columnValue;
+      continue;
+    }
+  }
+
+  word = new InterlinearWord(verse->GetBookIndex(), verse->GetChapterNumber(), verse->GetVerseNumber(), verseID);
+  word->SetContextualForm(contextualForm);
+  word->SetTransliteratedContextualForm(transliteratedContextualForm);
+  word->SetMorphologyID(morphologyID);
+  word->SetStrongsWordID(strongsWordID);
+  word->SetEnglish(english);
+
+  verse->AddWord(word);
+  return 0;
 }
 
 /*****************************************************************************!
@@ -383,6 +516,8 @@ InterlinearVerse*
 TextDisplayViewWindow::GetInterlinearVerse
 (int InID)
 {
+  (void)InID;
+#if 0  
   QString                               query;
   int                                   n;
   InterlinearVerse*                     verse;
@@ -398,89 +533,9 @@ TextDisplayViewWindow::GetInterlinearVerse
   }
 
   return verse;
+#endif
+  return NULL;
 }
-
-/*****************************************************************************!
- * Function : GetInterlinearVerseCB
- *****************************************************************************/
-int
-TextDisplayViewWindow::GetInterlinearVerseCB
-(void* InPointer, int InColumnCount, char** InColumnValues, char** InColumnNames)
-{
-  InterlinearVerse*                     verse;
-  InterlinearWord*                      word;
-  int                                   id;
-  int                                   verseID;
-  QString                               contextualForm;
-  QString                               transliteratedContextualForm;
-  QString                               morphologyID;
-  QString                               strongsWordID;
-  QString                               english;
-  
-  verse = (InterlinearVerse*)InPointer;
-
-  id = 0;
-  verseID = 0;
-  for ( int i = 0 ; i < InColumnCount ; i++ ) {
-    QString                             columnName = QString(InColumnNames[i]);
-    QString                             columnValue = QString(InColumnValues[i]);
-    
-    if ( columnName == QString("ID") ) {
-      id = columnValue.toInt();
-      continue;
-    }
-    
-    if ( columnName == QString("VERSE_ID") ) {
-      verseID = columnValue.toInt();
-      continue;
-    }
-    
-    if ( columnName == QString("CONTEXTUAL_FORM") ) {
-      contextualForm = columnValue;
-      continue;
-    }
-    
-    if ( columnName == QString("TRANSLITERATED_CONTEXTUAL_FORM") ) {
-      transliteratedContextualForm = columnValue;
-      continue;
-    }
-    
-    if ( columnName == QString("MORPHOLOGY_ID") ) {
-      morphologyID = columnValue;
-      continue;
-    }
-    
-    if ( columnName == QString("STRONGS_WORD_ID") ) {
-      strongsWordID = columnValue;
-      continue;
-    }
-    
-    if ( columnName == QString("ENGLISH") ) {
-      english = columnValue;
-      continue;
-    }
-  }
-  if ( id == 0 ||
-       verseID == 0 ||
-       contextualForm.isEmpty() ||
-       transliteratedContextualForm.isEmpty() ||
-       morphologyID.isEmpty() ||
-       strongsWordID.isEmpty() ||
-       english.isEmpty() ) {
-    return 0;
-  }
-  word = new InterlinearWord();
-  word->SetVerseID(verseID);
-  word->SetID(id);
-  word->SetContextualForm(contextualForm);
-  word->SetTransliteratedContextualForm(transliteratedContextualForm);
-  word->SetMorphologyID(morphologyID);
-  word->SetStrongsWordID(strongsWordID);
-  word->SetEnglish(english);
-  verse->AddWord(word);
-  return 0;
-}
-
 
 /*****************************************************************************!
  * Function : GetInterlinearVerseNumber

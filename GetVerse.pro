@@ -40,6 +40,7 @@ SOURCES                         += \
 				   Formatting.cpp                               \
 				   InterlinearVerse.cpp                         \
 				   InterlinearWord.cpp                          \
+				   InterlinearChapter.cpp                       \
 				   MainDisplayWindow.cpp                        \
 				   MainMessageWindow.cpp                        \
 				   MainWindow.cpp                               \
@@ -48,7 +49,7 @@ SOURCES                         += \
 				   SystemConfig.cpp                             \
 				   TextControlBar.cpp                           \
 				   TextDisplayFormattingItem.cpp                \
-                                   TextDisplayInterlinearItem.cpp               \
+				   TextDisplayInterlinearItem.cpp               \
 				   TextDisplayItem.cpp                          \
 				   TextDisplayOuterWindow.cpp                   \
 				   TextDisplayReferenceItem.cpp                 \
@@ -73,6 +74,7 @@ HEADERS                         += \
 				   Formatting.h                                 \
 				   InterlinearVerse.h                           \
 				   InterlinearWord.h                            \
+				   InterlinearChapter.h                         \
 				   MainDisplayWindow.h                          \
 				   MainMessageWindow.h                          \
 				   MainWindow.h                                 \
@@ -81,7 +83,7 @@ HEADERS                         += \
 				   SystemConfig.h                               \
 				   TextControlBar.h                             \
 				   TextDisplayFormattingItem.h                  \
-                                   TextDisplayInterlinearItem.h                 \
+				   TextDisplayInterlinearItem.h                 \
 				   TextDisplayItem.h                            \
 				   TextDisplayOuterWindow.h                     \
 				   TextDisplayReferenceItem.h                   \

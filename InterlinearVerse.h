@@ -30,7 +30,7 @@ class InterlinearVerse
 {
  //! Constructors
  public :
-  InterlinearVerse              ();
+  InterlinearVerse              (int InBookIndex, int InChapterNumber, int InVerseNumber, int InVerseID);
 
  //! Destructor
  public :
@@ -42,6 +42,10 @@ class InterlinearVerse
   int                           GetWordCount    ();
   InterlinearWord*              GetWordByIndex  (int InIndex);
   InterlinearWord*              GetWordByID     (int InID);
+  int                           GetVerseID      ();
+  int                           GetVerseNumber  ();
+  int                           GetChapterNumber();
+  int                           GetBookIndex    ();
   
  //! Public Data
  public :
@@ -58,6 +62,10 @@ class InterlinearVerse
  //! Private Data
  private :
   QList<InterlinearWord*>       words;
+  int                           bookIndex;
+  int                           chapterNumber;
+  int                           verseNumber;
+  int                           verseID;
 
 };
 

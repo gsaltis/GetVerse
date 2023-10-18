@@ -27,7 +27,7 @@ class InterlinearWord
 {
  //! Constructors
  public :
-  InterlinearWord               ();
+  InterlinearWord               (int InBookIndex, int InChapterNumber, int InVerseNumber, int InVerseID);
 
  //! Destructor
  public :
@@ -67,6 +67,9 @@ class InterlinearWord
  private :
   int                           ID;
   int                           VerseID;
+  int                           VerseNumber;
+  int                           ChapterNumber;
+  int                           BookIndex; 
   QString                       ContextualForm;
   QString                       TransliteratedContextualForm;
   QString                       MorphologyID;
