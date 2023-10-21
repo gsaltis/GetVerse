@@ -84,7 +84,7 @@ class TextDisplayViewWindow : public QWidget
  //! Private Methods
  private :
   int                           GetInterlinearVerseNumber       (int InBookNumnber, int InChapterNumber, int InVerseNumber);
-  void                          AddInterlinerChapter            (int InBookIndex, int InChapterNumber);
+  void                          AddInterlinearChapter           (int InBookIndex, int InChapterNumber);
   void                          AddInterlinearVerse             (InterlinearVerse* InVerse);
   
   void                          initialize                      ();
@@ -94,7 +94,7 @@ class TextDisplayViewWindow : public QWidget
   void                          InitializeSubWindows            ();
   void                          SetBook                         ();
   static int                    SetBookCB                       (void* InThisPointer, int InColumnCount, char** InColumnValues, char** InColumnNames);
-  static int                    AddInterlinerChapterCB          (void* InPointer, int InColumnCount, char** InColumnValues, char** InColumnNames);
+  static int                    AddInterlinearChapterCB         (void* InPointer, int InColumnCount, char** InColumnValues, char** InColumnNames);
   static int                    AddInterlinearVerseCB           (void* InPointer, int InColumnCount, char** InColumnValues, char** InColumnNames);
 
   void                          AddLineText                     (int InChapter, int InVerse, QString InVerseText);

@@ -345,20 +345,18 @@ TextDisplayViewWindow::SetBook
     return;
   }
 
-  AddInterlinerChapter(bookInfo->index, 1);
+  AddInterlinearChapter(bookInfo->index, 1);
   verseID = GetInterlinearVerseNumber(bookInfo->index, 1, 1);
   if ( interlinearVerse ) {
     delete interlinearVerse;
   }
-  interlinearVerse = GetInterlinearVerse(verseID);
-  emit SignalWordCountChanged(wordCount);
 }
 
 /*****************************************************************************!
- * Function : AddInterlinerChapter
+ * Function : AddInterlinearChapter
  *****************************************************************************/
-void
-TextDisplayViewWindow::AddInterlinerChapter
+InterlinearChapter*
+TextDisplayViewWindow::AddInterlinearChapter
 (int InBookIndex, int InChapterNumber)
 {
   QString                               query;
@@ -373,19 +371,20 @@ TextDisplayViewWindow::AddInterlinerChapter
   query = QString("SELECT * FROM VERSE WHERE BOOK_NUMBER is %1 and CHAPTER_NUMBER IS %2;").
     arg(InBookIndex).arg(InChapterNumber);
   
-  n = sqlite3_exec(MainInterlinearDatabase, query.toStdString().c_str(), AddInterlinerChapterCB, &thisChapter, NULL);
+  n = sqlite3_exec(MainInterlinearDatabase, query.toStdString().c_str(), AddInterlinearChapterCB, &thisChapter, NULL);
   if ( n != SQLITE_OK ) {
     fprintf(stderr, "%s\n : sqlite3_exec()\n%s\n%s\n",
             __FUNCTION__, query.toStdString().c_str(),
             sqlite3_errstr(n));
   }
+  return chapter;
 }
 
 /*****************************************************************************!
- * Function : AddInterlinerChapterCB
+ * Function : AddInterlinearChapterCB
  *****************************************************************************/
 int
-TextDisplayViewWindow::AddInterlinerChapterCB
+TextDisplayViewWindow::AddInterlinearChapterCB
 (void* InPointer, int InColumnCount, char** InColumnValues, char** InColumnNames)
 {
   int                                   i;
@@ -414,6 +413,7 @@ TextDisplayViewWindow::AddInterlinerChapterCB
 
     if ( columnName == "VERSE_NUMBER" ) {
       verseNumber = columnValue.toInt();
+      TRACE_FUNCTION_INT(verseNumber);
       continue;
     }
   }
@@ -433,7 +433,7 @@ TextDisplayViewWindow::AddInterlinearVerse
   QString                               query;
   int                                   n;
 
-  query = QString("SELECT * FROM INTERLINEAR_WORD ID is %1 ORDER BY VERSE_ID;").arg(InVerse->GetVerseID());
+  query = QString("SELECT * FROM INTERLINEAR_WORD WHERE VERSE_ID is %1 ORDER BY ID;").arg(InVerse->GetVerseID());
   n = sqlite3_exec(MainInterlinearDatabase, query.toStdString().c_str(), AddInterlinearVerseCB, InVerse, NULL);
   if ( n != SQLITE_OK ) {
     fprintf(stderr, "%s\n : sqlite3_exec()\n%s\n%s\n",
@@ -462,6 +462,7 @@ TextDisplayViewWindow::AddInterlinearVerseCB
   
   verse  = (InterlinearVerse*)InPointer;
   verseID = 0;
+  TRACE_FUNCTION_INT(InColumnCount);
   for (int i = 0 ; i < InColumnCount; i++) {
 
     columnName = InColumnNames[i];
@@ -494,6 +495,7 @@ TextDisplayViewWindow::AddInterlinearVerseCB
     
     if ( columnName == "ENGLISH" ) {
       english = columnValue;
+      TRACE_FUNCTION_QSTRING(english);
       continue;
     }
   }
