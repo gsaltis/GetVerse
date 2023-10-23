@@ -41,8 +41,9 @@ SOURCES                         += \
 				   InterlinearChapter.cpp                       \
 				   InterlinearVerse.cpp                         \
 				   InterlinearWord.cpp                          \
-				   InterlinearWordText.cpp                      \
 				   MainDisplayWindow.cpp                        \
+				   InterlinearWordTextDisplay.cpp               \
+				   InterlinearWordText.cpp                      \
 				   MainMessageWindow.cpp                        \
 				   MainWindow.cpp                               \
 				   SQLStatement.cpp                             \
@@ -77,6 +78,7 @@ HEADERS                         += \
 				   InterlinearVerse.h                           \
 				   InterlinearWord.h                            \
 				   InterlinearWordText.h                        \
+				   InterlinearWordTextDisplay.h                 \
 				   MainDisplayWindow.h                          \
 				   MainMessageWindow.h                          \
 				   MainWindow.h                                 \

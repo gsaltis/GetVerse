@@ -73,8 +73,10 @@ TextDisplayViewWindow::initialize()
 {
   EditViewReferenceIndent       = 40;
   InterLineSkip                 = 3;
+  InterlinearWord::SetLineskip(1);
   InterParagraphSkip            = 10;
-  InterWordSkip                 = 4;
+  InterWordSkip                 = 8;
+  InterInterlinearWordSkip      = 12;
   bottomMargin                  = 10;
   leftMargin                    = 10;
   rightMargin                   = 30;
@@ -98,7 +100,7 @@ TextDisplayViewWindow::initialize()
   
   mode                          = ReferenceMode;
   displayFont                   = MainSystemConfig->GetWordItemFont();
-  
+  currentInterlinearChapter     = NULL;
   InitializeSubWindows();  
   CreateSubWindows();
 }
@@ -162,6 +164,7 @@ TextDisplayViewWindow::ArrangeItems
   x             = leftMargin;  
   height        = 0;
   windowWidth   = tableWidth - (leftMargin + rightMargin);
+
   if ( bookInfo == NULL ) {
     return;
   }
@@ -175,7 +178,7 @@ TextDisplayViewWindow::ArrangeItems
       break;
     }
     case InterlinearMode : {
-      height = ArrangeItemsInterlinear(x, y, windowWidth);
+      height = ArrangeItemsInterlinear(y, windowWidth);
       emit SignalVerseCountChanged(GetVerseCount());
       break;
     }
@@ -328,7 +331,6 @@ TextDisplayViewWindow::SetBook
 {
   QString                               columnName;
   int                                   n;
-  int                                   verseID;
   QString                               query;
   
   tmpVerseCount = 0;
@@ -345,11 +347,10 @@ TextDisplayViewWindow::SetBook
     return;
   }
 
-  AddInterlinearChapter(bookInfo->index, 1);
-  verseID = GetInterlinearVerseNumber(bookInfo->index, 1, 1);
-  if ( interlinearVerse ) {
-    delete interlinearVerse;
+  if ( currentInterlinearChapter ) {
+	delete currentInterlinearChapter;
   }
+  currentInterlinearChapter = AddInterlinearChapter(bookInfo->index, 1);
 }
 
 /*****************************************************************************!
@@ -413,7 +414,6 @@ TextDisplayViewWindow::AddInterlinearChapterCB
 
     if ( columnName == "VERSE_NUMBER" ) {
       verseNumber = columnValue.toInt();
-      TRACE_FUNCTION_INT(verseNumber);
       continue;
     }
   }
@@ -462,7 +462,6 @@ TextDisplayViewWindow::AddInterlinearVerseCB
   
   verse  = (InterlinearVerse*)InPointer;
   verseID = 0;
-  TRACE_FUNCTION_INT(InColumnCount);
   for (int i = 0 ; i < InColumnCount; i++) {
 
     columnName = InColumnNames[i];
@@ -495,7 +494,6 @@ TextDisplayViewWindow::AddInterlinearVerseCB
     
     if ( columnName == "ENGLISH" ) {
       english = columnValue;
-      TRACE_FUNCTION_QSTRING(english);
       continue;
     }
   }
@@ -1013,7 +1011,7 @@ TextDisplayViewWindow::paintEvent
       break;
     }
     case InterlinearMode : {
-      PaintInterlinearMode(&painter, rect);
+      PaintInterlinearMode(&painter);
       break;
     }
     case EditMode : {
@@ -1260,13 +1258,51 @@ TextDisplayViewWindow::PaintSentenceMode
  *****************************************************************************/
 int
 TextDisplayViewWindow::ArrangeItemsInterlinear
-(int InX, int InY, int InWindowWidth)
+(int InY, int InWindowWidth)
 {
+  int                                   i;
+  int                                   n;
+  int                                   x;
+  int                                   y;
+  int                                   m;
+  int                                   j;
+  InterlinearVerse*                     verse;
+  InterlinearWord*                      word;
+  QSize                                 wordSize;
+  QString                               contextualForm;
+  QString                               english;
+  QSize                                 ws;
+  int                                   wordHeight;
 
-  (void)InX;
-  (void)InY;
-  (void)InWindowWidth;
-  return 10000;
+  if ( NULL == currentInterlinearChapter ) {
+    return 0;
+  }
+  n = currentInterlinearChapter->GetVerseCount();
+  y = InY;
+  for ( i = 0 ; i < n ; i++ ) {
+    verse = currentInterlinearChapter->GetVerseByIndex(i);
+	x = InWindowWidth;
+	m = verse->GetWordCount();
+	wordHeight = 0;
+	for ( j = 0 ; j < m ; j++ ) {
+      word = verse->GetWordByIndex(j);
+	  wordSize = word->GetSize();
+	  if ( x - wordSize.width() < rightMargin ) {
+		y += wordHeight;
+		x = InWindowWidth;
+	  } 
+	  x -= wordSize.width();
+	  x -= InterInterlinearWordSkip;
+	  word->SetX(x);
+	  word->SetY(y);
+	  wordHeight = wordSize.height();
+	}
+	y += wordHeight + InterLineSkip * 2;
+    x = InWindowWidth;
+
+  }
+  y += bottomMargin;
+  return y;
 }
 
 /*****************************************************************************!
@@ -1452,87 +1488,45 @@ TextDisplayViewWindow::ArrangeItemsBlock
  *****************************************************************************/
 void
 TextDisplayViewWindow::PaintInterlinearMode
-(QPainter* InPainter, QRect InRect)
+(QPainter* InPainter)
 {
-  QString                               english;
-  QString                               hebrew;
-  QRect                                 itemR;
   int                                   n;
-  QBrush                                brush = QBrush(QColor(0, 0, 0));
+  int                                   i;
+  int                                   m;
+  int                                   j;
+  QSize									wordSize;
+  int                                   y;
+  int                                   y2;
+  QBrush								brush = QBrush(QColor(64, 64, 64));
   QSize                                 s = size();
-  InterlinearWord*                      word;
-  QFont                                 font;
-  QFont                                 font2;
-  int                                   x;
-  int                                   ix;
-  int                                   w;
-  int                                   w2;
-  int                                   h;
-  int                                   h2;
-  int                                   i1, i2;
-  
-  QRect                                 rect;
-  QRect                                 rect2;
 
-  int                                   windowWidth;
-
-  windowWidth = size().width();
-  (void)InRect;
+  y = 0;
   InPainter->setBrush(brush);
   InPainter->drawRect(QRect(QPoint(0, 0), s));
-  font = InPainter->font();
-
-  font.setPointSize(20);
-  QFontMetrics                          fm(font);
-
-  font2 = QFont(font);
-  font2.setPointSize(12);
-  font2.setItalic(true);
-  QFontMetrics                          fm2(font2);
-  
-  InPainter->setFont(font);
-  if ( interlinearVerse == NULL ) {
-    return;
+ 
+  if ( currentInterlinearChapter == NULL ) {
+	return;
   }
-  word = interlinearVerse->GetWordByIndex(0);
-  hebrew = word->GetContextualForm();
-  english = word->GetEnglish();
-  
-  rect = fm.boundingRect(hebrew);
-  rect2 = fm2.boundingRect(english);
-  h = rect.height();
-  h2 = rect2.height();
-  
-  x = windowWidth - 10;
-  n = interlinearVerse->GetWordCount();
-  for ( int i = 0 ; i < n ; i++ ) {
-    word = interlinearVerse->GetWordByIndex(i);
-    hebrew = word->GetContextualForm();
-    english = word->GetEnglish();
-    
-    rect = fm.boundingRect(hebrew);
-    rect2 = fm2.boundingRect(english);
-    w = rect.width();
-    w2 = rect2.width();
-    if ( w < w2 ) {
-      i1 = w2 - w;
-      w = w2;
-      i2 = 0;
-    } else {
-      i1 = 0;
-      i2 = w - w2;
-    }
-    ix = x - w;
-    InPainter->setPen(QPen(QColor(255, 255, 255)));
-    InPainter->setBrush(QBrush(QColor(255, 255, 255)));
-    InPainter->setFont(font);
-    InPainter->drawText(ix + i1, h + 10, hebrew);
 
-    InPainter->setPen(QPen(QColor(240, 0, 0)));
-    InPainter->setBrush(QBrush(QColor(128, 0, 0)));
-    InPainter->setFont(font2);
-    InPainter->drawText(ix + i2, h + h2 + 10, english);
-    x = ix - 10;
+  n = currentInterlinearChapter->GetVerseCount();
+  for ( i = 0 ; i < n ; i++ ) {
+    InterlinearWord*                    word;
+    InterlinearVerse*                   verse;
+
+	verse = currentInterlinearChapter->GetVerseByIndex(i);
+    m = verse->GetWordCount();
+
+	for ( j = 0 ; j < m ; j++ ) {
+      word = verse->GetWordByIndex(j);
+	  word->Paint(InPainter);
+	  wordSize = word->GetSize();
+	  y = word->GetY();
+	}
+
+	y2 = y + wordSize.height() + InterLineSkip;
+
+	InPainter->setPen(QColor(240, 240, 240));
+	InPainter->drawLine(0, y2, s.width(), y2);
   }
 }
   

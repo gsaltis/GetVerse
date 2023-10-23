@@ -111,3 +111,17 @@ InterlinearWordText::SetBackgroundColor
   backgroundColor = InBackgroundColor;
 }
 
+/*****************************************************************************!
+ * Function : GetSize
+ *****************************************************************************/
+QSize
+InterlinearWordText::GetSize
+(QFont InFont)
+{
+  QRect                                 rect;
+  QFontMetrics							fm(InFont);
+
+  rect = fm.boundingRect(text);
+  return QSize(rect.width(), rect.height());
+}
+

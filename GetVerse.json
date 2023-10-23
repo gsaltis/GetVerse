@@ -1,11 +1,11 @@
 {
   "MainWindow" : {
     "Location" : {
-      "x" : 0,
-      "y" : 0
+      "x" : 1930,
+      "y" : 20
     },
     "Size" : {
-      "width" : 1660,
+      "width" : 1720,
       "height" : 840
     }
   },

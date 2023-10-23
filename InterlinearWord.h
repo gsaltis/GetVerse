@@ -51,6 +51,17 @@ class InterlinearWord
   void                          SetMorphologyID                 (QString InMorphologyID);
   void                          SetStrongsWordID                (QString InStrongsWordID);
   void                          SetEnglish                      (QString InEnglish);
+  int                           GetX                            () { return x; }
+  void                          SetX                            (int InX) { x = InX; }
+  int                           GetY                            () { return y; }
+  void                          SetY                            (int InY) { y = InY; }
+  QSize                         GetContextualFormSize           () { return contextualFormSize; }
+  QFont                         GetContextualFormFont           () { return contextualFormFont; }
+  QSize                         GetEnglishSize                  () { return englishSize; }
+  QFont                         GetEnglishFont                  () { return englishFont; }
+  void                          Paint                           (QPainter* InPainter);
+  QSize                         GetSize                         ();
+  static void                   SetLineskip                     (int InLineskip);
 
  //! Public Data
  public :
@@ -76,6 +87,30 @@ class InterlinearWord
   InterlinearWordText*          MorphologyID;
   InterlinearWordText*          StrongsWordID;
   InterlinearWordText*          English;
+
+  int                           x;
+  int                           y;
+
+  static QFont                  strongsFont;
+  static QColor                 strongsColor;
+  QSize                         strongsSize;
+
+  static QFont                  contextualFormFont;
+  static QColor                 contextualFormColor;
+  QSize                         contextualFormSize;
+
+  static QFont                  morphologyFont;
+  static QColor                 morphologyColor;
+  QSize                         morphologySize;
+
+  static QFont                  transliterateFont;
+  static QColor                 transliterateColor;
+  QSize                         transliterateSize;
+
+  static QFont                  englishFont;
+  static QColor                 englishColor;
+  static int                    Lineskip;
+  QSize                         englishSize;
 };
 
 #endif /* _interlinearword_h_*/

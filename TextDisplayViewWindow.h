@@ -84,7 +84,7 @@ class TextDisplayViewWindow : public QWidget
  //! Private Methods
  private :
   int                           GetInterlinearVerseNumber       (int InBookNumnber, int InChapterNumber, int InVerseNumber);
-  void                          AddInterlinearChapter           (int InBookIndex, int InChapterNumber);
+  InterlinearChapter*           AddInterlinearChapter           (int InBookIndex, int InChapterNumber);
   void                          AddInterlinearVerse             (InterlinearVerse* InVerse);
   
   void                          initialize                      ();
@@ -112,13 +112,13 @@ class TextDisplayViewWindow : public QWidget
   void                          PaintReferenceMode              (QPainter* InPainter, QRect InRect);
   void                          PaintSentenceMode               (QPainter* InPainter, QRect InRect);
   void                          PaintBlockMode                  (QPainter* InPainter, QRect InRect);
-  void                          PaintInterlinearMode            (QPainter* InPainter, QRect InRect);
+  void                          PaintInterlinearMode            (QPainter* InPainter);
   void                          PaintEditMode                   (QPainter* InPainter, QRect InRect);
 
   void                          ArrangeItems                    ();
   int                           ArrangeItemsReference           (int InX, int InY, int InWindowWidth);
   int                           ArrangeItemsBlock               (int InX, int InY, int InWindowWidth);
-  int                           ArrangeItemsInterlinear         (int InX, int InY, int InWindowWidth);
+  int                           ArrangeItemsInterlinear         (int InY, int InWindowWidth);
   int                           ArrangeItemsEdit                (int InX, int InY, int InWindowWidth);
   int                           ArrangeItemsSentence            (int InX, int InY, int InWindowWidth);
   TextDisplayFormattingItem*    FindReferenceFormattingItem     (int InBook, int InChapter, int InVerse);
@@ -151,6 +151,7 @@ class TextDisplayViewWindow : public QWidget
   int                                                           textY;
   int                                                           InterLineSkip;
   int                                                           InterWordSkip;
+  int                                                           InterInterlinearWordSkip;
   int                                                           InterParagraphSkip;
   int                                                           rightMargin;
   int                                                           leftMargin;
@@ -187,6 +188,7 @@ class TextDisplayViewWindow : public QWidget
   bool                                                          ItemsArranged;
   TextDisplayFormattingItem::FormatType                         FormattingType;
   InterlinearVerse*                                             interlinearVerse;
+  InterlinearChapter*                                           currentInterlinearChapter;
   
  //! Public Slots
  public slots :

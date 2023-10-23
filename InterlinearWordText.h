@@ -45,6 +45,7 @@ class InterlinearWordText
   void                                  SetFont                 (QFont InFont);
   void                                  SetTextColor            (QColor InTextColor);
   void                                  SetBackgroundColor      (QColor InBackgroundColor);
+  QSize                                 GetSize                 (QFont InFont);
 
  //! Public Data
  public :
