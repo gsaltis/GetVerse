@@ -93,3 +93,18 @@ InterlinearChapter::GetChapterNumber
   return chapterNumber;
 }
 
+/*****************************************************************************!
+ * Function : FindWordByLocation
+ *****************************************************************************/
+InterlinearWord*
+InterlinearChapter::FindWordByLocation
+(QPoint InMouseCursor)
+{
+  for ( auto verse : verses ) {
+    auto word = verse->FindWordByLocation(InMouseCursor);
+	if ( word ) {
+	  return word;
+	}
+  }
+  return NULL;
+}

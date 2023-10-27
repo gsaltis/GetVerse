@@ -11,6 +11,8 @@ Makefile.Release
 Makefile.Debug
 Makefile
 object_script*
+*.swp
+tags
 
 # Extra Directories
 Books

@@ -41,7 +41,8 @@ class InterlinearChapter : public QWidget
   InterlinearVerse*             GetVerseByIndex         (int InIndex);
   int                           GetBookIndex            ();
   int                           GetChapterNumber        ();
-  
+  InterlinearWord*              FindWordByLocation      (QPoint InMouseCursor);
+
  //! Public Data
  public :
 

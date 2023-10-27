@@ -46,7 +46,7 @@ class InterlinearVerse
   int                           GetVerseNumber  ();
   int                           GetChapterNumber();
   int                           GetBookIndex    ();
-  
+  InterlinearWord*              FindWordByLocation      (QPoint InMouseCursor);  
  //! Public Data
  public :
 

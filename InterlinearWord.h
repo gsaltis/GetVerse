@@ -60,8 +60,11 @@ class InterlinearWord
   QSize                         GetEnglishSize                  () { return englishSize; }
   QFont                         GetEnglishFont                  () { return englishFont; }
   void                          Paint                           (QPainter* InPainter);
+  void							PaintSelected					(QPainter* InPainter);
   QSize                         GetSize                         ();
   static void                   SetLineskip                     (int InLineskip);
+  bool                          ContainsPoint                   (QPoint InPoint);
+  void							SetSelected						(bool InSelected);
 
  //! Public Data
  public :
@@ -94,23 +97,29 @@ class InterlinearWord
   static QFont                  strongsFont;
   static QColor                 strongsColor;
   QSize                         strongsSize;
+  static bool                   strongsDisplay;
 
   static QFont                  contextualFormFont;
   static QColor                 contextualFormColor;
+  static bool                   contextualFormDisplay;
   QSize                         contextualFormSize;
 
   static QFont                  morphologyFont;
   static QColor                 morphologyColor;
+  static bool                   morphologyDisplay;
   QSize                         morphologySize;
 
   static QFont                  transliterateFont;
   static QColor                 transliterateColor;
+  static bool                   transliterateDisplay;
   QSize                         transliterateSize;
 
   static QFont                  englishFont;
   static QColor                 englishColor;
+  static bool                   englishDisplay;
   static int                    Lineskip;
   QSize                         englishSize;
+  bool							selected;
 };
 
 #endif /* _interlinearword_h_*/

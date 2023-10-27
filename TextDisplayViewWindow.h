@@ -129,6 +129,7 @@ class TextDisplayViewWindow : public QWidget
   void                          LineJustifyWords                (int InLineRemaining, int InLineStartIndex, int InLineEndIndex);
   inline bool                   WordEndsInPunctuation           (QString InWord);
 
+  void                          InterlinearModeMouseMove        (QPoint InLocation);
   void                          EditModeMouseMove               (QPoint InLocation);
   void                          EditModeMousePress              (QPoint InLocation);
   void                          EditModeReferenceMouseSelect    (TextDisplayReferenceItem* InItem);
@@ -189,7 +190,8 @@ class TextDisplayViewWindow : public QWidget
   TextDisplayFormattingItem::FormatType                         FormattingType;
   InterlinearVerse*                                             interlinearVerse;
   InterlinearChapter*                                           currentInterlinearChapter;
-  
+  InterlinearWord*                                              currentSelectedInterlinearWord;
+
  //! Public Slots
  public slots :
   void                          SlotBookSelected                (BookInfo* InBookInfo);

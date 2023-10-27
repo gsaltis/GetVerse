@@ -132,3 +132,18 @@ InterlinearVerse::GetBookIndex
   return bookIndex;
 }
 
+/*****************************************************************************!
+ * Function : FindWordByLocation
+ *****************************************************************************/
+InterlinearWord*
+InterlinearVerse::FindWordByLocation
+(QPoint InMouseCursor)
+{
+  for ( auto word : words ) {
+	if ( word->ContainsPoint(InMouseCursor) ) {
+	  return word;
+	}
+  }
+  return NULL; 
+}
+

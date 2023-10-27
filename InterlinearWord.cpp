@@ -21,22 +21,28 @@
 /*****************************************************************************!
  * Static Elements
  *****************************************************************************/
-QFont 	InterlinearWord::contextualFormFont  = QFont("Times New Roman", 18);
-QColor  InterlinearWord::contextualFormColor = QColor("#f00000");
+QFont 	InterlinearWord::contextualFormFont      = QFont("Times New Roman", 20, QFont::Bold);
+QColor  InterlinearWord::contextualFormColor     = QColor("#f00000");
+bool    InterlinearWord::contextualFormDisplay   = true;
 
-QFont 	InterlinearWord::englishFont         = QFont("Times New Roman", 12);
-QColor  InterlinearWord::englishColor        = QColor("#DDDDDD");
 
-QFont   InterlinearWord::strongsFont         = QFont("Times New Roman", 10, QFont::Bold);
-QColor  InterlinearWord::strongsColor        = QColor("#00C000");
+QFont 	InterlinearWord::englishFont             = QFont("Arial", 12);
+QColor  InterlinearWord::englishColor            = QColor("#DDDDDD");
+bool    InterlinearWord::englishDisplay          = true;
 
-QFont   InterlinearWord::morphologyFont      = QFont("Times New Roman", 10);
-QColor  InterlinearWord::morphologyColor     = QColor("#E000E0");
+QFont   InterlinearWord::strongsFont             = QFont("Arial", 10, QFont::Bold);
+QColor  InterlinearWord::strongsColor            = QColor("#00C000");
+bool    InterlinearWord::strongsDisplay          = true;
 
-QFont   InterlinearWord::transliterateFont   = QFont("Times New Roman", 11);
-QColor  InterlinearWord::transliterateColor  = QColor("#E0E0E0");
+QFont   InterlinearWord::morphologyFont          = QFont("Arial", 10);
+QColor  InterlinearWord::morphologyColor         = QColor("#FF00FF");
+bool    InterlinearWord::morphologyDisplay       = true;
 
-int     InterlinearWord::Lineskip            = 0;
+QFont   InterlinearWord::transliterateFont       = QFont("Arial", 11);
+QColor  InterlinearWord::transliterateColor      = QColor("#E0E0E0");
+bool    InterlinearWord::transliterateDisplay    = true;
+
+int     InterlinearWord::Lineskip                = 0;
 
 /*****************************************************************************!
  * Function : InterlinearWord
@@ -48,6 +54,7 @@ InterlinearWord::InterlinearWord
   ChapterNumber = InChapterNumber;
   VerseNumber   = InVerseNumber;
   VerseID       = InVerseID;
+  selected      = false;
 
   ContextualForm                = new InterlinearWordText();
   TransliteratedContextualForm  = new InterlinearWordText();
@@ -181,9 +188,9 @@ InterlinearWord::SetTransliteratedContextualForm
   QFontMetrics							fm(transliterateFont);
   QRect                                 rect;
 
-  rect = fm.boundingRect(InTransliteratedContextualForm);
+  TransliteratedContextualForm->SetText(InTransliteratedContextualForm.trimmed());
+  rect = fm.boundingRect(TransliteratedContextualForm->GetText());
   transliterateSize = QSize(rect.width(), rect.height());
-  TransliteratedContextualForm->SetText(InTransliteratedContextualForm);
 }
 
 /*****************************************************************************!
@@ -196,9 +203,9 @@ InterlinearWord::SetMorphologyID
   QFontMetrics							fm(morphologyFont);
   QRect                                 rect;
 
-  rect = fm.boundingRect(InMorphologyID);
+  MorphologyID->SetText(InMorphologyID.trimmed());
+  rect = fm.boundingRect(MorphologyID->GetText());
   morphologySize = QSize(rect.width(), rect.height());
-  MorphologyID->SetText(InMorphologyID);
 }
 
 /*****************************************************************************!
@@ -212,7 +219,7 @@ InterlinearWord::SetStrongsWordID
   QRect                                 rect;
 
   StrongsWordID->SetText(InStrongsWordID);
-  rect = fm.boundingRect(InStrongsWordID);
+  rect = fm.boundingRect(StrongsWordID->GetText());
   strongsSize = QSize(rect.width(), rect.height());
 }
 
@@ -226,8 +233,8 @@ InterlinearWord::SetEnglish
   QFontMetrics							fm(englishFont);
   QRect                                 rect;
 
-  English->SetText(InEnglish);
-  rect = fm.boundingRect(InEnglish);
+  English->SetText(InEnglish.trimmed());
+  rect = fm.boundingRect(English->GetText());
   englishSize = QSize(rect.width(), rect.height());
 }
 
@@ -243,9 +250,18 @@ InterlinearWord::Paint
   QSize                                 ws;
   int                                   offset;
 
+#if 0
+  int                                   x1, y2, y3;
+#endif
   y1 = y;
   ws = GetSize();
-
+#if 0
+  InPainter->setPen(QPen(QColor("white")));
+  x1 = x + ws.width();
+  y2 = y;
+  y3 = y + ws.height();
+  InPainter->drawLine(x1, y2, x1, y3);
+#endif
   y1 += englishSize.height();
   InPainter->setPen(QPen(englishColor));
   InPainter->setBrush(QBrush(englishColor));
@@ -285,6 +301,24 @@ InterlinearWord::Paint
   offset = ws.width() - transliterateSize.width();
   text = TransliteratedContextualForm->GetText();
   InPainter->drawText(x + offset, y1, text);
+}
+
+/*****************************************************************************!
+ * Function : PaintSelected
+ *****************************************************************************/
+void
+InterlinearWord::PaintSelected
+(QPainter* InPainter)
+{
+  QSize							s;
+  QRect							r;
+
+  InPainter->setPen(QPen(QColor(255, 255, 255, 64)));
+  InPainter->setBrush(QBrush(QColor(128, 128, 128, 64)));
+    
+  s = GetSize();
+  r = QRect(QPoint(x, y), s);
+  InPainter->drawRoundedRect(r, 8, 8);
 }
 
 /*****************************************************************************!
@@ -346,5 +380,30 @@ InterlinearWord::SetLineskip
 (int InLineskip)
 {
   Lineskip = InLineskip;
+}
+
+/*****************************************************************************!
+ * Function : ContainsPoint
+ *****************************************************************************/
+bool
+InterlinearWord::ContainsPoint
+(QPoint InPoint)
+{
+  QRect                                 rect;
+  bool                                  b;
+
+  rect = QRect(QPoint(x, y), GetSize());
+  b = rect.contains(InPoint);
+  return b;
+}
+
+/*****************************************************************************!
+ * Function : SetSelected
+ *****************************************************************************/
+void
+InterlinearWord::SetSelected
+(bool InSelected)
+{
+  selected = InSelected;
 }
 

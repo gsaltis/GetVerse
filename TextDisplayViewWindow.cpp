@@ -54,6 +54,7 @@ TextDisplayViewWindow::TextDisplayViewWindow
   setFont(displayFont);
   setMouseTracking(true);
   lastSelectedItem = NULL;
+  currentSelectedInterlinearWord = NULL;
   FormattingType = TextDisplayFormattingItem::FormatTypeWordBreak;
 }
 
@@ -823,6 +824,7 @@ TextDisplayViewWindow::SlotSetBlockMode(void)
 void
 TextDisplayViewWindow::SlotSetInterlinearMode(void)
 {
+  currentSelectedInterlinearWord = NULL;
   mode = InterlinearMode;
   ArrangeItems();
   repaint();
@@ -1497,7 +1499,7 @@ TextDisplayViewWindow::PaintInterlinearMode
   QSize									wordSize;
   int                                   y;
   int                                   y2;
-  QBrush								brush = QBrush(QColor(64, 64, 64));
+  QBrush								brush = QBrush(QColor(32, 32, 32));
   QSize                                 s = size();
 
   y = 0;
@@ -1527,6 +1529,9 @@ TextDisplayViewWindow::PaintInterlinearMode
 
 	InPainter->setPen(QColor(240, 240, 240));
 	InPainter->drawLine(0, y2, s.width(), y2);
+  }
+  if ( currentSelectedInterlinearWord ) {
+	currentSelectedInterlinearWord->PaintSelected(InPainter);
   }
 }
   
@@ -1841,6 +1846,11 @@ TextDisplayViewWindow::mouseMoveEvent
   QString                               text;
   QPoint                                p = InEvent->position().toPoint();
 
+  if ( mode == InterlinearMode ) {
+	InterlinearModeMouseMove(p);
+	return;
+  }
+
   if ( mode == EditMode ) {
     EditModeMouseMove(p);
     return;
@@ -1864,6 +1874,30 @@ TextDisplayViewWindow::mouseMoveEvent
       }
     }
   }
+  repaint();
+}
+
+/*****************************************************************************!
+ * Function : InterlinearModeMouseMove
+ *****************************************************************************/
+void
+TextDisplayViewWindow::InterlinearModeMouseMove
+(QPoint InMouseCursor)
+{
+  InterlinearWord*                      word;
+  QString 								englishWord;
+
+  word = currentInterlinearChapter->FindWordByLocation(InMouseCursor);
+  if ( word == NULL ) {
+	currentSelectedInterlinearWord = NULL;
+	repaint();
+	return;
+  }
+  if ( currentSelectedInterlinearWord == word ) {
+	return;
+  }
+  currentSelectedInterlinearWord = word;
+  englishWord = currentSelectedInterlinearWord->GetEnglish();
   repaint();
 }
 
