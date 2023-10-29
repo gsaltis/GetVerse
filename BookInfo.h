@@ -44,9 +44,15 @@ class BookInfo : public QWidget
  //! Public Data
  public :
   QString                               name;
+  QString                               nameAbbrev;
   int                                   chapters;
   int                                   index;
-
+  int                                   bookOrder;
+  int                                   bookGroup;
+  int                                   hebrewBookOrder;
+  int                                   hebrewBookGroup;
+  int                                   groupEnd;
+  
  //! Protected Methods
  protected :
 

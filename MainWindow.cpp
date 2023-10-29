@@ -68,7 +68,8 @@ MainWindow::~MainWindow
 void
 MainWindow::Initialize()
 {
-  setWindowTitle(SystemConfig::SystemName);  
+  setWindowTitle(SystemConfig::SystemName);
+  setWindowIcon(QIcon(":/Images/Book.png")); 
 }
 
 /*****************************************************************************!

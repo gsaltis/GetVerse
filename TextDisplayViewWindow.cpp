@@ -1496,10 +1496,10 @@ TextDisplayViewWindow::PaintInterlinearMode
   int                                   i;
   int                                   m;
   int                                   j;
-  QSize									wordSize;
+  QSize					wordSize;
   int                                   y;
   int                                   y2;
-  QBrush								brush = QBrush(QColor(32, 32, 32));
+  QBrush				brush = QBrush(QColor(240, 240, 240));
   QSize                                 s = size();
 
   y = 0;

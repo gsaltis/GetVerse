@@ -26,7 +26,7 @@
  *****************************************************************************/
 #define BOOK_NAME_WINDOW_X              200
 #define BOOK_NAME_WINDOW_Y              200
-#define BOOK_NAME_WINDOW_WIDTH          300
+#define BOOK_NAME_WINDOW_WIDTH          200
 #define BOOK_NAME_WINDOW_HEIGHT         200
 
 /*****************************************************************************!
