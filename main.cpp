@@ -1242,7 +1242,7 @@ MainDBBReadBookInfo
   char                                  sqlstmt[128];
   int                                   n;
 
-  sprintf(sqlstmt, "SELECT bookIndex, bookName, chapterCount FROM Books;");
+  sprintf(sqlstmt, "SELECT *  FROM BookFormat;");
   n = sqlite3_exec(MainDatabase, sqlstmt, MainDBBReadBookInfoCB, NULL, NULL);
   if ( n == SQLITE_OK ) {
     return;
@@ -1307,21 +1307,70 @@ MainDBBReadBookInfoCB
 (void*, int InColumnCount, char** InColumnValues, char** InColumnNames)
 {
   BookInfo*                             bookInfo;
-  int                                   chapterCount;
-  int                                   bookIndex;
+  int                                   chapterCount = 0;
+  int                                   bookIndex = 0;
   QString                               bookName;
+  QString                               nameAbbrev;
+  int                                   bookOrder = 0;
+  int                                   bookGroup = 0;
+  int                                   hebrewBookOrder = 0;
+  int                                   hebrewBookGroup = 0;
+  int                                   groupEnd = 0;
+  QString                               columnName;
+  QString                               columnValue;
 
-  (void)InColumnCount;
-  (void)InColumnNames;
-  
-  bookIndex                     = atoi(InColumnValues[0]);
-  bookName                      = QString(InColumnValues[1]);
-  chapterCount                  = atoi(InColumnValues[2]);
+  for ( int i = 0 ; i < InColumnCount; i++ ) {
+    columnName  = InColumnNames[i];
+    columnValue = InColumnValues[i];
+
+    if ( columnName == "BookIndex" ) {
+      bookIndex = columnValue.toInt();
+      continue;
+    }
+    if ( columnName == "Chapters" ) {
+      chapterCount = columnValue.toInt();
+      continue;
+    }
+    if ( columnName == "StandardBooksOrder" ) {
+      bookOrder = columnValue.toInt();
+      continue;
+    }
+    if ( columnName == "StandardBookGroup" ) {
+      bookGroup = columnValue.toInt();
+      continue;
+    }
+    if ( columnName == "HebrewBookOrder" ) {
+      hebrewBookOrder = columnValue.toInt();
+      continue;
+    }
+    if ( columnName == "HebrewBookGroup" ) {
+      hebrewBookGroup = columnValue.toInt();
+      continue;
+    }
+    if ( columnName == "GroupEnd" ) {
+      groupEnd = columnValue.toInt();
+      continue;
+    }
+    if ( columnName == "Name" ) {
+      bookName = columnValue;
+      continue;
+    }
+    if ( columnName == "NameAbbrev" ) {
+      nameAbbrev = columnValue;
+      continue;
+    }
+  }
 
   bookInfo = new BookInfo();
-  bookInfo->name          = bookName;
-  bookInfo->index         = bookIndex;
-  bookInfo->chapters      = chapterCount;
+  bookInfo->name                = bookName;
+  bookInfo->nameAbbrev          = nameAbbrev;
+  bookInfo->index               = bookIndex;
+  bookInfo->chapters            = chapterCount;
+  bookInfo->bookOrder           = bookOrder;
+  bookInfo->bookGroup           = bookGroup;
+  bookInfo->hebrewBookOrder     = hebrewBookOrder;
+  bookInfo->hebrewBookGroup     = hebrewBookGroup;
+  bookInfo->groupEnd            = groupEnd;
 
   MainBookInfo.push_back(bookInfo);
   return 0;

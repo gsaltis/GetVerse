@@ -106,8 +106,8 @@ BookNameTableInnerTable::Populate(void)
   y = topMargin;
   n = 1;
   for ( BookInfo* bookInfo : MainBookInfo) {
-    name = bookInfo->GetCapitalizedBookName();
-    tableItem = new BookNameTableItem(n, name);
+    name = bookInfo->name;
+    tableItem = new BookNameTableItem(bookInfo);
     tableItem->move(0, y);
     tableItem->setParent(this);
     items.push_back(tableItem);

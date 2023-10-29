@@ -23,20 +23,16 @@
  * Function : BookNameTableItem
  *****************************************************************************/
 BookNameTableItem::BookNameTableItem
-(int InBookNumber, QString InName) : QWidget()
+(BookInfo* InBookInfo) : QWidget()
 {
-  QColor                                co;
-  name = InName;
-  bookNumber = InBookNumber;
-  index = 0;
-  groupEnd = false;
-  ReadFormatDB();
   QPalette pal;
+  index = 0;
   pal = palette();
 
-  co = QColor(textColor);
-  pal.setBrush(QPalette::Window, QBrush(co.lighter(250)));
-  pal.setBrush(QPalette::WindowText, QBrush(co.darker(100)));
+  bookInfo = InBookInfo;
+  backgroundColor = QColor("#999999").lighter(100 + (bookInfo->bookGroup * 10));
+  pal.setBrush(QPalette::Window, QBrush(backgroundColor));
+  pal.setBrush(QPalette::WindowText, QBrush(QColor("444")));
 
   setPalette(pal);
   setAutoFillBackground(true);
@@ -73,17 +69,17 @@ BookNameTableItem::CreateSubWindows()
   bookName->setParent(this);
   bookName->move(35, 0);
   bookName->resize(100, BOOK_NAME_TABLE_ITEM_HEIGHT);
-  bookName->setText(name);
+  bookName->setText(bookInfo->name);
   bookName->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-  bookName->setFont(QFont("Arial", 10, QFont::Normal));
+  bookName->setFont(QFont("Segoe UI", 10, QFont::Normal));
 
   bookNumberLabel = new QLabel();
   bookNumberLabel->setParent(this);
   bookNumberLabel->move(10, 0);
   bookNumberLabel->resize(20, BOOK_NAME_TABLE_ITEM_HEIGHT);
-  bookNumberLabel->setText(QString("%1").arg(bookNumber));
+  bookNumberLabel->setText(QString("%1").arg(bookInfo->index));
   bookNumberLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-  bookNumberLabel->setFont(QFont("Arial", 10, QFont::Normal));
+  bookNumberLabel->setFont(QFont("Segoe UI", 10, QFont::Normal));
 }
 
 /*****************************************************************************!
@@ -125,140 +121,6 @@ BookNameTableItem::resizeEvent
 }
 
 /*****************************************************************************!
- * Function : GetName
- *****************************************************************************/
-QString
-BookNameTableItem::GetName(void)
-{
-  return name;  
-}
-
-/*****************************************************************************!
- * Function : SetName
- *****************************************************************************/
-void
-BookNameTableItem::SetName
-(QString InName)
-{
-  name = InName;  
-}
-
-/*****************************************************************************!
- * Function : ReadFormatDB
- *****************************************************************************/
-void
-BookNameTableItem::ReadFormatDB
-()
-{
-  int                                   n;
-  QString                               sqlstmt;
-
-  sqlstmt = QString("Select * FROM BookFormat where bookIndex is %1;").arg(bookNumber);
-
-  n = sqlite3_exec(MainDatabase, sqlstmt.toStdString().c_str(), BookNameTableItem::ReadFormatDBCB, this, NULL);
-  if ( n != SQLITE_OK ) {
-    fprintf(stderr, "sqlite3_exec() failure\n%s %s\n%s\n",
-            __FUNCTION__, sqlite3_errstr(n),
-            sqlstmt.toStdString().c_str());
-    return;
-  }
-}
-
-/*****************************************************************************!
- * Function : ReadFormatDBCB
- *****************************************************************************/
-int
-BookNameTableItem::ReadFormatDBCB
-(void* InPointer, int InColumnCount, char** InColumnValues, char** InColumnNames)
-{
-  QString                               columnName;
-  QString                               columnValue;
-  int                                   i;
-  QString                               textColor;
-  QString                               backgroundColor;
-  BookNameTableItem*                    item;
-
-  item = (BookNameTableItem*)InPointer;
-  
-  for ( i = 0 ; i < InColumnCount ; i++ ) {
-    columnName  = QString(InColumnNames[i]);
-    columnValue = QString(InColumnValues[i]);
-    if ( columnName == "TextColor" ) {
-      item->SetTextColor(columnValue);
-      continue;
-    } 
-    if ( columnName == "bookIndex" ) {
-      item->SetIndex(columnValue.toInt());
-      continue;
-    } 
-    if ( columnName == "BackgroundColor" ) {
-      item->SetBackgroundColor(columnValue);
-      continue;
-    }
-    if ( columnName == "GroupEnd" ) {
-      item->SetGroupEnd(columnValue.toInt() ? true : false);
-      continue;
-    }
-  }
-  return 0;
-}
-
-/*****************************************************************************!
- * Function : SetTextColor
- *****************************************************************************/
-void
-BookNameTableItem::SetTextColor
-(QString InTextColor)
-{
-  textColorName = InTextColor;
-  textColor = QColor(textColorName);
-  backgroundColor = QColor(textColorName).lighter(250);
-
-  selectedColor = QColor(textColorName).darker(130);
-  selectedTextColor = QColor(textColorName).lighter(250);
-}
-
-/*****************************************************************************!
- * Function : SetBackgroundColor
- *****************************************************************************/
-void
-BookNameTableItem::SetBackgroundColor
-(QString InBackgroundColor)
-{
-  backgroundColorName = InBackgroundColor;
-}
-
-/*****************************************************************************!
- * Function : SetGroupEnd
- *****************************************************************************/
-void
-BookNameTableItem::SetGroupEnd
-(bool InGroupEnd)
-{
-  groupEnd = InGroupEnd;
-}
-
-/*****************************************************************************!
- * Function : SetIndex
- *****************************************************************************/
-void
-BookNameTableItem::SetIndex
-(int InIndex)
-{
-  index = InIndex;
-}
-
-/*****************************************************************************!
- * Function : GetIndex
- *****************************************************************************/
-int
-BookNameTableItem::GetIndex
-()
-{
-  return index;
-}
-
-/*****************************************************************************!
  * Function : paintEvent
  *****************************************************************************/
 void
@@ -272,7 +134,7 @@ BookNameTableItem::paintEvent
   int                                   x1;
   QSize                                 s;
 
-  if ( ! groupEnd ) {
+  if ( ! bookInfo->groupEnd ) {
     return;
   }
 
@@ -283,7 +145,7 @@ BookNameTableItem::paintEvent
   y1 = s.height() - 2;
   y2 = s.height() - 2;
 
-  pen = QPen(QBrush(QColor(128, 128, 128)), 1);
+  pen = QPen(QBrush(QColor(64, 64, 64)), 1);
   painter.setPen(pen);
 
   painter.drawLine(x1, y1, x2, y2);
@@ -300,9 +162,19 @@ BookNameTableItem::enterEvent
 {
   QPalette                              pal;
 
+  QString                               colorName;
+  QColor                                co;
+  int                                   r, g, b;
+
+  co = QColor(backgroundColor);
+  r = co.red() / 2;
+  g = co.green() / 2;
+  b = co.blue();
+
+  co = QColor(r, g, b, 128);
+  colorName = backgroundColor.name();
   pal = palette();
-  pal.setBrush(QPalette::Window, QBrush(selectedColor));
-  pal.setBrush(QPalette::WindowText, QBrush(selectedTextColor));
+  pal.setBrush(QPalette::Window, QBrush(co));
   setPalette(pal);
   (void)InEvent;
 }
@@ -315,9 +187,9 @@ BookNameTableItem::leaveEvent
 (QEvent* InEvent)
 {
   QPalette                              pal;
+
   pal = palette();
   pal.setBrush(QPalette::Window, QBrush(backgroundColor));
-  pal.setBrush(QPalette::WindowText, QBrush(textColor));
   setPalette(pal);
   (void)InEvent;
 }
@@ -330,5 +202,5 @@ BookNameTableItem::mousePressEvent
 (QMouseEvent* InEvent)
 {
   (void)InEvent;
-  emit SignalBookSelected(index);
+  emit SignalBookSelected(bookInfo->index);
 }

@@ -18,6 +18,7 @@
 /*****************************************************************************!
  * Local Headers
  *****************************************************************************/
+#include "BookInfo.h"
 
 /*****************************************************************************!
  * Exported Macros
@@ -36,7 +37,7 @@ class BookNameTableItem : public QWidget
 
  //! Constructors
  public :
-  BookNameTableItem             (int InBookNumber, QString InName);
+  BookNameTableItem             (BookInfo* InBookInfo);
 
  //! Destructor
  public :
@@ -68,23 +69,16 @@ class BookNameTableItem : public QWidget
   void                          enterEvent              (QEnterEvent* InEvent);
   void                          leaveEvent              (QEvent* InEvent);
   void                          mousePressEvent         (QMouseEvent* InEvent);
-  
-  void                          ReadFormatDB            ();
-  static int                    ReadFormatDBCB          (void*, int InColumnCount, char** InColumnValues, char** InColumnNames);
-  void                          SetTextColor            (QString InTextColor);
-  void                          SetBackgroundColor      (QString InBackgroundColor);
-  void                          SetGroupEnd             (bool InGroupEnd);
-  void                          SetIndex                (int InIndex);
 
  //! Private Data
  private :
+  BookInfo*                     bookInfo;
   QLabel*                       bookName;
   QLabel*                       bookNumberLabel;
   QString                       name;
   int                           bookNumber;
   QString                       textColorName;
   QString                       backgroundColorName;
-  bool                          groupEnd;
   int                           index;
   QColor                        backgroundColor;
   QColor                        textColor;

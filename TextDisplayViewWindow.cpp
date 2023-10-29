@@ -282,7 +282,7 @@ TextDisplayViewWindow::GetMaxReferenceWidth
   referenceWidth = 0;
   
   query = 
-     QString("SELECT chapter, verse FROM Verses WHERE book is %1;\n")
+    QString("SELECT chapter, verse FROM Verses WHERE book is %1;\n")
     .arg(bookInfo->index);
 
   n = sqlite3_prepare_v2(MainDatabase,
@@ -349,7 +349,7 @@ TextDisplayViewWindow::SetBook
   }
 
   if ( currentInterlinearChapter ) {
-	delete currentInterlinearChapter;
+    delete currentInterlinearChapter;
   }
   currentInterlinearChapter = AddInterlinearChapter(bookInfo->index, 1);
 }
@@ -686,7 +686,7 @@ TextDisplayViewWindow::AddLineText
                                                          word,
                                                          (TextDisplayFormattingItem::FormatType)formatting);
       formattingItems.push_back(formattingItem);
-  }
+    }
     
     tmpVerseCount++;
     wordCount++;
@@ -1283,23 +1283,23 @@ TextDisplayViewWindow::ArrangeItemsInterlinear
   y = InY;
   for ( i = 0 ; i < n ; i++ ) {
     verse = currentInterlinearChapter->GetVerseByIndex(i);
-	x = InWindowWidth;
-	m = verse->GetWordCount();
-	wordHeight = 0;
-	for ( j = 0 ; j < m ; j++ ) {
+    x = InWindowWidth;
+    m = verse->GetWordCount();
+    wordHeight = 0;
+    for ( j = 0 ; j < m ; j++ ) {
       word = verse->GetWordByIndex(j);
-	  wordSize = word->GetSize();
-	  if ( x - wordSize.width() < rightMargin ) {
-		y += wordHeight;
-		x = InWindowWidth;
-	  } 
-	  x -= wordSize.width();
-	  x -= InterInterlinearWordSkip;
-	  word->SetX(x);
-	  word->SetY(y);
-	  wordHeight = wordSize.height();
-	}
-	y += wordHeight + InterLineSkip * 2;
+      wordSize = word->GetSize();
+      if ( x - wordSize.width() < rightMargin ) {
+        y += wordHeight;
+        x = InWindowWidth;
+      } 
+      x -= wordSize.width();
+      x -= InterInterlinearWordSkip;
+      word->SetX(x);
+      word->SetY(y);
+      wordHeight = wordSize.height();
+    }
+    y += wordHeight + InterLineSkip * 2;
     x = InWindowWidth;
 
   }
@@ -1496,10 +1496,10 @@ TextDisplayViewWindow::PaintInterlinearMode
   int                                   i;
   int                                   m;
   int                                   j;
-  QSize									wordSize;
+  QSize					wordSize;
   int                                   y;
   int                                   y2;
-  QBrush								brush = QBrush(QColor(32, 32, 32));
+  QBrush				brush = QBrush(QColor(240, 240, 240));
   QSize                                 s = size();
 
   y = 0;
@@ -1507,7 +1507,7 @@ TextDisplayViewWindow::PaintInterlinearMode
   InPainter->drawRect(QRect(QPoint(0, 0), s));
  
   if ( currentInterlinearChapter == NULL ) {
-	return;
+    return;
   }
 
   n = currentInterlinearChapter->GetVerseCount();
@@ -1515,23 +1515,23 @@ TextDisplayViewWindow::PaintInterlinearMode
     InterlinearWord*                    word;
     InterlinearVerse*                   verse;
 
-	verse = currentInterlinearChapter->GetVerseByIndex(i);
+    verse = currentInterlinearChapter->GetVerseByIndex(i);
     m = verse->GetWordCount();
 
-	for ( j = 0 ; j < m ; j++ ) {
+    for ( j = 0 ; j < m ; j++ ) {
       word = verse->GetWordByIndex(j);
-	  word->Paint(InPainter);
-	  wordSize = word->GetSize();
-	  y = word->GetY();
-	}
+      word->Paint(InPainter);
+      wordSize = word->GetSize();
+      y = word->GetY();
+    }
 
-	y2 = y + wordSize.height() + InterLineSkip;
+    y2 = y + wordSize.height() + InterLineSkip;
 
-	InPainter->setPen(QColor(240, 240, 240));
-	InPainter->drawLine(0, y2, s.width(), y2);
+    InPainter->setPen(QColor(240, 240, 240));
+    InPainter->drawLine(0, y2, s.width(), y2);
   }
   if ( currentSelectedInterlinearWord ) {
-	currentSelectedInterlinearWord->PaintSelected(InPainter);
+    currentSelectedInterlinearWord->PaintSelected(InPainter);
   }
 }
   
@@ -1847,8 +1847,8 @@ TextDisplayViewWindow::mouseMoveEvent
   QPoint                                p = InEvent->position().toPoint();
 
   if ( mode == InterlinearMode ) {
-	InterlinearModeMouseMove(p);
-	return;
+    InterlinearModeMouseMove(p);
+    return;
   }
 
   if ( mode == EditMode ) {
@@ -1889,12 +1889,12 @@ TextDisplayViewWindow::InterlinearModeMouseMove
 
   word = currentInterlinearChapter->FindWordByLocation(InMouseCursor);
   if ( word == NULL ) {
-	currentSelectedInterlinearWord = NULL;
-	repaint();
-	return;
+    currentSelectedInterlinearWord = NULL;
+    repaint();
+    return;
   }
   if ( currentSelectedInterlinearWord == word ) {
-	return;
+    return;
   }
   currentSelectedInterlinearWord = word;
   englishWord = currentSelectedInterlinearWord->GetEnglish();

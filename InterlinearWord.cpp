@@ -22,24 +22,24 @@
  * Static Elements
  *****************************************************************************/
 QFont 	InterlinearWord::contextualFormFont      = QFont("Times New Roman", 20, QFont::Bold);
-QColor  InterlinearWord::contextualFormColor     = QColor("#f00000");
+QColor  InterlinearWord::contextualFormColor     = QColor("#800000");
 bool    InterlinearWord::contextualFormDisplay   = true;
 
 
 QFont 	InterlinearWord::englishFont             = QFont("Arial", 12);
-QColor  InterlinearWord::englishColor            = QColor("#DDDDDD");
+QColor  InterlinearWord::englishColor            = QColor("#444444");
 bool    InterlinearWord::englishDisplay          = true;
 
 QFont   InterlinearWord::strongsFont             = QFont("Arial", 10, QFont::Bold);
-QColor  InterlinearWord::strongsColor            = QColor("#00C000");
+QColor  InterlinearWord::strongsColor            = QColor("#008000");
 bool    InterlinearWord::strongsDisplay          = true;
 
 QFont   InterlinearWord::morphologyFont          = QFont("Arial", 10);
-QColor  InterlinearWord::morphologyColor         = QColor("#FF00FF");
+QColor  InterlinearWord::morphologyColor         = QColor("#880088");
 bool    InterlinearWord::morphologyDisplay       = true;
 
 QFont   InterlinearWord::transliterateFont       = QFont("Arial", 11);
-QColor  InterlinearWord::transliterateColor      = QColor("#E0E0E0");
+QColor  InterlinearWord::transliterateColor      = QColor("#444444");
 bool    InterlinearWord::transliterateDisplay    = true;
 
 int     InterlinearWord::Lineskip                = 0;
