@@ -138,6 +138,20 @@ void
 BookNameTableInnerTable::SlotBookSelected
 (int InBookIndex)
 {
+  QObjectList                           ch;
+  int                                   n;
+  
+  ch = children();
+  n = 0;
+  for (auto  item : ch ) {
+    BookNameTableItem*                  bookItem = (BookNameTableItem*)item;
+    n++;
+    if ( InBookIndex  == n ) {
+      bookItem->Select();
+      continue;
+    }
+    bookItem->DeSelect();
+  }
   emit SignalBookSelected(InBookIndex);
 }
 

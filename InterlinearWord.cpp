@@ -21,10 +21,9 @@
 /*****************************************************************************!
  * Static Elements
  *****************************************************************************/
-QFont 	InterlinearWord::contextualFormFont      = QFont("Times New Roman", 20, QFont::Bold);
+QFont 	InterlinearWord::contextualFormFont      = QFont("Times New Roman", 30, QFont::Bold);
 QColor  InterlinearWord::contextualFormColor     = QColor("#800000");
 bool    InterlinearWord::contextualFormDisplay   = true;
-
 
 QFont 	InterlinearWord::englishFont             = QFont("Arial", 12);
 QColor  InterlinearWord::englishColor            = QColor("#444444");
@@ -32,15 +31,15 @@ bool    InterlinearWord::englishDisplay          = true;
 
 QFont   InterlinearWord::strongsFont             = QFont("Arial", 10, QFont::Bold);
 QColor  InterlinearWord::strongsColor            = QColor("#008000");
-bool    InterlinearWord::strongsDisplay          = true;
+bool    InterlinearWord::strongsDisplay          = false;
 
 QFont   InterlinearWord::morphologyFont          = QFont("Arial", 10);
 QColor  InterlinearWord::morphologyColor         = QColor("#880088");
-bool    InterlinearWord::morphologyDisplay       = true;
+bool    InterlinearWord::morphologyDisplay       = false;
 
 QFont   InterlinearWord::transliterateFont       = QFont("Arial", 11);
 QColor  InterlinearWord::transliterateColor      = QColor("#444444");
-bool    InterlinearWord::transliterateDisplay    = true;
+bool    InterlinearWord::transliterateDisplay    = false;
 
 int     InterlinearWord::Lineskip                = 0;
 
@@ -168,7 +167,7 @@ void
 InterlinearWord::SetContextualForm
 (QString InContextualForm)
 {
-  QFontMetrics							fm(contextualFormFont);
+  QFontMetrics				fm(contextualFormFont);
   QRect                                 rect;
   int                                   height;
 
@@ -185,7 +184,7 @@ void
 InterlinearWord::SetTransliteratedContextualForm
 (QString InTransliteratedContextualForm)
 {
-  QFontMetrics							fm(transliterateFont);
+  QFontMetrics				fm(transliterateFont);
   QRect                                 rect;
 
   TransliteratedContextualForm->SetText(InTransliteratedContextualForm.trimmed());
@@ -200,7 +199,7 @@ void
 InterlinearWord::SetMorphologyID
 (QString InMorphologyID)
 {
-  QFontMetrics							fm(morphologyFont);
+  QFontMetrics				fm(morphologyFont);
   QRect                                 rect;
 
   MorphologyID->SetText(InMorphologyID.trimmed());
@@ -215,7 +214,7 @@ void
 InterlinearWord::SetStrongsWordID
 (QString InStrongsWordID)
 {
-  QFontMetrics							fm(strongsFont);
+  QFontMetrics				fm(strongsFont);
   QRect                                 rect;
 
   StrongsWordID->SetText(InStrongsWordID);
@@ -262,45 +261,56 @@ InterlinearWord::Paint
   y3 = y + ws.height();
   InPainter->drawLine(x1, y2, x1, y3);
 #endif
-  y1 += englishSize.height();
-  InPainter->setPen(QPen(englishColor));
-  InPainter->setBrush(QBrush(englishColor));
-  InPainter->setFont(englishFont);
-  offset = ws.width() - englishSize.width();
-  text = English->GetText();
-  InPainter->drawText(x + offset, y1, text);
 
-  y1 += contextualFormSize.height() + Lineskip;
-  InPainter->setPen(QPen(contextualFormColor));
-  InPainter->setBrush(QBrush(contextualFormColor));
-  InPainter->setFont(contextualFormFont);
-  offset = ws.width() - contextualFormSize.width();
-  text = ContextualForm->GetText();
-  InPainter->drawText(x + offset, y1, text);
+  if ( englishDisplay ) {
+    y1 += englishSize.height();
+    InPainter->setPen(QPen(englishColor));
+    InPainter->setBrush(QBrush(englishColor));
+    InPainter->setFont(englishFont);
+    offset = ws.width() - englishSize.width();
+    text = English->GetText();
+    InPainter->drawText(x + offset, y1, text);
+  }
+  
+  if ( contextualFormDisplay ) {
+    y1 += contextualFormSize.height() + Lineskip;
+    InPainter->setPen(QPen(contextualFormColor));
+    InPainter->setBrush(QBrush(contextualFormColor));
+    InPainter->setFont(contextualFormFont);
+    offset = ws.width() - contextualFormSize.width();
+    text = ContextualForm->GetText();
+    InPainter->drawText(x + offset, y1, text);
+  }
 
-  y1 += strongsSize.height() + Lineskip;
-  InPainter->setPen(QPen(strongsColor));
-  InPainter->setBrush(QBrush(strongsColor));
-  InPainter->setFont(strongsFont);
-  offset = ws.width() - strongsSize.width();
-  text = StrongsWordID->GetText();
-  InPainter->drawText(x + offset, y1, text);
+  if ( strongsDisplay ) {
+    y1 += strongsSize.height() + Lineskip;
+    InPainter->setPen(QPen(strongsColor));
+    InPainter->setBrush(QBrush(strongsColor));
+    InPainter->setFont(strongsFont);
+    offset = ws.width() - strongsSize.width();
+    text = StrongsWordID->GetText();
+    InPainter->drawText(x + offset, y1, text);
+  }
 
-  y1 += morphologySize.height() + Lineskip;
-  InPainter->setPen(QPen(morphologyColor));
-  InPainter->setBrush(QBrush(morphologyColor));
-  InPainter->setFont(morphologyFont);
-  offset = ws.width() - morphologySize.width();
-  text = MorphologyID->GetText();
-  InPainter->drawText(x + offset, y1, text);
+  if ( morphologyDisplay ) {
+    y1 += morphologySize.height() + Lineskip;
+    InPainter->setPen(QPen(morphologyColor));
+    InPainter->setBrush(QBrush(morphologyColor));
+    InPainter->setFont(morphologyFont);
+    offset = ws.width() - morphologySize.width();
+    text = MorphologyID->GetText();
+    InPainter->drawText(x + offset, y1, text);
+  }
 
-  y1 += transliterateSize.height() + Lineskip;
-  InPainter->setPen(QPen(transliterateColor));
-  InPainter->setBrush(QBrush(transliterateColor));
-  InPainter->setFont(transliterateFont);
-  offset = ws.width() - transliterateSize.width();
-  text = TransliteratedContextualForm->GetText();
-  InPainter->drawText(x + offset, y1, text);
+  if ( transliterateDisplay ) {
+    y1 += transliterateSize.height() + Lineskip;
+    InPainter->setPen(QPen(transliterateColor));
+    InPainter->setBrush(QBrush(transliterateColor));
+    InPainter->setFont(transliterateFont);
+    offset = ws.width() - transliterateSize.width();
+    text = TransliteratedContextualForm->GetText();
+    InPainter->drawText(x + offset, y1, text);
+  }
 }
 
 /*****************************************************************************!
@@ -328,47 +338,64 @@ QSize
 InterlinearWord::GetSize
 ()
 {
-  int									width;
-  int									height;
+  int					width;
+  int					height;
   int                                   cWidth;
   int                                   sWidth;
   int                                   mWidth;
   int                                   tWidth;
-  QFontMetrics							fm1(englishFont);
+  QFontMetrics				fm1(englishFont);
   QFontMetrics                          fm2(contextualFormFont);
-  QFontMetrics							fm3(strongsFont);
-  QFontMetrics							fm4(morphologyFont);
-  QFontMetrics							fm5(transliterateFont);
+  QFontMetrics				fm3(strongsFont);
+  QFontMetrics				fm4(morphologyFont);
+  QFontMetrics				fm5(transliterateFont);
   QRect                                 si1 = fm1.boundingRect("Mg");
   QRect                                 si2 = fm2.boundingRect("Mg");
   QRect                                 si3 = fm3.boundingRect("Mg");
   QRect                                 si4 = fm4.boundingRect("Mg");
   QRect                                 si5 = fm5.boundingRect("Mg");
 
-  width = englishSize.width();
+  width = 0;
 
   cWidth  = contextualFormSize.width();
   sWidth  = strongsSize.width();
   mWidth  = morphologySize.width();
   tWidth  = transliterateSize.width();
 
-  if ( cWidth > width ) {
-	width = cWidth;
+  height = 0;
+  if ( englishDisplay ) {
+    width = englishSize.width();
+    height += si1.height()  + Lineskip;
+  }
+  
+  if ( contextualFormDisplay ) {
+    if ( cWidth > width ) {
+      width = cWidth;
+    }
+    height += si2.height() + Lineskip;
   }
 
-  if ( sWidth > width ) {
-	width = sWidth;
+  if ( strongsDisplay )  {
+    if ( sWidth > width ) {
+      width = sWidth;
+    }
+    height += si3.height()  + Lineskip;
   }
 
-  if ( mWidth > width ) {
-	width = mWidth;
+  if ( morphologyDisplay ) {
+    if ( mWidth > width ) {
+      width = mWidth;
+    }
+    height += si4.height() + Lineskip;
   }
 
-  if ( tWidth > width ) {
-	width = tWidth;
+  if ( transliterateDisplay ) {
+    if ( tWidth > width ) {
+      width = tWidth;
+    }
+    height += si5.height() + Lineskip;
   }
 
-  height = si1.height() + si2.height() + si3.height() + si4.height() + si5.height() + 4 * Lineskip; 
   return QSize(width, height);
 }
 

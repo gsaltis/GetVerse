@@ -28,7 +28,7 @@ BookNameTableItem::BookNameTableItem
   QPalette pal;
   index = 0;
   pal = palette();
-
+ 
   bookInfo = InBookInfo;
   backgroundColor = QColor("#999999").lighter(100 + (bookInfo->bookGroup * 10));
   pal.setBrush(QPalette::Window, QBrush(backgroundColor));
@@ -54,6 +54,9 @@ BookNameTableItem::~BookNameTableItem
 void
 BookNameTableItem::initialize()
 {
+  normalFont  = QFont("Segoe UI", 10, QFont::Normal);
+  selectedFont = QFont("Segoe UI", 12, QFont::Bold); 
+  selected = false;
   InitializeSubWindows();  
   CreateSubWindows();
 }
@@ -71,7 +74,7 @@ BookNameTableItem::CreateSubWindows()
   bookName->resize(100, BOOK_NAME_TABLE_ITEM_HEIGHT);
   bookName->setText(bookInfo->name);
   bookName->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-  bookName->setFont(QFont("Segoe UI", 10, QFont::Normal));
+  bookName->setFont(normalFont);
 
   bookNumberLabel = new QLabel();
   bookNumberLabel->setParent(this);
@@ -79,7 +82,10 @@ BookNameTableItem::CreateSubWindows()
   bookNumberLabel->resize(20, BOOK_NAME_TABLE_ITEM_HEIGHT);
   bookNumberLabel->setText(QString("%1").arg(bookInfo->index));
   bookNumberLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-  bookNumberLabel->setFont(QFont("Segoe UI", 10, QFont::Normal));
+  bookNumberLabel->setFont(normalFont);
+
+  bookNumberLabel->setFont(normalFont);
+  bookName->setFont(normalFont);
 }
 
 /*****************************************************************************!
@@ -202,5 +208,43 @@ BookNameTableItem::mousePressEvent
 (QMouseEvent* InEvent)
 {
   (void)InEvent;
+  SetSelected(true);
   emit SignalBookSelected(bookInfo->index);
 }
+
+/*****************************************************************************!
+ * Function : Select
+ *****************************************************************************/
+void
+BookNameTableItem::Select
+()
+{
+  SetSelected(true);
+}
+
+/*****************************************************************************!
+ * Function : DeSelect
+ *****************************************************************************/
+void
+BookNameTableItem::DeSelect
+()
+{
+  SetSelected(false);
+}
+
+/*****************************************************************************!
+ * Function : SetSelected
+ *****************************************************************************/
+void
+BookNameTableItem::SetSelected
+(bool InSelected)
+{
+  QFont                                 font;
+  
+  selected = InSelected;
+  font = selected ? selectedFont : normalFont;
+  
+  bookNumberLabel->setFont(font);
+  bookName->setFont(font);
+}
+

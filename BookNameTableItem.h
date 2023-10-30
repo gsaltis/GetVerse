@@ -48,6 +48,8 @@ class BookNameTableItem : public QWidget
   QString                       GetName                 (void);
   void                          SetName                 (QString InName);
   int                           GetIndex                ();
+  void                          Select                  ();
+  void                          DeSelect                ();
   
  //! Public Data
  public :
@@ -69,7 +71,8 @@ class BookNameTableItem : public QWidget
   void                          enterEvent              (QEnterEvent* InEvent);
   void                          leaveEvent              (QEvent* InEvent);
   void                          mousePressEvent         (QMouseEvent* InEvent);
-
+  void                          SetSelected             (bool InSelected);
+  
  //! Private Data
  private :
   BookInfo*                     bookInfo;
@@ -84,6 +87,9 @@ class BookNameTableItem : public QWidget
   QColor                        textColor;
   QColor                        selectedColor;
   QColor                        selectedTextColor;
+  bool                          selected;
+  QFont                         normalFont;
+  QFont                         selectedFont;
   
  //! Public Slots
  public slots :
