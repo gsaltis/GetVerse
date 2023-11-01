@@ -39,11 +39,12 @@ SOURCES                         += \
 				   BookNameWindow.cpp                           \
 				   Formatting.cpp                               \
 				   InterlinearChapter.cpp                       \
+				   InterlinearDisplayElementSelectDialog.cpp    \
 				   InterlinearVerse.cpp                         \
 				   InterlinearWord.cpp                          \
-				   MainDisplayWindow.cpp                        \
-				   InterlinearWordTextDisplay.cpp               \
 				   InterlinearWordText.cpp                      \
+				   InterlinearWordTextDisplay.cpp               \
+				   MainDisplayWindow.cpp                        \
 				   MainMessageWindow.cpp                        \
 				   MainWindow.cpp                               \
 				   SQLStatement.cpp                             \
@@ -75,6 +76,7 @@ HEADERS                         += \
 				   BookNameWindow.h                             \
 				   Formatting.h                                 \
 				   InterlinearChapter.h                         \
+				   InterlinearDisplayElementSelectDialog.h      \
 				   InterlinearVerse.h                           \
 				   InterlinearWord.h                            \
 				   InterlinearWordText.h                        \

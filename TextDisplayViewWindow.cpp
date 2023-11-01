@@ -28,6 +28,7 @@
 #include "TextDisplayWordItem.h"
 #include "SQLStatement.h"
 #include "InterlinearChapter.h"
+#include "InterlinearDisplayElementSelectDialog.h"
 
 /*****************************************************************************!
  * Local Type : ThisChapter
@@ -1583,6 +1584,10 @@ TextDisplayViewWindow::mousePressEvent
     EditModeMousePress(p);
     return;
   }
+  if ( mode == InterlinearMode ) {
+    InterlinearModeMousePress(InEvent);
+    return;
+  }
 }
 
 /*****************************************************************************!
@@ -1621,6 +1626,42 @@ TextDisplayViewWindow::EditModeMousePress
   }
 }
 
+/*****************************************************************************!
+ * Function : InterlinearModeMousePress
+ *****************************************************************************/
+void
+TextDisplayViewWindow::InterlinearModeMousePress
+(QMouseEvent* InEvent)
+{
+  Qt::MouseButton                       button;
+  Qt::KeyboardModifiers                 modifiers;
+
+  button = InEvent->button();
+  modifiers = InEvent->modifiers();
+
+  if ( button == Qt::LeftButton && modifiers == Qt::NoModifier ) {
+    InterlinearModeDisplayElementViewDialog(InEvent->pos());
+    return;
+  }
+}
+
+/*****************************************************************************!
+ * Function : InterlinearModeDisplayElementViewDialog
+ *****************************************************************************/
+void
+TextDisplayViewWindow::InterlinearModeDisplayElementViewDialog
+(QPoint InPosition)
+{
+  InterlinearDisplayElementSelectDialog*        dialog;
+  int                                           n;
+  
+  dialog = new InterlinearDisplayElementSelectDialog();
+  dialog->move(InPosition);
+  n = dialog->exec();
+
+  (void)n;
+  delete dialog;
+}
 
 /*****************************************************************************!
  * Function : EditModeFormattingMouseSelect
