@@ -270,6 +270,7 @@ void
 TextDisplayViewScrollWindow::SlotWordCountChanged
 (int InWordCount)
 {
+  TRACE_FUNCTION_INT(InWordCount);
   emit SignalWordCountChanged(InWordCount);
 }
 

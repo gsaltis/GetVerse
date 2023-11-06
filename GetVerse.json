@@ -1,7 +1,7 @@
 {
   "MainWindow" : {
     "Location" : {
-      "x" : 0,
+      "x" : 1930,
       "y" : 10
     },
     "Size" : {
@@ -12,15 +12,15 @@
   
   "BlockWindow" : {
     "Background" : {
-      "red"      : 255,
-      "green" : 218,
-      "blue" : 185
+      "red"      : 211,
+      "green" : 201,
+      "blue" : 182
     }
   },
 
   "WordItem" : {
     "Family" : "Times New Roman",
-    "Size" : 16,
+    "Size" : 13,
     "Bold" : false
   }
 }

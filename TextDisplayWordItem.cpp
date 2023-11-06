@@ -27,7 +27,7 @@ TextDisplayWordItem::TextDisplayWordItem
 {
   StripQuotes = true;
   Text = QString("%2:%3").arg(InChapter).arg(InVerse); 
-  Foreground = QColor(64, 64, 64);
+  Foreground = QColor(80, 64, 42);
   Background = QColor(255, 255, 255);
   Font = QFont("Arial", 10, QFont::Normal);
   Type = WordType;

@@ -67,6 +67,7 @@ class TextDisplayViewWindow : public QWidget
  public :
   void                          ClearText               ();
   int                           GetTableHeight          ();
+  int                           GetWordCount            ();
   
  //! Public Data
  public :
@@ -152,6 +153,7 @@ class TextDisplayViewWindow : public QWidget
  //! Private Data
  private :
   BookInfo*                                                     bookInfo;
+  int                                                           BlockInterlineSkip;
   int                                                           textX;
   int                                                           textY;
   int                                                           InterLineSkip;

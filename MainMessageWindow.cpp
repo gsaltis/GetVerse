@@ -88,7 +88,7 @@ MainMessageWindow::CreateSubWindows()
   message->setParent(this);
   message->move(10, 0);
   message->resize(100, 23);
-  message->setText("None");
+  message->setText("");
   message->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
   message->setFont(QFont("Arial", 10, QFont::Normal));
 

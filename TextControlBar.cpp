@@ -466,6 +466,7 @@ void
 TextControlBar::SlotWordCountChanged
 (int InWordCount)
 {
+  TRACE_FUNCTION_INT(InWordCount);
   WordCountLabel->setText(QString("%1").arg(InWordCount));
 }
 

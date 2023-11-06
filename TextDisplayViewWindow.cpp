@@ -74,10 +74,11 @@ void
 TextDisplayViewWindow::initialize()
 {
   EditViewReferenceIndent       = 40;
-  InterLineSkip                 = 3;
+  InterLineSkip                 = 6;
   InterlinearWord::SetLineskip(1);
-  InterParagraphSkip            = 10;
+  InterParagraphSkip            = 20;
   InterWordSkip                 = 8;
+  BlockInterlineSkip            = 2;
   InterInterlinearWordSkip      = 12;
   bottomMargin                  = 10;
   leftMargin                    = 10;
@@ -353,6 +354,7 @@ TextDisplayViewWindow::SetBook
     delete currentInterlinearChapter;
   }
   currentInterlinearChapter = AddInterlinearChapter(bookInfo->index, 1);
+  emit SignalWordCountChanged(wordCount);
 }
 
 /*****************************************************************************!
@@ -606,7 +608,7 @@ TextDisplayViewWindow::SetBookCB
   QString                               reference;
   QString                               s;
   TextDisplayViewWindow*                window;
-
+  
   window = (TextDisplayViewWindow*)InThisPointer;
   
   for ( int i = 0 ; i < InColumnCount ; i++ ) {
@@ -1461,7 +1463,7 @@ TextDisplayViewWindow::ArrangeItemsBlock
         }
         x = InX;
         lineEnd = x;
-        y += itemHeight;
+        y += itemHeight + BlockInterlineSkip;
         windowHeight = y + itemHeight;
         lineStartIndex = i;
         location = QPoint(x, y);
@@ -2272,4 +2274,14 @@ TextDisplayViewWindow::AddInterlinearItem
     return;
   }
   interlinearItems.push_back(InItem);
+}
+
+/*****************************************************************************!
+ * Function : GetWordCount
+ *****************************************************************************/
+int
+TextDisplayViewWindow::GetWordCount
+()
+{
+  return wordCount;
 }
