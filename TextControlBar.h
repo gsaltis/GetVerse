@@ -67,7 +67,8 @@ class TextControlBar : public QWidget
   void                          InitializeSubWindows    ();
   void                          resizeEvent             (QResizeEvent* InEvent);
   QStringList                   WordBreakTypeComboAddItems (void);
-
+  void                          CreateConnections       ();
+  
  //! Private Data
  private :
   QPushButton*                  ReferenceButton;
@@ -84,7 +85,9 @@ class TextControlBar : public QWidget
   int                           ButtonHeight;
   QLabel*                       GroupingLabel;
   QLabel*                       GroupingCountLabel;
+
   QSpinBox*                     ChapterSelect;
+  QLabel*                       ChapterSelectLabel;
   
   QComboBox*                    WordBreakTypeCombo;
   QLabel*                       WordBreakTypeLabel;
@@ -103,6 +106,7 @@ class TextControlBar : public QWidget
   void                          SlotSetChapter                  (int InChapter);
   void                          SlotSetChapterSelectMax         (int InChapter);
   void                          SlotWordBreakTypeComboSelectedItem (int InSelectedIndex);
+  void                          SlotChapterChanged              (int InNewChapter);
 
  //! Public Signals
  signals :
@@ -114,7 +118,8 @@ class TextControlBar : public QWidget
   void                          SignalVerseCountChanged         (int InVerseCount);
   void                          SignalSentenceCountChanged      (int InVerseCount);
   void                          SignalSetFormattingType         (TextDisplayFormattingItem::FormatType InFormattingType);
-
+  void                          SignalChapterChanged            (int InChapter);
+  
  //! Public Actions
  public :
   QAction*                      ActionReferenceButtonPushed;

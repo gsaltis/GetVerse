@@ -157,6 +157,7 @@ class TextDisplayViewWindow : public QWidget
   int                                                           textX;
   int                                                           textY;
   int                                                           InterLineSkip;
+  int                                                           SentenceInterLineSkip;
   int                                                           InterWordSkip;
   int                                                           InterInterlinearWordSkip;
   int                                                           InterParagraphSkip;
@@ -197,6 +198,7 @@ class TextDisplayViewWindow : public QWidget
   InterlinearVerse*                                             interlinearVerse;
   InterlinearChapter*                                           currentInterlinearChapter;
   InterlinearWord*                                              currentSelectedInterlinearWord;
+  int                                                           currentSelectedChapter;
 
  //! Public Slots
  public slots :
@@ -209,6 +211,7 @@ class TextDisplayViewWindow : public QWidget
   void                          SlotVerticalScrolled            (void);
   void                          SlotSelectChapter               (int InChapter);
   void                          SlotSetFormattingType           (TextDisplayFormattingItem::FormatType InFormattingType);
+  void                          SlotChapterChanged      (int InChapter);
   
  //! Public Signals
  signals :

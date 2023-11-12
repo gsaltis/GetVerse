@@ -60,11 +60,11 @@ class TextDisplayViewScrollWindow : public QScrollArea
 
  //! Private Methods
  private :
-  void                          initialize              ();
-  void                          CreateSubWindows        ();
-  void                          CreateConnections       ();
-  void                          InitializeSubWindows    ();
-  void                          resizeEvent             (QResizeEvent* InEvent);
+  void                          initialize                      ();
+  void                          CreateSubWindows                ();
+  void                          CreateConnections               ();
+  void                          InitializeSubWindows            ();
+  void                          resizeEvent                     (QResizeEvent* InEvent);
 
  //! Private Data
  private :
@@ -93,8 +93,9 @@ class TextDisplayViewScrollWindow : public QScrollArea
   void                          SlotSetMessage                  (QString InMessage);
   void                          SlotChapterScrolled             (int InChapter);
   void                          SlotChapterSelected             (int InChapter);
-  void                          SlotLocationSelected    (QPoint InLocation);
-  void                          SlotSetFormattingType   (TextDisplayFormattingItem::FormatType InFormattingType);
+  void                          SlotLocationSelected            (QPoint InLocation);
+  void                          SlotSetFormattingType           (TextDisplayFormattingItem::FormatType InFormattingType);
+  void                          SlotChapterChanged              (int InNewChapter);
   
  //! Public Signals
  signals :
@@ -118,7 +119,8 @@ class TextDisplayViewScrollWindow : public QScrollArea
 
   void                          SignalChapterSelected           (int InCurrentChapter);
   void                          SignalChapterScrolled           (int InCurrentChapter);
-  void                          SignalSetFormattingType (TextDisplayFormattingItem::FormatType InFormattingType);
+  void                          SignalSetFormattingType         (TextDisplayFormattingItem::FormatType InFormattingType);
+  void                          SignalChapterChanged            (int InChapter);
   
  //! Public Actions
  public :

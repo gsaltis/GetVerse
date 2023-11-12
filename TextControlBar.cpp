@@ -59,6 +59,20 @@ TextControlBar::initialize()
   connect(ActionEditButtonPushed, SIGNAL(triggered()), this, SLOT(SlotEditButtonPushed()));
   ActionAnalyzeButtonPushed = new QAction("AnalyzeButtonPushed", this);
   connect(ActionAnalyzeButtonPushed, SIGNAL(triggered()), this, SLOT(SlotAnalyzeButtonPushed()));
+  CreateConnections();
+}
+
+/*****************************************************************************!
+ * Function : CreateConnections
+ *****************************************************************************/
+void
+TextControlBar::CreateConnections
+()
+{
+  connect(ChapterSelect,
+          SIGNAL(valueChanged(int)),
+          this,
+          SLOT(SlotChapterChanged(int)));
 }
 
 /*****************************************************************************!
@@ -172,8 +186,17 @@ TextControlBar::CreateSubWindows()
   ChapterSelect->move(0, 0);
   ChapterSelect->hide();
   
+  //! Create label
+  ChapterSelectLabel = new QLabel();
+  ChapterSelectLabel->setParent(this);
+  ChapterSelectLabel->move(10, 10);
+  ChapterSelectLabel->resize(100, 20);
+  ChapterSelectLabel->setText("Chapters :");
+  ChapterSelectLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+  ChapterSelectLabel->setFont(QFont("Arial", 10, QFont::Normal));
+  ChapterSelectLabel->hide();
   
-    //! Create WordBreakTypeCombo Combobox
+  //! Create WordBreakTypeCombo Combobox
   WordBreakTypeCombo = new QComboBox();
   WordBreakTypeCombo->setParent(this);
   WordBreakTypeCombo->move(0,0);
@@ -247,6 +270,12 @@ TextControlBar::resizeEvent
   int                                   ChapterSelectY;
   int                                   ChapterSelectW;
   int                                   ChapterSelectH;
+  
+  int                                   ChapterSelectLabelX;
+  int                                   ChapterSelectLabelY;
+  int                                   ChapterSelectLabelW;
+  int                                   ChapterSelectLabelH;
+  int                                   lastX;
   
   size = InEvent->size();
   height = size.height();
@@ -326,18 +355,31 @@ TextControlBar::resizeEvent
 
   ChapterSelect->move(ChapterSelectX, ChapterSelectY);
   ChapterSelect->resize(ChapterSelectW, ChapterSelectH);
+  lastX = ChapterSelectX;
 
+  //!
+  ChapterSelectLabelW = 60;
+  ChapterSelectLabelH = height - 4;
+
+  ChapterSelectLabelY = 2;
+  ChapterSelectLabelX = lastX - (ChapterSelectW + 5);
+
+  ChapterSelectLabel->move(ChapterSelectLabelX, ChapterSelectLabelY);
+  ChapterSelectLabel->resize(ChapterSelectLabelW, ChapterSelectLabelH);
+  lastX = ChapterSelectLabelX;
+  
   //!
   WordBreakTypeComboW = 130;
   WordBreakTypeComboH = height - 4;
-  WordBreakTypeComboX = width - (GroupingLabelW + GroupingCountLabelW + WordLabelW + WordCountLabelW + WordBreakTypeComboW + 5 + RightMargin);
+  WordBreakTypeComboX = lastX - (WordBreakTypeComboW + 5);
   WordBreakTypeComboY = 2;
   WordBreakTypeCombo->move(WordBreakTypeComboX, WordBreakTypeComboY);
   WordBreakTypeCombo->resize(WordBreakTypeComboW, WordBreakTypeComboH);
-
+  lastX = WordBreakTypeComboX;
+  
   //!
   WordBreakTypeLabelW = WordBreakTypeLabelFontMetrics.size(0, WordBreakTypeLabel->text()).width();
-  WordBreakTypeLabelX = WordBreakTypeComboX - (WordBreakTypeLabelW + 10);
+  WordBreakTypeLabelX = lastX - (WordBreakTypeLabelW + 5);
   WordBreakTypeLabelY = (height - WordBreakTypeLabelH) / 2;
   
   WordBreakTypeLabel->move(WordBreakTypeLabelX, WordBreakTypeLabelY);
@@ -363,6 +405,8 @@ TextControlBar::SlotReferenceButtonPushed(void)
   BlockViewButton->setChecked(false);
   InterlinearButton->setChecked(false);
   SentenceViewButton->setChecked(false);  
+  ChapterSelect->hide();
+  ChapterSelectLabel->hide();
   GroupingLabel->show();
   GroupingCountLabel->show();
   WordBreakTypeCombo->hide();
@@ -380,6 +424,8 @@ TextControlBar::SlotBlockViewButtonPushed(void)
   SentenceViewButton->setChecked(false);  
   EditButton->setChecked(false);  
   InterlinearButton->setChecked(false);  
+  ChapterSelect->hide();
+  ChapterSelectLabel->hide();
   GroupingLabel->hide();
   GroupingCountLabel->hide();
   WordBreakTypeCombo->hide();
@@ -397,6 +443,8 @@ TextControlBar::SlotSentenceViewButtonPushed(void)
   GroupingCountLabel->setText("0");
   EditButton->setChecked(false);  
   GroupingLabel->show();
+  ChapterSelect->show();
+  ChapterSelectLabel->show();
   GroupingCountLabel->show();
   ReferenceButton->setChecked(false);
   BlockViewButton->setChecked(false);
@@ -420,6 +468,9 @@ TextControlBar::SlotEditButtonPushed(void)
   SentenceViewButton->setChecked(false);  
   ReferenceButton->setChecked(false);  
 
+  ChapterSelect->hide();
+  ChapterSelectLabel->hide();
+  
   GroupingLabel->show();
   GroupingCountLabel->show();
   WordBreakTypeCombo->show();
@@ -442,6 +493,9 @@ TextControlBar::SlotInterlinearButtonPushed(void)
   SentenceViewButton->setChecked(false);  
   ReferenceButton->setChecked(false);  
 
+  ChapterSelect->hide();
+  ChapterSelectLabel->hide();
+  
   GroupingLabel->hide();
   GroupingCountLabel->hide();
   WordBreakTypeCombo->hide();
@@ -466,7 +520,6 @@ void
 TextControlBar::SlotWordCountChanged
 (int InWordCount)
 {
-  TRACE_FUNCTION_INT(InWordCount);
   WordCountLabel->setText(QString("%1").arg(InWordCount));
 }
 
@@ -541,4 +594,14 @@ TextControlBar::SlotWordBreakTypeComboSelectedItem
   else if ( InSelectedIndex == 2 ) {
     emit SignalSetFormattingType(TextDisplayFormattingItem::FormatTypeWordHighlight);
   }
+}
+
+/*****************************************************************************!
+ * Function : SlotChapterChanged
+ *****************************************************************************/
+void
+TextControlBar::SlotChapterChanged
+(int InNewChapter)
+{
+  emit SignalChapterChanged(InNewChapter);
 }

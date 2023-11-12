@@ -196,7 +196,8 @@ TextDisplayOuterWindow::SlotBookSelected
   }
   header->SetText(bookInfo->GetCapitalizedBookName());
   viewWindow->ClearText();
-  emit controlBar->SlotSetChapter(bookInfo->chapters);
+  controlBar->SlotSetChapter(1);
+  controlBar->SlotSetChapterSelectMax(bookInfo->chapters);
   emit SignalBookSelected(bookInfo);
 }
 
@@ -330,6 +331,10 @@ TextDisplayOuterWindow::CreateConnections(void)
           viewWindow,
           SLOT(SlotSetInterlinearMode()));
 
+  connect(controlBar,
+          SIGNAL(SignalChapterChanged(int)),
+          viewWindow,
+          SLOT(SlotChapterChanged(int)));
 }
 
 /*****************************************************************************!
@@ -377,7 +382,6 @@ void
 TextDisplayOuterWindow::SlotWordCountChanged
 (int InWordCount)
 {
-  TRACE_FUNCTION_INT(InWordCount);
   emit SignalWordCountChanged(InWordCount);
 }
 

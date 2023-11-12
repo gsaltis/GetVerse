@@ -73,8 +73,10 @@ TextDisplayViewWindow::~TextDisplayViewWindow
 void
 TextDisplayViewWindow::initialize()
 {
+  currentSelectedChapter        = 1;
   EditViewReferenceIndent       = 40;
   InterLineSkip                 = 6;
+  SentenceInterLineSkip         = 3;
   InterlinearWord::SetLineskip(1);
   InterParagraphSkip            = 20;
   InterWordSkip                 = 8;
@@ -223,14 +225,17 @@ TextDisplayViewWindow::ArrangeItemsSentence
   int                                   i;
   int                                   n;
   TextDisplayItem*                      item;
-  
-  x             = InX;
-  y             = InY;
+
+  x             = InX ;
+  y             = InY + 30;
   windowHeight  = 0;
 
   n = textItems.size();
   for ( i = 0 ; i < n ; i++ ) {
     item = textItems[i];
+    if ( item->GetChapter() != currentSelectedChapter ) {
+      continue;
+    }
     s = item->GetSize();
     itemWidth = s.width();
     itemHeight = s.height();
@@ -254,7 +259,7 @@ TextDisplayViewWindow::ArrangeItemsSentence
     }
     if ( ending == "." || ending == "?" || ending == "!" ) {
       tmpSentenceCount ++;
-      y += itemHeight + InterLineSkip * 2;
+      y += itemHeight + SentenceInterLineSkip;
       x = InX;
       windowHeight = y + itemHeight;
     }
@@ -1245,6 +1250,9 @@ TextDisplayViewWindow::PaintSentenceMode
   
   for ( auto item : textItems ) {
     if ( item->GetType() == TextDisplayItem::ReferenceType ) {
+      continue;
+    }
+    if ( item->GetChapter() != currentSelectedChapter ) {
       continue;
     }
     itemR = QRect(item->GetBoundingRect());
@@ -2284,4 +2292,16 @@ TextDisplayViewWindow::GetWordCount
 ()
 {
   return wordCount;
+}
+
+/*****************************************************************************!
+ * Function : SlotChapterChanged
+ *****************************************************************************/
+void
+TextDisplayViewWindow::SlotChapterChanged
+(int InChapter)
+{
+  currentSelectedChapter = InChapter;
+  ArrangeItems();
+  repaint();
 }

@@ -223,6 +223,11 @@ TextDisplayViewScrollWindow::CreateConnections(void)
           SIGNAL(SignalVerticalScrolled()),
           viewWindow,
           SLOT(SlotVerticalScrolled()));
+
+  connect(this,
+          SIGNAL(SignalChapterChanged(int)),
+          viewWindow,
+          SLOT(SlotChapterChanged(int)));
 }
 
 /*****************************************************************************!
@@ -270,7 +275,6 @@ void
 TextDisplayViewScrollWindow::SlotWordCountChanged
 (int InWordCount)
 {
-  TRACE_FUNCTION_INT(InWordCount);
   emit SignalWordCountChanged(InWordCount);
 }
 
@@ -397,4 +401,14 @@ TextDisplayViewScrollWindow::SlotSetFormattingType
 (TextDisplayFormattingItem::FormatType InFormattingType)
 {
   emit SignalSetFormattingType(InFormattingType);
+}
+
+/*****************************************************************************!
+ * Function : SlotChapterChanged
+ *****************************************************************************/
+void
+TextDisplayViewScrollWindow::SlotChapterChanged
+(int InNewChapter)
+{
+  emit SignalChapterChanged(InNewChapter); 
 }
