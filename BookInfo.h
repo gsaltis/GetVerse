@@ -17,6 +17,7 @@
 /*****************************************************************************!
  * Local Headers
  *****************************************************************************/
+#include "BookInfoWord.h"
 
 /*****************************************************************************!
  * Exported Macros
@@ -40,6 +41,15 @@ class BookInfo : public QWidget
  //! Public Methods
  public :
   QString                               GetCapitalizedBookName  ();
+  int                                   GetVerseCount           ();
+  void                                  ReadVerses              ();
+  void                                  AddLineText             (int InChapter, int InVerse, QString InVerseText);
+  BookInfoWord*                         GetWord                 (int InChapter, int InVerse, int InIndex);
+  int                                   GetWordCount            ();
+  static int                            ReadVersesCB            (void* InThisPointer, int InColumnCount, char** InColumnValues, char** InColumnNames);
+  int                                   GetChapterWordCount     (int InChapter);
+  void                                  GetChapterWordIndices   (int InChapter, int &InStartIndex, int &InEndIndex);
+  BookInfoWord*                         GetWordByIndex          (int InIndex);
   
  //! Public Data
  public :
@@ -52,6 +62,7 @@ class BookInfo : public QWidget
   int                                   hebrewBookOrder;
   int                                   hebrewBookGroup;
   int                                   groupEnd;
+  QList<BookInfoWord*>                  wordItems;
   
  //! Protected Methods
  protected :

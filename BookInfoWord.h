@@ -1,11 +1,11 @@
 /*****************************************************************************
- * FILE NAME    : TextDisplayFormattingItem.h
- * DATE         : September 16 2023
+ * FILE NAME    : BookInfoWord.h
+ * DATE         : November 13 2023
  * PROJECT      : 
  * COPYRIGHT    : Copyright (C) 2023 by Gregory R Saltis
  *****************************************************************************/
-#ifndef _textdisplayformattingitem_h_
-#define _textdisplayformattingitem_h_
+#ifndef _bookinfoword_h_
+#define _bookinfoword_h_
 
 /*****************************************************************************!
  * Global Headers
@@ -17,49 +17,35 @@
 /*****************************************************************************!
  * Local Headers
  *****************************************************************************/
-#include "TextDisplayItem.h"
 
 /*****************************************************************************!
  * Exported Macros
  *****************************************************************************/
 
 /*****************************************************************************!
- * Exported Class : TextDisplayFormattingItem
+ * Exported Class : BookInfoWord
  *****************************************************************************/
-class TextDisplayFormattingItem : public TextDisplayItem
+class BookInfoWord : public QWidget
 {
- //! Public Types
- public :
-  enum FormatType {
-    FormatTypeNone          = 0,
-    FormatTypePostVerse,
-    FormatTypePreVerse,
-    FormatTypeMidVerse,
-    FormatTypeWordBreakIndent,
-    FormatTypeSection,
-    FormatTypeWordBreak,
-    FormatTypeWordLower,
-    FormatTypeWordUpper,
-    FormatTypeWordCaptilize,
-    FormatTypeWordHighlight
-  };
+  Q_OBJECT;
 
-  
  //! Constructors
  public :
-  TextDisplayFormattingItem     (int InBook, QString InBookName, int InChapter, int InVerse,
-                                 enum FormatType InFormatting);
+  BookInfoWord                  (int InBook, int InChapter, int InVerse, int InWordIndex, QString InWordText);
 
  //! Destructor
  public :
-  virtual ~TextDisplayFormattingItem    ();
+  ~BookInfoWord                 ();
 
  //! Public Methods
  public :
-  virtual void                  Draw                    (QPainter* InPainter) override;
-  virtual bool                  Contains                (QPoint InPaint);
-  FormatType                    GetFormattingType       ();
-  
+  int                           GetBook                 (void);
+  int                           GetChapter              (void);
+  int                           GetVerse                (void);
+  int                           GetIndex                (void);
+  QString                       GetWord                 ();
+  bool                          IsEqual                 (int InBook, int InChapter, int InVerse, int InIndex);
+
  //! Public Data
  public :
 
@@ -68,15 +54,27 @@ class TextDisplayFormattingItem : public TextDisplayItem
 
  //! Protected Data
  protected :
-  QString                       BookName;
-  int                           Formatting;
 
  //! Private Methods
  private :
 
  //! Private Data
  private :
-  
+  int                                   book;
+  int                                   chapter;
+  int                                   verse;
+  int                                   index;
+  QString                               word;
+
+ //! Public Slots
+ public slots :
+
+ //! Public Signals
+ signals :
+
+ //! Public Actions
+ public :
+
 };
 
-#endif /* _textdisplayformattingitem_h_*/
+#endif /* _bookinfoword_h_*/

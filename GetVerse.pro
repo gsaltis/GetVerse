@@ -32,11 +32,13 @@ DEFINES                         += \
 
 SOURCES                         += \
 				   BookInfo.cpp                                 \
+				   BookInfoWord.cpp                             \
 				   BookNameTable.cpp                            \
 				   BookNameTableInnerTable.cpp                  \
 				   BookNameTableItem.cpp                        \
 				   BookNameTableScrollArea.cpp                  \
 				   BookNameWindow.cpp                           \
+                                   ChapterHeaderWindow.cpp                      \
 				   Formatting.cpp                               \
 				   InterlinearChapter.cpp                       \
 				   InterlinearDisplayElementSelectDialog.cpp    \
@@ -57,6 +59,8 @@ SOURCES                         += \
 				   TextDisplayOuterWindow.cpp                   \
 				   TextDisplayReferenceItem.cpp                 \
 				   TextDisplayReferenceWindow.cpp               \
+				   TextDisplaySentenceContainterWindow.cpp      \
+				   TextDisplaySentenceWindow.cpp                \
 				   TextDisplayViewScrollBar.cpp                 \
 				   TextDisplayViewScrollWindow.cpp              \
 				   TextDisplayViewWindow.cpp                    \
@@ -69,11 +73,13 @@ SOURCES                         += \
 
 HEADERS                         += \
 				   BookInfo.h                                   \
+				   BookInfoWord.h                               \
 				   BookNameTable.h                              \
 				   BookNameTableInnerTable.h                    \
 				   BookNameTableItem.h                          \
 				   BookNameTableScrollArea.h                    \
 				   BookNameWindow.h                             \
+                                   ChapterHeaderWindow.h                        \
 				   Formatting.h                                 \
 				   InterlinearChapter.h                         \
 				   InterlinearDisplayElementSelectDialog.h      \
@@ -94,6 +100,8 @@ HEADERS                         += \
 				   TextDisplayOuterWindow.h                     \
 				   TextDisplayReferenceItem.h                   \
 				   TextDisplayReferenceWindow.h                 \
+				   TextDisplaySentenceContainterWindow.h        \
+				   TextDisplaySentenceWindow.h                  \
 				   TextDisplayViewScrollBar.h                   \
 				   TextDisplayViewScrollWindow.h                \
 				   TextDisplayViewWindow.h                      \

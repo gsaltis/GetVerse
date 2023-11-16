@@ -1,11 +1,11 @@
 /*****************************************************************************
- * FILE NAME    : TextDisplayFormattingItem.h
- * DATE         : September 16 2023
+ * FILE NAME    : ChapterHeaderWindow.h
+ * DATE         : November 14 2023
  * PROJECT      : 
  * COPYRIGHT    : Copyright (C) 2023 by Gregory R Saltis
  *****************************************************************************/
-#ifndef _textdisplayformattingitem_h_
-#define _textdisplayformattingitem_h_
+#ifndef _chapterheaderwindow_h_
+#define _chapterheaderwindow_h_
 
 /*****************************************************************************!
  * Global Headers
@@ -17,66 +17,65 @@
 /*****************************************************************************!
  * Local Headers
  *****************************************************************************/
-#include "TextDisplayItem.h"
 
 /*****************************************************************************!
  * Exported Macros
  *****************************************************************************/
+#define CHAPTER_HEADER_WINDOW_HEIGHT    20
 
 /*****************************************************************************!
- * Exported Class : TextDisplayFormattingItem
+ * Exported Class : ChapterHeaderWindow
  *****************************************************************************/
-class TextDisplayFormattingItem : public TextDisplayItem
+class ChapterHeaderWindow : public QWidget
 {
- //! Public Types
- public :
-  enum FormatType {
-    FormatTypeNone          = 0,
-    FormatTypePostVerse,
-    FormatTypePreVerse,
-    FormatTypeMidVerse,
-    FormatTypeWordBreakIndent,
-    FormatTypeSection,
-    FormatTypeWordBreak,
-    FormatTypeWordLower,
-    FormatTypeWordUpper,
-    FormatTypeWordCaptilize,
-    FormatTypeWordHighlight
-  };
+  Q_OBJECT;
 
-  
  //! Constructors
  public :
-  TextDisplayFormattingItem     (int InBook, QString InBookName, int InChapter, int InVerse,
-                                 enum FormatType InFormatting);
+  ChapterHeaderWindow           (QString InText, QWidget* InParent); 
 
  //! Destructor
  public :
-  virtual ~TextDisplayFormattingItem    ();
+  ~ChapterHeaderWindow          ();
 
  //! Public Methods
  public :
-  virtual void                  Draw                    (QPainter* InPainter) override;
-  virtual bool                  Contains                (QPoint InPaint);
-  FormatType                    GetFormattingType       ();
+  void                          SetText                 (QString InText);
   
  //! Public Data
  public :
 
  //! Protected Methods
  protected :
-
+  void                          paintEvent              (QPaintEvent* InEvent);
+  
  //! Protected Data
  protected :
-  QString                       BookName;
-  int                           Formatting;
 
  //! Private Methods
  private :
+  void                          initialize              ();
+  void                          CreateSubWindows        ();
+  void                          InitializeSubWindows    ();
 
  //! Private Data
  private :
+  QString                       text;
+  QString                       fontName;
+  bool                          fontBold;
+  QString                       fontColorName;
+  QString                       backgroundColorName;
   
+ //! Public Slots
+ public slots :
+  void                          SlotTextChanged         (QString InText);
+  
+ //! Public Signals
+ signals :
+
+ //! Public Actions
+ public :
+
 };
 
-#endif /* _textdisplayformattingitem_h_*/
+#endif /* _chapterheaderwindow_h_*/

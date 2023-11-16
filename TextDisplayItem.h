@@ -34,7 +34,7 @@ class TextDisplayItem
 
  //! Destructor
  public :
-  ~TextDisplayItem              ();
+  virtual ~TextDisplayItem      () {}
 
  //! Public Types
   enum DisplayType {

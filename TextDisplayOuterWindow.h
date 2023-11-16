@@ -24,6 +24,7 @@
 #include "TextDisplayViewWindow.h"
 #include "TextDisplayViewScrollWindow.h"
 #include "TextControlBar.h"
+#include "TextDisplaySentenceContainterWindow.h"
 
 /*****************************************************************************!
  * Exported Macros
@@ -71,12 +72,13 @@ class TextDisplayOuterWindow : public QFrame
 
  //! Private Data
  private :
-  SectionHeader*                header;
-  TextDisplayReferenceWindow*   referenceWindow;
-  TextDisplayViewScrollWindow*  viewWindow;
-  TextControlBar*               controlBar;
-  QString                       BookName;
-  int                           BookInfoIndex;
+  SectionHeader*                        header;
+  TextDisplayReferenceWindow*           referenceWindow;
+  TextDisplaySentenceContainterWindow*  sentenceWindow;
+  TextDisplayViewScrollWindow*          viewWindow;
+  TextControlBar*                       controlBar;
+  QString                               BookName;
+  int                                   BookInfoIndex;
   
  //! Public Slots
  public slots :

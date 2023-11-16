@@ -82,6 +82,10 @@ TextDisplayOuterWindow::CreateSubWindows()
 
   viewWindow = new TextDisplayViewScrollWindow();
   viewWindow->setParent(this);
+
+  sentenceWindow = new TextDisplaySentenceContainterWindow();
+  sentenceWindow->setParent(this);
+  sentenceWindow->hide();
   
   controlBar = new TextControlBar();
   controlBar->setParent(this);
@@ -93,10 +97,11 @@ TextDisplayOuterWindow::CreateSubWindows()
 void
 TextDisplayOuterWindow::InitializeSubWindows()
 {
-  header = NULL;
-  referenceWindow = NULL;
-  viewWindow = NULL;
-  controlBar = NULL;
+  header                = NULL;
+  referenceWindow       = NULL;
+  sentenceWindow        = NULL;
+  viewWindow            = NULL;
+  controlBar            = NULL;
 }
 
 /*****************************************************************************!
@@ -125,6 +130,10 @@ TextDisplayOuterWindow::resizeEvent
   int                                   controlBarY;
   int                                   controlBarW;
   int                                   controlBarH;
+  int                                   sentenceWindowX;
+  int                                   sentenceWindowY;
+  int                                   sentenceWindowW;
+  int                                   sentenceWindowH;
   
   size = InEvent->size();
   width = size.width();
@@ -155,6 +164,12 @@ TextDisplayOuterWindow::resizeEvent
   viewWindowH = height - (TEXT_CONTROL_BAR_HEIGHT + SECTION_HEADER_HEIGHT);
 
   //!
+  sentenceWindowX = 0;
+  sentenceWindowY = SECTION_HEADER_HEIGHT + TEXT_CONTROL_BAR_HEIGHT;
+  sentenceWindowW = width;
+  sentenceWindowH = height - (TEXT_CONTROL_BAR_HEIGHT + SECTION_HEADER_HEIGHT);
+  
+  //!
   if ( header ) {
     header->move(headerX, headerY);
     header->resize(headerW, headerH);
@@ -167,6 +182,10 @@ TextDisplayOuterWindow::resizeEvent
   if ( viewWindow ) {
     viewWindow->move(viewWindowX, viewWindowY);
     viewWindow->resize(viewWindowW, viewWindowH);
+  }
+  if ( sentenceWindow ) {
+    sentenceWindow->move(sentenceWindowX, sentenceWindowY);
+    sentenceWindow->resize(sentenceWindowW, sentenceWindowH);
   }
   if ( controlBar ) {
     controlBar->move(controlBarX, controlBarY);
@@ -194,6 +213,7 @@ TextDisplayOuterWindow::SlotBookSelected
   if ( NULL == bookInfo ) {
     return;
   }
+  bookInfo->ReadVerses();
   header->SetText(bookInfo->GetCapitalizedBookName());
   viewWindow->ClearText();
   controlBar->SlotSetChapter(1);
@@ -207,6 +227,16 @@ TextDisplayOuterWindow::SlotBookSelected
 void
 TextDisplayOuterWindow::CreateConnections(void)
 {
+  connect(controlBar,
+          TextControlBar::SignalChapterChanged,
+          sentenceWindow,
+          TextDisplaySentenceContainterWindow::SlotChapterSet);
+
+  connect(this,
+          TextDisplayOuterWindow::SignalBookSelected,
+          sentenceWindow,
+          TextDisplaySentenceContainterWindow::SlotBookSet);
+
   connect(controlBar,
           SIGNAL(SignalSetFormattingType(TextDisplayFormattingItem::FormatType)),
           viewWindow,
@@ -391,6 +421,8 @@ TextDisplayOuterWindow::SlotWordCountChanged
 void
 TextDisplayOuterWindow::SlotSetSentenceMode(void)
 {
+  viewWindow->hide();
+  sentenceWindow->show();
   emit SignalSetSentenceMode();
 }
 
@@ -400,6 +432,8 @@ TextDisplayOuterWindow::SlotSetSentenceMode(void)
 void
 TextDisplayOuterWindow::SlotSetBlockMode(void)
 {
+  viewWindow->show();
+  sentenceWindow->hide();
   emit SignalSetBlockMode();
 }
 
@@ -409,6 +443,8 @@ TextDisplayOuterWindow::SlotSetBlockMode(void)
 void
 TextDisplayOuterWindow::SlotSetInterlinearMode(void)
 {
+  viewWindow->show();
+  sentenceWindow->hide();
   emit SignalSetInterlinearMode();
 }
 
@@ -418,6 +454,8 @@ TextDisplayOuterWindow::SlotSetInterlinearMode(void)
 void
 TextDisplayOuterWindow::SlotSetReferenceMode(void)
 {
+  viewWindow->show();
+  sentenceWindow->hide();
   emit SignalSetReferenceMode();
 }
 
@@ -427,6 +465,8 @@ TextDisplayOuterWindow::SlotSetReferenceMode(void)
 void
 TextDisplayOuterWindow::SlotSetEditMode(void)
 {
+  viewWindow->show();
+  sentenceWindow->hide();
   emit SignalSetEditMode();
 }
 
