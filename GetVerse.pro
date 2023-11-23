@@ -13,7 +13,7 @@ QMAKE_LFLAGS_WINDOWS            += -Wl,--subsystem,console
 
 QMAKE_CXXFLAGS                  += 
 
-QMAKE_LIBS                      = 
+QMAKE_LIBS                      = -lwsock32
 
 TARGET                          = GetVerse
 
@@ -70,6 +70,7 @@ SOURCES                         += \
 				   TextDisplayWordItem.cpp                      \
 				   main.cpp                                     \
 				   sqlite3.c                                    \
+                                   trace.cpp                                    \
 
 HEADERS                         += \
 				   BookInfo.h                                   \
@@ -110,6 +111,7 @@ HEADERS                         += \
 				   TextDisplayWordFormattingItem.h              \
 				   TextDisplayWordItem.h                        \
 				   sqlite3.h                                    \
+                                   trace_winnet.h                               \
 
 FORMS                           += \
 

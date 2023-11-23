@@ -405,8 +405,8 @@ TextControlBar::SlotReferenceButtonPushed(void)
   BlockViewButton->setChecked(false);
   InterlinearButton->setChecked(false);
   SentenceViewButton->setChecked(false);  
-  ChapterSelect->hide();
-  ChapterSelectLabel->hide();
+  ChapterSelect->show();
+  ChapterSelectLabel->show();
   GroupingLabel->show();
   GroupingCountLabel->show();
   WordBreakTypeCombo->hide();

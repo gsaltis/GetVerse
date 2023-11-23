@@ -8,6 +8,7 @@
 /*****************************************************************************!
  * Global Headers
  *****************************************************************************/
+#include <trace_winnet.h>
 #include <QtCore>
 #include <QtGui>
 #include <QWidget>
@@ -20,7 +21,6 @@
  *****************************************************************************/
 #include "TextDisplayViewWindow.h"
 #include "Common.h"
-#include "Trace.h"
 #include "TextDisplayViewWindowItem.h"
 #include "TextDisplayViewWindowReferenceItem.h"
 #include "TextDisplayReferenceItem.h"
@@ -1057,6 +1057,9 @@ TextDisplayViewWindow::ArrangeItemsReference
   do {
     isFirst = true;
     for ( auto item : textItems ) {
+      if ( item->GetChapter() != currentSelectedChapter ) {
+        continue;
+      }
       s = item->GetSize();
       itemWidth = s.width();
       itemHeight = s.height();
@@ -1090,7 +1093,11 @@ TextDisplayViewWindow::PaintReferenceMode
   QRect                                 itemR;
 
   for ( auto item : textItems ) {
+    if ( item->GetChapter() != currentSelectedChapter ) {
+      continue;
+    }
     itemR = QRect(item->GetBoundingRect());
+
     if ( InRect.contains(itemR) ) {
       if ( lastSelectedItem == item ) {
         item->DrawSelected(InPainter);
@@ -2302,6 +2309,7 @@ TextDisplayViewWindow::SlotChapterChanged
 (int InChapter)
 {
   currentSelectedChapter = InChapter;
+  TRACE_FUNCTION_INT(InChapter);
   ArrangeItems();
   repaint();
 }
