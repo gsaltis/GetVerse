@@ -52,7 +52,7 @@ class TextDisplaySentenceContainterWindow : public QWidget
 
  //! Protected Methods
  protected :
-
+  
  //! Protected Data
  protected :
 

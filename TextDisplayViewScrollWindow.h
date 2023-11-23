@@ -96,6 +96,7 @@ class TextDisplayViewScrollWindow : public QScrollArea
   void                          SlotLocationSelected            (QPoint InLocation);
   void                          SlotSetFormattingType           (TextDisplayFormattingItem::FormatType InFormattingType);
   void                          SlotChapterChanged              (int InNewChapter);
+  void                          SlotChapterArrowSelected        (int InNewChapter);
   
  //! Public Signals
  signals :
@@ -121,7 +122,7 @@ class TextDisplayViewScrollWindow : public QScrollArea
   void                          SignalChapterScrolled           (int InCurrentChapter);
   void                          SignalSetFormattingType         (TextDisplayFormattingItem::FormatType InFormattingType);
   void                          SignalChapterChanged            (int InChapter);
-  
+  void                          SignalChapterArrowSelected      (int InChapter);
  //! Public Actions
  public :
 

@@ -17,7 +17,6 @@
  *****************************************************************************/
 #include "BookNameTableInnerTable.h"
 #include "Common.h"
-#include "Trace.h"
 
 /*****************************************************************************!
  * Function : BookNameTableInnerTable

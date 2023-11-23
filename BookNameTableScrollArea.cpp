@@ -16,7 +16,6 @@
  * Local Headers
  *****************************************************************************/
 #include "BookNameTableScrollArea.h"
-#include "Trace.h"
 
 /*****************************************************************************!
  * Function : BookNameTableScrollArea

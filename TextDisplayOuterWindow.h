@@ -99,10 +99,13 @@ class TextDisplayOuterWindow : public QFrame
   void                          SlotChapterScrolled             (int InChapter);
   void                          SlotChapterSelected             (int InChapter);
   void                          SlotSetFormattingType           (TextDisplayFormattingItem::FormatType InFormattingType);
-
+  void                          SlotChapterArrowSelected        (int InNewChapter);
+  void                          SlotSetBookmark         (int InBook, int InChapter, int InVerse);
+  
  //! Public Signals
  signals :
   void                          SignalBookSelected              (BookInfo*);
+  void                          SignalBookIndexSelected         (int InBookIndex);
   void                          SignalHideProgressBar           (void);
   void                          SignalShowProgressBar           (void);
   void                          SignalSetProgressBar            (int InMin, int InMax);
@@ -119,6 +122,8 @@ class TextDisplayOuterWindow : public QFrame
   void                          SignalChapterSelected           (int InCurrentChapter);
   void                          SignalChapterScrolled           (int InCurrentChapter);
   void                          SignalSetFormattingType         (TextDisplayFormattingItem::FormatType InFormattingType);
+  void                          SignalChapterArrowSelected      (int InNewChapter);
+  void                          SignalSetBookmark               (int InBook, int InChapter, int InVerse);
   
  //! Public Actions
  public :

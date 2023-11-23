@@ -21,7 +21,6 @@
 #include "MainWindow.h"
 #include "main.h"
 #include "Formatting.h"
-#include "Trace.h"
 #include "SystemConfig.h"
 #include "BookInfo.h"
 
@@ -48,6 +47,10 @@
 #define SQL_STATEMENT_INSERT_FORMATTING         \
   "INSERT INTO Formatting VALUES(%d, %d, %d, '', %d);\n"
 
+#define MAIN_ORG_NAME                           "White Barn"
+#define MAIN_APP_NAME                           "GetVerse"
+#define MAIN_DOMAIN_NAME                        "www.gsaltis.com"
+
 /*****************************************************************************!
  * Exported Type : VerseRange
  *****************************************************************************/
@@ -62,7 +65,7 @@ typedef struct _VerseRange VerseRange;
 /*****************************************************************************!
  * Local Functions
  *****************************************************************************/
-void
+static void
 MainInitialize
 ();
 
@@ -181,6 +184,10 @@ MainProcessVerseText
 int
 MainInitializeGUI
 (QApplication& InApplication);
+
+void
+InitializeSettings
+();
 
 /*****************************************************************************!
  * Local Data
@@ -337,10 +344,10 @@ MainInitializeGUI
     MainSearchBook = MainGetSearchableBookName(MainBook);
   }
     
-  InApplication.setApplicationName("GetVerse");
+  InApplication.setApplicationName(MAIN_APP_NAME);
   InApplication.setApplicationVersion(VERSION);
-  InApplication.setOrganizationName("Greg Saltis");
-  InApplication.setOrganizationDomain("www.gsaltis.com");
+  InApplication.setOrganizationName(MAIN_ORG_NAME);
+  InApplication.setOrganizationDomain(MAIN_DOMAIN_NAME);
   w = new MainWindow(MainSearchBook ? MainSearchBook->name : QString(""));
 
   size = MainSystemConfig->GetMainWindowSize();
@@ -371,7 +378,7 @@ MainInitialize
   MainVerseRangesCount                  = 0;
   MainFormatInfos                       = FormattingInfoListCreate();
   MainBlockOutputText                   = QString("");
-  
+
   s = getenv(DATABASE_ENV_LOCATION);
   if ( ! s.isEmpty() ) {
     MainDatabaseFilename = s;
@@ -1623,3 +1630,29 @@ MainProcessVerseText
   return strings;
 }
 
+/*****************************************************************************!
+ * Function : InitializeSettings
+ *****************************************************************************/
+void
+InitializeSettings
+()
+{
+  MainSetStartLocation(1, 1, 1);
+}
+  
+/*****************************************************************************!
+ * Function : SetStartLocation
+ *****************************************************************************/
+void
+MainSetStartLocation
+(int InBook, int InChapter, int InVerse)
+{
+  QSettings                             settings(MAIN_ORG_NAME, MAIN_APP_NAME);
+
+  settings.setValue("StartLocation/book", InBook);
+  settings.setValue("StartLocation/chapter", InChapter);
+  settings.setValue("StartLocation/verse", InVerse);
+  settings.setValue("StartLocation/View", "Reference");
+}
+
+  

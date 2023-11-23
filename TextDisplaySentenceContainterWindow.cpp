@@ -16,7 +16,6 @@
  * Local Headers
  *****************************************************************************/
 #include "TextDisplaySentenceContainterWindow.h"
-#include "Trace.h"
 
 /*****************************************************************************!
  * Function : TextDisplaySentenceContainterWindow

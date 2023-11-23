@@ -78,12 +78,15 @@ class TextDisplayViewWindow : public QWidget
   void                          mousePressEvent         (QMouseEvent* InEvent);
   void                          resizeEvent             (QResizeEvent* InEvent);
   void                          mouseMoveEvent          (QMouseEvent* InEvent);
-
+  void                          keyPressEvent           (QKeyEvent* InEvent);
+  void                          enterEvent              (QEnterEvent* InEvent);
+  
  //! Protected Data
  protected :
 
  //! Private Methods
  private :
+  bool                          ReferenceKeyPress               (int InKey, Qt::KeyboardModifiers InModifiers);
   int                           GetInterlinearVerseNumber       (int InBookNumnber, int InChapterNumber, int InVerseNumber);
   InterlinearChapter*           AddInterlinearChapter           (int InBookIndex, int InChapterNumber);
   void                          AddInterlinearVerse             (InterlinearVerse* InVerse);
@@ -199,7 +202,8 @@ class TextDisplayViewWindow : public QWidget
   InterlinearChapter*                                           currentInterlinearChapter;
   InterlinearWord*                                              currentSelectedInterlinearWord;
   int                                                           currentSelectedChapter;
-
+  int                                                           maxChapters;
+  
  //! Public Slots
  public slots :
   void                          SlotBookSelected                (BookInfo* InBookInfo);
@@ -231,7 +235,8 @@ class TextDisplayViewWindow : public QWidget
   void                          SignalSentenceCountChanged      (int InSentenceCount);
   void                          SignalSetMessage                (QString InMessage);
   void                          SignalLocationSelected          (QPoint InLocation);
-
+  void                          SignalChapterArrowSelected      (int InChapter);
+  
  //! Public Actions
  public :
 

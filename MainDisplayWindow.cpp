@@ -8,6 +8,7 @@
 /*****************************************************************************!
  * Global Headers
  *****************************************************************************/
+#include <trace_winnet.h>
 #include <QtCore>
 #include <QtGui>
 #include <QWidget>
@@ -16,6 +17,7 @@
  * Local Headers
  *****************************************************************************/
 #include "MainDisplayWindow.h"
+#include "main.h"
 
 /*****************************************************************************!
  * Function : MainDisplayWindow
@@ -137,6 +139,11 @@ MainDisplayWindow::resizeEvent
 void
 MainDisplayWindow::CreateConnections(void)
 {
+  connect(displayWindow,
+          TextDisplayOuterWindow::SignalSetBookmark,
+          this,
+          MainDisplayWindow::SlotSetBookmark);
+  
   connect(bookNameWindow,
           SIGNAL(SignalBookSelected(int)),
           displayWindow,
@@ -217,4 +224,14 @@ MainDisplayWindow::SlotSetProgressBar
 (int InMin, int InMax)
 {
   emit SignalSetProgressBar(InMin, InMax);
+}
+
+/*****************************************************************************!
+ * Function : SlotSetBookmark
+ *****************************************************************************/
+void
+MainDisplayWindow::SlotSetBookmark
+(int InBook, int InChapter, int InVerse)
+{
+  MainSetStartLocation(InBook, InChapter, InVerse);
 }

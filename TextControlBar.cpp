@@ -8,6 +8,7 @@
 /*****************************************************************************!
  * Global Headers
  *****************************************************************************/
+#include <trace_winnet.h>
 #include <QtCore>
 #include <QtGui>
 #include <QWidget>
@@ -17,7 +18,6 @@
  *****************************************************************************/
 #include "TextControlBar.h"
 #include "TextDisplayFormattingItem.h"
-#include "Trace.h"
 
 /*****************************************************************************!
  * Function : TextControlBar
@@ -143,6 +143,15 @@ TextControlBar::CreateSubWindows()
   AnalyzeButton->setCheckable(true);
   connect(AnalyzeButton, SIGNAL(pressed()), this, SLOT(SlotAnalyzeButtonPushed()));
 
+    //! Create the Bookmark button
+  BookmarkButton = new QPushButton();
+  BookmarkButton->setParent(this);
+  BookmarkButton->setIcon(QIcon(QPixmap(":/Images/BookMark.png")));
+  BookmarkButton->move(x, 0);
+  BookmarkButton->resize(ButtonWidth, ButtonHeight);
+  connect(BookmarkButton, SIGNAL(pressed()), this, SLOT(SlotBookmarkButtonPushed()));
+
+  
   //! Create label
   WordLabel = new QLabel();
   WordLabel->setParent(this);
@@ -604,4 +613,35 @@ TextControlBar::SlotChapterChanged
 (int InNewChapter)
 {
   emit SignalChapterChanged(InNewChapter);
+  currentChapter = InNewChapter;
+}
+
+/*****************************************************************************!
+ * Function : SlotChapterArrowSelected
+ *****************************************************************************/
+void
+TextControlBar::SlotChapterArrowSelected
+(int InNewChapter)
+{
+  ChapterSelect->setValue(InNewChapter);
+  currentChapter = InNewChapter;
+}
+
+/*****************************************************************************!
+ * Function : SlotBookmarkButtonPushed
+ *****************************************************************************/
+void
+TextControlBar::SlotBookmarkButtonPushed(void)
+{
+  emit SignalSetBookmark(currentBook, currentChapter, 1);
+}
+
+/*****************************************************************************!
+ * Function : SlotBookSelected
+ *****************************************************************************/
+void
+TextControlBar::SlotBookSelected
+(int InBookIndex)
+{
+  currentBook = InBookIndex;
 }

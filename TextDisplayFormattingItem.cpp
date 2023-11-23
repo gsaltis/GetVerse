@@ -17,7 +17,6 @@
  * Local Headers
  *****************************************************************************/
 #include "TextDisplayFormattingItem.h"
-#include "Trace.h"
 
 /*****************************************************************************!
  * Function : TextDisplayFormattingItem

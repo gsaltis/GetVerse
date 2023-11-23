@@ -17,7 +17,6 @@
  *****************************************************************************/
 #include "TextDisplayReferenceWindow.h"
 #include "Common.h"
-#include "Trace.h"
 
 /*****************************************************************************!
  * Function : TextDisplayReferenceWindow

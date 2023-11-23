@@ -138,6 +138,7 @@ TextDisplayViewWindow::SlotBookSelected
   emit SignalShowProgressBar();
   bookInfo = InBookInfo;
   verseCount = GetVerseCount();
+  maxChapters = bookInfo->chapters;
   emit SignalVerseCountChanged(verseCount);
   emit SignalSetProgressBar(0, verseCount);
   GetMaxReferenceWidth();
@@ -1904,6 +1905,7 @@ TextDisplayViewWindow::mouseMoveEvent
   QString                               text;
   QPoint                                p = InEvent->position().toPoint();
 
+  setFocus();
   if ( mode == InterlinearMode ) {
     InterlinearModeMouseMove(p);
     return;
@@ -2309,7 +2311,92 @@ TextDisplayViewWindow::SlotChapterChanged
 (int InChapter)
 {
   currentSelectedChapter = InChapter;
-  TRACE_FUNCTION_INT(InChapter);
   ArrangeItems();
   repaint();
+}
+
+/*****************************************************************************!
+ * Function : keyPressEvent
+ *****************************************************************************/
+void
+TextDisplayViewWindow::keyPressEvent
+(QKeyEvent* InEvent)
+{
+  int                                   key;
+  Qt::KeyboardModifiers                 mods;
+  
+  key = InEvent->key();
+  mods = InEvent->modifiers();
+  
+  if ( mode == ReferenceMode ) {
+    if ( ReferenceKeyPress(key, mods) ) {
+      return;
+    }
+  }
+
+  QWidget::keyPressEvent(InEvent);
+}
+
+/*****************************************************************************!
+ * Function : enterEvent
+ *****************************************************************************/
+void
+TextDisplayViewWindow::enterEvent
+(QEnterEvent*)
+{
+  setFocus();
+}
+
+/*****************************************************************************!
+ * Function : ReferenceKeyPress
+ *****************************************************************************/
+bool
+TextDisplayViewWindow::ReferenceKeyPress
+(int InKey, Qt::KeyboardModifiers InModifiers)
+{
+  int                                   newChapter;
+  if ( maxChapters == 0 ) {
+    return false;
+  }
+
+  if ( InKey == Qt::Key_Home && InModifiers == Qt::NoModifier ) {
+    newChapter = 1;
+    SlotChapterChanged(newChapter);
+    emit SignalChapterArrowSelected(newChapter);
+    return true;
+  }
+  
+  if ( InKey == Qt::Key_End && InModifiers == Qt::NoModifier ) {
+    newChapter = maxChapters;
+    SlotChapterChanged(newChapter);
+    emit SignalChapterArrowSelected(newChapter);
+    return true;
+  }
+  
+  if ( InKey == Qt::Key_Left && InModifiers == Qt::NoModifier ) {
+    if ( currentSelectedChapter <= 1 ) {
+      return true;
+    }
+    newChapter = currentSelectedChapter - 1;
+    SlotChapterChanged(newChapter);
+    emit SignalChapterArrowSelected(newChapter);
+    return true;
+  }
+
+  if ( InKey == Qt::Key_Right && InModifiers == Qt::NoModifier ) {
+    if ( currentSelectedChapter >= maxChapters ) {
+      return true;
+    }
+
+    if( currentSelectedChapter >= maxChapters ) {
+      return true;
+    }
+
+    newChapter = currentSelectedChapter+1;
+    SlotChapterChanged(newChapter);
+    emit SignalChapterArrowSelected(newChapter);
+    return true;
+  }
+
+  return false;
 }

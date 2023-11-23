@@ -3,6 +3,7 @@
     <file>Images/Form.png</file>
     <file>Images/List.png</file>
     <file>Images/Pen.png</file>
-	<file>Images/Book.png</file>
+    <file>Images/Book.png</file>
+    <file>Images/BookMark.png</file>
 </qresource>
 </RCC>

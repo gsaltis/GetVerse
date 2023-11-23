@@ -123,6 +123,11 @@ TextDisplayViewScrollWindow::SlotBookSelected
 void
 TextDisplayViewScrollWindow::CreateConnections(void)
 {
+  connect(viewWindow,
+          TextDisplayViewWindow::SignalChapterArrowSelected,
+          this,
+          TextDisplayViewScrollWindow::SlotChapterArrowSelected);
+          
   connect(this,
           SIGNAL(SignalSetFormattingType(TextDisplayFormattingItem::FormatType)),
           viewWindow,
@@ -411,4 +416,14 @@ TextDisplayViewScrollWindow::SlotChapterChanged
 (int InNewChapter)
 {
   emit SignalChapterChanged(InNewChapter); 
+}
+
+/*****************************************************************************!
+ * Function : SlotChapterArrowSelected
+ *****************************************************************************/
+void
+TextDisplayViewScrollWindow::SlotChapterArrowSelected
+(int InNewChapter)
+{
+  emit SignalChapterArrowSelected(InNewChapter);
 }

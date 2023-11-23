@@ -15,7 +15,6 @@
  * Lodal Headers
  *****************************************************************************/
 #include "TextDisplaySentenceWindow.h"
-#include "Trace.h"
 #include "Common.h"
 
 /*****************************************************************************!
@@ -51,6 +50,7 @@ TextDisplaySentenceWindow::Initialize
   setPalette(pal);
   setAutoFillBackground(true);
   displayFont = MainSystemConfig->GetWordItemFont();
+  maxChapters = 0;
 }
 
 /*****************************************************************************!
@@ -146,6 +146,8 @@ TextDisplaySentenceWindow::CreateDisplayItems
   if ( NULL == bookInfo ) {
     return;
   }
+
+  maxChapters = bookInfo->chapters;
   bookInfo->GetChapterWordIndices(currentChapter, startIndex, endIndex);
   for ( i = startIndex ; i <= endIndex ; i++ ) {
     word = bookInfo->GetWordByIndex(i);
@@ -236,3 +238,71 @@ TextDisplaySentenceWindow::ArrangeItems
   return windowHeight;
 }
 
+/*****************************************************************************!
+ * Function : keyPressEvent
+ *****************************************************************************/
+void
+TextDisplaySentenceWindow::keyPressEvent
+(QKeyEvent* InEvent)
+{
+  int                                   key;
+  Qt::KeyboardModifiers                 mods;
+  
+  key = InEvent->key();
+  mods = InEvent->modifiers();
+  
+  if ( KeyPress(key, mods) ) {
+    return;
+  }
+
+  QWidget::keyPressEvent(InEvent);
+}
+
+/*****************************************************************************!
+ * Function : enterEvent
+ *****************************************************************************/
+void
+TextDisplaySentenceWindow::enterEvent
+(QEnterEvent* )
+{
+  setFocus();
+}
+
+/*****************************************************************************!
+ * Function : KeyPress
+ *****************************************************************************/
+bool
+TextDisplaySentenceWindow::KeyPress
+(int InKey, Qt::KeyboardModifiers)
+{
+  int                                   newChapter;
+  if ( maxChapters == 0 ) {
+    return false;
+  }
+  
+  if ( InKey == Qt::Key_Left ) {
+    if ( currentChapter <= 1 ) {
+      return true;
+    }
+    newChapter = currentChapter - 1;
+    SlotChapterChanged(newChapter);
+    emit SignalChapterArrowSelected(newChapter);
+    return true;
+  }
+
+  if ( InKey == Qt::Key_Right ) {
+    if ( currentChapter >= maxChapters ) {
+      return true;
+    }
+
+    if( currentChapter >= maxChapters ) {
+      return true;
+    }
+    newChapter = currentChapter+1;
+    SlotChapterChanged(newChapter);
+    emit SignalChapterArrowSelected(newChapter);
+    return true;
+  }
+
+  return false;
+}

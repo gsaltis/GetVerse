@@ -219,6 +219,7 @@ TextDisplayOuterWindow::SlotBookSelected
   controlBar->SlotSetChapter(1);
   controlBar->SlotSetChapterSelectMax(bookInfo->chapters);
   emit SignalBookSelected(bookInfo);
+  emit SignalBookIndexSelected(InBookIndex);
 }
 
 /*****************************************************************************!
@@ -227,6 +228,26 @@ TextDisplayOuterWindow::SlotBookSelected
 void
 TextDisplayOuterWindow::CreateConnections(void)
 {
+  connect(controlBar,
+          TextControlBar::SignalSetBookmark,
+          this,
+          TextDisplayOuterWindow::SlotSetBookmark);
+  
+  connect(viewWindow,
+          TextDisplayViewScrollWindow::SignalChapterArrowSelected,
+          this,
+          TextDisplayOuterWindow::SlotChapterArrowSelected);
+
+  connect(this,
+          TextDisplayOuterWindow::SignalBookIndexSelected,
+          controlBar,
+          TextControlBar::SlotBookSelected);
+  
+  connect(this,
+          TextDisplayOuterWindow::SignalChapterArrowSelected,
+          controlBar,
+          TextControlBar::SlotChapterArrowSelected);
+  
   connect(controlBar,
           TextControlBar::SignalChapterChanged,
           sentenceWindow,
@@ -543,4 +564,24 @@ TextDisplayOuterWindow::SlotSetFormattingType
 (TextDisplayFormattingItem::FormatType InFormattingType)
 {
   emit SignalSetFormattingType(InFormattingType);
+}
+
+/*****************************************************************************!
+ * Function : SlotChapterArrowSelected
+ *****************************************************************************/
+void
+TextDisplayOuterWindow::SlotChapterArrowSelected
+(int InNewChapter)
+{
+  emit SignalChapterArrowSelected(InNewChapter);
+}
+
+/*****************************************************************************!
+ * Function : SlotSetBookmark
+ *****************************************************************************/
+void
+TextDisplayOuterWindow::SlotSetBookmark
+(int InBook, int InChapter, int InVerse)
+{
+  emit SignalSetBookmark(InBook, InChapter, InVerse);
 }

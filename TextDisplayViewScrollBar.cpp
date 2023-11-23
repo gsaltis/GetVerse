@@ -16,7 +16,6 @@
  * Local Headers
  *****************************************************************************/
 #include "TextDisplayViewScrollBar.h"
-#include "Trace.h"
 
 /*****************************************************************************!
  * Function : TextDisplayViewScrollBar
