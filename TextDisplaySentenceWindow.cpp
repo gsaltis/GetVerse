@@ -7,6 +7,7 @@
 /*****************************************************************************!
  * Global Headers
  *****************************************************************************/
+#include <trace_winnet.h>
 #include <QtCore>
 #include <QtGui>
 #include <QWidget>
@@ -60,6 +61,8 @@ void
 TextDisplaySentenceWindow::resizeEvent
 (QResizeEvent* )
 {
+  ArrangeItems();
+  repaint();
 }
 
 /*****************************************************************************!
@@ -198,12 +201,13 @@ TextDisplaySentenceWindow::ArrangeItems
   int                                   i;
   int                                   n;
   TextDisplayWordItem*                  item;
+  int                                   sentenceCount;
   
   x             = leftMargin;
   y             = topMargin;
   windowHeight  = 0;
   windowWidth   = size().width() - (leftMargin + rightMargin);
-  
+  sentenceCount = 0;
   n = displayItems.size();
   for ( i = 0 ; i < n ; i++ ) {
     item = displayItems[i];
@@ -229,12 +233,15 @@ TextDisplaySentenceWindow::ArrangeItems
       ending = itemText.sliced(k, 1);
     }
     if ( ending == "." || ending == "?" || ending == "!" ) {
+      sentenceCount++;
       y += itemHeight + sentenceInterLineSkip;
       x = leftMargin;
       windowHeight = y + itemHeight;
     }
   }
   windowHeight += bottomMargin;
+  TRACE_FUNCTION_INT(sentenceCount);
+  emit SignalSentenceCountChanged(sentenceCount);
   return windowHeight;
 }
 

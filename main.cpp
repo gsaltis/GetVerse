@@ -1656,3 +1656,23 @@ MainSetStartLocation
 }
 
   
+/*****************************************************************************!
+ * Function : MainGetStartLocation
+ *****************************************************************************/
+void
+MainGetStartLocation
+(int &InBook, int &InChapter, int &InVerse)
+{
+  int                                   book;
+  int                                   chapter;
+  int                                   verse;
+  
+  QSettings                             settings(MAIN_ORG_NAME, MAIN_APP_NAME);
+  book = settings.value("StartLocation/book", 1).toInt();
+  chapter = settings.value("StartLocation/chapter", 1).toInt();
+  verse = settings.value("StartLocation/verse", 1).toInt();
+
+  InBook = book;
+  InChapter = chapter;
+  InVerse = verse;
+}

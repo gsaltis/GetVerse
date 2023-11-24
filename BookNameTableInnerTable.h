@@ -63,6 +63,7 @@ class BookNameTableInnerTable : public QWidget
   void                          InitializeSubWindows    ();
   void                          resizeEvent             (QResizeEvent* InEvent);
   void                          Populate                (void);
+  BookNameTableItem*            FindBookItemByBookNumber(int InBookNumber);
 
  //! Private Data
  private :
@@ -73,10 +74,12 @@ class BookNameTableInnerTable : public QWidget
  //! Public Slots
  public slots :
   void                          SlotBookSelected        (int InBookIndex);
+  void                          SlotMoveToBookChapter   (int InBook, int InChapter, int InVerse);
 
  //! Public Signals
  signals :
   void                          SignalBookSelected      (int InBookIndex);
+  void                          SignalMoveToBookChapter (int InBook, int InChapter, int InVerse);
 
  //! Public Actions
  public :

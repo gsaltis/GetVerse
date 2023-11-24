@@ -73,10 +73,12 @@ class BookNameWindow : public QFrame
  //! Public Slots
  public slots :
   void                          SlotBookSelected        (int InBookIndex);
+  void                          SlotMoveToBookChapter   (int InBook, int InChapter, int InVerse);
 
  //! Public Signals
  signals :
   void                          SignalBookSelected      (int InBookIndex);
+  void                          SignalMoveToBookChapter (int InBook, int InChapter, int InVerse);
 
  //! Public Actions
  public :

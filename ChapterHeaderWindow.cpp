@@ -139,3 +139,16 @@ ChapterHeaderWindow::SlotTextChanged
 {
   SetText(InText);
 }
+
+/*****************************************************************************!
+ * Function : SlotChapterChanged
+ *****************************************************************************/
+void
+ChapterHeaderWindow::SlotChapterChanged
+(int InChapter)
+{
+  QString                               s;
+
+  s = QString("Chapter %1").arg(InChapter);
+  SetText(s);
+}

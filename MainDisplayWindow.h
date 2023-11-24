@@ -81,6 +81,7 @@ class MainDisplayWindow : public QWidget
   void                          SignalShowProgressBar   (void);
   void                          SignalSetProgressBar    (int InMin, int InMax);
   void                          SignalUpdateProgressBar (int InValue);
+  void                          SignalMoveToBookChapter (int InBook, int InChapter, int InVerse);
 
  //! Public Actions
  public :

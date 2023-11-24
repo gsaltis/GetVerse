@@ -8,6 +8,7 @@
 /*****************************************************************************!
  * Global Headers
  *****************************************************************************/
+#include <trace_winnet.h>
 #include <QtCore>
 #include <QtGui>
 #include <QWidget>
@@ -345,6 +346,7 @@ void
 TextDisplayViewScrollWindow::SlotSentenceCountChanged
 (int InSentenceCount)
 {
+  TRACE_FUNCTION_INT(InSentenceCount);
   emit SignalSentenceCountChanged(InSentenceCount);
 }
 

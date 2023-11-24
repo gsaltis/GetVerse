@@ -50,9 +50,16 @@ MainDisplayWindow::~MainDisplayWindow
 void
 MainDisplayWindow::Initialize()
 {
+  int                                   book;
+  int                                   chapter;
+  int                                   verse;
+  
   InitializeSubWindows();  
   CreateSubWindows();
   CreateConnections();
+  MainGetStartLocation(book, chapter, verse);
+  emit SignalMoveToBookChapter(book, chapter, verse);
+  displayWindow->SlotChapterSelected(chapter);
 }
 
 /*****************************************************************************!
@@ -139,6 +146,11 @@ MainDisplayWindow::resizeEvent
 void
 MainDisplayWindow::CreateConnections(void)
 {
+  connect(this,
+          MainDisplayWindow::SignalMoveToBookChapter,
+          bookNameWindow,
+          BookNameWindow::SlotMoveToBookChapter);
+  
   connect(displayWindow,
           TextDisplayOuterWindow::SignalSetBookmark,
           this,

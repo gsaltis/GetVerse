@@ -74,13 +74,16 @@ class TextDisplaySentenceContainterWindow : public QWidget
  public slots :
   void                          SlotBookSet             (BookInfo* InBookInfo);
   void                          SlotChapterSet          (int InChapter);
+  void                          SlotSentenceCountChanged (int InSentencCount);
 
  //! Public Signals
  signals :
   void                          SignalBookSet           (BookInfo* InBookInfo);
   void                          SignalChapterSet        (int InChapter);
   void                          SignalChapterTextChanged(QString InChapterText);
-
+  void                          SignalChapterArrowSelected (int InChapter);
+  void                          SignalSentenceCountChanged      (int InSentenceCount);
+  
  //! Public Actions
  public :
 

@@ -8,6 +8,7 @@
 /*****************************************************************************!
  * Global Headers
  *****************************************************************************/
+#include <trace_winnet.h>
 #include <QtCore>
 #include <QtGui>
 #include <QWidget>
@@ -232,6 +233,11 @@ TextDisplayOuterWindow::CreateConnections(void)
           TextControlBar::SignalSetBookmark,
           this,
           TextDisplayOuterWindow::SlotSetBookmark);
+
+  connect(sentenceWindow,
+          TextDisplaySentenceContainterWindow::SignalChapterArrowSelected,
+          this,
+          TextDisplayOuterWindow::SlotChapterArrowSelected);
   
   connect(viewWindow,
           TextDisplayViewScrollWindow::SignalChapterArrowSelected,
@@ -329,11 +335,19 @@ TextDisplayOuterWindow::CreateConnections(void)
           SIGNAL(SignalVerseCountChanged(int)),
           controlBar,
           SLOT(SlotVerseCountChanged(int)));
-  
+
+#if 0
   connect(viewWindow,
           SIGNAL(SignalSentenceCountChanged(int)),
           this,
           SLOT(SlotSentenceCountChanged(int)));
+#endif
+  
+  connect(sentenceWindow,
+          TextDisplaySentenceContainterWindow::SignalSentenceCountChanged,
+          this,
+          TextDisplayOuterWindow::SlotSentenceCountChanged);
+  
   connect(this,
           SIGNAL(SignalSentenceCountChanged(int)),
           controlBar,
@@ -508,6 +522,7 @@ void
 TextDisplayOuterWindow::SlotSentenceCountChanged
 (int InSentenceCount)
 {
+  TRACE_FUNCTION_INT(InSentenceCount);
   emit SignalSentenceCountChanged(InSentenceCount);
 }
 

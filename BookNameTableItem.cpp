@@ -247,3 +247,12 @@ BookNameTableItem::SetSelected
   bookName->setFont(font);
 }
 
+/*****************************************************************************!
+ * Function : GetBookNumber
+ *****************************************************************************/
+int
+BookNameTableItem::GetBookNumber
+()
+{
+  return bookNumber;
+}

@@ -8,6 +8,7 @@
 /*****************************************************************************!
  * Global Headers
  *****************************************************************************/
+#include <trace_winnet.h>
 #include <QtCore>
 #include <QtGui>
 #include <QWidget>
@@ -154,3 +155,29 @@ BookNameTableInnerTable::SlotBookSelected
   emit SignalBookSelected(InBookIndex);
 }
 
+/*****************************************************************************!
+ * Function : SlotMoveToBookChapter
+ *****************************************************************************/
+void
+BookNameTableInnerTable::SlotMoveToBookChapter
+(int InBook, int InChapter, int InVerse)
+{
+  (void)InChapter;
+  (void)InVerse;
+  SlotBookSelected(InBook);
+}
+
+/*****************************************************************************!
+ * Function : FindBookItemByBookNumber
+ *****************************************************************************/
+BookNameTableItem*
+BookNameTableInnerTable::FindBookItemByBookNumber
+(int InBookNumber)
+{
+  for ( auto i : items ) {
+    if ( i->GetBookNumber() == InBookNumber ) {
+      return i;
+    }
+  }
+  return NULL;
+}

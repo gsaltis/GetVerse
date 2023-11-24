@@ -1,12 +1,12 @@
 {
   "MainWindow" : {
     "Location" : {
-      "x" : 10,
-      "y" : 10
+      "x" : 1920,
+      "y" : 0
     },
     "Size" : {
       "width" : 1900,
-      "height" : 940
+      "height" : 980
     }
   },
   

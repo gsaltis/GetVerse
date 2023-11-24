@@ -139,7 +139,9 @@ TextDisplayViewWindow::SlotBookSelected
   bookInfo = InBookInfo;
   verseCount = GetVerseCount();
   maxChapters = bookInfo->chapters;
-  emit SignalVerseCountChanged(verseCount);
+  if ( mode == ReferenceMode ) {
+    emit SignalVerseCountChanged(verseCount);
+  }
   emit SignalSetProgressBar(0, verseCount);
   GetMaxReferenceWidth();
   SetBook();
@@ -198,8 +200,10 @@ TextDisplayViewWindow::ArrangeItems
       break;
     }
     case SentenceMode : {
+#if 0
       height = ArrangeItemsSentence(x, y, windowWidth);
       emit SignalSentenceCountChanged(tmpSentenceCount);
+#endif      
       break;
     }
   }
@@ -213,7 +217,7 @@ TextDisplayViewWindow::ArrangeItems
 int
 TextDisplayViewWindow::ArrangeItemsSentence
 (int InX, int InY, int InWindowWidth)
-{
+{  
   QString                               ending;
   int                                   itemHeight;
   QString                               itemText;
@@ -227,6 +231,7 @@ TextDisplayViewWindow::ArrangeItemsSentence
   int                                   n;
   TextDisplayItem*                      item;
 
+  TRACE_FUNCTION_START();
   x             = InX ;
   y             = InY + 30;
   windowHeight  = 0;
@@ -266,6 +271,7 @@ TextDisplayViewWindow::ArrangeItemsSentence
     }
   }
   windowHeight += bottomMargin;
+  TRACE_FUNCTION_END();
   return windowHeight;
 }
 

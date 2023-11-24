@@ -24,6 +24,10 @@ void
 MainSetStartLocation
 (int InBook, int InChapter, int InVerse);
 
+void
+MainGetStartLocation
+(int &InBook, int &InChapter, int &InVerse);
+
 /*****************************************************************************!
  * Exported Data
  *****************************************************************************/

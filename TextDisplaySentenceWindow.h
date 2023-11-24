@@ -91,8 +91,9 @@ class TextDisplaySentenceWindow : public QWidget
   
  //! Public Signals
  signals :
-
+  void                          SignalSentenceCountChanged      (int InSentenceCount);
   void                          SignalChapterArrowSelected      (int InChapter);
+  
  //! Public Actions
  public :
 

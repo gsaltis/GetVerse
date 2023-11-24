@@ -69,6 +69,7 @@ class ChapterHeaderWindow : public QWidget
  //! Public Slots
  public slots :
   void                          SlotTextChanged         (QString InText);
+  void                          SlotChapterChanged      (int InChapter);
   
  //! Public Signals
  signals :

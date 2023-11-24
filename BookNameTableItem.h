@@ -47,6 +47,7 @@ class BookNameTableItem : public QWidget
  public :
   QString                       GetName                 (void);
   void                          SetName                 (QString InName);
+  int                           GetBookNumber           ();
   int                           GetIndex                ();
   void                          Select                  ();
   void                          DeSelect                ();

@@ -8,6 +8,7 @@
 /*****************************************************************************!
  * Global Headers
  *****************************************************************************/
+#include <trace_winnet.h>
 #include <QtCore>
 #include <QtGui>
 #include <QWidget>
@@ -139,6 +140,7 @@ TextDisplaySentenceContainterWindow::SlotChapterSet
   text = QString("Chapter %1").arg(InChapter);
   emit SignalChapterTextChanged(text);
   emit SignalChapterSet(InChapter);
+  emit SignalChapterArrowSelected(InChapter);
 }
 
 /*****************************************************************************!
@@ -147,6 +149,11 @@ TextDisplaySentenceContainterWindow::SlotChapterSet
 void
 TextDisplaySentenceContainterWindow::CreateConnections(void)
 {
+  connect(sentenceWindow,
+          TextDisplaySentenceWindow::SignalSentenceCountChanged,
+          this,
+          TextDisplaySentenceContainterWindow::SlotSentenceCountChanged);
+  
   connect(this,
           TextDisplaySentenceContainterWindow::SignalChapterTextChanged,
           headerWindow,
@@ -161,5 +168,20 @@ TextDisplaySentenceContainterWindow::CreateConnections(void)
           TextDisplaySentenceContainterWindow::SignalChapterSet,
           sentenceWindow,
           TextDisplaySentenceWindow::SlotChapterChanged);
+
+  connect(sentenceWindow,
+          TextDisplaySentenceWindow::SignalChapterArrowSelected,
+          this,
+          TextDisplaySentenceContainterWindow::SlotChapterSet);
 }
 
+/*****************************************************************************!
+ * Function : SlotSentenceCountChanged
+ *****************************************************************************/
+void
+TextDisplaySentenceContainterWindow::SlotSentenceCountChanged
+(int InSentenceCount)
+{
+  TRACE_FUNCTION_INT(InSentenceCount);
+  emit SignalSentenceCountChanged(InSentenceCount);
+}

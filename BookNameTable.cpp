@@ -8,6 +8,7 @@
 /*****************************************************************************!
  * Global Headers
  *****************************************************************************/
+#include <trace_winnet.h>
 #include <QtCore>
 #include <QtGui>
 #include <QWidget>
@@ -113,4 +114,18 @@ BookNameTable::CreateConnections(void)
           SIGNAL(SignalBookSelected(int)),
           this,
           SLOT(SlotBookSelected(int)));
+  connect(this,
+          BookNameTable::SignalMoveToBookChapter,
+          scrollArea,
+          BookNameTableScrollArea::SlotMoveToBookChapter);
+}
+
+/*****************************************************************************!
+ * Function : SlotMoveToBookChapter
+ *****************************************************************************/
+void
+BookNameTable::SlotMoveToBookChapter
+(int InBook, int InChapter, int InVerse)
+{
+  emit SignalMoveToBookChapter(InBook, InChapter, InVerse);
 }
