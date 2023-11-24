@@ -20,7 +20,7 @@
 /*****************************************************************************!
  * Static Elements
  *****************************************************************************/
-QFont 	InterlinearWord::contextualFormFont      = QFont("Times New Roman", 30, QFont::Bold);
+QFont 	InterlinearWord::contextualFormFont      = QFont("Times New Roman", 20, QFont::Bold);
 QColor  InterlinearWord::contextualFormColor     = QColor("#800000");
 bool    InterlinearWord::contextualFormDisplay   = true;
 
