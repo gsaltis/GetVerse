@@ -370,242 +370,6 @@ TextDisplayViewWindow::SetBook
 }
 
 /*****************************************************************************!
- * Function : AddInterlinearChapter
- *****************************************************************************/
-InterlinearChapter*
-TextDisplayViewWindow::AddInterlinearChapter
-(int InBookIndex, int InChapterNumber)
-{
-  QString                               query;
-  int                                   n;
-  InterlinearChapter*                   chapter;
-  ThisChapter                           thisChapter;
-
-  chapter = new InterlinearChapter(InBookIndex, InChapterNumber);
-  thisChapter.thisPointer = this;
-  thisChapter.chapter = chapter;
-
-  query = QString("SELECT * FROM VERSE WHERE BOOK_NUMBER is %1 and CHAPTER_NUMBER IS %2;").
-    arg(InBookIndex).arg(InChapterNumber);
-  
-  n = sqlite3_exec(MainInterlinearDatabase, query.toStdString().c_str(), AddInterlinearChapterCB, &thisChapter, NULL);
-  if ( n != SQLITE_OK ) {
-    fprintf(stderr, "%s\n : sqlite3_exec()\n%s\n%s\n",
-            __FUNCTION__, query.toStdString().c_str(),
-            sqlite3_errstr(n));
-  }
-  return chapter;
-}
-
-/*****************************************************************************!
- * Function : AddInterlinearChapterCB
- *****************************************************************************/
-int
-TextDisplayViewWindow::AddInterlinearChapterCB
-(void* InPointer, int InColumnCount, char** InColumnValues, char** InColumnNames)
-{
-  int                                   i;
-  int                                   id;
-  QString                               columnName;
-  QString                               columnValue;
-  InterlinearChapter*                   chapter;
-  InterlinearVerse*                     verse;
-  int                                   verseNumber;
-  TextDisplayViewWindow*                thisPointer;
-  ThisChapter*                          thisChapter;
-  
-  thisChapter   = (ThisChapter*)InPointer;
-  thisPointer   = thisChapter->thisPointer;
-  chapter       = thisChapter->chapter;
-  verseNumber   = 0;
-  id            = 0;
-  
-  for (i = 0; i < InColumnCount; i++) {
-    columnName = InColumnNames[i];
-    columnValue = InColumnValues[i];
-    if ( columnName == "ID" ) {
-      id = columnValue.toInt();
-      continue;
-    }
-
-    if ( columnName == "VERSE_NUMBER" ) {
-      verseNumber = columnValue.toInt();
-      continue;
-    }
-  }
-  verse = new InterlinearVerse(chapter->GetBookIndex(), chapter->GetChapterNumber(), verseNumber, id);
-  chapter->AddVerse(verse);
-  thisPointer->AddInterlinearVerse(verse);
-  return 0;
-}
-
-/*****************************************************************************!
- * Function: AddInterlinearVerse
- *****************************************************************************/
-void
-TextDisplayViewWindow::AddInterlinearVerse
-(InterlinearVerse* InVerse)
-{
-  QString                               query;
-  int                                   n;
-
-  query = QString("SELECT * FROM INTERLINEAR_WORD WHERE VERSE_ID is %1 ORDER BY ID;").arg(InVerse->GetVerseID());
-  n = sqlite3_exec(MainInterlinearDatabase, query.toStdString().c_str(), AddInterlinearVerseCB, InVerse, NULL);
-  if ( n != SQLITE_OK ) {
-    fprintf(stderr, "%s\n : sqlite3_exec()\n%s\n%s\n",
-            __FUNCTION__, query.toStdString().c_str(),
-            sqlite3_errstr(n));
-  }
-}
-
-/*****************************************************************************!
- * Function : AddInterlinearVerseCB
- *****************************************************************************/
-int
-TextDisplayViewWindow::AddInterlinearVerseCB
-(void* InPointer, int InColumnCount, char** InColumnValues, char** InColumnNames)
-{
-  QString                               columnName;
-  QString                               columnValue;
-  int                                   verseID;
-  QString                               contextualForm ;
-  QString                               transliteratedContextualForm;
-  QString                               morphologyID;
-  QString                               strongsWordID;
-  QString                               english;
-  InterlinearVerse*                     verse;
-  InterlinearWord*                      word;
-  
-  verse  = (InterlinearVerse*)InPointer;
-  verseID = 0;
-  for (int i = 0 ; i < InColumnCount; i++) {
-
-    columnName = InColumnNames[i];
-    columnValue = InColumnValues[i];
-
-    if ( columnName == "VERSE_ID" ) {
-      verseID = columnValue.toInt();
-      continue;
-    }
-    
-    if ( columnName == "CONTEXTUAL_FORM" ) {
-      contextualForm = columnValue;
-      continue;
-    }
-    
-    if ( columnName == "TRANSLITERATED_CONTEXTUAL_FORM" ) {
-      transliteratedContextualForm = columnValue;
-      continue;
-    }
-    
-    if ( columnName == "MORPHOLOGY_ID" ) {
-      morphologyID = columnValue;
-      continue;
-    }
-    
-    if ( columnName == "STRONGS_WORD_ID" ) {
-      strongsWordID = columnValue;
-      continue;
-    }
-    
-    if ( columnName == "ENGLISH" ) {
-      english = columnValue;
-      continue;
-    }
-  }
-
-  word = new InterlinearWord(verse->GetBookIndex(), verse->GetChapterNumber(), verse->GetVerseNumber(), verseID);
-  word->SetContextualForm(contextualForm);
-  word->SetTransliteratedContextualForm(transliteratedContextualForm);
-  word->SetMorphologyID(morphologyID);
-  word->SetStrongsWordID(strongsWordID);
-  word->SetEnglish(english);
-
-  verse->AddWord(word);
-  return 0;
-}
-
-/*****************************************************************************!
- * Function : GetInterlinearVerse
- *****************************************************************************/
-InterlinearVerse*
-TextDisplayViewWindow::GetInterlinearVerse
-(int InID)
-{
-  (void)InID;
-#if 0  
-  QString                               query;
-  int                                   n;
-  InterlinearVerse*                     verse;
-
-  verse = new InterlinearVerse();
-  query = QString("SELECT * from INTERLINEAR_WORD WHERE VERSE_ID is %1 ORDER BY ID;\n").arg(InID);
-  n = sqlite3_exec(MainInterlinearDatabase, query.toStdString().c_str(), GetInterlinearVerseCB, verse, NULL);
-  if ( n != SQLITE_OK ) {
-    fprintf(stderr, "%s : sqlite3_exec()\n%s\n%s\n",
-            __FUNCTION__, query.toStdString().c_str(),
-            sqlite3_errstr(n));
-    return NULL;
-  }
-
-  return verse;
-#endif
-  return NULL;
-}
-
-/*****************************************************************************!
- * Function : GetInterlinearVerseNumber
- *****************************************************************************/
-int
-TextDisplayViewWindow::GetInterlinearVerseNumber
-(int InBookNumber, int InChapterNumber, int InVerseNumber)
-{
-  QString                               query;
-  int                                   n;
-  sqlite3_stmt*                         sqlstmt;
-  int                                   retryCount;
-  int                                   verseID;
-  int                                   len;
-  
-  query = QString("SELECT ID FROM VERSE WHERE BOOK_NUMBER IS %1 AND CHAPTER_NUMBER IS %2 AND VERSE_NUMBER IS %3;")
-    .arg(InBookNumber)
-    .arg(InChapterNumber)
-    .arg(InVerseNumber);
-  len = query.length();
-  
-  n = sqlite3_prepare_v2(MainInterlinearDatabase, query.toStdString().c_str(), len, &sqlstmt, NULL);
-  if ( n != SQLITE_OK ) {
-    fprintf(stderr, "%s sqlite3_prepare_v2()\n%s\n%s\n",
-            __FUNCTION__,
-            query.toStdString().c_str(),
-            sqlite3_errstr(n));
-    return 0;
-  }
-  retryCount = 0;
-  verseID = 0;
-  do {
-    n = sqlite3_step(sqlstmt);
-    if ( SQLITE_BUSY == n ) {
-      QThread::msleep(30);
-      retryCount++;
-      if ( retryCount > 10 ) {
-        break;
-      }
-      continue;
-    }
-    if ( SQLITE_DONE == n ) {
-      break;
-    }
-
-    if ( SQLITE_ROW == n ) {
-      verseID = sqlite3_column_int(sqlstmt, 0);
-    }
-  } while (true);
-  sqlite3_finalize(sqlstmt);
-  return verseID;
-}
-
-/*****************************************************************************!
  * Function : SetBookCB
  *****************************************************************************/
 int
@@ -829,18 +593,6 @@ void
 TextDisplayViewWindow::SlotSetBlockMode(void)
 {
   mode = BlockMode;
-  ArrangeItems();
-  repaint();
-}
-
-/*****************************************************************************!
- * Function : SlotSetInterlinearMode
- *****************************************************************************/
-void
-TextDisplayViewWindow::SlotSetInterlinearMode(void)
-{
-  currentSelectedInterlinearWord = NULL;
-  mode = InterlinearMode;
   ArrangeItems();
   repaint();
 }
@@ -1281,58 +1033,6 @@ TextDisplayViewWindow::PaintSentenceMode
 }
 
 /*****************************************************************************!
- * Function : ArrangeItemsInterlinear
- *****************************************************************************/
-int
-TextDisplayViewWindow::ArrangeItemsInterlinear
-(int InY, int InWindowWidth)
-{
-  int                                   i;
-  int                                   n;
-  int                                   x;
-  int                                   y;
-  int                                   m;
-  int                                   j;
-  InterlinearVerse*                     verse;
-  InterlinearWord*                      word;
-  QSize                                 wordSize;
-  QString                               contextualForm;
-  QString                               english;
-  QSize                                 ws;
-  int                                   wordHeight;
-
-  if ( NULL == currentInterlinearChapter ) {
-    return 0;
-  }
-  n = currentInterlinearChapter->GetVerseCount();
-  y = InY;
-  for ( i = 0 ; i < n ; i++ ) {
-    verse = currentInterlinearChapter->GetVerseByIndex(i);
-    x = InWindowWidth;
-    m = verse->GetWordCount();
-    wordHeight = 0;
-    for ( j = 0 ; j < m ; j++ ) {
-      word = verse->GetWordByIndex(j);
-      wordSize = word->GetSize();
-      if ( x - wordSize.width() < rightMargin ) {
-        y += wordHeight;
-        x = InWindowWidth;
-      } 
-      x -= wordSize.width();
-      x -= InterInterlinearWordSkip;
-      word->SetX(x);
-      word->SetY(y);
-      wordHeight = wordSize.height();
-    }
-    y += wordHeight + InterLineSkip * 2;
-    x = InWindowWidth;
-
-  }
-  y += bottomMargin;
-  return y;
-}
-
-/*****************************************************************************!
  * Function : ArrangeItemsBlock
  *****************************************************************************/
 int
@@ -1511,56 +1211,6 @@ TextDisplayViewWindow::ArrangeItemsBlock
 }
 
 /*****************************************************************************!
- * Function : PaintInterlinearMode
- *****************************************************************************/
-void
-TextDisplayViewWindow::PaintInterlinearMode
-(QPainter* InPainter)
-{
-  int                                   n;
-  int                                   i;
-  int                                   m;
-  int                                   j;
-  QSize					wordSize;
-  int                                   y;
-  int                                   y2;
-  QBrush				brush = QBrush(QColor(240, 240, 240));
-  QSize                                 s = size();
-
-  y = 0;
-  InPainter->setBrush(brush);
-  InPainter->drawRect(QRect(QPoint(0, 0), s));
- 
-  if ( currentInterlinearChapter == NULL ) {
-    return;
-  }
-
-  n = currentInterlinearChapter->GetVerseCount();
-  for ( i = 0 ; i < n ; i++ ) {
-    InterlinearWord*                    word;
-    InterlinearVerse*                   verse;
-
-    verse = currentInterlinearChapter->GetVerseByIndex(i);
-    m = verse->GetWordCount();
-
-    for ( j = 0 ; j < m ; j++ ) {
-      word = verse->GetWordByIndex(j);
-      word->Paint(InPainter);
-      wordSize = word->GetSize();
-      y = word->GetY();
-    }
-
-    y2 = y + wordSize.height() + InterLineSkip;
-
-    InPainter->setPen(QColor(240, 240, 240));
-    InPainter->drawLine(0, y2, s.width(), y2);
-  }
-  if ( currentSelectedInterlinearWord ) {
-    currentSelectedInterlinearWord->PaintSelected(InPainter);
-  }
-}
-  
-/*****************************************************************************!
  * Function : PaintBlockMode
  *****************************************************************************/
 void
@@ -1648,43 +1298,6 @@ TextDisplayViewWindow::EditModeMousePress
     EditModeFormattingMouseSelect((TextDisplayWordFormattingItem*)item);
     return;
   }
-}
-
-/*****************************************************************************!
- * Function : InterlinearModeMousePress
- *****************************************************************************/
-void
-TextDisplayViewWindow::InterlinearModeMousePress
-(QMouseEvent* InEvent)
-{
-  Qt::MouseButton                       button;
-  Qt::KeyboardModifiers                 modifiers;
-
-  button = InEvent->button();
-  modifiers = InEvent->modifiers();
-
-  if ( button == Qt::LeftButton && modifiers == Qt::NoModifier ) {
-    InterlinearModeDisplayElementViewDialog(InEvent->pos());
-    return;
-  }
-}
-
-/*****************************************************************************!
- * Function : InterlinearModeDisplayElementViewDialog
- *****************************************************************************/
-void
-TextDisplayViewWindow::InterlinearModeDisplayElementViewDialog
-(QPoint InPosition)
-{
-  InterlinearDisplayElementSelectDialog*        dialog;
-  int                                           n;
-  
-  dialog = new InterlinearDisplayElementSelectDialog();
-  dialog->move(InPosition);
-  n = dialog->exec();
-
-  (void)n;
-  delete dialog;
 }
 
 /*****************************************************************************!
@@ -1940,30 +1553,6 @@ TextDisplayViewWindow::mouseMoveEvent
       }
     }
   }
-  repaint();
-}
-
-/*****************************************************************************!
- * Function : InterlinearModeMouseMove
- *****************************************************************************/
-void
-TextDisplayViewWindow::InterlinearModeMouseMove
-(QPoint InMouseCursor)
-{
-  InterlinearWord*                      word;
-  QString 								englishWord;
-
-  word = currentInterlinearChapter->FindWordByLocation(InMouseCursor);
-  if ( word == NULL ) {
-    currentSelectedInterlinearWord = NULL;
-    repaint();
-    return;
-  }
-  if ( currentSelectedInterlinearWord == word ) {
-    return;
-  }
-  currentSelectedInterlinearWord = word;
-  englishWord = currentSelectedInterlinearWord->GetEnglish();
   repaint();
 }
 
@@ -2287,19 +1876,6 @@ TextDisplayViewWindow::SlotSetFormattingType
 }
 
 /*****************************************************************************!
- * Function : AddInterlinearItem
- *****************************************************************************/
-void
-TextDisplayViewWindow::AddInterlinearItem
-(TextDisplayInterlinearItem* InItem)
-{
-  if ( NULL == InItem ) {
-    return;
-  }
-  interlinearItems.push_back(InItem);
-}
-
-/*****************************************************************************!
  * Function : GetWordCount
  *****************************************************************************/
 int
@@ -2406,3 +1982,435 @@ TextDisplayViewWindow::ReferenceKeyPress
 
   return false;
 }
+
+/*****************************************************************************!
+ *****************************************************************************
+ * Interlinear Functions
+ *****************************************************************************
+ *****************************************************************************/
+
+/*****************************************************************************!
+ * Function : SlotSetInterlinearMode
+ *****************************************************************************/
+void
+TextDisplayViewWindow::SlotSetInterlinearMode(void)
+{
+  currentSelectedInterlinearWord = NULL;
+  mode = InterlinearMode;
+  ArrangeItems();
+  repaint();
+}
+
+/*****************************************************************************!
+ * Function : AddInterlinearChapter
+ *****************************************************************************/
+InterlinearChapter*
+TextDisplayViewWindow::AddInterlinearChapter
+(int InBookIndex, int InChapterNumber)
+{
+  QString                               query;
+  int                                   n;
+  InterlinearChapter*                   chapter;
+  ThisChapter                           thisChapter;
+
+  chapter = new InterlinearChapter(InBookIndex, InChapterNumber);
+  thisChapter.thisPointer = this;
+  thisChapter.chapter = chapter;
+
+  query = QString("SELECT * FROM VERSE WHERE BOOK_NUMBER is %1 and CHAPTER_NUMBER IS %2;").
+    arg(InBookIndex).arg(InChapterNumber);
+  
+  n = sqlite3_exec(MainInterlinearDatabase, query.toStdString().c_str(), AddInterlinearChapterCB, &thisChapter, NULL);
+  if ( n != SQLITE_OK ) {
+    fprintf(stderr, "%s\n : sqlite3_exec()\n%s\n%s\n",
+            __FUNCTION__, query.toStdString().c_str(),
+            sqlite3_errstr(n));
+  }
+  return chapter;
+}
+
+/*****************************************************************************!
+ * Function : AddInterlinearChapterCB
+ *****************************************************************************/
+int
+TextDisplayViewWindow::AddInterlinearChapterCB
+(void* InPointer, int InColumnCount, char** InColumnValues, char** InColumnNames)
+{
+  int                                   i;
+  int                                   id;
+  QString                               columnName;
+  QString                               columnValue;
+  InterlinearChapter*                   chapter;
+  InterlinearVerse*                     verse;
+  int                                   verseNumber;
+  TextDisplayViewWindow*                thisPointer;
+  ThisChapter*                          thisChapter;
+  
+  thisChapter   = (ThisChapter*)InPointer;
+  thisPointer   = thisChapter->thisPointer;
+  chapter       = thisChapter->chapter;
+  verseNumber   = 0;
+  id            = 0;
+  
+  for (i = 0; i < InColumnCount; i++) {
+    columnName = InColumnNames[i];
+    columnValue = InColumnValues[i];
+    if ( columnName == "ID" ) {
+      id = columnValue.toInt();
+      continue;
+    }
+
+    if ( columnName == "VERSE_NUMBER" ) {
+      verseNumber = columnValue.toInt();
+      continue;
+    }
+  }
+  verse = new InterlinearVerse(chapter->GetBookIndex(), chapter->GetChapterNumber(), verseNumber, id);
+  chapter->AddVerse(verse);
+  thisPointer->AddInterlinearVerse(verse);
+  return 0;
+}
+
+/*****************************************************************************!
+ * Function: AddInterlinearVerse
+ *****************************************************************************/
+void
+TextDisplayViewWindow::AddInterlinearVerse
+(InterlinearVerse* InVerse)
+{
+  QString                               query;
+  int                                   n;
+
+  query = QString("SELECT * FROM INTERLINEAR_WORD WHERE VERSE_ID is %1 ORDER BY ID;").arg(InVerse->GetVerseID());
+  n = sqlite3_exec(MainInterlinearDatabase, query.toStdString().c_str(), AddInterlinearVerseCB, InVerse, NULL);
+  if ( n != SQLITE_OK ) {
+    fprintf(stderr, "%s\n : sqlite3_exec()\n%s\n%s\n",
+            __FUNCTION__, query.toStdString().c_str(),
+            sqlite3_errstr(n));
+  }
+}
+
+/*****************************************************************************!
+ * Function : AddInterlinearVerseCB
+ *****************************************************************************/
+int
+TextDisplayViewWindow::AddInterlinearVerseCB
+(void* InPointer, int InColumnCount, char** InColumnValues, char** InColumnNames)
+{
+  QString                               columnName;
+  QString                               columnValue;
+  int                                   verseID;
+  QString                               contextualForm ;
+  QString                               transliteratedContextualForm;
+  QString                               morphologyID;
+  QString                               strongsWordID;
+  QString                               english;
+  InterlinearVerse*                     verse;
+  InterlinearWord*                      word;
+  
+  verse  = (InterlinearVerse*)InPointer;
+  verseID = 0;
+  for (int i = 0 ; i < InColumnCount; i++) {
+
+    columnName = InColumnNames[i];
+    columnValue = InColumnValues[i];
+
+    if ( columnName == "VERSE_ID" ) {
+      verseID = columnValue.toInt();
+      continue;
+    }
+    
+    if ( columnName == "CONTEXTUAL_FORM" ) {
+      contextualForm = columnValue;
+      continue;
+    }
+    
+    if ( columnName == "TRANSLITERATED_CONTEXTUAL_FORM" ) {
+      transliteratedContextualForm = columnValue;
+      continue;
+    }
+    
+    if ( columnName == "MORPHOLOGY_ID" ) {
+      morphologyID = columnValue;
+      continue;
+    }
+    
+    if ( columnName == "STRONGS_WORD_ID" ) {
+      strongsWordID = columnValue;
+      continue;
+    }
+    
+    if ( columnName == "ENGLISH" ) {
+      english = columnValue;
+      continue;
+    }
+  }
+
+  word = new InterlinearWord(verse->GetBookIndex(), verse->GetChapterNumber(), verse->GetVerseNumber(), verseID);
+  word->SetContextualForm(contextualForm);
+  word->SetTransliteratedContextualForm(transliteratedContextualForm);
+  word->SetMorphologyID(morphologyID);
+  word->SetStrongsWordID(strongsWordID);
+  word->SetEnglish(english);
+
+  verse->AddWord(word);
+  return 0;
+}
+
+/*****************************************************************************!
+ * Function : GetInterlinearVerse
+ *****************************************************************************/
+InterlinearVerse*
+TextDisplayViewWindow::GetInterlinearVerse
+(int InID)
+{
+  (void)InID;
+#if 0  
+  QString                               query;
+  int                                   n;
+  InterlinearVerse*                     verse;
+
+  verse = new InterlinearVerse();
+  query = QString("SELECT * from INTERLINEAR_WORD WHERE VERSE_ID is %1 ORDER BY ID;\n").arg(InID);
+  n = sqlite3_exec(MainInterlinearDatabase, query.toStdString().c_str(), GetInterlinearVerseCB, verse, NULL);
+  if ( n != SQLITE_OK ) {
+    fprintf(stderr, "%s : sqlite3_exec()\n%s\n%s\n",
+            __FUNCTION__, query.toStdString().c_str(),
+            sqlite3_errstr(n));
+    return NULL;
+  }
+
+  return verse;
+#endif
+  return NULL;
+}
+
+/*****************************************************************************!
+ * Function : GetInterlinearVerseNumber
+ *****************************************************************************/
+int
+TextDisplayViewWindow::GetInterlinearVerseNumber
+(int InBookNumber, int InChapterNumber, int InVerseNumber)
+{
+  QString                               query;
+  int                                   n;
+  sqlite3_stmt*                         sqlstmt;
+  int                                   retryCount;
+  int                                   verseID;
+  int                                   len;
+  
+  query = QString("SELECT ID FROM VERSE WHERE BOOK_NUMBER IS %1 AND CHAPTER_NUMBER IS %2 AND VERSE_NUMBER IS %3;")
+    .arg(InBookNumber)
+    .arg(InChapterNumber)
+    .arg(InVerseNumber);
+  len = query.length();
+  
+  n = sqlite3_prepare_v2(MainInterlinearDatabase, query.toStdString().c_str(), len, &sqlstmt, NULL);
+  if ( n != SQLITE_OK ) {
+    fprintf(stderr, "%s sqlite3_prepare_v2()\n%s\n%s\n",
+            __FUNCTION__,
+            query.toStdString().c_str(),
+            sqlite3_errstr(n));
+    return 0;
+  }
+  retryCount = 0;
+  verseID = 0;
+  do {
+    n = sqlite3_step(sqlstmt);
+    if ( SQLITE_BUSY == n ) {
+      QThread::msleep(30);
+      retryCount++;
+      if ( retryCount > 10 ) {
+        break;
+      }
+      continue;
+    }
+    if ( SQLITE_DONE == n ) {
+      break;
+    }
+
+    if ( SQLITE_ROW == n ) {
+      verseID = sqlite3_column_int(sqlstmt, 0);
+    }
+  } while (true);
+  sqlite3_finalize(sqlstmt);
+  return verseID;
+}
+
+/*****************************************************************************!
+ * Function : ArrangeItemsInterlinear
+ *****************************************************************************/
+int
+TextDisplayViewWindow::ArrangeItemsInterlinear
+(int InY, int InWindowWidth)
+{
+  int                                   i;
+  int                                   n;
+  int                                   x;
+  int                                   y;
+  int                                   m;
+  int                                   j;
+  InterlinearVerse*                     verse;
+  InterlinearWord*                      word;
+  QSize                                 wordSize;
+  QString                               contextualForm;
+  QString                               english;
+  QSize                                 ws;
+  int                                   wordHeight;
+
+  if ( currentInterlinearChapter ) {
+    delete currentInterlinearChapter;
+  }
+  currentInterlinearChapter = AddInterlinearChapter(bookInfo->index, currentSelectedChapter);
+  n = currentInterlinearChapter->GetVerseCount();
+  y = InY;
+  for ( i = 0 ; i < n ; i++ ) {
+    verse = currentInterlinearChapter->GetVerseByIndex(i);
+    x = InWindowWidth;
+    m = verse->GetWordCount();
+    wordHeight = 0;
+    for ( j = 0 ; j < m ; j++ ) {
+      word = verse->GetWordByIndex(j);
+      wordSize = word->GetSize();
+      if ( x - wordSize.width() < rightMargin ) {
+        y += wordHeight;
+        x = InWindowWidth;
+      } 
+      x -= wordSize.width();
+      x -= InterInterlinearWordSkip;
+      word->SetX(x);
+      word->SetY(y);
+      wordHeight = wordSize.height();
+    }
+    y += wordHeight + InterLineSkip * 2;
+    x = InWindowWidth;
+
+  }
+  y += bottomMargin;
+  return y;
+}
+
+/*****************************************************************************!
+ * Function : PaintInterlinearMode
+ *****************************************************************************/
+void
+TextDisplayViewWindow::PaintInterlinearMode
+(QPainter* InPainter)
+{
+  int                                   n;
+  int                                   i;
+  int                                   m;
+  int                                   j;
+  QSize					wordSize;
+  int                                   y;
+  int                                   y2;
+  QBrush				brush = QBrush(QColor(240, 240, 240));
+  QSize                                 s = size();
+
+  y = 0;
+  InPainter->setBrush(brush);
+  InPainter->drawRect(QRect(QPoint(0, 0), s));
+ 
+  if ( currentInterlinearChapter == NULL ) {
+    return;
+  }
+
+  n = currentInterlinearChapter->GetVerseCount();
+  for ( i = 0 ; i < n ; i++ ) {
+    InterlinearWord*                    word;
+    InterlinearVerse*                   verse;
+
+    verse = currentInterlinearChapter->GetVerseByIndex(i);
+    m = verse->GetWordCount();
+
+    for ( j = 0 ; j < m ; j++ ) {
+      word = verse->GetWordByIndex(j);
+      word->Paint(InPainter);
+      wordSize = word->GetSize();
+      y = word->GetY();
+    }
+
+    y2 = y + wordSize.height() + InterLineSkip;
+
+    InPainter->setPen(QColor(240, 240, 240));
+    InPainter->drawLine(0, y2, s.width(), y2);
+  }
+  if ( currentSelectedInterlinearWord ) {
+    currentSelectedInterlinearWord->PaintSelected(InPainter);
+  }
+}
+  
+/*****************************************************************************!
+ * Function : InterlinearModeMousePress
+ *****************************************************************************/
+void
+TextDisplayViewWindow::InterlinearModeMousePress
+(QMouseEvent* InEvent)
+{
+  Qt::MouseButton                       button;
+  Qt::KeyboardModifiers                 modifiers;
+
+  button = InEvent->button();
+  modifiers = InEvent->modifiers();
+
+  if ( button == Qt::LeftButton && modifiers == Qt::NoModifier ) {
+    InterlinearModeDisplayElementViewDialog(InEvent->pos());
+    return;
+  }
+}
+
+/*****************************************************************************!
+ * Function : InterlinearModeDisplayElementViewDialog
+ *****************************************************************************/
+void
+TextDisplayViewWindow::InterlinearModeDisplayElementViewDialog
+(QPoint InPosition)
+{
+  InterlinearDisplayElementSelectDialog*        dialog;
+  int                                           n;
+  
+  dialog = new InterlinearDisplayElementSelectDialog();
+  dialog->move(InPosition);
+  n = dialog->exec();
+
+  (void)n;
+  delete dialog;
+}
+
+/*****************************************************************************!
+ * Function : InterlinearModeMouseMove
+ *****************************************************************************/
+void
+TextDisplayViewWindow::InterlinearModeMouseMove
+(QPoint InMouseCursor)
+{
+  InterlinearWord*                      word;
+  QString 								englishWord;
+
+  word = currentInterlinearChapter->FindWordByLocation(InMouseCursor);
+  if ( word == NULL ) {
+    currentSelectedInterlinearWord = NULL;
+    repaint();
+    return;
+  }
+  if ( currentSelectedInterlinearWord == word ) {
+    return;
+  }
+  currentSelectedInterlinearWord = word;
+  englishWord = currentSelectedInterlinearWord->GetEnglish();
+  repaint();
+}
+
+/*****************************************************************************!
+ * Function : AddInterlinearItem
+ *****************************************************************************/
+void
+TextDisplayViewWindow::AddInterlinearItem
+(TextDisplayInterlinearItem* InItem)
+{
+  if ( NULL == InItem ) {
+    return;
+  }
+  interlinearItems.push_back(InItem);
+}
+

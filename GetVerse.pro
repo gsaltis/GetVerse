@@ -61,6 +61,7 @@ SOURCES                         += \
 				   TextDisplayReferenceWindow.cpp               \
 				   TextDisplaySentenceContainterWindow.cpp      \
 				   TextDisplaySentenceWindow.cpp                \
+				   TextDisplaySentenceScrollWindow.cpp          \
 				   TextDisplayViewScrollBar.cpp                 \
 				   TextDisplayViewScrollWindow.cpp              \
 				   TextDisplayViewWindow.cpp                    \
@@ -102,6 +103,7 @@ HEADERS                         += \
 				   TextDisplayReferenceItem.h                   \
 				   TextDisplayReferenceWindow.h                 \
 				   TextDisplaySentenceContainterWindow.h        \
+				   TextDisplaySentenceScrollWindow.h            \
 				   TextDisplaySentenceWindow.h                  \
 				   TextDisplayViewScrollBar.h                   \
 				   TextDisplayViewScrollWindow.h                \

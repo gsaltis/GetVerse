@@ -193,7 +193,7 @@ TextControlBar::CreateSubWindows()
   ChapterSelect->setParent(this);
   ChapterSelect->resize(120, 20);
   ChapterSelect->move(0, 0);
-  ChapterSelect->hide();
+  ChapterSelect->show();
   
   //! Create label
   ChapterSelectLabel = new QLabel();
@@ -203,7 +203,7 @@ TextControlBar::CreateSubWindows()
   ChapterSelectLabel->setText("Chapters :");
   ChapterSelectLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
   ChapterSelectLabel->setFont(QFont("Arial", 10, QFont::Normal));
-  ChapterSelectLabel->hide();
+  ChapterSelectLabel->show();
   
   //! Create WordBreakTypeCombo Combobox
   WordBreakTypeCombo = new QComboBox();
@@ -502,11 +502,11 @@ TextControlBar::SlotInterlinearButtonPushed(void)
   SentenceViewButton->setChecked(false);  
   ReferenceButton->setChecked(false);  
 
-  ChapterSelect->hide();
-  ChapterSelectLabel->hide();
+  ChapterSelect->show();
+  ChapterSelectLabel->show();
   
-  GroupingLabel->hide();
-  GroupingCountLabel->hide();
+  GroupingLabel->show();
+  GroupingCountLabel->show();
   WordBreakTypeCombo->hide();
   WordBreakTypeLabel->hide();
 

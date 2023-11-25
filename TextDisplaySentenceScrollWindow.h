@@ -1,48 +1,48 @@
 /*****************************************************************************
- * FILE NAME    : TextDisplaySentenceContainterWindow.h
- * DATE         : November 12 2023
+ * FILE NAME    : TextDisplaySentenceScrollWindow.h
+ * DATE         : November 24 2023
  * PROJECT      : 
  * COPYRIGHT    : Copyright (C) 2023 by Gregory R Saltis
  *****************************************************************************/
-#ifndef _textdisplaysentencecontainterwindow_h_
-#define _textdisplaysentencecontainterwindow_h_
+#ifndef _textdisplaysentencescrollwindow_h_
+#define _textdisplaysentencescrollwindow_h_
 
 /*****************************************************************************!
  * Global Headers
  *****************************************************************************/
 #include <QtCore>
 #include <QtGui>
+#include <QScrollArea>
 #include <QWidget>
 
 /*****************************************************************************!
  * Local Headers
  *****************************************************************************/
-#include "TextDisplaySentenceScrollWindow.h"
-#include "ChapterHeaderWindow.h"
+#include "TextDisplaySentenceWindow.h"
 #include "BookInfo.h"
 
 /*****************************************************************************!
  * Exported Macros
  *****************************************************************************/
-#define TEXT_DISPLAY_SENTENCE_CONTAINTER_WINDOW_X 200
-#define TEXT_DISPLAY_SENTENCE_CONTAINTER_WINDOW_Y 200
-#define TEXT_DISPLAY_SENTENCE_CONTAINTER_WINDOW_WIDTH 200
-#define TEXT_DISPLAY_SENTENCE_CONTAINTER_WINDOW_HEIGHT 200
+#define TEXT_DISPLAY_SENTENCE_SCROLL_WINDOW_X 200
+#define TEXT_DISPLAY_SENTENCE_SCROLL_WINDOW_Y 200
+#define TEXT_DISPLAY_SENTENCE_SCROLL_WINDOW_WIDTH 200
+#define TEXT_DISPLAY_SENTENCE_SCROLL_WINDOW_HEIGHT 200
 
 /*****************************************************************************!
- * Exported Class : TextDisplaySentenceContainterWindow
+ * Exported Class : TextDisplaySentenceScrollWindow
  *****************************************************************************/
-class TextDisplaySentenceContainterWindow : public QWidget
+class TextDisplaySentenceScrollWindow : public QScrollArea
 {
   Q_OBJECT;
 
  //! Constructors
  public :
-  TextDisplaySentenceContainterWindow ();
+  TextDisplaySentenceScrollWindow ();
 
  //! Destructor
  public :
-  ~TextDisplaySentenceContainterWindow ();
+  ~TextDisplaySentenceScrollWindow ();
 
  //! Public Methods
  public :
@@ -52,7 +52,7 @@ class TextDisplaySentenceContainterWindow : public QWidget
 
  //! Protected Methods
  protected :
-  
+
  //! Protected Data
  protected :
 
@@ -60,33 +60,31 @@ class TextDisplaySentenceContainterWindow : public QWidget
  private :
   void                          initialize              ();
   void                          CreateSubWindows        ();
+  void                          CreateConnections       ();
   void                          InitializeSubWindows    ();
   void                          resizeEvent             (QResizeEvent* InEvent);
-  void                          CreateConnections       (void);
 
  //! Private Data
  private :
-  TextDisplaySentenceScrollWindow*      sentenceWindow;
-  ChapterHeaderWindow*          headerWindow;
-  BookInfo*                     bookInfo;
+  TextDisplaySentenceWindow*    sentenceWindow;
   
  //! Public Slots
  public slots :
-  void                          SlotBookSet             (BookInfo* InBookInfo);
-  void                          SlotChapterSet          (int InChapter);
-  void                          SlotSentenceCountChanged (int InSentencCount);
-
+  void                          SlotBookSelected        (BookInfo* InBookInfo);
+  void                          SlotChapterChanged      (int InChapter);
+  void                          SlotSentenceCountChanged        (int InSentenceCount);
+  void                          SlotChapterArrowSelected        (int InChapter);
+  
  //! Public Signals
  signals :
-  void                          SignalBookSet           (BookInfo* InBookInfo);
-  void                          SignalChapterSet        (int InChapter);
-  void                          SignalChapterTextChanged(QString InChapterText);
-  void                          SignalChapterArrowSelected (int InChapter);
+  void                          SignalBookSelected      (BookInfo* InBookInfo);
+  void                          SignalChapterChanged    (int InChapter);
   void                          SignalSentenceCountChanged      (int InSentenceCount);
-  
+  void                          SignalChapterArrowSelected      (int InChapter);
+
  //! Public Actions
  public :
 
 };
 
-#endif /* _textdisplaysentencecontainterwindow_h_*/
+#endif /* _textdisplaysentencescrollwindow_h_*/

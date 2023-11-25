@@ -57,7 +57,8 @@ TextDisplaySentenceContainterWindow::initialize()
 void
 TextDisplaySentenceContainterWindow::CreateSubWindows()
 {
-  sentenceWindow = new TextDisplaySentenceWindow(this);
+  sentenceWindow = new TextDisplaySentenceScrollWindow();
+  sentenceWindow->setParent(this);
   headerWindow = new ChapterHeaderWindow(QString("Chapter 999"), this);
 }
 
@@ -150,7 +151,7 @@ void
 TextDisplaySentenceContainterWindow::CreateConnections(void)
 {
   connect(sentenceWindow,
-          TextDisplaySentenceWindow::SignalSentenceCountChanged,
+          TextDisplaySentenceScrollWindow::SignalSentenceCountChanged,
           this,
           TextDisplaySentenceContainterWindow::SlotSentenceCountChanged);
   
@@ -162,15 +163,15 @@ TextDisplaySentenceContainterWindow::CreateConnections(void)
   connect(this,
           TextDisplaySentenceContainterWindow::SignalBookSet,
           sentenceWindow,
-          TextDisplaySentenceWindow::SlotBookSelected);
+          TextDisplaySentenceScrollWindow::SlotBookSelected);
 
   connect(this,
           TextDisplaySentenceContainterWindow::SignalChapterSet,
           sentenceWindow,
-          TextDisplaySentenceWindow::SlotChapterChanged);
+          TextDisplaySentenceScrollWindow::SlotChapterChanged);
 
   connect(sentenceWindow,
-          TextDisplaySentenceWindow::SignalChapterArrowSelected,
+          TextDisplaySentenceScrollWindow::SignalChapterArrowSelected,
           this,
           TextDisplaySentenceContainterWindow::SlotChapterSet);
 }

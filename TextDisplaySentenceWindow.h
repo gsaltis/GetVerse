@@ -35,7 +35,7 @@ class TextDisplaySentenceWindow : public QWidget
 
  //! Constructors
  public :
-  TextDisplaySentenceWindow     (QWidget* InParent);
+  TextDisplaySentenceWindow     ();
 
  //! Destructor
  public :
@@ -46,6 +46,9 @@ class TextDisplaySentenceWindow : public QWidget
     
  //! Public Methods
  public :
+  int                           GetWindowHeight         ();
+  void                          CreateDisplayItems      ();
+  int                           ArrangeItems            ();
   
  //! Public Data
  public :
@@ -65,9 +68,7 @@ class TextDisplaySentenceWindow : public QWidget
  //! Private Methods
  private :
   void                          Initialize              ();
-  void                          CreateDisplayItems      ();
   void                          ClearDisplayItems       ();
-  int                           ArrangeItems            ();
   bool                          KeyPress                (int InKey, Qt::KeyboardModifiers);
 
  //! Private Data
@@ -83,6 +84,7 @@ class TextDisplaySentenceWindow : public QWidget
   int                           topMargin;
   QFont                         displayFont;
   int                           maxChapters;
+  int                           windowHeight;
   
  //! Public Slots
  public slots :

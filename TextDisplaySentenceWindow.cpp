@@ -22,7 +22,7 @@
  * Function : TextDisplaySentenceWindow
  *****************************************************************************/
 TextDisplaySentenceWindow::TextDisplaySentenceWindow
-(QWidget* InWidget)  : QWidget(InWidget)
+()  : QWidget()
 {
   Initialize();
 }
@@ -61,7 +61,6 @@ void
 TextDisplaySentenceWindow::resizeEvent
 (QResizeEvent* )
 {
-  ArrangeItems();
   repaint();
 }
 
@@ -114,9 +113,6 @@ TextDisplaySentenceWindow::SlotBookSelected
   topMargin             = 15;
   currentChapter        = 1;
   bookInfo              = InBookInfo;
-
-  ClearDisplayItems();
-  CreateDisplayItems();
 }
 
 /*****************************************************************************!
@@ -127,8 +123,6 @@ TextDisplaySentenceWindow::SlotChapterChanged
 (int InCurrentChapter)
 {
   currentChapter = InCurrentChapter;
-  ClearDisplayItems();
-  CreateDisplayItems();
 }
 
 /*****************************************************************************!
@@ -162,7 +156,6 @@ TextDisplaySentenceWindow::CreateDisplayItems
     displayItem->SetFont(displayFont);
     displayItems << displayItem;  
   }
-  ArrangeItems();
   repaint();
 }
 
@@ -194,7 +187,6 @@ TextDisplaySentenceWindow::ArrangeItems
   int                                   itemWidth;
   int                                   k;
   QSize                                 s;
-  int                                   windowHeight;
   int                                   windowWidth;
   int                                   x;
   int                                   y;
@@ -313,3 +305,14 @@ TextDisplaySentenceWindow::KeyPress
 
   return false;
 }
+
+/*****************************************************************************!
+ * Function : GetWindowHeight
+ *****************************************************************************/
+int
+TextDisplaySentenceWindow::GetWindowHeight
+()
+{
+  return windowHeight;
+}
+
