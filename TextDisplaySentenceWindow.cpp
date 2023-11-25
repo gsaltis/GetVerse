@@ -61,7 +61,8 @@ void
 TextDisplaySentenceWindow::resizeEvent
 (QResizeEvent* )
 {
-  repaint();
+  TRACE_FUNCTION_START();
+  TRACE_FUNCTION_END();
 }
 
 /*****************************************************************************!
@@ -73,9 +74,11 @@ TextDisplaySentenceWindow::paintEvent
 {
   QPainter                      painter(this);
 
+  TRACE_FUNCTION_START();
   for ( auto item : displayItems ) {
     item->Draw(&painter);
   }
+  TRACE_FUNCTION_END();
 }
 
 /*****************************************************************************!
@@ -179,7 +182,7 @@ TextDisplaySentenceWindow::ClearDisplayItems
  *****************************************************************************/
 int
 TextDisplaySentenceWindow::ArrangeItems
-()
+(int InWidth)
 {
   QString                               ending;
   int                                   itemHeight;
@@ -194,11 +197,13 @@ TextDisplaySentenceWindow::ArrangeItems
   int                                   n;
   TextDisplayWordItem*                  item;
   int                                   sentenceCount;
-  
+
+  TRACE_FUNCTION_START();
+  TRACE_FUNCTION_INT(InWidth);
   x             = leftMargin;
   y             = topMargin;
   windowHeight  = 0;
-  windowWidth   = size().width() - (leftMargin + rightMargin);
+  windowWidth   = InWidth - (leftMargin + rightMargin);
   sentenceCount = 0;
   n = displayItems.size();
   for ( i = 0 ; i < n ; i++ ) {
@@ -232,8 +237,8 @@ TextDisplaySentenceWindow::ArrangeItems
     }
   }
   windowHeight += bottomMargin;
-  TRACE_FUNCTION_INT(sentenceCount);
   emit SignalSentenceCountChanged(sentenceCount);
+  TRACE_FUNCTION_END();
   return windowHeight;
 }
 

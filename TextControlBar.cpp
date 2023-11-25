@@ -539,7 +539,6 @@ void
 TextControlBar::SlotVerseCountChanged
 (int InVerseCount)
 {
-  TRACE_FUNCTION_INT(InVerseCount);
   GroupingCountLabel->setText(QString("%1").arg(InVerseCount));
 }
 
@@ -550,7 +549,6 @@ void
 TextControlBar::SlotSentenceCountChanged
 (int InSentenceCount)
 {
-  TRACE_FUNCTION_INT(InSentenceCount);
   GroupingCountLabel->setText(QString("%1").arg(InSentenceCount));
 }
 

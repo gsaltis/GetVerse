@@ -8,6 +8,7 @@
 /*****************************************************************************!
  * Global Headers
  *****************************************************************************/
+#include <trace_winnet.h>
 #include <QtCore>
 #include <QtGui>
 #include <QWidget>
@@ -25,7 +26,7 @@ TextDisplaySentenceScrollWindow::TextDisplaySentenceScrollWindow
 {
   QPalette pal;
   pal = palette();
-  pal.setBrush(QPalette::Window, QBrush(QColor(255, 255, 255)));
+  pal.setBrush(QPalette::Window, QBrush(QColor(255, 255, 224)));
   setPalette(pal);
   setAutoFillBackground(true);
   initialize();
@@ -104,11 +105,14 @@ TextDisplaySentenceScrollWindow::SlotBookSelected
 (BookInfo* InBookInfo)
 {
   int                           windowHeight;
+  int                           width;
 
+  width = size().width(); 
   sentenceWindow->SlotBookSelected(InBookInfo);
   sentenceWindow->CreateDisplayItems();
-  windowHeight= sentenceWindow->ArrangeItems();
+  windowHeight= sentenceWindow->ArrangeItems(width);
   sentenceWindow->resize(size().width(), windowHeight);
+  sentenceWindow->repaint();
 }
 
 /*****************************************************************************!
@@ -119,11 +123,14 @@ TextDisplaySentenceScrollWindow::SlotChapterChanged
 (int InChapter)
 {
   int                           windowHeight;
+  int                           width;
 
+  width = size().width();
   sentenceWindow->SlotChapterChanged(InChapter);
   sentenceWindow->CreateDisplayItems();
-  windowHeight= sentenceWindow->ArrangeItems();
-  sentenceWindow->resize(size().width(), windowHeight);
+  windowHeight= sentenceWindow->ArrangeItems(width);
+  sentenceWindow->resize(width, windowHeight);
+  sentenceWindow->repaint();
 }
 
 /*****************************************************************************!
@@ -137,9 +144,11 @@ TextDisplaySentenceScrollWindow::resizeEvent
   int                                   width;
   int                                   height;
 
+  TRACE_FUNCTION_START();
   width = InEvent->size().width();
-  height = w->GetWindowHeight();
+  height= sentenceWindow->ArrangeItems(width);
   w->resize(width, height);
+  TRACE_FUNCTION_END();
 }
 
 /*****************************************************************************!

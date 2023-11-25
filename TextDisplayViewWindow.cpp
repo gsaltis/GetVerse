@@ -231,7 +231,6 @@ TextDisplayViewWindow::ArrangeItemsSentence
   int                                   n;
   TextDisplayItem*                      item;
 
-  TRACE_FUNCTION_START();
   x             = InX ;
   y             = InY + 30;
   windowHeight  = 0;
@@ -271,7 +270,6 @@ TextDisplayViewWindow::ArrangeItemsSentence
     }
   }
   windowHeight += bottomMargin;
-  TRACE_FUNCTION_END();
   return windowHeight;
 }
 

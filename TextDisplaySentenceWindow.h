@@ -48,7 +48,7 @@ class TextDisplaySentenceWindow : public QWidget
  public :
   int                           GetWindowHeight         ();
   void                          CreateDisplayItems      ();
-  int                           ArrangeItems            ();
+  int                           ArrangeItems            (int InWidth);
   
  //! Public Data
  public :

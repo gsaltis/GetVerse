@@ -183,6 +183,5 @@ void
 TextDisplaySentenceContainterWindow::SlotSentenceCountChanged
 (int InSentenceCount)
 {
-  TRACE_FUNCTION_INT(InSentenceCount);
   emit SignalSentenceCountChanged(InSentenceCount);
 }
