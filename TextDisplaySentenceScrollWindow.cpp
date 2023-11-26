@@ -110,9 +110,7 @@ TextDisplaySentenceScrollWindow::SlotBookSelected
   width = size().width(); 
   sentenceWindow->SlotBookSelected(InBookInfo);
   sentenceWindow->CreateDisplayItems();
-  windowHeight= sentenceWindow->ArrangeItems(width);
-  sentenceWindow->resize(size().width(), windowHeight);
-  sentenceWindow->repaint();
+  sentenceWindow->resize(size());
 }
 
 /*****************************************************************************!
@@ -128,9 +126,7 @@ TextDisplaySentenceScrollWindow::SlotChapterChanged
   width = size().width();
   sentenceWindow->SlotChapterChanged(InChapter);
   sentenceWindow->CreateDisplayItems();
-  windowHeight= sentenceWindow->ArrangeItems(width);
-  sentenceWindow->resize(width, windowHeight);
-  sentenceWindow->repaint();
+  sentenceWindow->resize(size());
 }
 
 /*****************************************************************************!

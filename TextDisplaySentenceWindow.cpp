@@ -17,6 +17,7 @@
  *****************************************************************************/
 #include "TextDisplaySentenceWindow.h"
 #include "Common.h"
+#include "Common.h"
 
 /*****************************************************************************!
  * Function : TextDisplaySentenceWindow
@@ -51,6 +52,7 @@ TextDisplaySentenceWindow::Initialize
   setPalette(pal);
   setAutoFillBackground(true);
   displayFont = MainSystemConfig->GetWordItemFont();
+  QString s = displayFont.family();
   maxChapters = 0;
 }
 
@@ -72,13 +74,6 @@ void
 TextDisplaySentenceWindow::paintEvent
 (QPaintEvent*)
 {
-  QPainter                      painter(this);
-
-  TRACE_FUNCTION_START();
-  for ( auto item : displayItems ) {
-    item->Draw(&painter);
-  }
-  TRACE_FUNCTION_END();
 }
 
 /*****************************************************************************!
@@ -110,7 +105,7 @@ TextDisplaySentenceWindow::SlotBookSelected
 {
   leftMargin            = 10;
   rightMargin           = 10;
-  interWordSkip         = 5;
+  interWordSkip         = 3;
   sentenceInterLineSkip = 3;
   bottomMargin          = 15;
   topMargin             = 15;
@@ -140,7 +135,7 @@ TextDisplaySentenceWindow::CreateDisplayItems
   int                                   i;
   BookInfoWord*                         word;
   QString                               wordText;
-  TextDisplayWordItem*                  displayItem;
+  TextDisplaySentenceItem*              displayItem;
 
   ClearDisplayItems();
   if ( NULL == bookInfo ) {
@@ -152,10 +147,12 @@ TextDisplaySentenceWindow::CreateDisplayItems
   for ( i = startIndex ; i <= endIndex ; i++ ) {
     word = bookInfo->GetWordByIndex(i);
     wordText = word->GetWord();
-    displayItem = new TextDisplayWordItem(word->GetBook(),
-                                          word->GetChapter(),
-                                          word->GetVerse(),
-                                          wordText, i);
+    displayItem = new TextDisplaySentenceItem(word->GetBook(),
+                                              word->GetChapter(),
+                                              word->GetVerse(),
+                                              wordText, i);
+    displayItem->setParent(this);
+    displayItem->hide();
     displayItem->SetFont(displayFont);
     displayItems << displayItem;  
   }
@@ -170,7 +167,7 @@ TextDisplaySentenceWindow::ClearDisplayItems
 ()
 {
   while ( !displayItems.isEmpty() ) {
-    TextDisplayWordItem*                item;
+    TextDisplaySentenceItem*            item;
     item = displayItems.first();
     displayItems.pop_front();
     delete item;
@@ -195,11 +192,10 @@ TextDisplaySentenceWindow::ArrangeItems
   int                                   y;
   int                                   i;
   int                                   n;
-  TextDisplayWordItem*                  item;
+  TextDisplaySentenceItem*              item;
   int                                   sentenceCount;
 
   TRACE_FUNCTION_START();
-  TRACE_FUNCTION_INT(InWidth);
   x             = leftMargin;
   y             = topMargin;
   windowHeight  = 0;
@@ -208,22 +204,18 @@ TextDisplaySentenceWindow::ArrangeItems
   n = displayItems.size();
   for ( i = 0 ; i < n ; i++ ) {
     item = displayItems[i];
-    s = item->GetSize();
+    s = item->size();
     itemWidth = s.width();
     itemHeight = s.height();
     itemText = item->GetText();
     ending = itemText.right(1);
-
-    if ( item->GetType() == TextDisplayItem::ReferenceType ) {
-      continue;
-    }
 
     if ( itemWidth + x >= windowWidth ) {
       x = leftMargin;
       y += itemHeight;
       windowHeight = y + itemHeight;
     }
-    item->SetLocation(QPoint(x, y));
+    item->move(QPoint(x, y));
     x += s.width() + interWordSkip;
     if ( ending == "'" || ending == "`" || ending == "]" || ending == ")" ) {
       k = itemText.length() - 2;
@@ -235,6 +227,7 @@ TextDisplaySentenceWindow::ArrangeItems
       x = leftMargin;
       windowHeight = y + itemHeight;
     }
+    item->show();
   }
   windowHeight += bottomMargin;
   emit SignalSentenceCountChanged(sentenceCount);

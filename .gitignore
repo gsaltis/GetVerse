@@ -14,7 +14,7 @@ object_script*
 *.swp
 tags
 greg*
-
+\#*
 # Extra Directories
 Books
 GUI

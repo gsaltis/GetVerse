@@ -38,7 +38,6 @@ SOURCES                         += \
 				   BookNameTableItem.cpp                        \
 				   BookNameTableScrollArea.cpp                  \
 				   BookNameWindow.cpp                           \
-                                   ChapterHeaderWindow.cpp                      \
 				   Formatting.cpp                               \
 				   InterlinearChapter.cpp                       \
 				   InterlinearDisplayElementSelectDialog.cpp    \
@@ -60,8 +59,9 @@ SOURCES                         += \
 				   TextDisplayReferenceItem.cpp                 \
 				   TextDisplayReferenceWindow.cpp               \
 				   TextDisplaySentenceContainterWindow.cpp      \
-				   TextDisplaySentenceWindow.cpp                \
+				   TextDisplaySentenceItem.cpp                  \
 				   TextDisplaySentenceScrollWindow.cpp          \
+				   TextDisplaySentenceWindow.cpp                \
 				   TextDisplayViewScrollBar.cpp                 \
 				   TextDisplayViewScrollWindow.cpp              \
 				   TextDisplayViewWindow.cpp                    \
@@ -69,6 +69,7 @@ SOURCES                         += \
 				   TextDisplayViewWindowReferenceItem.cpp       \
 				   TextDisplayWordFormattingItem.cpp            \
 				   TextDisplayWordItem.cpp                      \
+                                   ChapterHeaderWindow.cpp                      \
 				   main.cpp                                     \
 				   sqlite3.c                                    \
                                    trace.cpp                                    \
@@ -81,7 +82,6 @@ HEADERS                         += \
 				   BookNameTableItem.h                          \
 				   BookNameTableScrollArea.h                    \
 				   BookNameWindow.h                             \
-                                   ChapterHeaderWindow.h                        \
 				   Formatting.h                                 \
 				   InterlinearChapter.h                         \
 				   InterlinearDisplayElementSelectDialog.h      \
@@ -103,6 +103,7 @@ HEADERS                         += \
 				   TextDisplayReferenceItem.h                   \
 				   TextDisplayReferenceWindow.h                 \
 				   TextDisplaySentenceContainterWindow.h        \
+				   TextDisplaySentenceItem.h                    \
 				   TextDisplaySentenceScrollWindow.h            \
 				   TextDisplaySentenceWindow.h                  \
 				   TextDisplayViewScrollBar.h                   \
@@ -112,6 +113,7 @@ HEADERS                         += \
 				   TextDisplayViewWindowReferenceItem.h         \
 				   TextDisplayWordFormattingItem.h              \
 				   TextDisplayWordItem.h                        \
+                                   ChapterHeaderWindow.h                        \
 				   sqlite3.h                                    \
                                    trace_winnet.h                               \
 

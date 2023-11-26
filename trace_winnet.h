@@ -141,6 +141,17 @@ TraceSocketClose
     TRACE_FUNCTION_FINISH()                                                                         \
   }                                                                                                 \
 
+
+//!
+#define TRACE_FUNCTION_QSTRING(n)                                                                   \
+  {                                                                                                 \
+    TRACE_FUNCTION_INIT()                                                                           \
+    sprintf(TraceOutputBuffer, "%02d:QSTRING:%s:%s:%04d:%s = \"%s\" \n",                            \
+            TraceIndent, __FILE__, __FUNCTION__, __LINE__, #n, n.toStdString().c_str());            \
+    TRACE_FUNCTION_SEND()                                                                           \
+    TRACE_FUNCTION_FINISH()                                                                         \
+  }                                                                                                 \
+
 /*****************************************************************************!
  * Exported Data
  *****************************************************************************/

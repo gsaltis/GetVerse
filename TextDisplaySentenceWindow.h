@@ -20,7 +20,7 @@
  * Local Headers
  *****************************************************************************/
 #include "BookInfo.h"
-#include "TextDisplayWordItem.h"
+#include "TextDisplaySentenceItem.h"
 
 /*****************************************************************************!
  * Exported Macros
@@ -75,7 +75,7 @@ class TextDisplaySentenceWindow : public QWidget
  private :
   BookInfo*                     bookInfo;
   int                           currentChapter;
-  QList<TextDisplayWordItem*>   displayItems;
+  QList<TextDisplaySentenceItem*>   displayItems;
   int                           leftMargin;
   int                           rightMargin;
   int                           interWordSkip;
