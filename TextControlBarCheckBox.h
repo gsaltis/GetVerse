@@ -44,6 +44,8 @@ class TextControlBarCheckBox : public QFrame
 
  //! Public Methods
  public :
+  void                          SetChecked              (bool InChecked);
+  void                          CheckChanged            (bool InChecked);
 
  //! Public Data
  public :

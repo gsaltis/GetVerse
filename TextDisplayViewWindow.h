@@ -216,6 +216,7 @@ class TextDisplayViewWindow : public QWidget
   void                          SlotSelectChapter               (int InChapter);
   void                          SlotSetFormattingType           (TextDisplayFormattingItem::FormatType InFormattingType);
   void                          SlotChapterChanged      (int InChapter);
+  void                          SlotInterlinearWordSelected (int InWord, bool InSelected);
   
  //! Public Signals
  signals :

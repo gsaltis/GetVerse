@@ -115,3 +115,27 @@ TextControlBarCheckBox::ToggleCheck
   repaint();
   emit SignalChecked(Checked);
 }
+
+/*****************************************************************************!
+ * Function : SetChecked
+ *****************************************************************************/
+void
+TextControlBarCheckBox::SetChecked
+(bool InChecked)
+{
+  Checked = InChecked;
+  repaint();
+}
+
+/*****************************************************************************!
+ * Function : SetChecked
+ *****************************************************************************/
+void
+TextControlBarCheckBox::CheckChanged
+(bool InChecked)
+{
+  Checked = InChecked;
+  repaint();
+  emit SignalChecked(Checked);
+}
+

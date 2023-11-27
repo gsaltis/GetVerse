@@ -130,6 +130,12 @@ class TextControlBar : public QWidget
   void                          SlotChapterArrowSelected        (int InNewChapter);
   void                          SlotBookmarkButtonPushed        (void);
   void                          SlotBookSelected                (int InBookIndex);
+  void                          SlotWindowChange                (int InWindow);
+  void                          SlotContextualChecked           (bool InChecked);
+  void                          SlotTransliterateChecked        (bool InChecked);
+  void                          SlotMorphologyChecked           (bool InChecked);
+  void                          SlotEnglishChecked              (bool InChecked);
+  void                          SlotStrongsChecked              (bool InChecked);
   
  //! Public Signals
  signals :
@@ -143,6 +149,7 @@ class TextControlBar : public QWidget
   void                          SignalSetFormattingType         (TextDisplayFormattingItem::FormatType InFormattingType);
   void                          SignalChapterChanged            (int InChapter);
   void                          SignalSetBookmark               (int InBook, int InChapter, int InVerse);
+  void                          SignalInterlinearWordChanged (int InWord, bool InChecked);
   
  //! Public Actions
  public :
