@@ -151,6 +151,11 @@ void
 TextDisplaySentenceContainterWindow::CreateConnections(void)
 {
   connect(sentenceWindow,
+          TextDisplaySentenceScrollWindow::SignalWindowChange,
+          this,
+          TextDisplaySentenceContainterWindow::SlotWindowChange);
+  
+  connect(sentenceWindow,
           TextDisplaySentenceScrollWindow::SignalSentenceCountChanged,
           this,
           TextDisplaySentenceContainterWindow::SlotSentenceCountChanged);
@@ -184,4 +189,14 @@ TextDisplaySentenceContainterWindow::SlotSentenceCountChanged
 (int InSentenceCount)
 {
   emit SignalSentenceCountChanged(InSentenceCount);
+}
+
+/*****************************************************************************!
+ * Function : SlotWindowChange
+ *****************************************************************************/
+void
+TextDisplaySentenceContainterWindow::SlotWindowChange
+(int InType)
+{
+  emit SignalWindowChange(InType);
 }

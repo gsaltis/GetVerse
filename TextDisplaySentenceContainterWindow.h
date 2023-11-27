@@ -75,6 +75,7 @@ class TextDisplaySentenceContainterWindow : public QWidget
   void                          SlotBookSet             (BookInfo* InBookInfo);
   void                          SlotChapterSet          (int InChapter);
   void                          SlotSentenceCountChanged (int InSentencCount);
+  void                          SlotWindowChange        (int InType);
 
  //! Public Signals
  signals :
@@ -83,6 +84,7 @@ class TextDisplaySentenceContainterWindow : public QWidget
   void                          SignalChapterTextChanged(QString InChapterText);
   void                          SignalChapterArrowSelected (int InChapter);
   void                          SignalSentenceCountChanged      (int InSentenceCount);
+  void                          SignalWindowChange      (int InType);
   
  //! Public Actions
  public :

@@ -49,6 +49,7 @@ class TextDisplaySentenceWindow : public QWidget
   int                           GetWindowHeight         ();
   void                          CreateDisplayItems      ();
   int                           ArrangeItems            (int InWidth);
+  bool                          KeyPress                (int InKey, Qt::KeyboardModifiers InModifiers);
   
  //! Public Data
  public :
@@ -60,7 +61,6 @@ class TextDisplaySentenceWindow : public QWidget
   void                          resizeEvent             (QResizeEvent* InEvent);
   void                          mouseMoveEvent          (QMouseEvent* InEvent);
   void                          keyPressEvent           (QKeyEvent* InEvent);
-  void                          enterEvent              (QEnterEvent* InEvent);
   
  //! Protected Data
  protected :
@@ -69,8 +69,7 @@ class TextDisplaySentenceWindow : public QWidget
  private :
   void                          Initialize              ();
   void                          ClearDisplayItems       ();
-  bool                          KeyPress                (int InKey, Qt::KeyboardModifiers);
-
+  
  //! Private Data
  private :
   BookInfo*                     bookInfo;
@@ -95,6 +94,7 @@ class TextDisplaySentenceWindow : public QWidget
  signals :
   void                          SignalSentenceCountChanged      (int InSentenceCount);
   void                          SignalChapterArrowSelected      (int InChapter);
+  void                          SignalWindowChange      (int InType);
   
  //! Public Actions
  public :

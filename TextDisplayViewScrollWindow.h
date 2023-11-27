@@ -65,7 +65,9 @@ class TextDisplayViewScrollWindow : public QScrollArea
   void                          CreateConnections               ();
   void                          InitializeSubWindows            ();
   void                          resizeEvent                     (QResizeEvent* InEvent);
-
+  void                          enterEvent                      (QEnterEvent* InEvent);
+  void                          keyPressEvent                   (QKeyEvent* InEvent);
+  
  //! Private Data
  private :
   TextDisplayViewWindow*        viewWindow;
@@ -97,6 +99,7 @@ class TextDisplayViewScrollWindow : public QScrollArea
   void                          SlotSetFormattingType           (TextDisplayFormattingItem::FormatType InFormattingType);
   void                          SlotChapterChanged              (int InNewChapter);
   void                          SlotChapterArrowSelected        (int InNewChapter);
+  void                          SlotWindowChange                (int InType);
   
  //! Public Signals
  signals :
@@ -122,7 +125,9 @@ class TextDisplayViewScrollWindow : public QScrollArea
   void                          SignalChapterScrolled           (int InCurrentChapter);
   void                          SignalSetFormattingType         (TextDisplayFormattingItem::FormatType InFormattingType);
   void                          SignalChapterChanged            (int InChapter);
+  void                          SignalWindowChange              (int InType);
   void                          SignalChapterArrowSelected      (int InChapter);
+  
  //! Public Actions
  public :
 

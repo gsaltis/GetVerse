@@ -38,6 +38,7 @@ SOURCES                         += \
 				   BookNameTableItem.cpp                        \
 				   BookNameTableScrollArea.cpp                  \
 				   BookNameWindow.cpp                           \
+				   ChapterHeaderWindow.cpp                      \
 				   Formatting.cpp                               \
 				   InterlinearChapter.cpp                       \
 				   InterlinearDisplayElementSelectDialog.cpp    \
@@ -69,10 +70,9 @@ SOURCES                         += \
 				   TextDisplayViewWindowReferenceItem.cpp       \
 				   TextDisplayWordFormattingItem.cpp            \
 				   TextDisplayWordItem.cpp                      \
-                                   ChapterHeaderWindow.cpp                      \
 				   main.cpp                                     \
 				   sqlite3.c                                    \
-                                   trace.cpp                                    \
+				   trace.cpp                                    \
 
 HEADERS                         += \
 				   BookInfo.h                                   \
@@ -82,6 +82,7 @@ HEADERS                         += \
 				   BookNameTableItem.h                          \
 				   BookNameTableScrollArea.h                    \
 				   BookNameWindow.h                             \
+				   ChapterHeaderWindow.h                        \
 				   Formatting.h                                 \
 				   InterlinearChapter.h                         \
 				   InterlinearDisplayElementSelectDialog.h      \
@@ -113,9 +114,8 @@ HEADERS                         += \
 				   TextDisplayViewWindowReferenceItem.h         \
 				   TextDisplayWordFormattingItem.h              \
 				   TextDisplayWordItem.h                        \
-                                   ChapterHeaderWindow.h                        \
 				   sqlite3.h                                    \
-                                   trace_winnet.h                               \
+				   trace_winnet.h                               \
 
 FORMS                           += \
 

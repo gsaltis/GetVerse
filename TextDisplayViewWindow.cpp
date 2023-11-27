@@ -591,6 +591,7 @@ void
 TextDisplayViewWindow::SlotSetBlockMode(void)
 {
   mode = BlockMode;
+  setFocus();
   ArrangeItems();
   repaint();
 }
@@ -602,6 +603,7 @@ void
 TextDisplayViewWindow::SlotSetReferenceMode(void)
 {
   mode = ReferenceMode;
+  setFocus();
   ArrangeItems();
   repaint();
 }
@@ -1908,8 +1910,8 @@ TextDisplayViewWindow::keyPressEvent
   key = InEvent->key();
   mods = InEvent->modifiers();
   
-  if ( mode == ReferenceMode ) {
-    if ( ReferenceKeyPress(key, mods) ) {
+  if ( mode == InterlinearMode || mode == ReferenceMode ) {
+    if ( KeyPress(key, mods) ) {
       return;
     }
   }
@@ -1928,10 +1930,10 @@ TextDisplayViewWindow::enterEvent
 }
 
 /*****************************************************************************!
- * Function : ReferenceKeyPress
+ * Function : KeyPress
  *****************************************************************************/
 bool
-TextDisplayViewWindow::ReferenceKeyPress
+TextDisplayViewWindow::KeyPress
 (int InKey, Qt::KeyboardModifiers InModifiers)
 {
   int                                   newChapter;
@@ -1939,6 +1941,25 @@ TextDisplayViewWindow::ReferenceKeyPress
     return false;
   }
 
+  if ( InModifiers != Qt::NoModifier ) {
+    return false;
+  }
+  
+  if ( InKey == Qt::Key_I ) {
+    emit SignalWindowChange(5);
+    return true;
+  }
+  
+  if ( InKey == Qt::Key_S ) {
+    emit SignalWindowChange(4);
+    return true;
+  }
+
+  if ( InKey == Qt::Key_R ) {
+    emit SignalWindowChange(1);
+    return true;
+  }
+    
   if ( InKey == Qt::Key_Home && InModifiers == Qt::NoModifier ) {
     newChapter = 1;
     SlotChapterChanged(newChapter);

@@ -63,8 +63,6 @@ void
 TextDisplaySentenceWindow::resizeEvent
 (QResizeEvent* )
 {
-  TRACE_FUNCTION_START();
-  TRACE_FUNCTION_END();
 }
 
 /*****************************************************************************!
@@ -195,7 +193,6 @@ TextDisplaySentenceWindow::ArrangeItems
   TextDisplaySentenceItem*              item;
   int                                   sentenceCount;
 
-  TRACE_FUNCTION_START();
   x             = leftMargin;
   y             = topMargin;
   windowHeight  = 0;
@@ -231,7 +228,6 @@ TextDisplaySentenceWindow::ArrangeItems
   }
   windowHeight += bottomMargin;
   emit SignalSentenceCountChanged(sentenceCount);
-  TRACE_FUNCTION_END();
   return windowHeight;
 }
 
@@ -247,22 +243,12 @@ TextDisplaySentenceWindow::keyPressEvent
   
   key = InEvent->key();
   mods = InEvent->modifiers();
-  
+
   if ( KeyPress(key, mods) ) {
     return;
   }
 
-  QWidget::keyPressEvent(InEvent);
-}
-
-/*****************************************************************************!
- * Function : enterEvent
- *****************************************************************************/
-void
-TextDisplaySentenceWindow::enterEvent
-(QEnterEvent* )
-{
-  setFocus();
+ QWidget::keyPressEvent(InEvent);
 }
 
 /*****************************************************************************!
@@ -270,11 +256,31 @@ TextDisplaySentenceWindow::enterEvent
  *****************************************************************************/
 bool
 TextDisplaySentenceWindow::KeyPress
-(int InKey, Qt::KeyboardModifiers)
+(int InKey, Qt::KeyboardModifiers InModifiers)
 {
   int                                   newChapter;
+
   if ( maxChapters == 0 ) {
     return false;
+  }
+
+  if ( InModifiers != Qt::NoModifier ) {
+    return false;
+  }
+
+  if ( InKey == Qt::Key_I ) {
+    emit SignalWindowChange(5);
+    return true;
+  }
+  
+  if ( InKey == Qt::Key_S ) {
+    emit SignalWindowChange(4);
+    return true;
+  }
+
+  if ( InKey == Qt::Key_R ) {
+    emit SignalWindowChange(1);
+    return true;
   }
   
   if ( InKey == Qt::Key_Left ) {
@@ -313,4 +319,3 @@ TextDisplaySentenceWindow::GetWindowHeight
 {
   return windowHeight;
 }
-

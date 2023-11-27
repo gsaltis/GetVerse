@@ -68,6 +68,7 @@ class TextDisplayViewWindow : public QWidget
   void                          ClearText               ();
   int                           GetTableHeight          ();
   int                           GetWordCount            ();
+  bool                          KeyPress                (int InKey, Qt::KeyboardModifiers InModifiers);
   
  //! Public Data
  public :
@@ -86,7 +87,6 @@ class TextDisplayViewWindow : public QWidget
 
  //! Private Methods
  private :
-  bool                          ReferenceKeyPress               (int InKey, Qt::KeyboardModifiers InModifiers);
   int                           GetInterlinearVerseNumber       (int InBookNumnber, int InChapterNumber, int InVerseNumber);
   InterlinearChapter*           AddInterlinearChapter           (int InBookIndex, int InChapterNumber);
   void                          AddInterlinearVerse             (InterlinearVerse* InVerse);
@@ -236,6 +236,7 @@ class TextDisplayViewWindow : public QWidget
   void                          SignalSetMessage                (QString InMessage);
   void                          SignalLocationSelected          (QPoint InLocation);
   void                          SignalChapterArrowSelected      (int InChapter);
+  void                          SignalWindowChange              (int InWindowType);
   
  //! Public Actions
  public :

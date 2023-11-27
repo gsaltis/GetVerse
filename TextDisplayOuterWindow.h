@@ -101,6 +101,7 @@ class TextDisplayOuterWindow : public QFrame
   void                          SlotSetFormattingType           (TextDisplayFormattingItem::FormatType InFormattingType);
   void                          SlotChapterArrowSelected        (int InNewChapter);
   void                          SlotSetBookmark         (int InBook, int InChapter, int InVerse);
+  void                          SlotWindowChange        (int InType);
   
  //! Public Signals
  signals :

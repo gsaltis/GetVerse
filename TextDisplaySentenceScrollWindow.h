@@ -63,7 +63,9 @@ class TextDisplaySentenceScrollWindow : public QScrollArea
   void                          CreateConnections       ();
   void                          InitializeSubWindows    ();
   void                          resizeEvent             (QResizeEvent* InEvent);
-
+  void                          enterEvent              (QEnterEvent* InEvent);
+  void                          keyPressEvent           (QKeyEvent* InEvent);
+  
  //! Private Data
  private :
   TextDisplaySentenceWindow*    sentenceWindow;
@@ -74,6 +76,7 @@ class TextDisplaySentenceScrollWindow : public QScrollArea
   void                          SlotChapterChanged      (int InChapter);
   void                          SlotSentenceCountChanged        (int InSentenceCount);
   void                          SlotChapterArrowSelected        (int InChapter);
+  void                          SlotWindowChange        (int InType);
   
  //! Public Signals
  signals :
@@ -81,7 +84,8 @@ class TextDisplaySentenceScrollWindow : public QScrollArea
   void                          SignalChapterChanged    (int InChapter);
   void                          SignalSentenceCountChanged      (int InSentenceCount);
   void                          SignalChapterArrowSelected      (int InChapter);
-
+  void                          SignalWindowChange      (int InType);
+  
  //! Public Actions
  public :
 

@@ -25,10 +25,10 @@ TextDisplaySentenceScrollWindow::TextDisplaySentenceScrollWindow
 () : QScrollArea()
 {
   QPalette pal;
-  pal = palette();
+  pal = QScrollArea::palette();
   pal.setBrush(QPalette::Window, QBrush(QColor(255, 255, 224)));
-  setPalette(pal);
-  setAutoFillBackground(true);
+  QScrollArea::setPalette(pal);
+  QScrollArea::setAutoFillBackground(true);
   initialize();
 }
 
@@ -73,19 +73,21 @@ TextDisplaySentenceScrollWindow::CreateConnections
           TextDisplaySentenceScrollWindow::SignalBookSelected,
           sentenceWindow,
           TextDisplaySentenceWindow::SlotBookSelected);
+
+  connect(sentenceWindow,
+          SIGNAL(SignalWindowChange(int)),
+          this,
+          SLOT(SlotWindowChange(int)));
   
-  connect(this,
-          TextDisplaySentenceScrollWindow::SignalChapterChanged,
-          sentenceWindow,
-          TextDisplaySentenceWindow::SlotChapterChanged);
   connect(sentenceWindow,
-          TextDisplaySentenceWindow::SignalChapterArrowSelected,
+          SIGNAL(SignalChapterArrowSelected(int)),
           this,
-          TextDisplaySentenceScrollWindow::SlotChapterArrowSelected);
+          SLOT(SlotChapterArrowSelected(int)));
+
   connect(sentenceWindow,
-          TextDisplaySentenceWindow::SignalSentenceCountChanged,
+          SIGNAL(SignalSentenceCountChanged(int)),
           this,
-          TextDisplaySentenceScrollWindow::SlotSentenceCountChanged);
+          SLOT(SlotSentenceCountChanged(int)));
 }
 
 /*****************************************************************************!
@@ -104,13 +106,9 @@ void
 TextDisplaySentenceScrollWindow::SlotBookSelected
 (BookInfo* InBookInfo)
 {
-  int                           windowHeight;
-  int                           width;
-
-  width = size().width(); 
   sentenceWindow->SlotBookSelected(InBookInfo);
   sentenceWindow->CreateDisplayItems();
-  sentenceWindow->resize(size());
+  sentenceWindow->resize(QScrollArea::size());
 }
 
 /*****************************************************************************!
@@ -120,13 +118,9 @@ void
 TextDisplaySentenceScrollWindow::SlotChapterChanged
 (int InChapter)
 {
-  int                           windowHeight;
-  int                           width;
-
-  width = size().width();
   sentenceWindow->SlotChapterChanged(InChapter);
   sentenceWindow->CreateDisplayItems();
-  sentenceWindow->resize(size());
+  sentenceWindow->resize(QScrollArea::size());
 }
 
 /*****************************************************************************!
@@ -140,11 +134,9 @@ TextDisplaySentenceScrollWindow::resizeEvent
   int                                   width;
   int                                   height;
 
-  TRACE_FUNCTION_START();
   width = InEvent->size().width();
   height= sentenceWindow->ArrangeItems(width);
   w->resize(width, height);
-  TRACE_FUNCTION_END();
 }
 
 /*****************************************************************************!
@@ -166,3 +158,45 @@ TextDisplaySentenceScrollWindow::SlotChapterArrowSelected
 {
   emit SignalChapterArrowSelected(InChapter);
 }
+
+/*****************************************************************************!
+ * Function : SlotWindowChange
+ *****************************************************************************/
+void
+TextDisplaySentenceScrollWindow::SlotWindowChange
+(int InType)
+{
+  emit SignalWindowChange(InType);
+}
+
+/*****************************************************************************!
+ * Function : keyPressEvent
+ *****************************************************************************/
+void
+TextDisplaySentenceScrollWindow::keyPressEvent
+(QKeyEvent* InEvent)
+{
+  int                                   key;
+  Qt::KeyboardModifiers                 mods;
+
+  key = InEvent->key();
+  mods = InEvent->modifiers();
+
+  if ( sentenceWindow->KeyPress(key, mods) ) {
+    return;
+  }
+
+  TRACE_FUNCTION_LOCATION();
+  QScrollArea::keyPressEvent(InEvent);
+}
+
+/*****************************************************************************!
+ * Function : enterEvent
+ *****************************************************************************/
+void
+TextDisplaySentenceScrollWindow::enterEvent
+(QEnterEvent*)
+{
+  setFocus();
+}
+

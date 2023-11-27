@@ -125,6 +125,11 @@ void
 TextDisplayViewScrollWindow::CreateConnections(void)
 {
   connect(viewWindow,
+          TextDisplayViewWindow::SignalWindowChange,
+          this,
+          TextDisplayViewScrollWindow::SlotWindowChange);
+  
+  connect(viewWindow,
           TextDisplayViewWindow::SignalChapterArrowSelected,
           this,
           TextDisplayViewScrollWindow::SlotChapterArrowSelected);
@@ -428,3 +433,44 @@ TextDisplayViewScrollWindow::SlotChapterArrowSelected
 {
   emit SignalChapterArrowSelected(InNewChapter);
 }
+
+/*****************************************************************************!
+ * Function : SlotWindowChange
+ *****************************************************************************/
+void
+TextDisplayViewScrollWindow::SlotWindowChange
+(int InType)
+{
+  emit SignalWindowChange(InType);
+}
+
+/*****************************************************************************!
+ * Function : keyPressEvent
+ *****************************************************************************/
+void
+TextDisplayViewScrollWindow::keyPressEvent
+(QKeyEvent* InEvent)
+{
+  int                                   key;
+  Qt::KeyboardModifiers                 mods;
+
+  key = InEvent->key();
+  mods = InEvent->modifiers();
+
+  if ( viewWindow->KeyPress(key, mods) ) {
+    return;
+  }
+
+  QScrollArea::keyPressEvent(InEvent);
+}
+
+/*****************************************************************************!
+ * Function : enterEvent
+ *****************************************************************************/
+void
+TextDisplayViewScrollWindow::enterEvent
+(QEnterEvent*)
+{
+  setFocus();
+}
+

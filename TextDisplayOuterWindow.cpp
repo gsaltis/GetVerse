@@ -229,6 +229,16 @@ TextDisplayOuterWindow::SlotBookSelected
 void
 TextDisplayOuterWindow::CreateConnections(void)
 {
+  connect(viewWindow,
+          TextDisplayViewScrollWindow::SignalWindowChange,
+          this,
+          TextDisplayOuterWindow::SlotWindowChange);
+  
+  connect(sentenceWindow,
+          TextDisplaySentenceContainterWindow::SignalWindowChange,
+          this,
+          TextDisplayOuterWindow::SlotWindowChange);
+  
   connect(controlBar,
           TextControlBar::SignalSetBookmark,
           this,
@@ -598,4 +608,45 @@ TextDisplayOuterWindow::SlotSetBookmark
 (int InBook, int InChapter, int InVerse)
 {
   emit SignalSetBookmark(InBook, InChapter, InVerse);
+}
+
+/*****************************************************************************!
+ * Function : SlotWindowChange
+ *****************************************************************************/
+void
+TextDisplayOuterWindow::SlotWindowChange
+(int InType)
+{
+  TextDisplayViewWindow::DisplayMode            mode = (TextDisplayViewWindow::DisplayMode)InType;
+
+  switch (mode) {
+    case TextDisplayViewWindow::NoneMode : {
+      break;
+    }
+      
+    case TextDisplayViewWindow::ReferenceMode : {
+      SlotSetReferenceMode();
+      break;
+    }
+      
+    case TextDisplayViewWindow::BlockMode : {
+      SlotSetBlockMode();
+      break;
+    }
+      
+    case TextDisplayViewWindow::EditMode : {
+      SlotSetEditMode();
+      break;
+    }
+      
+    case TextDisplayViewWindow::SentenceMode : {
+      SlotSetSentenceMode();
+      break;
+    }
+      
+    case TextDisplayViewWindow::InterlinearMode : {
+      SlotSetInterlinearMode();
+      break;
+    }
+  }      
 }
