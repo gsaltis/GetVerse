@@ -53,6 +53,7 @@ SOURCES                         += \
 				   SectionHeader.cpp                            \
 				   SystemConfig.cpp                             \
 				   TextControlBar.cpp                           \
+				   TextControlBarCheckBox.cpp                   \
 				   TextDisplayFormattingItem.cpp                \
 				   TextDisplayInterlinearItem.cpp               \
 				   TextDisplayItem.cpp                          \
@@ -97,6 +98,7 @@ HEADERS                         += \
 				   SectionHeader.h                              \
 				   SystemConfig.h                               \
 				   TextControlBar.h                             \
+				   TextControlBarCheckBox.h                     \
 				   TextDisplayFormattingItem.h                  \
 				   TextDisplayInterlinearItem.h                 \
 				   TextDisplayItem.h                            \

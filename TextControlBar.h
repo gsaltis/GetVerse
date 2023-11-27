@@ -19,11 +19,13 @@
 #include <QSlider>
 #include <QSpinBox>
 #include <QComboBox>
+#include <QCheckBox>
 
 /*****************************************************************************!
  * Local Headers
  *****************************************************************************/
 #include "TextDisplayFormattingItem.h"
+#include "TextControlBarCheckBox.h"
 
 /*****************************************************************************!
  * Exported Macros
@@ -62,12 +64,13 @@ class TextControlBar : public QWidget
 
  //! Private Methods
  private :
-  void                          initialize              ();
-  void                          CreateSubWindows        ();
-  void                          InitializeSubWindows    ();
-  void                          resizeEvent             (QResizeEvent* InEvent);
-  QStringList                   WordBreakTypeComboAddItems (void);
-  void                          CreateConnections       ();
+  void                          initialize                      ();
+  void                          CreateSubWindows                ();
+  void                          InitializeSubWindows            ();
+  void                          resizeEvent                     (QResizeEvent* InEvent);
+  QStringList                   WordBreakTypeComboAddItems      (void);
+  void                          CreateConnections               ();
+  void                          InterlinearElementsDisplay      (bool InDisplay);
   
  //! Private Data
  private :
@@ -97,6 +100,18 @@ class TextControlBar : public QWidget
   QComboBox*                    WordBreakTypeCombo;
   QLabel*                       WordBreakTypeLabel;
 
+  QLabel*                       InterlinearContextualNameLabel;
+  QLabel*                       InterlinearEnglishNameLabel;
+  QLabel*                       InterlinearStrongsNameLabel;
+  QLabel*                       InterlinearMorphologyNameLabel;
+  QLabel*                       InterlinearTransliterateNameLabel;
+  
+  TextControlBarCheckBox*       InterlinearContextualCheckBox;
+  TextControlBarCheckBox*       InterlinearEnglishCheckBox;
+  TextControlBarCheckBox*       InterlinearStrongsCheckBox;
+  TextControlBarCheckBox*       InterlinearMorphologyCheckBox;
+  TextControlBarCheckBox*       InterlinearTransliterateCheckBox;
+  
  //! Public Slots
  public slots :
   void                          SlotReferenceButtonPushed       (void);

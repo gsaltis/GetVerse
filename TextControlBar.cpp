@@ -224,6 +224,76 @@ TextControlBar::CreateSubWindows()
   WordBreakTypeLabel->setAlignment(Qt::AlignRight);
   WordBreakTypeLabel->hide();
   WordBreakTypeLabel->setFont(QFont("Arial", 10, QFont::Normal));
+
+  //!
+  InterlinearContextualNameLabel = new QLabel(this);
+  InterlinearContextualNameLabel->move(130, 1);
+  InterlinearContextualNameLabel->resize(100, 10);
+  InterlinearContextualNameLabel->setText("CONTEXTUAL :");
+  InterlinearContextualNameLabel->setAlignment(Qt::AlignRight);
+  InterlinearContextualNameLabel->setFont(QFont("Arial", 8, QFont::Normal));
+  InterlinearContextualNameLabel->hide();
+  
+  InterlinearContextualCheckBox = new TextControlBarCheckBox(this);
+  InterlinearContextualCheckBox->move(233, 2);
+  InterlinearContextualCheckBox->resize(8, 8);
+  InterlinearContextualCheckBox->hide();
+
+  //!
+  InterlinearEnglishNameLabel = new QLabel(this);
+  InterlinearEnglishNameLabel->move(130, 12);
+  InterlinearEnglishNameLabel->resize(100, 10);
+  InterlinearEnglishNameLabel->setText("ENGLISH :");
+  InterlinearEnglishNameLabel->setAlignment(Qt::AlignRight);
+  InterlinearEnglishNameLabel->setFont(QFont("Arial", 8, QFont::Normal));
+  InterlinearEnglishNameLabel->hide();
+  
+  InterlinearEnglishCheckBox = new TextControlBarCheckBox(this);
+  InterlinearEnglishCheckBox->move(233, 13);
+  InterlinearEnglishCheckBox->resize(8, 8);
+  InterlinearEnglishCheckBox->hide();
+  
+  //!
+  InterlinearStrongsNameLabel = new QLabel(this);
+  InterlinearStrongsNameLabel->move(250, 1);
+  InterlinearStrongsNameLabel->resize(100, 10);
+  InterlinearStrongsNameLabel->setText("STRONGS :");
+  InterlinearStrongsNameLabel->setAlignment(Qt::AlignRight);
+  InterlinearStrongsNameLabel->setFont(QFont("Arial", 8, QFont::Normal));
+  InterlinearStrongsNameLabel->hide();
+  
+  InterlinearStrongsCheckBox = new TextControlBarCheckBox(this);
+  InterlinearStrongsCheckBox->move(383, 2);
+  InterlinearStrongsCheckBox->resize(8, 8);
+  InterlinearStrongsCheckBox->hide();
+  
+  //!
+  InterlinearMorphologyNameLabel = new QLabel(this);
+  InterlinearMorphologyNameLabel->move(250, 12);
+  InterlinearMorphologyNameLabel->resize(100, 10);
+  InterlinearMorphologyNameLabel->setText("MORPHOLOGY :");
+  InterlinearMorphologyNameLabel->setAlignment(Qt::AlignRight);
+  InterlinearMorphologyNameLabel->setFont(QFont("Arial", 8, QFont::Normal));
+  InterlinearMorphologyNameLabel->hide();
+  
+  InterlinearMorphologyCheckBox = new TextControlBarCheckBox(this);
+  InterlinearMorphologyCheckBox->move(383, 13);
+  InterlinearMorphologyCheckBox->resize(8, 8);
+  InterlinearMorphologyCheckBox->hide();
+  
+  //!
+  InterlinearTransliterateNameLabel = new QLabel(this);
+  InterlinearTransliterateNameLabel->move(400, 1);
+  InterlinearTransliterateNameLabel->resize(100, 10);
+  InterlinearTransliterateNameLabel->setText("TRANSLITERATE :");
+  InterlinearTransliterateNameLabel->setAlignment(Qt::AlignRight);
+  InterlinearTransliterateNameLabel->setFont(QFont("Arial", 8, QFont::Normal));
+  InterlinearTransliterateNameLabel->hide();
+  
+  InterlinearTransliterateCheckBox = new TextControlBarCheckBox(this);
+  InterlinearTransliterateCheckBox->move(533, 2);
+  InterlinearTransliterateCheckBox->resize(8, 8);
+  InterlinearTransliterateCheckBox->hide();
 }
 
 /*****************************************************************************!
@@ -279,6 +349,12 @@ TextControlBar::resizeEvent
   int                                   ChapterSelectY;
   int                                   ChapterSelectW;
   int                                   ChapterSelectH;
+
+  int                                   checkboxX[5];
+  int                                   checkboxY[5];
+
+  int                                   labelX[5];
+  int                                   labelY[5];
   
   int                                   ChapterSelectLabelX;
   int                                   ChapterSelectLabelY;
@@ -376,6 +452,58 @@ TextControlBar::resizeEvent
   ChapterSelectLabel->move(ChapterSelectLabelX, ChapterSelectLabelY);
   ChapterSelectLabel->resize(ChapterSelectLabelW, ChapterSelectLabelH);
   lastX = ChapterSelectLabelX;
+
+
+  //!
+  checkboxX[4] = ChapterSelectLabelX - 30;
+  checkboxY[4] = 3;
+
+  labelX[4] = checkboxX[4] - 105;
+  labelY[4] = 1;
+  
+  //!
+  checkboxX[3] = labelX[4] - 30;
+  checkboxY[3] = 3;
+  
+  labelX[3] = checkboxX[3] - 105;
+  labelY[3] = 1;
+  
+  //!
+  checkboxX[2] = checkboxX[3];
+  checkboxY[2] = 15;
+  
+  labelX[2] = checkboxX[2] - 105;
+  labelY[2] = 13;
+
+  //!
+  checkboxX[1] = labelX[2] - 30;
+  checkboxY[1] = 15;
+
+  labelX[1] = checkboxX[1] - 105;
+  labelY[1] = 13;
+
+  
+  //!
+  checkboxX[0] = checkboxX[1];
+  checkboxY[0] = 1;
+  
+  labelX[0] = checkboxX[0] - 105;
+  labelY[0] = 1;
+  
+  InterlinearTransliterateCheckBox->move(checkboxX[4], checkboxY[4]);
+  InterlinearTransliterateNameLabel->move(labelX[4], labelY[4]);
+
+  InterlinearStrongsCheckBox->move(checkboxX[3], checkboxY[3]);
+  InterlinearStrongsNameLabel->move(labelX[3], labelY[3]);
+
+  InterlinearMorphologyCheckBox->move(checkboxX[2], checkboxY[2]);
+  InterlinearMorphologyNameLabel->move(labelX[2], labelY[2]);
+
+  InterlinearEnglishCheckBox->move(checkboxX[1], checkboxY[1]);
+  InterlinearEnglishNameLabel->move(labelX[1], labelY[1]);
+  
+  InterlinearContextualCheckBox->move(checkboxX[0], checkboxY[0]);
+  InterlinearContextualNameLabel->move(labelX[0], labelY[0]);
   
   //!
   WordBreakTypeComboW = 130;
@@ -420,6 +548,7 @@ TextControlBar::SlotReferenceButtonPushed(void)
   GroupingCountLabel->show();
   WordBreakTypeCombo->hide();
   WordBreakTypeLabel->hide();
+  InterlinearElementsDisplay(false);
   emit SignalSetReferenceMode();
 }
 
@@ -439,6 +568,7 @@ TextControlBar::SlotBlockViewButtonPushed(void)
   GroupingCountLabel->hide();
   WordBreakTypeCombo->hide();
   WordBreakTypeLabel->hide();
+  InterlinearElementsDisplay(false);
   emit SignalSetBlockMode();
 }
 
@@ -460,6 +590,7 @@ TextControlBar::SlotSentenceViewButtonPushed(void)
   InterlinearButton->setChecked(false);
   WordBreakTypeCombo->hide();
   WordBreakTypeLabel->hide();
+  InterlinearElementsDisplay(false);
   emit SignalSetSentenceMode();
 }
 
@@ -484,6 +615,8 @@ TextControlBar::SlotEditButtonPushed(void)
   GroupingCountLabel->show();
   WordBreakTypeCombo->show();
   WordBreakTypeLabel->show();
+
+  InterlinearElementsDisplay(false);
 
   emit SignalSetEditMode();
 }
@@ -510,6 +643,8 @@ TextControlBar::SlotInterlinearButtonPushed(void)
   WordBreakTypeCombo->hide();
   WordBreakTypeLabel->hide();
 
+  InterlinearElementsDisplay(true);
+  
   emit SignalSetInterlinearMode();
 }
 
@@ -645,3 +780,24 @@ TextControlBar::SlotBookSelected
 {
   currentBook = InBookIndex;
 }
+
+/*****************************************************************************!
+ * Function : InterlinearElementsDisplay
+ *****************************************************************************/
+void
+TextControlBar::InterlinearElementsDisplay
+(bool InDisplay)
+{
+  InterlinearContextualNameLabel->setVisible(InDisplay);
+  InterlinearEnglishNameLabel->setVisible(InDisplay);
+  InterlinearStrongsNameLabel->setVisible(InDisplay);
+  InterlinearMorphologyNameLabel->setVisible(InDisplay);
+  InterlinearTransliterateNameLabel->setVisible(InDisplay);
+  
+  InterlinearContextualCheckBox->setVisible(InDisplay);
+  InterlinearEnglishCheckBox->setVisible(InDisplay);
+  InterlinearStrongsCheckBox->setVisible(InDisplay);
+  InterlinearMorphologyCheckBox->setVisible(InDisplay);
+  InterlinearTransliterateCheckBox->setVisible(InDisplay);
+}
+
