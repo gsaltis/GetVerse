@@ -65,12 +65,14 @@ class InterlinearWord
   QSize                         GetEnglishSize                  () { return englishSize; }
   QFont                         GetEnglishFont                  () { return englishFont; }
   void                          Paint                           (QPainter* InPainter);
-  void							PaintSelected					(QPainter* InPainter);
+  void				PaintSelected   		(QPainter* InPainter);
   QSize                         GetSize                         ();
   static void                   SetLineskip                     (int InLineskip);
   bool                          ContainsPoint                   (QPoint InPoint);
-  void							SetSelected						(bool InSelected);
-
+  void				SetSelected			(bool InSelected);
+  static void                   GetValues                       ();
+  static void                   SetValues                       ();
+  
  //! Public Data
  public :
   static QFont                  strongsFont;

@@ -51,6 +51,7 @@ SOURCES                         += \
 				   MainWindow.cpp                               \
 				   SQLStatement.cpp                             \
 				   SectionHeader.cpp                            \
+				   StrongsReferenceDisplayDialog.cpp            \
 				   SystemConfig.cpp                             \
 				   TextControlBar.cpp                           \
 				   TextControlBarCheckBox.cpp                   \
@@ -96,6 +97,7 @@ HEADERS                         += \
 				   MainWindow.h                                 \
 				   SQLStatement.h                               \
 				   SectionHeader.h                              \
+				   StrongsReferenceDisplayDialog.h              \
 				   SystemConfig.h                               \
 				   TextControlBar.h                             \
 				   TextControlBarCheckBox.h                     \

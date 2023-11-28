@@ -16,6 +16,7 @@
  * Local Headers
  *****************************************************************************/
 #include "InterlinearWord.h"
+#include "main.h"
 
 /*****************************************************************************!
  * Static Elements
@@ -433,3 +434,30 @@ InterlinearWord::SetSelected
   selected = InSelected;
 }
 
+/*****************************************************************************!
+ * Function : GetValues
+ *****************************************************************************/
+void
+InterlinearWord::GetValues
+()
+{
+  MainGetInterlinearWordDisplays(contextualFormDisplay,
+                                 strongsDisplay,
+                                 transliterateDisplay,
+                                 englishDisplay,
+                                 morphologyDisplay);
+}
+
+/*****************************************************************************!
+ * Function : SetValues
+ *****************************************************************************/
+void
+InterlinearWord::SetValues
+()
+{
+  MainSetInterlinearWordDisplays(contextualFormDisplay,
+                                 strongsDisplay,
+                                 transliterateDisplay,
+                                 englishDisplay,
+                                 morphologyDisplay);
+}

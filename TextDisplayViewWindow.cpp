@@ -29,6 +29,7 @@
 #include "SQLStatement.h"
 #include "InterlinearChapter.h"
 #include "InterlinearDisplayElementSelectDialog.h"
+#include "StrongsReferenceDisplayDialog.h"
 
 /*****************************************************************************!
  * Local Type : ThisChapter
@@ -2373,7 +2374,11 @@ TextDisplayViewWindow::InterlinearModeMousePress
   modifiers = InEvent->modifiers();
 
   if ( button == Qt::LeftButton && modifiers == Qt::NoModifier ) {
-    InterlinearModeDisplayElementViewDialog(InEvent->pos());
+    InterlinearWord*                    word;
+    word = currentInterlinearChapter->FindWordByLocation(InEvent->pos());
+    if ( word ) {
+      InterlinearModeDisplayElementViewDialog(InEvent->globalPosition().toPoint(), word);
+    }
     return;
   }
 }
@@ -2383,16 +2388,15 @@ TextDisplayViewWindow::InterlinearModeMousePress
  *****************************************************************************/
 void
 TextDisplayViewWindow::InterlinearModeDisplayElementViewDialog
-(QPoint InPosition)
+(QPoint InPosition, InterlinearWord* InWord)
 {
-  InterlinearDisplayElementSelectDialog*        dialog;
-  int                                           n;
-  
-  dialog = new InterlinearDisplayElementSelectDialog();
-  dialog->move(InPosition);
-  n = dialog->exec();
+  StrongsReferenceDisplayDialog*                dialog;
+  QString                                       s;
 
-  (void)n;
+  s = InWord->GetStrongsWordID();
+  dialog = new StrongsReferenceDisplayDialog(InWord);
+  dialog->move(InPosition);
+  dialog->exec();
   delete dialog;
 }
 
@@ -2404,7 +2408,7 @@ TextDisplayViewWindow::InterlinearModeMouseMove
 (QPoint InMouseCursor)
 {
   InterlinearWord*                      word;
-  QString 								englishWord;
+  QString 				englishWord;
 
   word = currentInterlinearChapter->FindWordByLocation(InMouseCursor);
   if ( word == NULL ) {
@@ -2466,6 +2470,7 @@ TextDisplayViewWindow::SlotInterlinearWordSelected
       break;
     }
   }
+  InterlinearWord::SetValues();
   ArrangeItems();
   repaint();
 }

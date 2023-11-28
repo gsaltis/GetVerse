@@ -151,7 +151,7 @@ class TextDisplayViewWindow : public QWidget
   void                          RemoveVerseFormattingItem       (TextDisplayFormattingItem* InItem);
   void                          InterlinearModeMousePress       (QMouseEvent* InEvent);
   void                          InterlinearModeDisplayElementViewDialog
-                                                                (QPoint InPosition);
+                                                                (QPoint InPosition, InterlinearWord* InWord);
 
  //! Private Data
  private :
