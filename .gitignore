@@ -21,3 +21,4 @@ GUI
 release
 debug
 .qmake.stash
+.\#*
