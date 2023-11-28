@@ -28,6 +28,16 @@ void
 MainGetStartLocation
 (int &InBook, int &InChapter, int &InVerse);
 
+void
+MainGetInterlinearWordDisplays
+(bool &InContextualDisplay, bool &InEnglishDisplay, bool &InStrongsDisplay,
+ bool &InMorphologyDisplay, bool &InTransliterateDisplay);
+
+void
+MainSetInterlinearWordDisplays
+(bool InContextualDisplay, bool InEnglishDisplay, bool InStrongsDisplay,
+ bool InMorphologyDisplay, bool InTransliterateDisplay);
+  
 /*****************************************************************************!
  * Exported Data
  *****************************************************************************/

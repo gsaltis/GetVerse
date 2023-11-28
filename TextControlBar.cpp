@@ -18,6 +18,7 @@
  *****************************************************************************/
 #include "TextControlBar.h"
 #include "TextDisplayFormattingItem.h"
+#include "InterlinearWord.h"
 
 /*****************************************************************************!
  * Function : TextControlBar
@@ -73,6 +74,31 @@ TextControlBar::CreateConnections
           SIGNAL(valueChanged(int)),
           this,
           SLOT(SlotChapterChanged(int)));
+
+  connect(InterlinearContextualCheckBox,
+          TextControlBarCheckBox::SignalChecked,
+          this,
+          TextControlBar::SlotContextualChecked);
+
+  connect(InterlinearEnglishCheckBox,
+          TextControlBarCheckBox::SignalChecked,
+          this,
+          TextControlBar::SlotEnglishChecked);
+
+  connect(InterlinearMorphologyCheckBox,
+          TextControlBarCheckBox::SignalChecked,
+          this,
+          TextControlBar::SlotMorphologyChecked);
+
+  connect(InterlinearStrongsCheckBox,
+          TextControlBarCheckBox::SignalChecked,
+          this,
+          TextControlBar::SlotStrongsChecked);
+
+  connect(InterlinearTransliterateCheckBox,
+          TextControlBarCheckBox::SignalChecked,
+          this,
+          TextControlBar::SlotTransliterateChecked);
 }
 
 /*****************************************************************************!
@@ -238,7 +264,7 @@ TextControlBar::CreateSubWindows()
   InterlinearContextualCheckBox->move(233, 2);
   InterlinearContextualCheckBox->resize(8, 8);
   InterlinearContextualCheckBox->hide();
-
+  
   //!
   InterlinearEnglishNameLabel = new QLabel(this);
   InterlinearEnglishNameLabel->move(130, 12);
@@ -642,10 +668,9 @@ TextControlBar::SlotInterlinearButtonPushed(void)
   GroupingCountLabel->show();
   WordBreakTypeCombo->hide();
   WordBreakTypeLabel->hide();
-
-  InterlinearElementsDisplay(true);
-  
+ 
   emit SignalSetInterlinearMode();
+  InterlinearElementsDisplay(true);
 }
 
 /*****************************************************************************!
@@ -799,5 +824,92 @@ TextControlBar::InterlinearElementsDisplay
   InterlinearStrongsCheckBox->setVisible(InDisplay);
   InterlinearMorphologyCheckBox->setVisible(InDisplay);
   InterlinearTransliterateCheckBox->setVisible(InDisplay);
+
+  InterlinearContextualCheckBox->SetChecked(InterlinearWord::contextualFormDisplay);
+  InterlinearEnglishCheckBox->SetChecked(InterlinearWord::englishDisplay);
+  InterlinearStrongsCheckBox->SetChecked(InterlinearWord::strongsDisplay);
+  InterlinearMorphologyCheckBox->SetChecked(InterlinearWord::morphologyDisplay);
+  InterlinearTransliterateCheckBox->SetChecked(InterlinearWord::transliterateDisplay);
 }
 
+/*****************************************************************************!
+ * Function : SlotWindowChange
+ *****************************************************************************/
+void
+TextControlBar::SlotWindowChange
+(int InWindow)
+{
+  switch (InWindow) {
+    case 1 : {
+      SlotReferenceButtonPushed();
+      break;
+    }
+    case 2 : {
+      SlotBlockViewButtonPushed();
+      break;
+    }
+    case 3 : {
+      SlotEditButtonPushed();
+      break;
+    }
+    case 4 : {
+      SlotSentenceViewButtonPushed();
+      break;
+    }
+    case 5 : {
+      SlotInterlinearButtonPushed();
+      break;
+    }
+  }
+}
+
+/*****************************************************************************!
+ * Function : SlotContextualChecked
+ *****************************************************************************/
+void
+TextControlBar::SlotContextualChecked
+(bool InChecked)
+{
+  emit SignalInterlinearWordChanged(INTERLINEAR_WORD_CONTEXTUAL_INDEX, InChecked);
+}
+
+/*****************************************************************************!
+ * Function : SlotStrongsChecked
+ *****************************************************************************/
+void
+TextControlBar::SlotStrongsChecked
+(bool InChecked)
+{
+  emit SignalInterlinearWordChanged(INTERLINEAR_WORD_STRONGS_INDEX, InChecked);
+}
+
+/*****************************************************************************!
+ * Function : SlotMorphologyChecked
+ *****************************************************************************/
+void
+TextControlBar::SlotMorphologyChecked
+(bool InChecked)
+{
+  emit SignalInterlinearWordChanged(INTERLINEAR_WORD_MORPHOLOGY_INDEX, InChecked);
+  
+}
+
+/*****************************************************************************!
+ * Function : SlotEnglishChecked
+ *****************************************************************************/
+void
+TextControlBar::SlotEnglishChecked
+(bool InChecked)
+{
+  emit SignalInterlinearWordChanged(INTERLINEAR_WORD_ENGLISH_INDEX, InChecked);
+}
+
+/*****************************************************************************!
+ * Function : SlotTransliterateChecked
+ *****************************************************************************/
+void
+TextControlBar::SlotTransliterateChecked
+(bool InChecked)
+{
+  emit SignalInterlinearWordChanged(INTERLINEAR_WORD_TRANSLITERATE_INDEX, InChecked);
+}

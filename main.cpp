@@ -380,6 +380,7 @@ MainInitialize
   MainFormatInfos                       = FormattingInfoListCreate();
   MainBlockOutputText                   = QString("");
 
+  InterlinearWord::GetValues();
   s = getenv(DATABASE_ENV_LOCATION);
   if ( ! s.isEmpty() ) {
     MainDatabaseFilename = s;
@@ -1677,3 +1678,38 @@ MainGetStartLocation
   InChapter = chapter;
   InVerse = verse;
 }
+
+/*****************************************************************************!
+ * Function : MainSetInterlinearWordDisplays
+ *****************************************************************************/
+void
+MainSetInterlinearWordDisplays
+(bool InContextualDisplay, bool InEnglishDisplay, bool InStrongsDisplay,
+ bool InMorphologyDisplay, bool InTransliterateDisplay)
+{
+  QSettings                             settings(MAIN_ORG_NAME, MAIN_APP_NAME);
+
+  settings.setValue("Interlinear/Values/Contextual/Display", InContextualDisplay);
+  settings.setValue("Interlinear/Values/Strongs/Display", InStrongsDisplay);
+  settings.setValue("Interlinear/Values/Transliterate/Display", InTransliterateDisplay);
+  settings.setValue("Interlinear/Values/English/Display", InEnglishDisplay);
+  settings.setValue("Interlinear/Values/Morphology/Display", InMorphologyDisplay);
+}
+
+/*****************************************************************************!
+ * Function : MainGetInterlinearWordDisplays
+ *****************************************************************************/
+void
+MainGetInterlinearWordDisplays
+(bool &InContextualDisplay, bool &InEnglishDisplay, bool &InStrongsDisplay,
+ bool &InMorphologyDisplay, bool &InTransliterateDisplay)
+{
+  QSettings                             settings(MAIN_ORG_NAME, MAIN_APP_NAME);
+
+  InContextualDisplay = settings.value("Interlinear/Values/Contextual/Display", true).toBool();
+  InStrongsDisplay = settings.value("Interlinear/Values/Strongs/Display", true).toBool();
+  InTransliterateDisplay = settings.value("Interlinear/Values/Transliterate/Display", true).toBool();
+  InEnglishDisplay = settings.value("Interlinear/Values/English/Display", true).toBool();
+  InMorphologyDisplay = settings.value("Interlinear/Values/Morphology/Display", true).toBool();
+}
+

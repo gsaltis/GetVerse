@@ -125,6 +125,7 @@ class TextDisplayOuterWindow : public QFrame
   void                          SignalSetFormattingType         (TextDisplayFormattingItem::FormatType InFormattingType);
   void                          SignalChapterArrowSelected      (int InNewChapter);
   void                          SignalSetBookmark               (int InBook, int InChapter, int InVerse);
+  void                          SignalWindowChange              (int InType);
   
  //! Public Actions
  public :

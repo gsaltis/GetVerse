@@ -16,15 +16,16 @@
  * Local Headers
  *****************************************************************************/
 #include "InterlinearWord.h"
+#include "main.h"
 
 /*****************************************************************************!
  * Static Elements
  *****************************************************************************/
-QFont 	InterlinearWord::contextualFormFont      = QFont("Times New Roman", 20, QFont::Bold);
+QFont 	InterlinearWord::contextualFormFont      = QFont("Times New Roman", 15, QFont::Bold);
 QColor  InterlinearWord::contextualFormColor     = QColor("#800000");
 bool    InterlinearWord::contextualFormDisplay   = true;
 
-QFont 	InterlinearWord::englishFont             = QFont("Arial", 12);
+QFont 	InterlinearWord::englishFont             = QFont("Arial", 10);
 QColor  InterlinearWord::englishColor            = QColor("#444444");
 bool    InterlinearWord::englishDisplay          = true;
 
@@ -433,3 +434,30 @@ InterlinearWord::SetSelected
   selected = InSelected;
 }
 
+/*****************************************************************************!
+ * Function : GetValues
+ *****************************************************************************/
+void
+InterlinearWord::GetValues
+()
+{
+  MainGetInterlinearWordDisplays(contextualFormDisplay,
+                                 strongsDisplay,
+                                 transliterateDisplay,
+                                 englishDisplay,
+                                 morphologyDisplay);
+}
+
+/*****************************************************************************!
+ * Function : SetValues
+ *****************************************************************************/
+void
+InterlinearWord::SetValues
+()
+{
+  MainSetInterlinearWordDisplays(contextualFormDisplay,
+                                 strongsDisplay,
+                                 transliterateDisplay,
+                                 englishDisplay,
+                                 morphologyDisplay);
+}

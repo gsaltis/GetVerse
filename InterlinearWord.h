@@ -20,6 +20,11 @@
 /*****************************************************************************!
  * Exported Macros
  *****************************************************************************/
+#define INTERLINEAR_WORD_MORPHOLOGY_INDEX               1
+#define INTERLINEAR_WORD_TRANSLITERATE_INDEX            2
+#define INTERLINEAR_WORD_ENGLISH_INDEX                  3
+#define INTERLINEAR_WORD_STRONGS_INDEX                  4
+#define INTERLINEAR_WORD_CONTEXTUAL_INDEX               5
 
 /*****************************************************************************!
  * Exported Class : InterlinearWord
@@ -60,14 +65,40 @@ class InterlinearWord
   QSize                         GetEnglishSize                  () { return englishSize; }
   QFont                         GetEnglishFont                  () { return englishFont; }
   void                          Paint                           (QPainter* InPainter);
-  void							PaintSelected					(QPainter* InPainter);
+  void				PaintSelected   		(QPainter* InPainter);
   QSize                         GetSize                         ();
   static void                   SetLineskip                     (int InLineskip);
   bool                          ContainsPoint                   (QPoint InPoint);
-  void							SetSelected						(bool InSelected);
-
+  void				SetSelected			(bool InSelected);
+  static void                   GetValues                       ();
+  static void                   SetValues                       ();
+  
  //! Public Data
  public :
+  static QFont                  strongsFont;
+  static QColor                 strongsColor;
+  QSize                         strongsSize;
+  static bool                   strongsDisplay;
+
+  static QFont                  contextualFormFont;
+  static QColor                 contextualFormColor;
+  static bool                   contextualFormDisplay;
+  QSize                         contextualFormSize;
+
+  static QFont                  morphologyFont;
+  static QColor                 morphologyColor;
+  static bool                   morphologyDisplay;
+  QSize                         morphologySize;
+
+  static QFont                  transliterateFont;
+  static QColor                 transliterateColor;
+  static bool                   transliterateDisplay;
+  QSize                         transliterateSize;
+
+  static QFont                  englishFont;
+  static QColor                 englishColor;
+  static bool                   englishDisplay;
+  static int                    Lineskip;
 
  //! Protected Methods
  protected :
@@ -94,30 +125,6 @@ class InterlinearWord
   int                           x;
   int                           y;
 
-  static QFont                  strongsFont;
-  static QColor                 strongsColor;
-  QSize                         strongsSize;
-  static bool                   strongsDisplay;
-
-  static QFont                  contextualFormFont;
-  static QColor                 contextualFormColor;
-  static bool                   contextualFormDisplay;
-  QSize                         contextualFormSize;
-
-  static QFont                  morphologyFont;
-  static QColor                 morphologyColor;
-  static bool                   morphologyDisplay;
-  QSize                         morphologySize;
-
-  static QFont                  transliterateFont;
-  static QColor                 transliterateColor;
-  static bool                   transliterateDisplay;
-  QSize                         transliterateSize;
-
-  static QFont                  englishFont;
-  static QColor                 englishColor;
-  static bool                   englishDisplay;
-  static int                    Lineskip;
   QSize                         englishSize;
   bool							selected;
 };

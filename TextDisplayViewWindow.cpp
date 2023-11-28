@@ -29,6 +29,7 @@
 #include "SQLStatement.h"
 #include "InterlinearChapter.h"
 #include "InterlinearDisplayElementSelectDialog.h"
+#include "StrongsReferenceDisplayDialog.h"
 
 /*****************************************************************************!
  * Local Type : ThisChapter
@@ -2373,7 +2374,11 @@ TextDisplayViewWindow::InterlinearModeMousePress
   modifiers = InEvent->modifiers();
 
   if ( button == Qt::LeftButton && modifiers == Qt::NoModifier ) {
-    InterlinearModeDisplayElementViewDialog(InEvent->pos());
+    InterlinearWord*                    word;
+    word = currentInterlinearChapter->FindWordByLocation(InEvent->pos());
+    if ( word ) {
+      InterlinearModeDisplayElementViewDialog(InEvent->globalPosition().toPoint(), word);
+    }
     return;
   }
 }
@@ -2383,16 +2388,15 @@ TextDisplayViewWindow::InterlinearModeMousePress
  *****************************************************************************/
 void
 TextDisplayViewWindow::InterlinearModeDisplayElementViewDialog
-(QPoint InPosition)
+(QPoint InPosition, InterlinearWord* InWord)
 {
-  InterlinearDisplayElementSelectDialog*        dialog;
-  int                                           n;
-  
-  dialog = new InterlinearDisplayElementSelectDialog();
-  dialog->move(InPosition);
-  n = dialog->exec();
+  StrongsReferenceDisplayDialog*                dialog;
+  QString                                       s;
 
-  (void)n;
+  s = InWord->GetStrongsWordID();
+  dialog = new StrongsReferenceDisplayDialog(InWord);
+  dialog->move(InPosition);
+  dialog->exec();
   delete dialog;
 }
 
@@ -2404,7 +2408,7 @@ TextDisplayViewWindow::InterlinearModeMouseMove
 (QPoint InMouseCursor)
 {
   InterlinearWord*                      word;
-  QString 								englishWord;
+  QString 				englishWord;
 
   word = currentInterlinearChapter->FindWordByLocation(InMouseCursor);
   if ( word == NULL ) {
@@ -2433,3 +2437,40 @@ TextDisplayViewWindow::AddInterlinearItem
   interlinearItems.push_back(InItem);
 }
 
+/*****************************************************************************!
+ * Function : SlotInterlinearWordSelected
+ *****************************************************************************/
+void
+TextDisplayViewWindow::SlotInterlinearWordSelected
+(int InWord, bool InSelected)
+{
+  switch (InWord) {
+    case INTERLINEAR_WORD_CONTEXTUAL_INDEX : {
+      InterlinearWord::contextualFormDisplay = InSelected;
+      break;
+    }
+
+    case INTERLINEAR_WORD_MORPHOLOGY_INDEX : {
+      InterlinearWord::morphologyDisplay = InSelected ;     
+      break;
+    }
+
+    case INTERLINEAR_WORD_TRANSLITERATE_INDEX : {
+      InterlinearWord::transliterateDisplay = InSelected;            
+      break;
+    }
+
+    case INTERLINEAR_WORD_STRONGS_INDEX : {
+      InterlinearWord::strongsDisplay = InSelected;                  
+      break;
+    }
+
+    case INTERLINEAR_WORD_ENGLISH_INDEX : {
+      InterlinearWord::englishDisplay = InSelected;                        
+      break;
+    }
+  }
+  InterlinearWord::SetValues();
+  ArrangeItems();
+  repaint();
+}

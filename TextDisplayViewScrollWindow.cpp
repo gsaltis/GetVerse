@@ -128,6 +128,11 @@ TextDisplayViewScrollWindow::CreateConnections(void)
           TextDisplayViewWindow::SignalWindowChange,
           this,
           TextDisplayViewScrollWindow::SlotWindowChange);
+
+  connect(this,
+          TextDisplayViewScrollWindow::SignalInterlinearWordChanged,
+          viewWindow,
+          TextDisplayViewWindow::SlotInterlinearWordSelected);
   
   connect(viewWindow,
           TextDisplayViewWindow::SignalChapterArrowSelected,
@@ -474,3 +479,12 @@ TextDisplayViewScrollWindow::enterEvent
   setFocus();
 }
 
+/*****************************************************************************!
+ * Function : SlotInterlinearWordSelected
+ *****************************************************************************/
+void
+TextDisplayViewScrollWindow::SlotInterlinearWordSelected
+(int InWord, bool InChecked)
+{
+  emit SignalInterlinearWordChanged(InWord, InChecked);
+}

@@ -229,11 +229,21 @@ TextDisplayOuterWindow::SlotBookSelected
 void
 TextDisplayOuterWindow::CreateConnections(void)
 {
-  connect(viewWindow,
+  connect(controlBar,
+          TextControlBar::SignalInterlinearWordChanged,
+          viewWindow,
+          TextDisplayViewScrollWindow::SlotInterlinearWordSelected);
+
+          connect(viewWindow,
           TextDisplayViewScrollWindow::SignalWindowChange,
           this,
           TextDisplayOuterWindow::SlotWindowChange);
-  
+
+  connect(this,
+          TextDisplayOuterWindow::SignalWindowChange,
+          controlBar,
+          TextControlBar::SlotWindowChange);
+          
   connect(sentenceWindow,
           TextDisplaySentenceContainterWindow::SignalWindowChange,
           this,
@@ -617,36 +627,5 @@ void
 TextDisplayOuterWindow::SlotWindowChange
 (int InType)
 {
-  TextDisplayViewWindow::DisplayMode            mode = (TextDisplayViewWindow::DisplayMode)InType;
-
-  switch (mode) {
-    case TextDisplayViewWindow::NoneMode : {
-      break;
-    }
-      
-    case TextDisplayViewWindow::ReferenceMode : {
-      SlotSetReferenceMode();
-      break;
-    }
-      
-    case TextDisplayViewWindow::BlockMode : {
-      SlotSetBlockMode();
-      break;
-    }
-      
-    case TextDisplayViewWindow::EditMode : {
-      SlotSetEditMode();
-      break;
-    }
-      
-    case TextDisplayViewWindow::SentenceMode : {
-      SlotSetSentenceMode();
-      break;
-    }
-      
-    case TextDisplayViewWindow::InterlinearMode : {
-      SlotSetInterlinearMode();
-      break;
-    }
-  }      
+  emit SignalWindowChange(InType);
 }
