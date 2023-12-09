@@ -229,6 +229,16 @@ TextDisplayOuterWindow::SlotBookSelected
 void
 TextDisplayOuterWindow::CreateConnections(void)
 {
+  connect(viewWindow,
+          TextDisplayViewScrollWindow::SignalSetStartupBookmark,
+          this,
+          TextDisplayOuterWindow::SlotSetStartupBookmarkInfo);
+  
+  connect(sentenceWindow,
+          TextDisplaySentenceContainterWindow::SignalSetStartupBookmarkInfo,
+          this,
+          TextDisplayOuterWindow::SlotSetStartupBookmarkInfo);
+  
   connect(controlBar,
           TextControlBar::SignalInterlinearWordChanged,
           viewWindow,
@@ -628,4 +638,14 @@ TextDisplayOuterWindow::SlotWindowChange
 (int InType)
 {
   emit SignalWindowChange(InType);
+}
+
+/*****************************************************************************!
+ * Function : SlotSetStartupBookmarkInfo
+ *****************************************************************************/
+void
+TextDisplayOuterWindow::SlotSetStartupBookmarkInfo
+(BookInfo* InBookInfo, int InChapter)
+{
+  emit SignalSetStartupBookmarkInfo(InBookInfo, InChapter);
 }

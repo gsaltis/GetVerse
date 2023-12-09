@@ -238,6 +238,7 @@ class TextDisplayViewWindow : public QWidget
   void                          SignalLocationSelected          (QPoint InLocation);
   void                          SignalChapterArrowSelected      (int InChapter);
   void                          SignalWindowChange              (int InWindowType);
+  void                          SignalSetStartupBookmark        (BookInfo* InBookInfo, int InChapter);
   
  //! Public Actions
  public :

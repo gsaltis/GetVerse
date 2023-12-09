@@ -147,6 +147,11 @@ MainDisplayWindow::resizeEvent
 void
 MainDisplayWindow::CreateConnections(void)
 {
+  connect(displayWindow,
+          TextDisplayOuterWindow::SignalSetStartupBookmarkInfo,
+          this,
+          MainDisplayWindow::SlotSetStartupBookmarkInfo);
+  
   connect(this,
           MainDisplayWindow::SignalMoveToBookChapter,
           bookNameWindow,
@@ -254,4 +259,14 @@ MainDisplayWindow::SlotSetStartupBookmark
   
   MainSetStartLocation(InBook, InChapter, InVerse);
   messageWindow->SlotSetMessageNormal(QString("Saving Bookmark : %1 %2").arg(bookInfo->name).arg(InChapter));
+}
+
+/*****************************************************************************!
+ * Function : SlotSetStartupBookmarkInfo
+ *****************************************************************************/
+void
+MainDisplayWindow::SlotSetStartupBookmarkInfo
+(BookInfo* InBookInfo, int InChapter)
+{
+  SlotSetStartupBookmark(InBookInfo->index, InChapter, 1);
 }

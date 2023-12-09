@@ -69,6 +69,11 @@ void
 TextDisplaySentenceScrollWindow::CreateConnections
 ()
 {
+  connect(sentenceWindow,
+          TextDisplaySentenceWindow::SignalSetStartupBookmarkInfo,
+          this,
+          TextDisplaySentenceScrollWindow::SlotSetStartupBookmarkInfo);
+  
   connect(this,
           TextDisplaySentenceScrollWindow::SignalBookSelected,
           sentenceWindow,
@@ -200,3 +205,12 @@ TextDisplaySentenceScrollWindow::enterEvent
   setFocus();
 }
 
+/*****************************************************************************!
+ * Function : SlotSetStartupBookmarkInfo
+ *****************************************************************************/
+void
+TextDisplaySentenceScrollWindow::SlotSetStartupBookmarkInfo
+(BookInfo* InBookInfo, int InChapter)
+{
+  emit SignalSetStartupBookmarkInfo(InBookInfo, InChapter);
+}

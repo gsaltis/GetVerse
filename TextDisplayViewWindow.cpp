@@ -1950,6 +1950,11 @@ TextDisplayViewWindow::KeyPress
     emit SignalWindowChange(5);
     return true;
   }
+
+  if ( InKey == Qt::Key_B ) {
+    emit SignalSetStartupBookmark(bookInfo, currentSelectedChapter);
+    return true;
+  }
   
   if ( InKey == Qt::Key_S ) {
     emit SignalWindowChange(4);

@@ -77,6 +77,7 @@ class TextDisplaySentenceScrollWindow : public QScrollArea
   void                          SlotSentenceCountChanged        (int InSentenceCount);
   void                          SlotChapterArrowSelected        (int InChapter);
   void                          SlotWindowChange        (int InType);
+  void                          SlotSetStartupBookmarkInfo (BookInfo* InBookInfo, int InChapter);
   
  //! Public Signals
  signals :
@@ -85,6 +86,7 @@ class TextDisplaySentenceScrollWindow : public QScrollArea
   void                          SignalSentenceCountChanged      (int InSentenceCount);
   void                          SignalChapterArrowSelected      (int InChapter);
   void                          SignalWindowChange      (int InType);
+  void                          SignalSetStartupBookmarkInfo (BookInfo* InBookInfo, int InChapter);
   
  //! Public Actions
  public :

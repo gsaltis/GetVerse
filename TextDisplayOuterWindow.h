@@ -102,6 +102,7 @@ class TextDisplayOuterWindow : public QFrame
   void                          SlotChapterArrowSelected        (int InNewChapter);
   void                          SlotSetStartupBookmark          (int InBook, int InChapter, int InVerse);
   void                          SlotWindowChange                (int InType);
+  void                          SlotSetStartupBookmarkInfo      (BookInfo* InBookInfo, int InChapter);
   
  //! Public Signals
  signals :
@@ -126,6 +127,7 @@ class TextDisplayOuterWindow : public QFrame
   void                          SignalChapterArrowSelected      (int InNewChapter);
   void                          SignalSetStartupBookmark        (int InBook, int InChapter, int InVerse);
   void                          SignalWindowChange              (int InType);
+  void                          SignalSetStartupBookmarkInfo    (BookInfo* InBookInfo, int InChapter);
   
  //! Public Actions
  public :

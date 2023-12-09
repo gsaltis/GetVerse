@@ -282,6 +282,11 @@ TextDisplaySentenceWindow::KeyPress
     emit SignalWindowChange(1);
     return true;
   }
+
+  if ( InKey == Qt::Key_B ) {
+    emit SignalSetStartupBookmarkInfo(bookInfo, currentChapter);
+    return true;
+  }
   
   if ( InKey == Qt::Key_Left ) {
     if ( currentChapter <= 1 ) {

@@ -76,6 +76,7 @@ class TextDisplaySentenceContainterWindow : public QWidget
   void                          SlotChapterSet          (int InChapter);
   void                          SlotSentenceCountChanged (int InSentencCount);
   void                          SlotWindowChange        (int InType);
+  void                          SlotSetStartupBookmarkInfo (BookInfo* InBookInfo, int InChapter);
 
  //! Public Signals
  signals :
@@ -85,6 +86,7 @@ class TextDisplaySentenceContainterWindow : public QWidget
   void                          SignalChapterArrowSelected (int InChapter);
   void                          SignalSentenceCountChanged      (int InSentenceCount);
   void                          SignalWindowChange      (int InType);
+  void                          SignalSetStartupBookmarkInfo (BookInfo* InBookInfo, int InChapter);
   
  //! Public Actions
  public :

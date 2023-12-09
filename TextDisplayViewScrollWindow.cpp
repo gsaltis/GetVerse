@@ -125,6 +125,11 @@ void
 TextDisplayViewScrollWindow::CreateConnections(void)
 {
   connect(viewWindow,
+          TextDisplayViewWindow::SignalSetStartupBookmark,
+          this,
+          TextDisplayViewScrollWindow::SlotSetStartupBookmark);
+  
+  connect(viewWindow,
           TextDisplayViewWindow::SignalWindowChange,
           this,
           TextDisplayViewScrollWindow::SlotWindowChange);
@@ -487,4 +492,14 @@ TextDisplayViewScrollWindow::SlotInterlinearWordSelected
 (int InWord, bool InChecked)
 {
   emit SignalInterlinearWordChanged(InWord, InChecked);
+}
+
+/*****************************************************************************!
+ * Function : SlotSetStartupBookmark
+ *****************************************************************************/
+void
+TextDisplayViewScrollWindow::SlotSetStartupBookmark
+(BookInfo* InBookInfo, int InChapter)
+{
+  emit SignalSetStartupBookmark(InBookInfo, InChapter);
 }

@@ -154,6 +154,11 @@ TextDisplaySentenceContainterWindow::CreateConnections(void)
           TextDisplaySentenceScrollWindow::SignalWindowChange,
           this,
           TextDisplaySentenceContainterWindow::SlotWindowChange);
+
+  connect(sentenceWindow,
+          TextDisplaySentenceScrollWindow::SignalSetStartupBookmarkInfo,
+          this,
+          TextDisplaySentenceContainterWindow::SlotSetStartupBookmarkInfo);
   
   connect(sentenceWindow,
           TextDisplaySentenceScrollWindow::SignalSentenceCountChanged,
@@ -199,4 +204,14 @@ TextDisplaySentenceContainterWindow::SlotWindowChange
 (int InType)
 {
   emit SignalWindowChange(InType);
+}
+
+/*****************************************************************************!
+ * Function : SlotSetStartupBookmarkInfo
+ *****************************************************************************/
+void
+TextDisplaySentenceContainterWindow::SlotSetStartupBookmarkInfo
+(BookInfo* InBookInfo, int InChapter)
+{
+  emit SignalSetStartupBookmarkInfo(InBookInfo, InChapter);
 }

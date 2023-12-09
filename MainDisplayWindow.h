@@ -74,6 +74,7 @@ class MainDisplayWindow : public QWidget
   void                          SlotUpdateProgressBar   (int InValue);
   void                          SlotSetProgressBar      (int InMin, int InMax);
   void                          SlotSetStartupBookmark  (int InBook, int InChapter, int InVerse);
+  void                          SlotSetStartupBookmarkInfo  (BookInfo* InBookInfo, int InChapter);
 
  //! Public Signals
  signals :
