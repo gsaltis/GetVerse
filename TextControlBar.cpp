@@ -170,12 +170,12 @@ TextControlBar::CreateSubWindows()
   connect(AnalyzeButton, SIGNAL(pressed()), this, SLOT(SlotAnalyzeButtonPushed()));
 
     //! Create the Bookmark button
-  BookmarkButton = new QPushButton();
-  BookmarkButton->setParent(this);
-  BookmarkButton->setIcon(QIcon(QPixmap(":/Images/BookMark.png")));
-  BookmarkButton->move(x, 0);
-  BookmarkButton->resize(ButtonWidth, ButtonHeight);
-  connect(BookmarkButton, SIGNAL(pressed()), this, SLOT(SlotBookmarkButtonPushed()));
+  StartupBookmarkButton = new QPushButton();
+  StartupBookmarkButton->setParent(this);
+  StartupBookmarkButton->setIcon(QIcon(QPixmap(":/Images/BookMark.png")));
+  StartupBookmarkButton->move(x, 0);
+  StartupBookmarkButton->resize(ButtonWidth, ButtonHeight);
+  connect(StartupBookmarkButton, SIGNAL(pressed()), this, SLOT(SlotStartupBookmarkButtonPushed()));
 
   
   //! Create label
@@ -788,12 +788,12 @@ TextControlBar::SlotChapterArrowSelected
 }
 
 /*****************************************************************************!
- * Function : SlotBookmarkButtonPushed
+ * Function : SlotStartupBookmarkButtonPushed
  *****************************************************************************/
 void
-TextControlBar::SlotBookmarkButtonPushed(void)
+TextControlBar::SlotStartupBookmarkButtonPushed(void)
 {
-  emit SignalSetBookmark(currentBook, currentChapter, 1);
+  emit SignalSetStartupBookmark(currentBook, currentChapter, 1);
 }
 
 /*****************************************************************************!

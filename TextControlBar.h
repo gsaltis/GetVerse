@@ -80,7 +80,7 @@ class TextControlBar : public QWidget
   QPushButton*                  BlockViewButton;
   QPushButton*                  InterlinearButton;
   QPushButton*                  SentenceViewButton;
-  QPushButton*                  BookmarkButton;
+  QPushButton*                  StartupBookmarkButton;
   
   QLabel*                       WordLabel;
   QLabel*                       WordCountLabel;
@@ -128,7 +128,7 @@ class TextControlBar : public QWidget
   void                          SlotWordBreakTypeComboSelectedItem (int InSelectedIndex);
   void                          SlotChapterChanged              (int InNewChapter);
   void                          SlotChapterArrowSelected        (int InNewChapter);
-  void                          SlotBookmarkButtonPushed        (void);
+  void                          SlotStartupBookmarkButtonPushed (void);
   void                          SlotBookSelected                (int InBookIndex);
   void                          SlotWindowChange                (int InWindow);
   void                          SlotContextualChecked           (bool InChecked);
@@ -148,7 +148,7 @@ class TextControlBar : public QWidget
   void                          SignalSentenceCountChanged      (int InVerseCount);
   void                          SignalSetFormattingType         (TextDisplayFormattingItem::FormatType InFormattingType);
   void                          SignalChapterChanged            (int InChapter);
-  void                          SignalSetBookmark               (int InBook, int InChapter, int InVerse);
+  void                          SignalSetStartupBookmark        (int InBook, int InChapter, int InVerse);
   void                          SignalInterlinearWordChanged (int InWord, bool InChecked);
   
  //! Public Actions

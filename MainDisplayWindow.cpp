@@ -18,6 +18,7 @@
  *****************************************************************************/
 #include "MainDisplayWindow.h"
 #include "main.h"
+#include "Common.h"
 
 /*****************************************************************************!
  * Function : MainDisplayWindow
@@ -152,18 +153,20 @@ MainDisplayWindow::CreateConnections(void)
           BookNameWindow::SlotMoveToBookChapter);
   
   connect(displayWindow,
-          TextDisplayOuterWindow::SignalSetBookmark,
+          TextDisplayOuterWindow::SignalSetStartupBookmark,
           this,
-          MainDisplayWindow::SlotSetBookmark);
+          MainDisplayWindow::SlotSetStartupBookmark);
   
   connect(bookNameWindow,
           SIGNAL(SignalBookSelected(int)),
           displayWindow,
           SLOT(SlotBookSelected(int)));
+  
   connect(displayWindow,
           SIGNAL(SignalShowProgressBar()),
           this,
           SLOT(SlotShowProgressBar()));
+
   connect(displayWindow,
           SIGNAL(SignalHideProgressBar()),
           this,
@@ -239,11 +242,16 @@ MainDisplayWindow::SlotSetProgressBar
 }
 
 /*****************************************************************************!
- * Function : SlotSetBookmark
+ * Function : SlotSetStartupBookmark
  *****************************************************************************/
 void
-MainDisplayWindow::SlotSetBookmark
+MainDisplayWindow::SlotSetStartupBookmark
 (int InBook, int InChapter, int InVerse)
 {
+  BookInfo*                             bookInfo;
+
+  bookInfo = MainBookInfo[InBook-1];
+  
   MainSetStartLocation(InBook, InChapter, InVerse);
+  messageWindow->SlotSetMessageNormal(QString("Saving Bookmark : %1 %2").arg(bookInfo->name).arg(InChapter));
 }

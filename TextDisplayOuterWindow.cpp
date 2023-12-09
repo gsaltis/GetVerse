@@ -250,9 +250,9 @@ TextDisplayOuterWindow::CreateConnections(void)
           TextDisplayOuterWindow::SlotWindowChange);
   
   connect(controlBar,
-          TextControlBar::SignalSetBookmark,
+          TextControlBar::SignalSetStartupBookmark,
           this,
-          TextDisplayOuterWindow::SlotSetBookmark);
+          TextDisplayOuterWindow::SlotSetStartupBookmark);
 
   connect(sentenceWindow,
           TextDisplaySentenceContainterWindow::SignalChapterArrowSelected,
@@ -611,13 +611,13 @@ TextDisplayOuterWindow::SlotChapterArrowSelected
 }
 
 /*****************************************************************************!
- * Function : SlotSetBookmark
+ * Function : SlotSetSartupBookmark
  *****************************************************************************/
 void
-TextDisplayOuterWindow::SlotSetBookmark
+TextDisplayOuterWindow::SlotSetStartupBookmark
 (int InBook, int InChapter, int InVerse)
 {
-  emit SignalSetBookmark(InBook, InChapter, InVerse);
+  emit SignalSetStartupBookmark(InBook, InChapter, InVerse);
 }
 
 /*****************************************************************************!
