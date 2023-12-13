@@ -8,7 +8,7 @@
 /*****************************************************************************!
  * Global Headers
  *****************************************************************************/
-#include <trace_winnet.h>
+#include <trace_winnetqt.h>
 #include <QtCore>
 #include <QtGui>
 #include <QWidget>
@@ -854,11 +854,13 @@ TextDisplayViewWindow::PaintReferenceMode
 
   for ( auto item : textItems ) {
     if ( item->GetChapter() != currentSelectedChapter ) {
+      item->SetIsVisible(false);
       continue;
     }
     itemR = QRect(item->GetBoundingRect());
 
     if ( InRect.contains(itemR) ) {
+      item->SetIsVisible(true);
       if ( lastSelectedItem == item ) {
         item->DrawSelected(InPainter);
       } else {
@@ -1258,6 +1260,9 @@ TextDisplayViewWindow::mousePressEvent
   if ( mode == EditMode ) {
     EditModeMousePress(p);
     return;
+  }
+  if ( mode == ReferenceMode ) {
+    ReferenceModeMousePress(InEvent);
   }
   if ( mode == InterlinearMode ) {
     InterlinearModeMousePress(InEvent);
@@ -1955,12 +1960,16 @@ TextDisplayViewWindow::KeyPress
     emit SignalSetStartupBookmark(bookInfo, currentSelectedChapter);
     return true;
   }
-  
+
   if ( InKey == Qt::Key_S ) {
     emit SignalWindowChange(4);
     return true;
   }
 
+  if ( InKey == Qt::Key_M ) {
+    SetBookMark();
+    return true;
+  }
   if ( InKey == Qt::Key_R ) {
     emit SignalWindowChange(1);
     return true;
@@ -2322,6 +2331,10 @@ void
 TextDisplayViewWindow::PaintInterlinearMode
 (QPainter* InPainter)
 {
+  QString                               ref;
+  int                                   x2;
+  int                                   w2;
+  int                                   x;
   int                                   n;
   int                                   i;
   int                                   m;
@@ -2347,13 +2360,21 @@ TextDisplayViewWindow::PaintInterlinearMode
 
     verse = currentInterlinearChapter->GetVerseByIndex(i);
     m = verse->GetWordCount();
+    word = verse->GetWordByIndex(0);
+    x = word->GetX();
+    w2 = word->GetSize().width();
 
+    x2 = x + w2 + 5;
+    ref = QString("%1:%2").arg(verse->GetChapterNumber()).arg(verse->GetVerseNumber());
     for ( j = 0 ; j < m ; j++ ) {
       word = verse->GetWordByIndex(j);
       word->Paint(InPainter);
       wordSize = word->GetSize();
       y = word->GetY();
     }
+    InPainter->setBrush(QBrush(QColor(192, 0, 0)));
+    InPainter->setFont(QFont("Arial", 12, QFont::Normal));
+    InPainter->drawText(x2, y+18, ref);
 
     y2 = y + wordSize.height() + InterLineSkip;
 
@@ -2478,4 +2499,62 @@ TextDisplayViewWindow::SlotInterlinearWordSelected
   InterlinearWord::SetValues();
   ArrangeItems();
   repaint();
+}
+
+/*****************************************************************************!
+ * Function : SetBookMark
+ *****************************************************************************/
+void
+TextDisplayViewWindow::SetBookMark(void)
+{
+  if ( mode == ReferenceMode ) {
+    SetBookMarkReference();
+    return;
+  }
+}
+ 
+/*****************************************************************************!
+ * Function : SetBookMarkReference
+ *****************************************************************************/
+void
+TextDisplayViewWindow::SetBookMarkReference(void)
+{
+  int                                   verse;
+  int                                   chapter;
+  int                                   book;
+  TextDisplayItem::DisplayType          type;
+  TextDisplayItem*                      textItem;
+  int                                   i;
+  int                                   n;
+
+  n = textItems.size();
+  for (i = 0; i < n; i++) {
+    textItem = textItems[i];
+    type = textItem->GetType();
+    if ( type != TextDisplayItem::WordType ) {
+      continue;
+    }
+    if ( textItem->GetIsVisible() ) {
+      break;
+    }
+  }
+  if ( i >= n ) {
+    return;
+  }
+  TRACE_FUNCTION_INT(type);
+  book = textItem->GetBook();
+  chapter = textItem->GetChapter();
+  verse = 1;
+  TRACE_FUNCTION_INT(book);
+  TRACE_FUNCTION_INT(chapter);
+  TRACE_FUNCTION_INT(verse);
+}
+
+/*****************************************************************************!
+ * Function : ReferenceModeMousePress
+ *****************************************************************************/
+void
+TextDisplayViewWindow::ReferenceModeMousePress
+(QMouseEvent* )
+{
 }

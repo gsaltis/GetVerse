@@ -9,11 +9,11 @@ QMAKE_LINK                      = @echo [LD] $@ && g++
 QMAKE_RC                        = @echo [RC] $@ && windres 
 
 #QMAKE_LFLAGS_WINDOWS            += -mwindows
-QMAKE_LFLAGS_WINDOWS            += -Wl,--subsystem,console
+QMAKE_LFLAGS_WINDOWS            += -Wl,--subsystem,console -L../Trace/Client
 
-QMAKE_CXXFLAGS                  += 
+QMAKE_CXXFLAGS                  +=  -I../Trace/Client
 
-QMAKE_LIBS                      = -lwsock32
+QMAKE_LIBS                      = -lwsock32 -ltraceclient
 
 TARGET                          = GetVerse
 
@@ -33,11 +33,14 @@ DEFINES                         += \
 SOURCES                         += \
 				   BookInfo.cpp                                 \
 				   BookInfoWord.cpp                             \
+				   BookMark.cpp                                 \
+				   BookMarkSet.cpp                              \
 				   BookNameTable.cpp                            \
 				   BookNameTableInnerTable.cpp                  \
 				   BookNameTableItem.cpp                        \
 				   BookNameTableScrollArea.cpp                  \
 				   BookNameWindow.cpp                           \
+				   BookmarkButton.cpp                           \
 				   ChapterHeaderWindow.cpp                      \
 				   Formatting.cpp                               \
 				   InterlinearChapter.cpp                       \
@@ -74,16 +77,18 @@ SOURCES                         += \
 				   TextDisplayWordItem.cpp                      \
 				   main.cpp                                     \
 				   sqlite3.c                                    \
-				   trace.cpp                                    \
 
 HEADERS                         += \
 				   BookInfo.h                                   \
 				   BookInfoWord.h                               \
+				   BookMark.h                                   \
+				   BookMarkSet.h                                \
 				   BookNameTable.h                              \
 				   BookNameTableInnerTable.h                    \
 				   BookNameTableItem.h                          \
 				   BookNameTableScrollArea.h                    \
 				   BookNameWindow.h                             \
+				   BookmarkButton.h                             \
 				   ChapterHeaderWindow.h                        \
 				   Formatting.h                                 \
 				   InterlinearChapter.h                         \
@@ -119,7 +124,6 @@ HEADERS                         += \
 				   TextDisplayWordFormattingItem.h              \
 				   TextDisplayWordItem.h                        \
 				   sqlite3.h                                    \
-				   trace_winnet.h                               \
 
 FORMS                           += \
 

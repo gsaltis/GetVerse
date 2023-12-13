@@ -19,6 +19,8 @@
 #include "TextControlBar.h"
 #include "TextDisplayFormattingItem.h"
 #include "InterlinearWord.h"
+#include "Common.h"
+#include "BookMark.h"
 
 /*****************************************************************************!
  * Function : TextControlBar
@@ -107,7 +109,9 @@ TextControlBar::CreateConnections
 void
 TextControlBar::CreateSubWindows()
 {
+  int                                   x2;
   int                                   x = 5;
+  int                                   i;
   
   //! Create the ReferenceButton button
   ReferenceButton = new QPushButton();
@@ -177,6 +181,20 @@ TextControlBar::CreateSubWindows()
   StartupBookmarkButton->resize(ButtonWidth, ButtonHeight);
   connect(StartupBookmarkButton, SIGNAL(pressed()), this, SLOT(SlotStartupBookmarkButtonPushed()));
 
+  x2 = x + ButtonWidth + 20;
+
+  for ( i = 0 ; i < BOOKMARK_MAX_COUNT ; i++ ) {
+    BookMark*                           bookmark;
+    bookmark = MainBookMarks[i];
+    
+    BookmarkButtons[i] = new BookmarkButton(this, bookmark);
+    BookmarkButtons[i]->resize(BOOKMARK_BUTTON_WIDTH, ButtonHeight);
+    BookmarkButtons[i]->move(x2, 0);
+    if ( bookmark->GetChapter() == 0 ) {
+      BookmarkButtons[i]->hide();
+    }
+    x2 += BOOKMARK_BUTTON_WIDTH;
+  }
   
   //! Create label
   WordLabel = new QLabel();

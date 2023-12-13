@@ -20,6 +20,7 @@
  * Local Headers
  *****************************************************************************/
 #include "BookInfo.h"
+#include "BookMark.h"
 #include "sqlite3.h"
 #include "SystemConfig.h"
 
@@ -41,6 +42,9 @@ MainInterlinearDatabase;
 
 extern SystemConfig*
 MainSystemConfig;
+
+extern std::vector<BookMark*>
+MainBookMarks;
 
 /*****************************************************************************!
  * Exported Functions

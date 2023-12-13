@@ -108,6 +108,8 @@ class InterlinearWord
 
  //! Private Methods
  private :
+  int                           GetVerseNumber          (void);
+  int                           GetChapterNumber        (void);
 
  //! Private Data
  private :

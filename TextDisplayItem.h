@@ -78,6 +78,8 @@ class TextDisplayItem
   virtual void                  Draw                    (QPainter* InPainter);
   virtual void                  DrawSelected            (QPainter* InPainter);
   virtual bool                  Contains                (QPoint InPaint);
+  bool                          GetIsVisible            (void);
+  void                          SetIsVisible            (bool InIsVisible);
   
  //! Public Data
  public :
@@ -104,6 +106,8 @@ class TextDisplayItem
 
  //! Private Data
  private :
+  bool                          IsVisible;
+
 };
 
 #endif /* _textdisplayitem_h_*/

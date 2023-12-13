@@ -26,6 +26,7 @@ TextDisplayItem::TextDisplayItem
   Verse = InVerse;
   Chapter = InChapter;
   Book = InBook;
+  IsVisible = false;
   Text = QString(InText);
   Foreground = QColor(0, 0, 0);
   Background = QColor(255, 255, 255);
@@ -292,4 +293,23 @@ TextDisplayItem::GetWidth
 ()
 {
   return Size.width();
+}
+
+/*****************************************************************************!
+ * Function : GetIsVisible
+ *****************************************************************************/
+bool
+TextDisplayItem::GetIsVisible(void)
+{
+  return IsVisible;  
+}
+
+/*****************************************************************************!
+ * Function : SetIsVisible
+ *****************************************************************************/
+void
+TextDisplayItem::SetIsVisible
+(bool InIsVisible)
+{
+  IsVisible = InIsVisible;  
 }

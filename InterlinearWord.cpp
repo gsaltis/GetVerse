@@ -461,3 +461,21 @@ InterlinearWord::SetValues
                                  englishDisplay,
                                  morphologyDisplay);
 }
+
+/*****************************************************************************!
+ * Function : GetVerseNumber
+ *****************************************************************************/
+int
+InterlinearWord::GetVerseNumber(void)
+{
+  return VerseNumber;
+}
+
+/*****************************************************************************!
+ * Function : GetChapterNumber
+ *****************************************************************************/
+int
+InterlinearWord::GetChapterNumber(void)
+{
+  return ChapterNumber;
+}

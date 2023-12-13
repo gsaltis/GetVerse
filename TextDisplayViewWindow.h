@@ -152,6 +152,9 @@ class TextDisplayViewWindow : public QWidget
   void                          InterlinearModeMousePress       (QMouseEvent* InEvent);
   void                          InterlinearModeDisplayElementViewDialog
                                                                 (QPoint InPosition, InterlinearWord* InWord);
+  void                          SetBookMark             (void);
+  void                          SetBookMarkReference    (void);
+  void                          ReferenceModeMousePress (QMouseEvent* InEvent);
 
  //! Private Data
  private :

@@ -8,7 +8,7 @@
 /*****************************************************************************!
  * Global Headers
  *****************************************************************************/
-#include <trace_winnet.h>
+#include <trace_winnetqt.h>
 #include <QtCore>
 #include <QApplication>
 #include <stdio.h>
@@ -24,6 +24,7 @@
 #include "Formatting.h"
 #include "SystemConfig.h"
 #include "BookInfo.h"
+#include "BookMark.h"
 
 /*****************************************************************************!
  * Local Macros
@@ -48,8 +49,6 @@
 #define SQL_STATEMENT_INSERT_FORMATTING         \
   "INSERT INTO Formatting VALUES(%d, %d, %d, '', %d);\n"
 
-#define MAIN_ORG_NAME                           "White Barn"
-#define MAIN_APP_NAME                           "GetVerse"
 #define MAIN_DOMAIN_NAME                        "www.gsaltis.com"
 
 /*****************************************************************************!
@@ -190,6 +189,10 @@ void
 InitializeSettings
 ();
 
+void
+MainInitializeBookMarks
+();
+
 /*****************************************************************************!
  * Local Data
  *****************************************************************************/
@@ -289,6 +292,9 @@ MainVerseRanges[VERSE_RANGES_COUNT];
 std::vector<BookInfo*>
 MainBookInfo;
 
+std::vector<BookMark*>
+MainBookMarks;
+
 /*****************************************************************************!
  * Function : main
  *****************************************************************************/
@@ -302,6 +308,7 @@ main
   ProcessCommandLine(argc, argv);
   VerifyCommandLine();
 
+  TRACE_COMMAND_CLEAR();
   MainSystemConfig->ReadJSON(MainConfigFilename);
 
   if ( MainFormatAdd ) {
@@ -380,6 +387,8 @@ MainInitialize
   MainFormatInfos                       = FormattingInfoListCreate();
   MainBlockOutputText                   = QString("");
 
+  MainInitializeBookMarks();
+  
   InterlinearWord::GetValues();
   s = getenv(DATABASE_ENV_LOCATION);
   if ( ! s.isEmpty() ) {
@@ -1713,3 +1722,20 @@ MainGetInterlinearWordDisplays
   InMorphologyDisplay = settings.value("Interlinear/Values/Morphology/Display", true).toBool();
 }
 
+/*****************************************************************************!
+ * Function : MainInitializeBookMarks
+ *****************************************************************************/
+void
+MainInitializeBookMarks
+()
+{
+  BookMark*                             bookMark;
+  int                                   i;
+  QSettings                             settings(MAIN_ORG_NAME, MAIN_APP_NAME);
+  
+  for (i = 1; i <= BOOKMARK_MAX_COUNT; i++) {
+    bookMark = new BookMark(i);
+    bookMark->Read(&settings);
+    MainBookMarks.push_back(bookMark);
+  }
+}

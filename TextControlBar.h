@@ -26,6 +26,7 @@
  *****************************************************************************/
 #include "TextDisplayFormattingItem.h"
 #include "TextControlBarCheckBox.h"
+#include "BookmarkButton.h"
 
 /*****************************************************************************!
  * Exported Macros
@@ -34,6 +35,8 @@
 #define TEXT_CONTROL_BAR_Y              200
 #define TEXT_CONTROL_BAR_WIDTH          200
 #define TEXT_CONTROL_BAR_HEIGHT         25
+
+#define BOOKMARK_BUTTON_COUNT           10
 
 /*****************************************************************************!
  * Exported Class : TextControlBar
@@ -111,6 +114,8 @@ class TextControlBar : public QWidget
   TextControlBarCheckBox*       InterlinearStrongsCheckBox;
   TextControlBarCheckBox*       InterlinearMorphologyCheckBox;
   TextControlBarCheckBox*       InterlinearTransliterateCheckBox;
+
+  BookmarkButton*               BookmarkButtons[BOOKMARK_BUTTON_COUNT];
   
  //! Public Slots
  public slots :
