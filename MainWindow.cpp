@@ -8,6 +8,7 @@
 /*****************************************************************************!
  * Global Headers
  *****************************************************************************/
+#include <trace_winnetqt.h>
 #include <QtCore>
 #include <QtGui>
 #include <QWidget>
@@ -18,6 +19,7 @@
  * Local Headers
  *****************************************************************************/
 #include "MainWindow.h"
+#include "Common.h"
 
 /*****************************************************************************!
  * Function : MainWindow
@@ -33,11 +35,12 @@ MainWindow::MainWindow
 MainWindow::MainWindow
 (QWidget* parent) : QMainWindow(parent)
 {
-    Initialize();
-    CreateActions();
-    CreateMenus();
-    InitializeSubWindows();
-    CreateSubWindows();
+  Initialize();
+  CreateActions();
+  CreateMenus();
+  InitializeSubWindows();
+  CreateSubWindows();
+  CreateConnections();
 }
 
 /*****************************************************************************!
@@ -52,6 +55,7 @@ MainWindow::MainWindow
   CreateMenus();
   InitializeSubWindows();
   CreateSubWindows();
+  CreateConnections();
 }
 
 /*****************************************************************************!
@@ -127,6 +131,8 @@ MainWindow::CreateActions()
 {
   ActionExit = new QAction("E&xit", this);
   connect(ActionExit, SIGNAL(triggered()), this, SLOT(SlotExit()));
+  ActionClearBookMarks = new QAction("&Clear BookMarks", this);
+  connect(ActionClearBookMarks, SIGNAL(triggered()), this, SLOT(SlotClearBookMarks()));
 }
 
 /*****************************************************************************!
@@ -139,6 +145,8 @@ MainWindow::CreateMenus()
   menubar = menuBar();  
   fileMenu = menubar->addMenu("&File");
   fileMenu->addAction(ActionExit);
+  settingsMenu = menubar->addMenu("&Settings");
+  settingsMenu->addAction(ActionClearBookMarks);
 }
 
 /*****************************************************************************!
@@ -148,4 +156,27 @@ void
 MainWindow::SlotExit(void)
 {
   exit(EXIT_SUCCESS);  
+}
+
+/*****************************************************************************!
+ * Function : SlotClearBookMarks
+ *****************************************************************************/
+void
+MainWindow::SlotClearBookMarks(void)
+{
+  MainBookMarks->Clear();
+  emit SignalClearBookMarks();
+}
+
+/*****************************************************************************!
+ * Function : CreateConnections
+ *****************************************************************************/
+void
+MainWindow::CreateConnections
+()
+{
+  connect(this,
+          MainWindow::SignalClearBookMarks,
+          displayWindow,
+          MainDisplayWindow::SlotClearBookMarks);
 }

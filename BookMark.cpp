@@ -8,6 +8,7 @@
 /*****************************************************************************!
  * Global Headers
  *****************************************************************************/
+#include <trace_winnetqt.h>
 #include <QtCore>
 #include <QtGui>
 #include <QWidget>
@@ -17,6 +18,7 @@
  *****************************************************************************/
 #include "BookMark.h"
 #include "BookmarkButton.h"
+#include "Common.h"
 
 /*****************************************************************************!
  * Function : BookMark
@@ -26,6 +28,7 @@ BookMark::BookMark
 {
   Initialize();
   Index = InIndex;
+  button = NULL;
 }
 
 /*****************************************************************************!
@@ -39,6 +42,8 @@ BookMark::BookMark
   Book          = InBook;
   Chapter       = InChapter;
   Verse         = InVerse;
+  Settings      = NULL;
+  button        = NULL;
 }
 
 /*****************************************************************************!
@@ -151,7 +156,8 @@ BookMark::Read
   Chapter = 0;
   Verse = 0;
   settingsBase = QString("Bookmarks/%1").arg(Index);
-
+  Settings = InSettings;
+  
   settingName = QString("%1/Book").arg(settingsBase);
   if ( !InSettings->contains(settingName) ) {
     InSettings->setValue(settingName, 0);
@@ -197,10 +203,70 @@ void
 BookMark::Set
 (int InBook, int InChapter, int InVerse)
 {
-  book = InBook;
-  chapter = InChapter;
-  verse = InVerse;
+  BookInfo*                             bookInfo;
+  QString                               bookName;
+  
+  Book = InBook;
+  Chapter = InChapter;
+  Verse = InVerse;
+  if ( Book > 0 ) {
+    bookInfo = MainBookInfo->FindBookByIndex(Book);
+    bookName = bookInfo->GetCapitalizedBookName();
+    if ( button ) {
+      button->Set(bookInfo, Chapter, Verse);
+    }
+  } else {
+    if ( button ) {
+      button->Clear();
+    }
+  }
+}
 
-  button->Set(book, chapter, verse);
-    
+/*****************************************************************************!
+ * Function : Save
+ *****************************************************************************/
+void
+BookMark::Save
+(QSettings* InSettings)
+{
+  QString                               settingsVerseName;
+  QString                               settingsChapterName;
+  QString                               settingsBookName;
+  QString                               settingsBase;
+
+  settingsBase = QString("Bookmarks/%1").arg(Index);
+
+  settingsBookName = QString("%1/Book").arg(settingsBase);
+  settingsChapterName = QString("%1/Chapter").arg(settingsBase);
+  settingsVerseName = QString("%1/Verse").arg(settingsBase);
+
+  InSettings->setValue(settingsBookName, Book);
+  InSettings->setValue(settingsChapterName, Chapter);
+  InSettings->setValue(settingsVerseName, Verse);
+}
+
+/*****************************************************************************!
+ * Function : Clear
+ *****************************************************************************/
+void
+BookMark::Clear(void)
+{
+  Book          = 0;
+  Chapter       = 0;
+  Verse         = 0;
+  if ( button ) {
+    button->Set(0, 0, 0);
+    button->hide();
+  }
+}
+
+/*****************************************************************************!
+ * Function : Clear
+ *****************************************************************************/
+void
+BookMark::Clear
+(QSettings* InSettings)
+{
+  Clear();
+  Save(InSettings);
 }

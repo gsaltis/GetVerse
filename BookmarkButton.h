@@ -48,6 +48,8 @@ public :
   //! Public Methods
 public :
   void                          Set                     (BookInfo* InBook, int InChapter, int InVerse);
+  void                          Clear                   (void);
+  void                          Display                 (void);
 
   //! Public Data
 public :
@@ -76,7 +78,7 @@ public slots :
 
   //! Public Signals
 signals :
-  void                          SignalBookmarkSelected  (BookInfo* InBookInfo, int InChapter, int InVerse);
+  void                          SignalBookmarkSelected  (BookInfo* InBookInfo, int InChapter, int InVerse, int InWord);
 
   //! Public Actions
 public :

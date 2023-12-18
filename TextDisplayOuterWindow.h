@@ -103,6 +103,10 @@ class TextDisplayOuterWindow : public QFrame
   void                          SlotSetStartupBookmark          (int InBook, int InChapter, int InVerse);
   void                          SlotWindowChange                (int InType);
   void                          SlotSetStartupBookmarkInfo      (BookInfo* InBookInfo, int InChapter);
+  void                          SlotSetBookMark         (BookInfo* InBookInfo, int InChapter, int InVerse, int InWord);
+  void                          SlotClearBookMarks      (void);
+  void                          SlotDisplayBookMarks    (void);
+  void                          SlotBookmarkSelected    (BookInfo* InBook, int InChapter, int InVerse, int InWord);
   
  //! Public Signals
  signals :
@@ -128,6 +132,10 @@ class TextDisplayOuterWindow : public QFrame
   void                          SignalSetStartupBookmark        (int InBook, int InChapter, int InVerse);
   void                          SignalWindowChange              (int InType);
   void                          SignalSetStartupBookmarkInfo    (BookInfo* InBookInfo, int InChapter);
+  void                          SignalSetBookMark       (BookInfo* InBookInfo, int InChapter, int InVerse, int InWord);
+  void                          SignalClearBookMarks    (void);
+  void                          SignalDisplayBookMarks  (void);
+  void                          SignalBookmarkSelected  (BookInfo* InBook, int InChapter, int InVerse, int InWord);
   
  //! Public Actions
  public :

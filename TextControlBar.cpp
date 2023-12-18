@@ -8,7 +8,7 @@
 /*****************************************************************************!
  * Global Headers
  *****************************************************************************/
-#include <trace_winnet.h>
+#include <trace_winnetqt.h>
 #include <QtCore>
 #include <QtGui>
 #include <QWidget>
@@ -116,7 +116,7 @@ TextControlBar::CreateSubWindows()
   //! Create the ReferenceButton button
   ReferenceButton = new QPushButton();
   ReferenceButton->setParent(this);
-  ReferenceButton->setText("R");
+  ReferenceButton->setText("V");
   ReferenceButton->move(x, 0);
   ReferenceButton->resize(ButtonWidth, ButtonHeight);
   ReferenceButton->setCheckable(true);
@@ -183,11 +183,15 @@ TextControlBar::CreateSubWindows()
 
   x2 = x + ButtonWidth + 20;
 
-  for ( i = 0 ; i < BOOKMARK_MAX_COUNT ; i++ ) {
+  for ( i = 0 ; i < BOOKMARK_BUTTON_COUNT ; i++ ) {
     BookMark*                           bookmark;
-    bookmark = MainBookMarks[i];
-    
+    bookmark = MainBookMarks->GetBookMark(i);
     BookmarkButtons[i] = new BookmarkButton(this, bookmark);
+    connect(BookmarkButtons[i],
+            BookmarkButton::SignalBookmarkSelected,
+            this,
+            TextControlBar::SlotBookmarkSelected);
+    
     BookmarkButtons[i]->resize(BOOKMARK_BUTTON_WIDTH, ButtonHeight);
     BookmarkButtons[i]->move(x2, 0);
     if ( bookmark->GetChapter() == 0 ) {
@@ -930,4 +934,41 @@ TextControlBar::SlotTransliterateChecked
 (bool InChecked)
 {
   emit SignalInterlinearWordChanged(INTERLINEAR_WORD_TRANSLITERATE_INDEX, InChecked);
+}
+
+/*****************************************************************************!
+ * Function : SlotClearBookMarks
+ *****************************************************************************/
+void
+TextControlBar::SlotClearBookMarks(void)
+{
+  int                                   i;
+  for (i = 0; i < BOOKMARK_BUTTON_COUNT; i++) {
+    BookmarkButtons[i]->setText("");
+    BookmarkButtons[i]->hide();
+  }
+}
+
+/*****************************************************************************!
+ * Function : SlotDisplayBookMarks
+ *****************************************************************************/
+void
+TextControlBar::SlotDisplayBookMarks(void)
+{
+  int                                   i;
+  for (i = 0; i < BOOKMARK_BUTTON_COUNT; i++) {
+    BookmarkButtons[i]->Display();
+  }
+}
+
+/*****************************************************************************!
+ * Function : SlotBookmarkSelected
+ *****************************************************************************/
+void
+TextControlBar::SlotBookmarkSelected
+(BookInfo* InBook, int InChapter, int InVerse, int InWord)
+{
+  TRACE_FUNCTION_START();
+  emit SignalBookmarkSelected(InBook, InChapter, InVerse, InWord);
+  TRACE_FUNCTION_END();
 }

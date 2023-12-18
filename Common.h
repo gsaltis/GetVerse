@@ -23,6 +23,8 @@
 #include "BookMark.h"
 #include "sqlite3.h"
 #include "SystemConfig.h"
+#include "BookMarkManager.h"
+#include "BookInfoManager.h"
 
 /*****************************************************************************!
  * Exported Macros
@@ -31,7 +33,7 @@
 /*****************************************************************************!
  * Exported Data
  *****************************************************************************/
-extern std::vector<BookInfo*>
+extern BookInfoManager*
 MainBookInfo;
 
 extern sqlite3*
@@ -43,7 +45,7 @@ MainInterlinearDatabase;
 extern SystemConfig*
 MainSystemConfig;
 
-extern std::vector<BookMark*>
+extern BookMarkManager*
 MainBookMarks;
 
 /*****************************************************************************!

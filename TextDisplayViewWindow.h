@@ -207,7 +207,7 @@ class TextDisplayViewWindow : public QWidget
   int                                                           currentSelectedChapter;
   int                                                           maxChapters;
   
- //! Public Slots
+  //! Public Slots
  public slots :
   void                          SlotBookSelected                (BookInfo* InBookInfo);
   void                          SlotSetSentenceMode             (void);
@@ -220,6 +220,7 @@ class TextDisplayViewWindow : public QWidget
   void                          SlotSetFormattingType           (TextDisplayFormattingItem::FormatType InFormattingType);
   void                          SlotChapterChanged      (int InChapter);
   void                          SlotInterlinearWordSelected (int InWord, bool InSelected);
+  void                          SlotBookmarkSelected    (BookInfo* InBook, int InChapter, int InVerse);
   
  //! Public Signals
  signals :
@@ -242,6 +243,7 @@ class TextDisplayViewWindow : public QWidget
   void                          SignalChapterArrowSelected      (int InChapter);
   void                          SignalWindowChange              (int InWindowType);
   void                          SignalSetStartupBookmark        (BookInfo* InBookInfo, int InChapter);
+  void                          SignalSetBookMark               (BookInfo* InBookInfo, int InChapter, int InVerse, int InWord);
   
  //! Public Actions
  public :

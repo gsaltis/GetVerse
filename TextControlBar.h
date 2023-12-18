@@ -45,28 +45,28 @@ class TextControlBar : public QWidget
 {
   Q_OBJECT;
 
- //! Constructors
- public :
+  //! Constructors
+public :
   TextControlBar                ();
 
- //! Destructor
- public :
+  //! Destructor
+public :
   ~TextControlBar               ();
 
- //! Public Methods
- public :
+  //! Public Methods
+public :
 
- //! Public Data
- public :
+  //! Public Data
+public :
 
- //! Protected Methods
- protected :
+  //! Protected Methods
+protected :
 
- //! Protected Data
- protected :
+  //! Protected Data
+protected :
 
- //! Private Methods
- private :
+  //! Private Methods
+private :
   void                          initialize                      ();
   void                          CreateSubWindows                ();
   void                          InitializeSubWindows            ();
@@ -75,8 +75,8 @@ class TextControlBar : public QWidget
   void                          CreateConnections               ();
   void                          InterlinearElementsDisplay      (bool InDisplay);
   
- //! Private Data
- private :
+  //! Private Data
+private :
   QPushButton*                  ReferenceButton;
   QPushButton*                  EditButton;
   QPushButton*                  AnalyzeButton;
@@ -117,8 +117,8 @@ class TextControlBar : public QWidget
 
   BookmarkButton*               BookmarkButtons[BOOKMARK_BUTTON_COUNT];
   
- //! Public Slots
- public slots :
+  //! Public Slots
+public slots :
   void                          SlotReferenceButtonPushed       (void);
   void                          SlotEditButtonPushed            (void);
   void                          SlotAnalyzeButtonPushed         (void);
@@ -141,9 +141,12 @@ class TextControlBar : public QWidget
   void                          SlotMorphologyChecked           (bool InChecked);
   void                          SlotEnglishChecked              (bool InChecked);
   void                          SlotStrongsChecked              (bool InChecked);
+  void                          SlotClearBookMarks              (void);
+  void                          SlotDisplayBookMarks            (void);
+  void                          SlotBookmarkSelected            (BookInfo* InBook, int InChapter, int InVerse, int InWord);
   
- //! Public Signals
- signals :
+  //! Public Signals
+signals :
   void                          SignalSetSentenceMode           (void);
   void                          SignalSetReferenceMode          (void);
   void                          SignalSetBlockMode              (void);
@@ -154,10 +157,11 @@ class TextControlBar : public QWidget
   void                          SignalSetFormattingType         (TextDisplayFormattingItem::FormatType InFormattingType);
   void                          SignalChapterChanged            (int InChapter);
   void                          SignalSetStartupBookmark        (int InBook, int InChapter, int InVerse);
-  void                          SignalInterlinearWordChanged (int InWord, bool InChecked);
+  void                          SignalInterlinearWordChanged    (int InWord, bool InChecked);
+  void                          SignalBookmarkSelected          (BookInfo* InBook, int InChapter, int InVerse, int InWord);
   
- //! Public Actions
- public :
+  //! Public Actions
+public :
   QAction*                      ActionReferenceButtonPushed;
   QAction*                      ActionEditButtonPushed;
   QAction*                      ActionAnalyzeButtonPushed;

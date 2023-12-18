@@ -66,25 +66,30 @@ class MainWindow : public QMainWindow
   void                          resizeEvent             (QResizeEvent* InEvent);
   void                          CreateActions           ();
   void                          CreateMenus             ();
+  void                          CreateConnections       ();
 
  //! Private Data
  private :
   MainDisplayWindow*            displayWindow;
   QMenuBar*                     menubar;
   QMenu*                        fileMenu;
+  QMenu*                        settingsMenu;
   QStatusBar*                   statusbar;
   QString                       BookName;
   
  //! Public Slots
  public slots :
   void                          SlotExit                (void);
+  void                          SlotClearBookMarks      (void);
 
  //! Public Signals
  signals :
+  void                          SignalClearBookMarks    (void);
 
  //! Public Actions
  public :
   QAction*                      ActionExit;
+  QAction*                      ActionClearBookMarks;
 
 };
 

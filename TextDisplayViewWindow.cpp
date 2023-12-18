@@ -1827,12 +1827,7 @@ BookInfo*
 TextDisplayViewWindow::FindBookInfoByIndex
 (int InBookIndex)
 {
-  for ( auto bookInfo : MainBookInfo ) {
-    if ( bookInfo->index == InBookIndex ) {
-      return bookInfo;
-    }
-  }
-  return NULL;
+  return MainBookInfo->GetByIndex(InBookIndex);
 }
 
 /*****************************************************************************!
@@ -1957,6 +1952,16 @@ TextDisplayViewWindow::KeyPress
   }
 
   if ( InKey == Qt::Key_B ) {
+    emit SignalWindowChange(2);
+    return true;
+  }
+
+  if ( InKey == Qt::Key_E ) {
+    emit SignalWindowChange(3);
+    return true;
+  }
+
+  if ( InKey == Qt::Key_0 ) {
     emit SignalSetStartupBookmark(bookInfo, currentSelectedChapter);
     return true;
   }
@@ -1970,7 +1975,7 @@ TextDisplayViewWindow::KeyPress
     SetBookMark();
     return true;
   }
-  if ( InKey == Qt::Key_R ) {
+  if ( InKey == Qt::Key_V ) {
     emit SignalWindowChange(1);
     return true;
   }
@@ -2519,6 +2524,7 @@ TextDisplayViewWindow::SetBookMark(void)
 void
 TextDisplayViewWindow::SetBookMarkReference(void)
 {
+  BookInfo*                             bookInfo;
   int                                   verse;
   int                                   chapter;
   int                                   book;
@@ -2541,13 +2547,12 @@ TextDisplayViewWindow::SetBookMarkReference(void)
   if ( i >= n ) {
     return;
   }
-  TRACE_FUNCTION_INT(type);
   book = textItem->GetBook();
   chapter = textItem->GetChapter();
-  verse = 1;
-  TRACE_FUNCTION_INT(book);
-  TRACE_FUNCTION_INT(chapter);
-  TRACE_FUNCTION_INT(verse);
+  verse = textItem->GetVerse();
+
+  bookInfo = MainBookInfo->FindBookByIndex(book);
+  emit SignalSetBookMark(bookInfo, chapter, verse, 0);
 }
 
 /*****************************************************************************!
@@ -2557,4 +2562,15 @@ void
 TextDisplayViewWindow::ReferenceModeMousePress
 (QMouseEvent* )
 {
+}
+
+/*****************************************************************************!
+ * Function : SlotBookmarkSelected
+ *****************************************************************************/
+void
+TextDisplayViewWindow::SlotBookmarkSelected
+(BookInfo* InBook, int InChapter, int)
+{
+  SlotBookSelected(InBook);
+  SlotSelectChapter(InChapter);
 }

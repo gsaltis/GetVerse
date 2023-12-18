@@ -32,8 +32,10 @@ DEFINES                         += \
 
 SOURCES                         += \
 				   BookInfo.cpp                                 \
+				   BookInfoManager.cpp                          \
 				   BookInfoWord.cpp                             \
 				   BookMark.cpp                                 \
+				   BookMarkManager.cpp                          \
 				   BookMarkSet.cpp                              \
 				   BookNameTable.cpp                            \
 				   BookNameTableInnerTable.cpp                  \
@@ -80,8 +82,10 @@ SOURCES                         += \
 
 HEADERS                         += \
 				   BookInfo.h                                   \
+				   BookInfoManager.h                            \
 				   BookInfoWord.h                               \
 				   BookMark.h                                   \
+				   BookMarkManager.h                            \
 				   BookMarkSet.h                                \
 				   BookNameTable.h                              \
 				   BookNameTableInnerTable.h                    \

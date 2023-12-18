@@ -8,6 +8,7 @@
 /*****************************************************************************!
  * Global Headers
  *****************************************************************************/
+#include <trace_winnetqt.h>
 #include <QtCore>
 #include <QtGui>
 #include <QWidget>
@@ -33,6 +34,7 @@ BookmarkButton::BookmarkButton
 BookmarkButton::BookmarkButton
 (QWidget* InParent, BookMark* InBookMark) : QPushButton(InParent)
 {
+  int                                   n;
   BookInfo*                             b;
   initialize();
 
@@ -40,7 +42,9 @@ BookmarkButton::BookmarkButton
   if ( bookMark->GetChapter() == 0 ) {
     return;
   }
-  b = MainBookInfo[InBookMark->GetBook()];
+  n = InBookMark->GetBook();
+  TRACE_FUNCTION_INT(n);
+  b = MainBookInfo->FindBookByIndex(n);
   Set(b, bookMark->GetChapter(), bookMark->GetVerse());
 }
 
@@ -72,6 +76,7 @@ BookmarkButton::initialize()
   Book          = NULL;
   Chapter       = 0;
   Verse         = 0;
+  CreateConnections();
 }
 
 /*****************************************************************************!
@@ -97,7 +102,9 @@ BookmarkButton::Set
 void
 BookmarkButton::SlotPushed(void)
 {
-  emit SignalBookmarkSelected(Book, Chapter, Verse);
+  TRACE_FUNCTION_START();
+  emit SignalBookmarkSelected(Book, Chapter, Verse, 0);
+  TRACE_FUNCTION_END();
 }
 
 /*****************************************************************************!
@@ -110,4 +117,29 @@ BookmarkButton::CreateConnections(void)
           QPushButton::pressed,
           this,
           BookmarkButton::SlotPushed);
+}
+
+/*****************************************************************************!
+ * Function : Clear
+ *****************************************************************************/
+void
+BookmarkButton::Clear(void)
+{
+  Book = NULL;
+  Chapter = 0;
+  Verse = 0;
+  bookMark = NULL;
+}
+
+/*****************************************************************************!
+ * Function : Display
+ *****************************************************************************/
+void
+BookmarkButton::Display(void)
+{
+  BookInfo*                             bookInfo;
+  bookInfo = MainBookInfo->FindBookByIndex(bookMark->GetBook());
+  if ( bookInfo ) {
+    Set(bookInfo, bookMark->GetChapter(), bookMark->GetVerse());
+  } 
 }

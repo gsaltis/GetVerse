@@ -8,7 +8,7 @@
 /*****************************************************************************!
  * Global Headers
  *****************************************************************************/
-#include <trace_winnet.h>
+#include <trace_winnetqt.h>
 #include <QtCore>
 #include <QtGui>
 #include <QWidget>
@@ -204,13 +204,7 @@ TextDisplayOuterWindow::SlotBookSelected
   QString                               name;
   BookInfo*                             bookInfo;
 
-  bookInfo = NULL;
-  for ( auto b : MainBookInfo ) {
-    if ( b->index == InBookIndex ) {
-      bookInfo = b;
-      break;
-    }
-  }
+  bookInfo = MainBookInfo->FindBookByIndex(InBookIndex);
   if ( NULL == bookInfo ) {
     return;
   }
@@ -229,6 +223,31 @@ TextDisplayOuterWindow::SlotBookSelected
 void
 TextDisplayOuterWindow::CreateConnections(void)
 {
+  connect(controlBar,
+          TextControlBar::SignalBookmarkSelected,
+          this,
+          TextDisplayOuterWindow::SlotBookmarkSelected);
+
+  connect(this,
+          TextDisplayOuterWindow::SignalBookmarkSelected,
+          viewWindow,
+          TextDisplayViewScrollWindow::SlotBookmarkSelected);
+  
+  connect(this,
+          TextDisplayOuterWindow::SignalDisplayBookMarks,
+          controlBar,
+          TextControlBar::SlotDisplayBookMarks);
+  
+  connect(this,
+          TextDisplayOuterWindow::SignalClearBookMarks,
+          controlBar,
+          TextControlBar::SlotClearBookMarks);
+  
+  connect(viewWindow,
+          TextDisplayViewScrollWindow::SignalSetBookMark,
+          this,
+          TextDisplayOuterWindow::SlotSetBookMark);
+  
   connect(viewWindow,
           TextDisplayViewScrollWindow::SignalSetStartupBookmark,
           this,
@@ -562,12 +581,7 @@ BookInfo*
 TextDisplayOuterWindow::FindBookInfoByName
 (QString InBookName)
 {
-  for ( auto bookInfo : MainBookInfo ) {
-    if ( bookInfo->name == InBookName ) {
-      return bookInfo;
-    }
-  }
-  return NULL;
+  return MainBookInfo->GetBookByName(InBookName);
 }
 
 /*****************************************************************************!
@@ -648,4 +662,42 @@ TextDisplayOuterWindow::SlotSetStartupBookmarkInfo
 (BookInfo* InBookInfo, int InChapter)
 {
   emit SignalSetStartupBookmarkInfo(InBookInfo, InChapter);
+}
+
+/*****************************************************************************!
+ * Function : SlotSetBookMark
+ *****************************************************************************/
+void
+TextDisplayOuterWindow::SlotSetBookMark
+(BookInfo* InBookInfo, int InChapter, int InVerse, int InWord)
+{
+  emit SignalSetBookMark(InBookInfo, InChapter, InVerse, InWord);  
+}
+
+/*****************************************************************************!
+ * Function : SlotClearBookMarks
+ *****************************************************************************/
+void
+TextDisplayOuterWindow::SlotClearBookMarks(void)
+{
+  emit SignalClearBookMarks();  
+}
+
+/*****************************************************************************!
+ * Function : SlotDisplayBookMarks
+ *****************************************************************************/
+void
+TextDisplayOuterWindow::SlotDisplayBookMarks(void)
+{
+  emit SignalDisplayBookMarks();  
+}
+
+/*****************************************************************************!
+ * Function : SlotBookmarkSelected
+ *****************************************************************************/
+void
+TextDisplayOuterWindow::SlotBookmarkSelected
+(BookInfo* InBook, int InChapter, int InVerse, int InWord)
+{
+  emit SignalBookmarkSelected(InBook, InChapter, InVerse, InWord);  
 }

@@ -102,6 +102,8 @@ class TextDisplayViewScrollWindow : public QScrollArea
   void                          SlotWindowChange                (int InType);
   void                          SlotInterlinearWordSelected     (int InWord, bool InChecked);
   void                          SlotSetStartupBookmark          (BookInfo* InBookInfo, int InChapter);
+  void                          SlotSetBookMark                 (BookInfo* InBook, int InChapter, int InVerse, int InWord);
+  void                          SlotBookmarkSelected            (BookInfo* InBook, int InChapter, int InVerse);
   
  //! Public Signals
  signals :
@@ -131,6 +133,8 @@ class TextDisplayViewScrollWindow : public QScrollArea
   void                          SignalChapterArrowSelected      (int InChapter);
   void                          SignalInterlinearWordChanged    (int InWord, bool InChecked);
   void                          SignalSetStartupBookmark        (BookInfo* InBookInfo, int InChapter);
+  void                          SignalSetBookMark               (BookInfo* InBook, int InChapter, int InVerse, int InWord);
+  void                          SignalBookmarkSelected          (BookInfo* InBook, int InChapter, int InVerse);
   
  //! Public Actions
  public :

@@ -25,6 +25,8 @@
 #include "SystemConfig.h"
 #include "BookInfo.h"
 #include "BookMark.h"
+#include "BookMarkManager.h"
+#include "BookInfoManager.h"
 
 /*****************************************************************************!
  * Local Macros
@@ -41,10 +43,6 @@
 #define BOOK_NAME_LEN                           32
 #define VERSE_RANGES_COUNT                      50
 #define BOOK_COUNT                              66
-
-#define DUPLICATE_BOOK                          1
-#define BOOK_NOT_FOUND                          2
-#define BOOK_FOUND                              3
 
 #define SQL_STATEMENT_INSERT_FORMATTING         \
   "INSERT INTO Formatting VALUES(%d, %d, %d, '', %d);\n"
@@ -149,14 +147,6 @@ int
 MainDBBReadBookInfoCB
 (void*, int InColumnCount, char** InColumnValues, char** InColumnNames);
 
-int
-MainVerifyBookName
-(QString InBookName);
-
-BookInfo*
-MainGetSearchableBookName
-(QString InBookName);
-
 void
 MainGetVerse
 (void);
@@ -187,10 +177,6 @@ MainInitializeGUI
 
 void
 InitializeSettings
-();
-
-void
-MainInitializeBookMarks
 ();
 
 /*****************************************************************************!
@@ -289,10 +275,10 @@ MainFileLines;;
 static VerseRange
 MainVerseRanges[VERSE_RANGES_COUNT];
 
-std::vector<BookInfo*>
+BookInfoManager*
 MainBookInfo;
 
-std::vector<BookMark*>
+BookMarkManager*
 MainBookMarks;
 
 /*****************************************************************************!
@@ -308,7 +294,6 @@ main
   ProcessCommandLine(argc, argv);
   VerifyCommandLine();
 
-  TRACE_COMMAND_CLEAR();
   MainSystemConfig->ReadJSON(MainConfigFilename);
 
   if ( MainFormatAdd ) {
@@ -336,7 +321,7 @@ MainInitializeGUI
   QPoint                                pos;
 
   if ( ! MainBook.isEmpty() ) {
-    b = MainVerifyBookName(MainBook);
+    b = MainBookInfo->VerifyBookName(MainBook);
     switch (b) {
       case BOOK_NOT_FOUND : {
         fprintf(stderr, "%s was not found\n", MainBook.toStdString().c_str());
@@ -349,7 +334,7 @@ MainInitializeGUI
         break;
       }
     }
-    MainSearchBook = MainGetSearchableBookName(MainBook);
+    MainSearchBook = MainBookInfo->GetSearchableBookName(MainBook);
   }
     
   InApplication.setApplicationName(MAIN_APP_NAME);
@@ -375,6 +360,7 @@ MainInitialize
 ()
 {
   QString                               s;
+  QSettings                             settings(MAIN_ORG_NAME, MAIN_APP_NAME);
 
   MainSystemConfig                      = new SystemConfig();
   
@@ -387,8 +373,10 @@ MainInitialize
   MainFormatInfos                       = FormattingInfoListCreate();
   MainBlockOutputText                   = QString("");
 
-  MainInitializeBookMarks();
-  
+  MainBookInfo = new BookInfoManager();
+  MainBookMarks = new BookMarkManager(MAIN_ORG_NAME, MAIN_APP_NAME);
+  MainBookMarks->Read();
+
   InterlinearWord::GetValues();
   s = getenv(DATABASE_ENV_LOCATION);
   if ( ! s.isEmpty() ) {
@@ -1207,7 +1195,7 @@ VerifyCommandLine
   if ( MainUseGUI ) {
     return;
   }
-  b = MainVerifyBookName(MainBook);
+  b = MainBookInfo->VerifyBookName(MainBook);
   switch (b) {
     case BOOK_NOT_FOUND : {
       fprintf(stderr, "%s was not found\n", MainBook.toStdString().c_str());
@@ -1220,7 +1208,7 @@ VerifyCommandLine
       break;
     }
   }
-  MainSearchBook = MainGetSearchableBookName(MainBook);
+  MainSearchBook = MainBookInfo->GetSearchableBookName(MainBook);
   if ( MainVerseRangesCount == 0 ) {
     fprintf(stderr, "Missing verse\n");
     exit(EXIT_FAILURE);
@@ -1266,55 +1254,6 @@ MainDBBReadBookInfo
     return;
   }
   fprintf(stderr, "%s sqlite3_exec() failed \n%s\n%s\n", __FUNCTION__, sqlstmt, sqlite3_errstr(n));
-}
-
-/*****************************************************************************!
- * Function : MainVerifyBookName
- *****************************************************************************/
-int
-MainVerifyBookName
-(QString InBookName)
-{
-  QString                               bookName;
-  QString                               name;
-  BookInfo*                             candidate = NULL;
-
-  bookName = InBookName.toLower();
-
-  for (BookInfo* bookInfo : MainBookInfo) {
-    name = bookInfo->name.toLower();
-    if ( name.startsWith(bookName) ) {
-      if ( candidate ) {
-        return DUPLICATE_BOOK;
-      }
-      candidate = bookInfo;
-    }
-  }
-  return  ( candidate == NULL ) ? BOOK_NOT_FOUND : BOOK_FOUND;
-}
-
-/*****************************************************************************!
- * Function : MainGetSearchableBookName
- *****************************************************************************/
-BookInfo*
-MainGetSearchableBookName
-(QString InBookName)
-{
-  QString                               bookName;
-  QString                               name;
-  BookInfo*                             candidate = NULL;
-
-  bookName = InBookName.toLower();
-  for (BookInfo* bookInfo : MainBookInfo) {
-    name = bookInfo->name.toLower();
-    if ( name.startsWith(bookName) ) {
-      if ( candidate ) {
-        return NULL;
-      }
-      candidate = bookInfo;
-    }
-  }
-  return candidate;
 }
 
 /*****************************************************************************!
@@ -1390,7 +1329,7 @@ MainDBBReadBookInfoCB
   bookInfo->hebrewBookGroup     = hebrewBookGroup;
   bookInfo->groupEnd            = groupEnd;
 
-  MainBookInfo.push_back(bookInfo);
+  MainBookInfo->AddBookInfo(bookInfo);
   return 0;
 }
 
@@ -1722,20 +1661,3 @@ MainGetInterlinearWordDisplays
   InMorphologyDisplay = settings.value("Interlinear/Values/Morphology/Display", true).toBool();
 }
 
-/*****************************************************************************!
- * Function : MainInitializeBookMarks
- *****************************************************************************/
-void
-MainInitializeBookMarks
-()
-{
-  BookMark*                             bookMark;
-  int                                   i;
-  QSettings                             settings(MAIN_ORG_NAME, MAIN_APP_NAME);
-  
-  for (i = 1; i <= BOOKMARK_MAX_COUNT; i++) {
-    bookMark = new BookMark(i);
-    bookMark->Read(&settings);
-    MainBookMarks.push_back(bookMark);
-  }
-}

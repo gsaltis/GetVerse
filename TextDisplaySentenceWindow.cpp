@@ -273,17 +273,27 @@ TextDisplaySentenceWindow::KeyPress
     return true;
   }
   
+  if ( InKey == Qt::Key_B ) {
+    emit SignalWindowChange(2);
+    return true;
+  }
+  
+  if ( InKey == Qt::Key_E ) {
+    emit SignalWindowChange(3);
+    return true;
+  }
+  
   if ( InKey == Qt::Key_S ) {
     emit SignalWindowChange(4);
     return true;
   }
 
-  if ( InKey == Qt::Key_R ) {
+  if ( InKey == Qt::Key_V ) {
     emit SignalWindowChange(1);
     return true;
   }
 
-  if ( InKey == Qt::Key_B ) {
+  if ( InKey == Qt::Key_0 ) {
     emit SignalSetStartupBookmarkInfo(bookInfo, currentChapter);
     return true;
   }

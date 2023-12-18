@@ -191,7 +191,6 @@ TextDisplaySentenceScrollWindow::keyPressEvent
     return;
   }
 
-  TRACE_FUNCTION_LOCATION();
   QScrollArea::keyPressEvent(InEvent);
 }
 

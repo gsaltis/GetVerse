@@ -299,3 +299,12 @@ BookInfo::GetWordByIndex
   }
   return wordItems[InIndex];
 }
+
+/*****************************************************************************!
+ * Function : GetIndex
+ *****************************************************************************/
+int
+BookInfo::GetIndex(void)
+{
+  return index;
+}

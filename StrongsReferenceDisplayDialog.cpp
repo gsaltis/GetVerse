@@ -104,7 +104,6 @@ StrongsReferenceDisplayDialog::CreateSubWindows(void)
 void
 StrongsReferenceDisplayDialog::SlotOKButtonPressed()
 {
-  TRACE_FUNCTION_LOCATION();
   accept();
 }
 

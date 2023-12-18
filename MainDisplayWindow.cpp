@@ -8,7 +8,7 @@
 /*****************************************************************************!
  * Global Headers
  *****************************************************************************/
-#include <trace_winnet.h>
+#include <trace_winnetqt.h>
 #include <QtCore>
 #include <QtGui>
 #include <QWidget>
@@ -147,10 +147,25 @@ MainDisplayWindow::resizeEvent
 void
 MainDisplayWindow::CreateConnections(void)
 {
+  connect(this,
+          MainDisplayWindow::SignalDisplayBookMarks,
+          displayWindow,
+          TextDisplayOuterWindow::SlotDisplayBookMarks);
+  
+  connect(this,
+          MainDisplayWindow::SignalClearBookMarks,
+          displayWindow,
+          TextDisplayOuterWindow::SlotClearBookMarks);
+  
   connect(displayWindow,
           TextDisplayOuterWindow::SignalSetStartupBookmarkInfo,
           this,
           MainDisplayWindow::SlotSetStartupBookmarkInfo);
+  
+  connect(displayWindow,
+          TextDisplayOuterWindow::SignalSetBookMark,
+          this,
+          MainDisplayWindow::SlotSetBookMark);
   
   connect(this,
           MainDisplayWindow::SignalMoveToBookChapter,
@@ -255,7 +270,7 @@ MainDisplayWindow::SlotSetStartupBookmark
 {
   BookInfo*                             bookInfo;
 
-  bookInfo = MainBookInfo[InBook-1];
+  bookInfo = MainBookInfo->FindBookByIndex(InBook);
   
   MainSetStartLocation(InBook, InChapter, InVerse);
   messageWindow->SlotSetMessageNormal(QString("Saving Bookmark : %1 %2").arg(bookInfo->name).arg(InChapter));
@@ -269,4 +284,24 @@ MainDisplayWindow::SlotSetStartupBookmarkInfo
 (BookInfo* InBookInfo, int InChapter)
 {
   SlotSetStartupBookmark(InBookInfo->index, InChapter, 1);
+}
+
+/*****************************************************************************!
+ * Function : SlotSetBookMark
+ *****************************************************************************/
+void
+MainDisplayWindow::SlotSetBookMark
+(BookInfo* InBookInfo, int InChapter, int InVerse, int InWord)
+{
+  MainBookMarks->SetBookMark(InBookInfo->index, InChapter, InVerse, InWord);
+  emit SignalDisplayBookMarks();
+}
+
+/*****************************************************************************!
+ * Function : SlotClearBookMarks
+ *****************************************************************************/
+void
+MainDisplayWindow::SlotClearBookMarks(void)
+{
+  emit SignalClearBookMarks();  
 }

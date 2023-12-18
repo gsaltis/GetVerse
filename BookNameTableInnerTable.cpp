@@ -48,7 +48,7 @@ BookNameTableInnerTable::~BookNameTableInnerTable
 void
 BookNameTableInnerTable::initialize()
 {
-  tableHeight = BOOK_NAME_TABLE_ITEM_HEIGHT * MainBookInfo.size() + topMargin;
+  tableHeight = BOOK_NAME_TABLE_ITEM_HEIGHT * MainBookInfo->GetSize() + topMargin;
   resize(BOOK_NAME_TABLE_ITEM_WIDTH, tableHeight);
   InitializeSubWindows();  
   CreateSubWindows();
@@ -97,22 +97,24 @@ BookNameTableInnerTable::resizeEvent
 void
 BookNameTableInnerTable::Populate(void)
 {
+  BookInfo*                             bookInfo;
+  int                                   i;
   int                                   n;
   QString                               name;
   BookNameTableItem*                    tableItem;
   int                                   y;
 
-
+  n = MainBookInfo->GetSize();
+  
   y = topMargin;
-  n = 1;
-  for ( BookInfo* bookInfo : MainBookInfo) {
+  for ( i = 0 ; i < n ; i++ ) {
+    bookInfo = MainBookInfo->GetByIndex(i);
     name = bookInfo->name;
     tableItem = new BookNameTableItem(bookInfo);
     tableItem->move(0, y);
     tableItem->setParent(this);
     items.push_back(tableItem);
     y += BOOK_NAME_TABLE_ITEM_HEIGHT;
-    n++;
     connect(tableItem,
             SIGNAL(SignalBookSelected(int)),
             this,

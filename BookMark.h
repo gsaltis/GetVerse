@@ -53,6 +53,9 @@ class BookMark : public QWidget
   void                          Read                    (QSettings* InSettings);
   void                          SetButton               (class BookmarkButton* InButton);
   void                          Set                     (int InBook, int InChapter, int InVerse);
+  void                          Save                    (QSettings* InSettings);
+  void                          Clear                   (void);
+  void                          Clear                   (QSettings* InSettings);
 
  //! Public Data
  public :
@@ -74,6 +77,7 @@ class BookMark : public QWidget
   int                           Verse;
   int                           Index;
   class BookmarkButton*         button;
+  QSettings*                    Settings;
   
  //! Public Slots
  public slots :

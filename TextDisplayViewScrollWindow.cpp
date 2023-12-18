@@ -124,6 +124,16 @@ TextDisplayViewScrollWindow::SlotBookSelected
 void
 TextDisplayViewScrollWindow::CreateConnections(void)
 {
+  connect(this,
+          TextDisplayViewScrollWindow::SignalBookmarkSelected,
+          viewWindow,
+          TextDisplayViewWindow::SlotBookmarkSelected);
+  
+  connect(viewWindow,
+          TextDisplayViewWindow::SignalSetBookMark,
+          this,
+          TextDisplayViewScrollWindow::SlotSetBookMark);
+          
   connect(viewWindow,
           TextDisplayViewWindow::SignalSetStartupBookmark,
           this,
@@ -502,4 +512,24 @@ TextDisplayViewScrollWindow::SlotSetStartupBookmark
 (BookInfo* InBookInfo, int InChapter)
 {
   emit SignalSetStartupBookmark(InBookInfo, InChapter);
+}
+
+/*****************************************************************************!
+ * Function : SlotSetBookMark
+ *****************************************************************************/
+void
+TextDisplayViewScrollWindow::SlotSetBookMark
+(BookInfo* InBook, int InChapter, int InVerse, int InWord)
+{
+  emit SignalSetBookMark(InBook, InChapter, InVerse, InWord);
+}
+
+/*****************************************************************************!
+ * Function : SlotBookmarkSelected
+ *****************************************************************************/
+void
+TextDisplayViewScrollWindow::SlotBookmarkSelected
+(BookInfo* InBook, int InChapter, int InVerse)
+{
+  emit SignalBookmarkSelected(InBook, InChapter, InVerse);  
 }
