@@ -90,6 +90,10 @@ TextDisplayOuterWindow::CreateSubWindows()
   
   controlBar = new TextControlBar();
   controlBar->setParent(this);
+
+  verseWindow = new TextDisplayVerseContainerWindow();
+  verseWindow->setParent(this);
+  verseWindow->hide();
 }
 
 /*****************************************************************************!
@@ -103,6 +107,7 @@ TextDisplayOuterWindow::InitializeSubWindows()
   sentenceWindow        = NULL;
   viewWindow            = NULL;
   controlBar            = NULL;
+  verseWindow = NULL;
 }
 
 /*****************************************************************************!
@@ -112,6 +117,10 @@ void
 TextDisplayOuterWindow::resizeEvent
 (QResizeEvent* InEvent)
 {
+  int                                   verseWindowW;
+  int                                   verseWindowH;
+  int                                   verseWindowY;
+  int                                   verseWindowX;
   int                                   headerH;
   int                                   headerW;
   int                                   headerY;
@@ -169,6 +178,11 @@ TextDisplayOuterWindow::resizeEvent
   sentenceWindowY = SECTION_HEADER_HEIGHT + TEXT_CONTROL_BAR_HEIGHT;
   sentenceWindowW = width;
   sentenceWindowH = height - (TEXT_CONTROL_BAR_HEIGHT + SECTION_HEADER_HEIGHT);
+
+  verseWindowX = 0;
+  verseWindowY = SECTION_HEADER_HEIGHT + TEXT_CONTROL_BAR_HEIGHT;
+  verseWindowW = width;
+  verseWindowH = height - (SECTION_HEADER_HEIGHT + TEXT_CONTROL_BAR_HEIGHT);
   
   //!
   if ( header ) {
@@ -192,6 +206,9 @@ TextDisplayOuterWindow::resizeEvent
     controlBar->move(controlBarX, controlBarY);
     controlBar->resize(controlBarW, controlBarH);
   }
+  
+  verseWindow->move(verseWindowX, verseWindowY);
+  verseWindow->resize(verseWindowW, verseWindowH);
 }
 
 /*****************************************************************************!
@@ -201,20 +218,29 @@ void
 TextDisplayOuterWindow::SlotBookSelected
 (int InBookIndex)
 {
-  QString                               name;
   BookInfo*                             bookInfo;
 
   bookInfo = MainBookInfo->FindBookByIndex(InBookIndex);
   if ( NULL == bookInfo ) {
     return;
   }
-  bookInfo->ReadVerses();
-  header->SetText(bookInfo->GetCapitalizedBookName());
+  BookSelected(bookInfo, 1);
+}
+
+/*****************************************************************************!
+ * Function : BookSelected
+ *****************************************************************************/
+void
+TextDisplayOuterWindow::BookSelected
+(BookInfo* InBookInfo, int InChapter)
+{
+  InBookInfo->ReadVerses();
+  header->SetText(InBookInfo->GetCapitalizedBookName());
   viewWindow->ClearText();
-  controlBar->SlotSetChapter(1);
-  controlBar->SlotSetChapterSelectMax(bookInfo->chapters);
-  emit SignalBookSelected(bookInfo);
-  emit SignalBookIndexSelected(InBookIndex);
+  controlBar->SlotSetChapter(InChapter);
+  controlBar->SlotSetChapterSelectMax(InBookInfo->chapters);
+  emit SignalBookSelected(InBookInfo);
+  emit SignalBookIndexSelected(InBookInfo->GetIndex());
 }
 
 /*****************************************************************************!
@@ -308,6 +334,11 @@ TextDisplayOuterWindow::CreateConnections(void)
           sentenceWindow,
           TextDisplaySentenceContainterWindow::SlotChapterSet);
 
+  connect(this,
+          TextDisplayOuterWindow::SignalBookSelected,
+          verseWindow,
+          TextDisplayVerseContainerWindow::SlotBookSelected);
+  
   connect(this,
           TextDisplayOuterWindow::SignalBookSelected,
           sentenceWindow,
@@ -506,6 +537,7 @@ void
 TextDisplayOuterWindow::SlotSetSentenceMode(void)
 {
   viewWindow->hide();
+  verseWindow->hide();
   sentenceWindow->show();
   emit SignalSetSentenceMode();
 }
@@ -517,6 +549,7 @@ void
 TextDisplayOuterWindow::SlotSetBlockMode(void)
 {
   viewWindow->show();
+  verseWindow->hide();
   sentenceWindow->hide();
   emit SignalSetBlockMode();
 }
@@ -528,6 +561,7 @@ void
 TextDisplayOuterWindow::SlotSetInterlinearMode(void)
 {
   viewWindow->show();
+  verseWindow->hide();
   sentenceWindow->hide();
   emit SignalSetInterlinearMode();
 }
@@ -538,7 +572,8 @@ TextDisplayOuterWindow::SlotSetInterlinearMode(void)
 void
 TextDisplayOuterWindow::SlotSetReferenceMode(void)
 {
-  viewWindow->show();
+  viewWindow->hide();
+  verseWindow->show();
   sentenceWindow->hide();
   emit SignalSetReferenceMode();
 }
@@ -551,6 +586,7 @@ TextDisplayOuterWindow::SlotSetEditMode(void)
 {
   viewWindow->show();
   sentenceWindow->hide();
+  verseWindow->hide();
   emit SignalSetEditMode();
 }
 
@@ -697,7 +733,8 @@ TextDisplayOuterWindow::SlotDisplayBookMarks(void)
  *****************************************************************************/
 void
 TextDisplayOuterWindow::SlotBookmarkSelected
-(BookInfo* InBook, int InChapter, int InVerse, int InWord)
+(BookInfo* InBook, int InChapter, int, int)
 {
-  emit SignalBookmarkSelected(InBook, InChapter, InVerse, InWord);  
+  BookSelected(InBook, InChapter);
+  emit SignalChapterSelected(InChapter);
 }

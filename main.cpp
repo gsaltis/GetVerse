@@ -294,6 +294,7 @@ main
   ProcessCommandLine(argc, argv);
   VerifyCommandLine();
 
+  TRACE_COMMAND_CLEAR();
   MainSystemConfig->ReadJSON(MainConfigFilename);
 
   if ( MainFormatAdd ) {

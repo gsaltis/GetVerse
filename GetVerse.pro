@@ -70,6 +70,10 @@ SOURCES                         += \
 				   TextDisplaySentenceItem.cpp                  \
 				   TextDisplaySentenceScrollWindow.cpp          \
 				   TextDisplaySentenceWindow.cpp                \
+				   TextDisplayVerseContainerWindow.cpp          \
+				   TextDisplayVerseItem.cpp                     \
+				   TextDisplayVerseScrollWindow.cpp             \
+				   TextDisplayVerseWindow.cpp                   \
 				   TextDisplayViewScrollBar.cpp                 \
 				   TextDisplayViewScrollWindow.cpp              \
 				   TextDisplayViewWindow.cpp                    \
@@ -120,6 +124,10 @@ HEADERS                         += \
 				   TextDisplaySentenceItem.h                    \
 				   TextDisplaySentenceScrollWindow.h            \
 				   TextDisplaySentenceWindow.h                  \
+				   TextDisplayVerseContainerWindow.h            \
+				   TextDisplayVerseItem.h                       \
+				   TextDisplayVerseScrollWindow.h               \
+				   TextDisplayVerseWindow.h                     \
 				   TextDisplayViewScrollBar.h                   \
 				   TextDisplayViewScrollWindow.h                \
 				   TextDisplayViewWindow.h                      \

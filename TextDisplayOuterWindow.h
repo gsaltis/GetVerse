@@ -25,6 +25,7 @@
 #include "TextDisplayViewScrollWindow.h"
 #include "TextControlBar.h"
 #include "TextDisplaySentenceContainterWindow.h"
+#include "TextDisplayVerseContainerWindow.h"
 
 /*****************************************************************************!
  * Exported Macros
@@ -69,7 +70,8 @@ class TextDisplayOuterWindow : public QFrame
   void                          resizeEvent             (QResizeEvent* InEvent);
   void                          CreateConnections       (void);
   BookInfo*                     FindBookInfoByName      (QString InBookName);
-
+  void                          BookSelected            (BookInfo* InBookInfo, int InChapter);
+  
  //! Private Data
  private :
   SectionHeader*                        header;
@@ -80,6 +82,8 @@ class TextDisplayOuterWindow : public QFrame
   QString                               BookName;
   int                                   BookInfoIndex;
   
+  TextDisplayVerseContainerWindow* verseWindow;
+
  //! Public Slots
  public slots :
   void                          SlotBookSelected                (int InBookIndex);

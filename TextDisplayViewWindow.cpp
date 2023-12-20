@@ -136,6 +136,8 @@ TextDisplayViewWindow::SlotBookSelected
 (BookInfo* InBookInfo)
 {
   QSize                                 s;
+
+  TRACE_FUNCTION_START();
   emit SignalShowProgressBar();
   bookInfo = InBookInfo;
   verseCount = GetVerseCount();
@@ -147,6 +149,7 @@ TextDisplayViewWindow::SlotBookSelected
   GetMaxReferenceWidth();
   SetBook();
   ItemsArranged = false;
+
   ArrangeItems();
   ComputeSize();
   ItemsArranged = true;
@@ -155,6 +158,7 @@ TextDisplayViewWindow::SlotBookSelected
   repaint();
   s = size();
   emit SignalHideProgressBar();
+  TRACE_FUNCTION_END();
 }
 
 /*****************************************************************************!

@@ -968,7 +968,5 @@ void
 TextControlBar::SlotBookmarkSelected
 (BookInfo* InBook, int InChapter, int InVerse, int InWord)
 {
-  TRACE_FUNCTION_START();
   emit SignalBookmarkSelected(InBook, InChapter, InVerse, InWord);
-  TRACE_FUNCTION_END();
 }

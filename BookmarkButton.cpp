@@ -43,7 +43,6 @@ BookmarkButton::BookmarkButton
     return;
   }
   n = InBookMark->GetBook();
-  TRACE_FUNCTION_INT(n);
   b = MainBookInfo->FindBookByIndex(n);
   Set(b, bookMark->GetChapter(), bookMark->GetVerse());
 }
@@ -102,9 +101,7 @@ BookmarkButton::Set
 void
 BookmarkButton::SlotPushed(void)
 {
-  TRACE_FUNCTION_START();
   emit SignalBookmarkSelected(Book, Chapter, Verse, 0);
-  TRACE_FUNCTION_END();
 }
 
 /*****************************************************************************!
