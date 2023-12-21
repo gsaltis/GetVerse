@@ -77,23 +77,24 @@ TextDisplayOuterWindow::CreateSubWindows()
   header->SetText("----");
   header->setParent(this);
 
+  controlBar = new TextControlBar();
+  controlBar->setParent(this);
+
   referenceWindow = new TextDisplayReferenceWindow();
   referenceWindow->setParent(this);
   referenceWindow->hide();
 
   viewWindow = new TextDisplayViewScrollWindow();
   viewWindow->setParent(this);
-
+  viewWindow->hide();
+  
   sentenceWindow = new TextDisplaySentenceContainterWindow();
   sentenceWindow->setParent(this);
   sentenceWindow->hide();
   
-  controlBar = new TextControlBar();
-  controlBar->setParent(this);
-
   verseWindow = new TextDisplayVerseContainerWindow();
   verseWindow->setParent(this);
-  verseWindow->hide();
+  verseWindow->show();
 }
 
 /*****************************************************************************!
@@ -240,6 +241,7 @@ TextDisplayOuterWindow::BookSelected
   controlBar->SlotSetChapter(InChapter);
   controlBar->SlotSetChapterSelectMax(InBookInfo->chapters);
   emit SignalBookSelected(InBookInfo);
+  emit SignalChapterSelected(1);
   emit SignalBookIndexSelected(InBookInfo->GetIndex());
 }
 
@@ -338,7 +340,11 @@ TextDisplayOuterWindow::CreateConnections(void)
           TextDisplayOuterWindow::SignalBookSelected,
           verseWindow,
           TextDisplayVerseContainerWindow::SlotBookSelected);
-  
+
+  connect(this,
+          TextDisplayOuterWindow::SignalChapterSelected,
+          verseWindow,
+          TextDisplayVerseContainerWindow::SlotChapterSelected);
   connect(this,
           TextDisplayOuterWindow::SignalBookSelected,
           sentenceWindow,

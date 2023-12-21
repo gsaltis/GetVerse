@@ -71,10 +71,12 @@ class TextDisplayVerseContainerWindow : public QWidget
  //! Public Slots
  public slots :
   void                          SlotBookSelected        (BookInfo* InBook);
+  void                          SlotChapterSelected     (int InChapter);
 
  //! Public Signals
  signals :
   void                          SignalBookSelected      (BookInfo* InBook);
+  void                          SignalChapterSelected   (int InChapter);
 
  //! Public Actions
  public :

@@ -119,6 +119,10 @@ TextDisplayVerseContainerWindow::CreateConnections(void)
           TextDisplayVerseContainerWindow::SignalBookSelected,
           verseWindow,
           TextDisplayVerseScrollWindow::SlotBookSelected);
+  connect(this,
+          TextDisplayVerseContainerWindow::SignalChapterSelected,
+          verseWindow,
+          TextDisplayVerseScrollWindow::SlotChapterSelected);
 }
 
 /*****************************************************************************!
@@ -129,4 +133,15 @@ TextDisplayVerseContainerWindow::SlotBookSelected
 (BookInfo* InBook)
 {
   emit SignalBookSelected(InBook);  
+}
+
+/*****************************************************************************!
+ * Function : SlotChapterSelected
+ *****************************************************************************/
+void
+TextDisplayVerseContainerWindow::SlotChapterSelected
+(int InChapter)
+{
+  
+  emit SignalChapterSelected(InChapter);
 }

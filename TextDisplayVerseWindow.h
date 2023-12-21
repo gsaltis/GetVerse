@@ -18,6 +18,7 @@
  * Local Headers
  *****************************************************************************/
 #include "BookInfo.h"
+#include "TextDisplayVerseItem.h"
 
 /*****************************************************************************!
  * Exported Macros
@@ -61,16 +62,30 @@ class TextDisplayVerseWindow : public QWidget
   void                          CreateConnections       ();
   void                          InitializeSubWindows    ();
   void                          resizeEvent             (QResizeEvent* InEvent);
+  void                          CreateDisplayItems      ();
+  void                          ClearDisplayItems       ();
+  void                          ArrangeItems            (void);
 
  //! Private Data
  private :
   int                           Chapter;
   BookInfo*                     Book;
+  QFont                         DisplayFont;
+  QList<TextDisplayVerseItem*>  DisplayItems;
+  QFont                         ReferenceFont;
+  QColor                        DisplayColor;
+  QColor                        ReferenceColor;
+  QColor                        BackgroundColor;
+  int                           LeftMargin;
+  int                           LeftIndent;
+  int                           TopMargin;
+  int                           RightMargin;
 
  //! Public Slots
  public slots :
   void                          SlotBookSelected        (BookInfo* InBook);
   void                          SlotChapterSelected     (int InChapter);
+  void                          SlotReferenceSelected   (int InVerseNumber);
 
  //! Public Signals
  signals :

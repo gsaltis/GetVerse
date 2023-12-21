@@ -72,6 +72,7 @@ SOURCES                         += \
 				   TextDisplaySentenceWindow.cpp                \
 				   TextDisplayVerseContainerWindow.cpp          \
 				   TextDisplayVerseItem.cpp                     \
+				   TextDisplayVerseReferenceItem.cpp            \
 				   TextDisplayVerseScrollWindow.cpp             \
 				   TextDisplayVerseWindow.cpp                   \
 				   TextDisplayViewScrollBar.cpp                 \
@@ -126,6 +127,7 @@ HEADERS                         += \
 				   TextDisplaySentenceWindow.h                  \
 				   TextDisplayVerseContainerWindow.h            \
 				   TextDisplayVerseItem.h                       \
+                                   TextDisplayVerseReferenceItem.h              \
 				   TextDisplayVerseScrollWindow.h               \
 				   TextDisplayVerseWindow.h                     \
 				   TextDisplayViewScrollBar.h                   \

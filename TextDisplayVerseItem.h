@@ -1,6 +1,6 @@
 /*****************************************************************************
  * FILE NAME    : TextDisplayVerseItem.h
- * DATE         : December 18 2023
+ * DATE         : September 16 2023
  * PROJECT      : 
  * COPYRIGHT    : Copyright (C) 2023 by Gregory R Saltis
  *****************************************************************************/
@@ -12,66 +12,73 @@
  *****************************************************************************/
 #include <QtCore>
 #include <QtGui>
-#include <QLabel>
 #include <QWidget>
+#include <QLabel>
 
 /*****************************************************************************!
  * Local Headers
  *****************************************************************************/
+#include "TextDisplayItem.h"
+#include "TextDisplayWordFormattingItem.h"
 
 /*****************************************************************************!
  * Exported Macros
  *****************************************************************************/
-#define TEXT_DISPLAY_VERSE_ITEM_X       200
-#define TEXT_DISPLAY_VERSE_ITEM_Y       200
-#define TEXT_DISPLAY_VERSE_ITEM_WIDTH   200
-#define TEXT_DISPLAY_VERSE_ITEM_HEIGHT  200
 
 /*****************************************************************************!
  * Exported Class : TextDisplayVerseItem
  *****************************************************************************/
 class TextDisplayVerseItem : public QLabel
 {
-  Q_OBJECT;
+  //! Constructors
+public :
+  TextDisplayVerseItem          (int InBook, int InChapter, int InVerse, QString InWord, int InWordIndex);
 
- //! Constructors
- public :
-  TextDisplayVerseItem          ();
-
- //! Destructor
- public :
+  //! Destructor
+public :
   ~TextDisplayVerseItem         ();
 
- //! Public Methods
- public :
+  //! Public Methods
+public :
+  int                           GetWordIndex            (void);
+  void                          SetWordIndex            (int InWordIndex);
+  void                          SetFont                 (QFont InFont);
+  bool                          Contains                (QPoint InPaint);
+  QString                       GetText                 (void);
+  bool                          IsReference             (const int InBook, const int InChapter, const int InVerse, const int InWord);
+  QString                       GetWord                 (void);
+  void                          SetWord                 (QString InWord);
+  QSize                         GetSize                 ();
+  int                           GetVerseNumber          (void);
 
- //! Public Data
- public :
+  //! Public Data
+public :
 
- //! Protected Methods
- protected :
+  //! Protected Methods
+protected :
 
- //! Protected Data
- protected :
+  //! Protected Data
+protected :
 
- //! Private Methods
- private :
-  void                          initialize              ();
-  void                          CreateSubWindows        ();
-  void                          InitializeSubWindows    ();
-  void                          resizeEvent             (QResizeEvent* InEvent);
-
- //! Private Data
- private :
-
- //! Public Slots
- public slots :
-
- //! Public Signals
- signals :
-
- //! Public Actions
- public :
+  //! Private Methods
+private :
+  void                          CreateStrippedWord      ();
+  
+  //! Private Data
+private :
+  bool                          StripQuotes;
+  int                           WordIndex;
+  QString                       Word;
+  QString                       StrippedWord;
+  int                           Book;
+  int                           Chapter;
+  int                           Verse;
+  QString                       Text;
+  QSize                         Size;
+  QPoint                        Location;
+  QFont                         Font;
+  QColor                        Background;
+  QColor                        Foreground;
 
 };
 
