@@ -50,8 +50,9 @@ class BookInfo : public QWidget
   int                                   GetChapterWordCount     (int InChapter);
   void                                  GetChapterWordIndices   (int InChapter, int &InStartIndex, int &InEndIndex);
   BookInfoWord*                         GetWordByIndex          (int InIndex);
-  int                           GetIndex                (void);
-  
+  int                                   GetIndex                (void);
+  int                                   GetChapterCount         (void);
+
  //! Public Data
  public :
   QString                               name;

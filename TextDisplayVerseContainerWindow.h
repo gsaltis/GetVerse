@@ -35,51 +35,57 @@ class TextDisplayVerseContainerWindow : public QWidget
 {
   Q_OBJECT;
 
- //! Constructors
- public :
+  //! Constructors
+public :
   TextDisplayVerseContainerWindow ();
 
- //! Destructor
- public :
+  //! Destructor
+public :
   ~TextDisplayVerseContainerWindow ();
 
- //! Public Methods
- public :
+  //! Public Methods
+public :
 
- //! Public Data
- public :
+  //! Public Data
+public :
 
- //! Protected Methods
- protected :
+  //! Protected Methods
+protected :
 
- //! Protected Data
- protected :
+  //! Protected Data
+protected :
 
- //! Private Methods
- private :
+  //! Private Methods
+private :
   void                          initialize              ();
   void                          CreateSubWindows        ();
   void                          InitializeSubWindows    ();
   void                          resizeEvent             (QResizeEvent* InEvent);
   void                          CreateConnections       (void);
 
- //! Private Data
- private :
+  //! Private Data
+private :
   TextDisplayVerseScrollWindow* verseWindow;
   ChapterHeaderWindow*          header;
 
- //! Public Slots
- public slots :
+  //! Public Slots
+public slots :
   void                          SlotBookSelected        (BookInfo* InBook);
   void                          SlotChapterSelected     (int InChapter);
+  void                          SlotWindowChange        (int InNewWindow);
+  void                          SlotSetStartupBookmarkInfo (BookInfo* InBookInfo, int InChapter);
+  void                          SlotChapterArrowSelected (int InChapter);
 
- //! Public Signals
- signals :
+  //! Public Signals
+signals :
   void                          SignalBookSelected      (BookInfo* InBook);
   void                          SignalChapterSelected   (int InChapter);
+  void                          SignalWindowChange      (int InNewWindow);
+  void                          SignalSetStartupBookmarkInfo (BookInfo* InBookInfo, int InChapter);
+  void                          SignalChapterArrowSelected (int InChapter);
 
- //! Public Actions
- public :
+  //! Public Actions
+public :
 
 };
 

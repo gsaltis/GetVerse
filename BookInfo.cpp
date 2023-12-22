@@ -308,3 +308,12 @@ BookInfo::GetIndex(void)
 {
   return index;
 }
+
+/*****************************************************************************!
+ * Function : GetChapterCount
+ *****************************************************************************/
+int
+BookInfo::GetChapterCount(void)
+{
+  return chapters;
+}

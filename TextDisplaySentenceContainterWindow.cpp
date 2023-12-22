@@ -137,7 +137,6 @@ TextDisplaySentenceContainterWindow::SlotChapterSet
 (int InChapter)
 {
   QString                       text;
-
   text = QString("Chapter %1").arg(InChapter);
   emit SignalChapterTextChanged(text);
   emit SignalChapterSet(InChapter);

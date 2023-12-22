@@ -8,6 +8,7 @@
 /*****************************************************************************!
  * Global Headers
  *****************************************************************************/
+#include <trace_winnetqt.h>
 #include <QtCore>
 #include <QtGui>
 #include <QWidget>
@@ -57,7 +58,7 @@ void
 TextDisplayVerseScrollWindow::CreateSubWindows()
 {
   verseWindow = new TextDisplayVerseWindow();  
-  verseWindow->setParent(this);
+  setWidget(verseWindow);
 }
 
 /*****************************************************************************!
@@ -76,6 +77,7 @@ void
 TextDisplayVerseScrollWindow::resizeEvent
 (QResizeEvent* InEvent)
 {
+  int                                   h;
   int                                   verseWindowW;
   int                                   verseWindowH;
   int                                   verseWindowY;
@@ -83,17 +85,24 @@ TextDisplayVerseScrollWindow::resizeEvent
   QSize					size;  
   int					width;
   int					height;
+  TextDisplayVerseWindow*               w = (TextDisplayVerseWindow*)widget();
 
+  TRACE_FUNCTION_START();
   size = InEvent->size();
   width = size.width();
-  height = size.height();
-
+  height = verseWindow->ArrangeItems(width);
+  h = size.height();
+  if ( h > height ) {
+    height = h;
+  }
+  TRACE_FUNCTION_INT(height);
   verseWindowX = 0;
   verseWindowY = 0;
   verseWindowW = width;
   verseWindowH = height;
-  verseWindow->move(verseWindowX, verseWindowY);
-  verseWindow->resize(verseWindowW, verseWindowH);
+  w->move(verseWindowX, verseWindowY);
+  w->resize(verseWindowW, verseWindowH);
+  TRACE_FUNCTION_END();
 }
 
 /*****************************************************************************!
@@ -116,10 +125,25 @@ TextDisplayVerseScrollWindow::CreateConnections(void)
           TextDisplayVerseScrollWindow::SignalBookSelected,
           verseWindow,
           TextDisplayVerseWindow::SlotBookSelected);
+
   connect(this,
           TextDisplayVerseScrollWindow::SignalChapterSelected,
           verseWindow,
           TextDisplayVerseWindow::SlotChapterSelected);
+
+  connect(verseWindow,
+          TextDisplayVerseWindow::SignalWindowChange,
+          this,
+          TextDisplayVerseScrollWindow::SlotWindowChange);
+  
+  connect(verseWindow,
+          TextDisplayVerseWindow::SignalSetStartupBookmarkInfo,
+          this,
+          TextDisplayVerseScrollWindow::SlotSetStartupBookmarkInfo);
+  connect(verseWindow,
+          TextDisplayVerseWindow::SignalChapterArrowSelected,
+          this,
+          TextDisplayVerseScrollWindow::SlotChapterArrowSelected);
 }
 
 /*****************************************************************************!
@@ -129,5 +153,40 @@ void
 TextDisplayVerseScrollWindow::SlotChapterSelected
 (int InChapter)
 {
-  emit SignalChapterSelected(InChapter);  
+  int                                   height;
+  int                                   width;
+  emit SignalChapterSelected(InChapter);
+  width = size().width();
+  height = verseWindow->ArrangeItems(width);
+  verseWindow->resize(width, height);
+}
+
+/*****************************************************************************!
+ * Function : SlotWindowChange
+ *****************************************************************************/
+void
+TextDisplayVerseScrollWindow::SlotWindowChange
+(int InNewWindow)
+{
+  emit SignalWindowChange(InNewWindow);  
+}
+
+/*****************************************************************************!
+ * Function : SlotSetStartupBookmarkInfo
+ *****************************************************************************/
+void
+TextDisplayVerseScrollWindow::SlotSetStartupBookmarkInfo
+(BookInfo* InBookInfo, int InChapter)
+{
+  emit SignalSetStartupBookmarkInfo(InBookInfo, InChapter);  
+}
+
+/*****************************************************************************!
+ * Function : SlotChapterArrowSelected
+ *****************************************************************************/
+void
+TextDisplayVerseScrollWindow::SlotChapterArrowSelected
+(int InChapter)
+{
+  emit SignalChapterArrowSelected(InChapter);  
 }

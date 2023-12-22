@@ -137,7 +137,6 @@ TextDisplayViewWindow::SlotBookSelected
 {
   QSize                                 s;
 
-  TRACE_FUNCTION_START();
   emit SignalShowProgressBar();
   bookInfo = InBookInfo;
   verseCount = GetVerseCount();
@@ -158,7 +157,6 @@ TextDisplayViewWindow::SlotBookSelected
   repaint();
   s = size();
   emit SignalHideProgressBar();
-  TRACE_FUNCTION_END();
 }
 
 /*****************************************************************************!

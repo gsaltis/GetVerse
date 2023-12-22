@@ -286,13 +286,28 @@ TextDisplayOuterWindow::CreateConnections(void)
           this,
           TextDisplayOuterWindow::SlotSetStartupBookmarkInfo);
   
+  connect(verseWindow,
+          TextDisplayVerseContainerWindow::SignalSetStartupBookmarkInfo,
+          this,
+          TextDisplayOuterWindow::SlotSetStartupBookmarkInfo);
+  
+  connect(verseWindow,
+          TextDisplayVerseContainerWindow::SignalChapterArrowSelected,
+          this,
+          TextDisplayOuterWindow::SlotChapterArrowSelected);
+  
   connect(controlBar,
           TextControlBar::SignalInterlinearWordChanged,
           viewWindow,
           TextDisplayViewScrollWindow::SlotInterlinearWordSelected);
 
-          connect(viewWindow,
+  connect(viewWindow,
           TextDisplayViewScrollWindow::SignalWindowChange,
+          this,
+          TextDisplayOuterWindow::SlotWindowChange);
+
+  connect(verseWindow,
+          TextDisplayVerseContainerWindow::SignalWindowChange,
           this,
           TextDisplayOuterWindow::SlotWindowChange);
 
@@ -341,10 +356,11 @@ TextDisplayOuterWindow::CreateConnections(void)
           verseWindow,
           TextDisplayVerseContainerWindow::SlotBookSelected);
 
-  connect(this,
-          TextDisplayOuterWindow::SignalChapterSelected,
+  connect(controlBar,
+          TextControlBar::SignalChapterChanged,
           verseWindow,
           TextDisplayVerseContainerWindow::SlotChapterSelected);
+
   connect(this,
           TextDisplayOuterWindow::SignalBookSelected,
           sentenceWindow,

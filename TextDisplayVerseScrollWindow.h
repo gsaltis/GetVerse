@@ -71,11 +71,17 @@ class TextDisplayVerseScrollWindow : public QScrollArea
  public slots :
   void                          SlotBookSelected        (BookInfo* InBook);
   void                          SlotChapterSelected     (int InChapter);
+  void                          SlotWindowChange        (int InNewWindow);
+  void                          SlotSetStartupBookmarkInfo (BookInfo* InBookInfo, int InChapter);
+  void                          SlotChapterArrowSelected (int InChapter);
 
  //! Public Signals
  signals :
   void                          SignalBookSelected      (BookInfo* InBook);
   void                          SignalChapterSelected   (int InChapter);
+  void                          SignalWindowChange      (int InNewWindow);
+  void                          SignalSetStartupBookmarkInfo (BookInfo* InBookInfo, int InChapter);
+  void                          SignalChapterArrowSelected (int InChapter);
 
  //! Public Actions
  public :

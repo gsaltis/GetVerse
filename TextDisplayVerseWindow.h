@@ -19,6 +19,7 @@
  *****************************************************************************/
 #include "BookInfo.h"
 #include "TextDisplayVerseItem.h"
+#include "TextDisplayVerseReferenceItem.h"
 
 /*****************************************************************************!
  * Exported Macros
@@ -45,12 +46,17 @@ class TextDisplayVerseWindow : public QWidget
 
  //! Public Methods
  public :
+  int                           ArrangeItems            ();
+  int                           ArrangeItems            (int InWidth);
+  void                          ClearDisplayItems       ();
 
  //! Public Data
  public :
 
  //! Protected Methods
  protected :
+  void                          keyPressEvent           (QKeyEvent* InEvent);
+  void                          mouseMoveEvent          (QMouseEvent* InEvent);
 
  //! Protected Data
  protected :
@@ -61,10 +67,9 @@ class TextDisplayVerseWindow : public QWidget
   void                          CreateSubWindows        ();
   void                          CreateConnections       ();
   void                          InitializeSubWindows    ();
-  void                          resizeEvent             (QResizeEvent* InEvent);
   void                          CreateDisplayItems      ();
-  void                          ClearDisplayItems       ();
-  void                          ArrangeItems            (void);
+  TextDisplayVerseReferenceItem* FindReferenceByVerseNumber (int InVerseNumber);
+  bool                          KeyPress                (int InKey, Qt::KeyboardModifiers InModifiers);
 
  //! Private Data
  private :
@@ -80,6 +85,9 @@ class TextDisplayVerseWindow : public QWidget
   int                           LeftIndent;
   int                           TopMargin;
   int                           RightMargin;
+  int                           HorizontalSkip;
+  QList<TextDisplayVerseReferenceItem*> ReferenceItems;
+  int                           maxChapters;
 
  //! Public Slots
  public slots :
@@ -89,6 +97,9 @@ class TextDisplayVerseWindow : public QWidget
 
  //! Public Signals
  signals :
+  void                          SignalWindowChange      (int InNewWindow);
+  void                          SignalSetStartupBookmarkInfo (BookInfo* InBookInfo, int InChapter);
+  void                          SignalChapterArrowSelected (int InChapter);
 
  //! Public Actions
  public :

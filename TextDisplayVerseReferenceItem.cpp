@@ -35,6 +35,7 @@ TextDisplayVerseReferenceItem::TextDisplayVerseReferenceItem
 
   setFont(DisplayFont);
 
+  setCursor(Qt::PointingHandCursor);
   move(InX, InY);
   resize(TEXT_DISPLAY_VERSE_REFERENCE_ITEM_WIDTH, TEXT_DISPLAY_VERSE_REFERENCE_ITEM_HEIGHT);
   
@@ -93,4 +94,14 @@ TextDisplayVerseReferenceItem::mousePressEvent
   }
 
   emit SignalSelected(VerseNumber);
+}
+
+/*****************************************************************************!
+ * Function : GetVerseNumber
+ *****************************************************************************/
+int
+TextDisplayVerseReferenceItem::GetVerseNumber
+()
+{
+  return VerseNumber; 
 }

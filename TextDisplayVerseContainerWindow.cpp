@@ -123,6 +123,18 @@ TextDisplayVerseContainerWindow::CreateConnections(void)
           TextDisplayVerseContainerWindow::SignalChapterSelected,
           verseWindow,
           TextDisplayVerseScrollWindow::SlotChapterSelected);
+  connect(verseWindow,
+          TextDisplayVerseScrollWindow::SignalWindowChange,
+          this,
+          TextDisplayVerseContainerWindow::SlotWindowChange);
+  connect(verseWindow,
+          TextDisplayVerseScrollWindow::SignalSetStartupBookmarkInfo,
+          this,
+          TextDisplayVerseContainerWindow::SlotSetStartupBookmarkInfo);
+  connect(verseWindow,
+          TextDisplayVerseScrollWindow::SignalChapterArrowSelected,
+          this,
+          TextDisplayVerseContainerWindow::SlotChapterArrowSelected);
 }
 
 /*****************************************************************************!
@@ -132,7 +144,8 @@ void
 TextDisplayVerseContainerWindow::SlotBookSelected
 (BookInfo* InBook)
 {
-  emit SignalBookSelected(InBook);  
+  emit SignalBookSelected(InBook);
+  emit SignalChapterSelected(1);
 }
 
 /*****************************************************************************!
@@ -142,6 +155,39 @@ void
 TextDisplayVerseContainerWindow::SlotChapterSelected
 (int InChapter)
 {
-  
+  QString                               chapterText;
+
+  chapterText = QString("Chapter %1").arg(InChapter);
+  header->SetText(chapterText);
   emit SignalChapterSelected(InChapter);
+}
+
+/*****************************************************************************!
+ * Function : SlotWindowChange
+ *****************************************************************************/
+void
+TextDisplayVerseContainerWindow::SlotWindowChange
+(int InNewWindow)
+{
+  emit SignalWindowChange(InNewWindow);  
+}
+
+/*****************************************************************************!
+ * Function : SlotSetStartupBookmarkInfo
+ *****************************************************************************/
+void
+TextDisplayVerseContainerWindow::SlotSetStartupBookmarkInfo
+(BookInfo* InBookInfo, int InChapter)
+{
+  emit SignalSetStartupBookmarkInfo(InBookInfo, InChapter);  
+}
+
+/*****************************************************************************!
+ * Function : SlotChapterArrowSelected
+ *****************************************************************************/
+void
+TextDisplayVerseContainerWindow::SlotChapterArrowSelected
+(int InChapter)
+{
+  emit SignalChapterArrowSelected(InChapter);  
 }

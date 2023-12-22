@@ -23,36 +23,39 @@
  * Function : TextDisplayVerseItem
  *****************************************************************************/
 TextDisplayVerseItem::TextDisplayVerseItem
-(int InBook, int InChapter, int InVerse, QString InWord, int InWordIndex) : QLabel()
+(int InBook, int InChapter, int InVerse, QString InWord, int InWordIndex, QFont InFont) : QLabel()
 {
+  int                                   width;
   QPalette                              pal;
   QRect                                 rect;
   int                                   height;
   QSize                                 s;
   
-  StripQuotes = true;
+  StripQuotes = false;
 
   // setFrameShape(QFrame::Box);
   
-  Book = InBook;
-  Chapter = InChapter;
-  Verse = InVerse;
-  WordIndex = InWordIndex;
-  Word = InWord;
+  Book          = InBook;
+  Chapter       = InChapter;
+  Verse         = InVerse;
+  WordIndex     = InWordIndex;
+  Word          = InWord;
+  Font          = InFont;
+
   CreateStrippedWord();
 
   setText(GetWord());
   Foreground = QColor(80, 64, 42);
   Background = QColor(255, 255, 255);
-  Font = QFont(MainSystemConfig->GetWordItemFont());
   setFont(Font);
   setAlignment(Qt::AlignLeft | Qt::AlignTop);
   setIndent(0);
   QFontMetrics				fm(Font);
 
-  rect = fm.boundingRect(StrippedWord);
-  height = rect.height();
-  s = QSize(rect.width()+4, height);
+  rect = fm.boundingRect(Word);
+  height = rect.height() + 4;
+  width = rect.width() + 4;
+  s = QSize(width, height);
   resize(s);
   
   pal = palette();
@@ -95,7 +98,7 @@ QString
 TextDisplayVerseItem::GetWord(void)
 {
   if ( ! StripQuotes ) {
-    return Word;
+    return Word.trimmed();
   }
   return StrippedWord;
 }

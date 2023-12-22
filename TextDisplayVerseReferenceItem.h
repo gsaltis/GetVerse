@@ -42,6 +42,7 @@ class TextDisplayVerseReferenceItem : public QLabel
 
  //! Public Methods
  public :
+  int                           GetVerseNumber          ();
 
  //! Public Data
  public :

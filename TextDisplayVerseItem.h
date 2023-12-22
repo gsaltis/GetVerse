@@ -32,7 +32,7 @@ class TextDisplayVerseItem : public QLabel
 {
   //! Constructors
 public :
-  TextDisplayVerseItem          (int InBook, int InChapter, int InVerse, QString InWord, int InWordIndex);
+  TextDisplayVerseItem          (int InBook, int InChapter, int InVerse, QString InWord, int InWordIndex, QFont InFont);
 
   //! Destructor
 public :
