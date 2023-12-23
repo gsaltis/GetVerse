@@ -62,6 +62,10 @@ SOURCES                         += \
 				   TextControlBarCheckBox.cpp                   \
 				   TextDisplayFormattingItem.cpp                \
 				   TextDisplayInterlinearItem.cpp               \
+				   TextDisplayInterlinearContainerWindow.cpp    \
+				   TextDisplayInterlinearReferenceItem.cpp      \
+				   TextDisplayInterlinearWindow.cpp             \
+				   TextDisplayInterlinearScrollWindow.cpp       \
 				   TextDisplayItem.cpp                          \
 				   TextDisplayOuterWindow.cpp                   \
 				   TextDisplayReferenceItem.cpp                 \
@@ -116,7 +120,11 @@ HEADERS                         += \
 				   TextControlBar.h                             \
 				   TextControlBarCheckBox.h                     \
 				   TextDisplayFormattingItem.h                  \
+				   TextDisplayInterlinearContainerWindow.h      \
 				   TextDisplayInterlinearItem.h                 \
+				   TextDisplayInterlinearReferenceItem.h        \
+				   TextDisplayInterlinearScrollWindow.h         \
+				   TextDisplayInterlinearWindow.h               \
 				   TextDisplayItem.h                            \
 				   TextDisplayOuterWindow.h                     \
 				   TextDisplayReferenceItem.h                   \

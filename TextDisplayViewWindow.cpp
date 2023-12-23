@@ -2457,6 +2457,7 @@ TextDisplayViewWindow::InterlinearModeMouseMove
   repaint();
 }
 
+#if 0
 /*****************************************************************************!
  * Function : AddInterlinearItem
  *****************************************************************************/
@@ -2469,6 +2470,7 @@ TextDisplayViewWindow::AddInterlinearItem
   }
   interlinearItems.push_back(InItem);
 }
+#endif
 
 /*****************************************************************************!
  * Function : SlotInterlinearWordSelected

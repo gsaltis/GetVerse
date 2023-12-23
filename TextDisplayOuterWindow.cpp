@@ -95,6 +95,10 @@ TextDisplayOuterWindow::CreateSubWindows()
   verseWindow = new TextDisplayVerseContainerWindow();
   verseWindow->setParent(this);
   verseWindow->show();
+
+  interlinearWindow = new TextDisplayInterlinearContainerWindow();
+  interlinearWindow->setParent(this);
+  interlinearWindow->hide();
 }
 
 /*****************************************************************************!
@@ -108,7 +112,8 @@ TextDisplayOuterWindow::InitializeSubWindows()
   sentenceWindow        = NULL;
   viewWindow            = NULL;
   controlBar            = NULL;
-  verseWindow = NULL;
+  verseWindow           = NULL;
+  interlinearWindow     = NULL;
 }
 
 /*****************************************************************************!
@@ -122,6 +127,10 @@ TextDisplayOuterWindow::resizeEvent
   int                                   verseWindowH;
   int                                   verseWindowY;
   int                                   verseWindowX;
+  int                                   interlinearWindowW;
+  int                                   interlinearWindowH;
+  int                                   interlinearWindowY;
+  int                                   interlinearWindowX;
   int                                   headerH;
   int                                   headerW;
   int                                   headerY;
@@ -185,6 +194,11 @@ TextDisplayOuterWindow::resizeEvent
   verseWindowW = width;
   verseWindowH = height - (SECTION_HEADER_HEIGHT + TEXT_CONTROL_BAR_HEIGHT);
   
+  interlinearWindowX = 0;
+  interlinearWindowY = SECTION_HEADER_HEIGHT + TEXT_CONTROL_BAR_HEIGHT;
+  interlinearWindowW = width;
+  interlinearWindowH = height - (SECTION_HEADER_HEIGHT + TEXT_CONTROL_BAR_HEIGHT);
+  
   //!
   if ( header ) {
     header->move(headerX, headerY);
@@ -210,6 +224,9 @@ TextDisplayOuterWindow::resizeEvent
   
   verseWindow->move(verseWindowX, verseWindowY);
   verseWindow->resize(verseWindowW, verseWindowH);
+
+  interlinearWindow->move(interlinearWindowX, interlinearWindowY);
+  interlinearWindow->resize(interlinearWindowW, interlinearWindowH);
 }
 
 /*****************************************************************************!
@@ -502,6 +519,33 @@ TextDisplayOuterWindow::CreateConnections(void)
           SIGNAL(SignalChapterChanged(int)),
           viewWindow,
           SLOT(SlotChapterChanged(int)));
+
+  //!
+  connect(interlinearWindow,
+          TextDisplayInterlinearContainerWindow::SignalSetStartupBookmarkInfo,
+          this,
+          TextDisplayOuterWindow::SlotSetStartupBookmarkInfo);
+  
+  connect(interlinearWindow,
+          TextDisplayInterlinearContainerWindow::SignalChapterArrowSelected,
+          this,
+          TextDisplayOuterWindow::SlotChapterArrowSelected);
+  
+  connect(interlinearWindow,
+          TextDisplayInterlinearContainerWindow::SignalWindowChange,
+          this,
+          TextDisplayOuterWindow::SlotWindowChange);
+
+  connect(this,
+          TextDisplayOuterWindow::SignalBookSelected,
+          interlinearWindow,
+          TextDisplayInterlinearContainerWindow::SlotBookSelected);
+
+  connect(controlBar,
+          TextControlBar::SignalChapterChanged,
+          interlinearWindow,
+          TextDisplayInterlinearContainerWindow::SlotChapterSelected);
+
 }
 
 /*****************************************************************************!
@@ -560,6 +604,7 @@ TextDisplayOuterWindow::SlotSetSentenceMode(void)
 {
   viewWindow->hide();
   verseWindow->hide();
+  interlinearWindow->hide();
   sentenceWindow->show();
   emit SignalSetSentenceMode();
 }
@@ -571,6 +616,7 @@ void
 TextDisplayOuterWindow::SlotSetBlockMode(void)
 {
   viewWindow->show();
+  interlinearWindow->hide();
   verseWindow->hide();
   sentenceWindow->hide();
   emit SignalSetBlockMode();
@@ -582,7 +628,8 @@ TextDisplayOuterWindow::SlotSetBlockMode(void)
 void
 TextDisplayOuterWindow::SlotSetInterlinearMode(void)
 {
-  viewWindow->show();
+  viewWindow->hide();
+  interlinearWindow->show();
   verseWindow->hide();
   sentenceWindow->hide();
   emit SignalSetInterlinearMode();
@@ -596,6 +643,7 @@ TextDisplayOuterWindow::SlotSetReferenceMode(void)
 {
   viewWindow->hide();
   verseWindow->show();
+  interlinearWindow->hide();
   sentenceWindow->hide();
   emit SignalSetReferenceMode();
 }
@@ -608,6 +656,7 @@ TextDisplayOuterWindow::SlotSetEditMode(void)
 {
   viewWindow->show();
   sentenceWindow->hide();
+  interlinearWindow->hide();
   verseWindow->hide();
   emit SignalSetEditMode();
 }

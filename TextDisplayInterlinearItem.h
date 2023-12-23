@@ -1,8 +1,8 @@
 /*****************************************************************************
  * FILE NAME    : TextDisplayInterlinearItem.h
- * DATE         : October 16 2023
+ * DATE         : September 16 2023
  * PROJECT      : 
- * COPYRIGHT    : Copyright (C) 2023 by Vertiv Company
+ * COPYRIGHT    : Copyright (C) 2023 by Gregory R Saltis
  *****************************************************************************/
 #ifndef _textdisplayinterlinearitem_h_
 #define _textdisplayinterlinearitem_h_
@@ -13,59 +13,76 @@
 #include <QtCore>
 #include <QtGui>
 #include <QWidget>
+#include <QLabel>
 
 /*****************************************************************************!
  * Local Headers
  *****************************************************************************/
 #include "TextDisplayItem.h"
+#include "TextDisplayWordFormattingItem.h"
 
 /*****************************************************************************!
  * Exported Macros
  *****************************************************************************/
-#define TEXT_DISPLAY_INTERLINEAR_ITEM_X 200
-#define TEXT_DISPLAY_INTERLINEAR_ITEM_Y 200
-#define TEXT_DISPLAY_INTERLINEAR_ITEM_WIDTH 200
-#define TEXT_DISPLAY_INTERLINEAR_ITEM_HEIGHT 200
 
 /*****************************************************************************!
  * Exported Class : TextDisplayInterlinearItem
  *****************************************************************************/
-class TextDisplayInterlinearItem : public TextDisplayItem
+class TextDisplayInterlinearItem : public QLabel
 {
- //! Constructors
- public :
-  TextDisplayInterlinearItem    (int InBook, int InChapter, int InVerse, QString InText,
-                                 QString InEnglish, QString InMorphology, QString InStrongsReference);
+  //! Constructors
+public :
+  TextDisplayInterlinearItem          (int InBook, int InChapter, int InVerse, QString InWord, int InWordIndex, QFont InFont);
 
- //! Destructor
- public :
-  ~TextDisplayInterlinearItem   ();
+  //! Destructor
+public :
+  ~TextDisplayInterlinearItem         ();
 
- //! Public Types
- public :
+  //! Public Methods
+public :
+  int                           GetWordIndex            (void);
+  void                          SetWordIndex            (int InWordIndex);
+  void                          SetFont                 (QFont InFont);
+  bool                          Contains                (QPoint InPaint);
+  QString                       GetText                 (void);
+  bool                          IsReference             (const int InBook, const int InChapter, const int InVerse, const int InWord);
+  QString                       GetWord                 (void);
+  void                          SetWord                 (QString InWord);
+  QSize                         GetSize                 ();
+  int                           GetVerseNumber          (void);
+
+  //! Public Data
+public :
+
+  //! Protected Methods
+protected :
+  void                          enterEvent              (QEnterEvent* InEvent);
+  void                          leaveEvent              (QEvent* InEvent);
   
- //! Public Methods
- public :
+  //! Protected Data
+protected :
 
- //! Public Data
- public :
+  //! Private Methods
+private :
+  void                          CreateStrippedWord      ();
   
- //! Protected Methods
- protected :
+  //! Private Data
+private :
+  bool                          StripQuotes;
+  int                           WordIndex;
+  QString                       Word;
+  QString                       StrippedWord;
+  int                           Book;
+  int                           Chapter;
+  int                           Verse;
+  QString                       Text;
+  QSize                         Size;
+  QPoint                        Location;
+  QFont                         Font;
+  QColor                        Background;
+  QColor                        Foreground;
+  QColor                        OverBackground;
 
- //! Protected Data
- protected :
-
- //! Private Methods
- private :
-  void                          initialize              ();
-
- //! Private Data
- private :
-  QString                       English;
-  QString                       Morphology;
-  QString                       StrongsReference;
-  
 };
 
 #endif /* _textdisplayinterlinearitem_h_*/

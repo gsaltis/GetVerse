@@ -26,6 +26,7 @@
 #include "TextControlBar.h"
 #include "TextDisplaySentenceContainterWindow.h"
 #include "TextDisplayVerseContainerWindow.h"
+#include "TextDisplayInterlinearContainerWindow.h"
 
 /*****************************************************************************!
  * Exported Macros
@@ -76,13 +77,16 @@ class TextDisplayOuterWindow : public QFrame
  private :
   SectionHeader*                        header;
   TextDisplayReferenceWindow*           referenceWindow;
+
   TextDisplaySentenceContainterWindow*  sentenceWindow;
+  TextDisplayVerseContainerWindow*      verseWindow;
+  TextDisplayInterlinearContainerWindow* interlinearWindow;
+
   TextDisplayViewScrollWindow*          viewWindow;
   TextControlBar*                       controlBar;
   QString                               BookName;
   int                                   BookInfoIndex;
   
-  TextDisplayVerseContainerWindow* verseWindow;
 
  //! Public Slots
  public slots :

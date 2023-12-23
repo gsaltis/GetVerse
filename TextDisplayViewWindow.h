@@ -26,7 +26,7 @@
 #include "TextDisplayReferenceItem.h"
 #include "TextDisplayWordItem.h"
 #include "InterlinearVerse.h"
-#include "TextDisplayInterlinearItem.h"
+// #include "TextDisplayInterlinearItem.h"
 #include "InterlinearChapter.h"
 
 /*****************************************************************************!
@@ -142,7 +142,7 @@ class TextDisplayViewWindow : public QWidget
   void                          EditModeReferenceFormattingMouseSelect
                                                                 (TextDisplayFormattingItem* InItem);
   void                          AddFormatting                   (int InBook, int InChapter, int InVerse, int InWord, int InFormatting);
-  void                          AddInterlinearItem              (TextDisplayInterlinearItem* InItem);
+  // void                          AddInterlinearItem              (TextDisplayInterlinearItem* InItem);
   TextDisplayItem*              FindSelectedItem                (QPoint InLocation);
   BookInfo*                     FindBookInfoByIndex             (int InBookIndex);
   TextDisplayReferenceItem*     FindDisplayReferenceByChapterVerse
@@ -185,7 +185,7 @@ class TextDisplayViewWindow : public QWidget
   QSize                                                         tableSize;
   std::vector<TextDisplayItem*>                                 textItems;
   std::vector<TextDisplayFormattingItem*>                       formattingItems;
-  std::vector<TextDisplayInterlinearItem*>                      interlinearItems;
+  // std::vector<TextDisplayInterlinearItem*>                      interlinearItems;
   QSize                                                         windowSize;  
   int                                                           sentenceIndent;
   int                                                           EditViewReferenceIndent;
