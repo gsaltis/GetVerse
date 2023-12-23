@@ -56,7 +56,9 @@ public :
 
   //! Protected Methods
 protected :
-
+  void                          enterEvent              (QEnterEvent* InEvent);
+  void                          leaveEvent              (QEvent* InEvent);
+  
   //! Protected Data
 protected :
 
@@ -79,6 +81,7 @@ private :
   QFont                         Font;
   QColor                        Background;
   QColor                        Foreground;
+  QColor                        OverBackground;
 
 };
 

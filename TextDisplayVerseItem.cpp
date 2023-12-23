@@ -47,6 +47,7 @@ TextDisplayVerseItem::TextDisplayVerseItem
   setText(GetWord());
   Foreground = QColor(80, 64, 42);
   Background = QColor(255, 255, 255);
+  OverBackground = QColor(208, 208, 208); 
   setFont(Font);
   setAlignment(Qt::AlignLeft | Qt::AlignTop);
   setIndent(0);
@@ -62,6 +63,7 @@ TextDisplayVerseItem::TextDisplayVerseItem
   pal.setBrush(QPalette::Window, QBrush(Background));
   pal.setBrush(QPalette::WindowText, QBrush(Foreground));
   setPalette(pal);
+  setAutoFillBackground(true);
 }
 
 /*****************************************************************************!
@@ -200,3 +202,32 @@ TextDisplayVerseItem::GetVerseNumber(void)
 {
   return Verse;
 }
+
+/*****************************************************************************!
+ * 
+ *****************************************************************************/
+void
+TextDisplayVerseItem::enterEvent
+(QEnterEvent* )
+{
+  QPalette                              pal;
+
+  pal = palette();
+  pal.setBrush(QPalette::Window, QBrush(OverBackground));
+  setPalette(pal);
+}
+
+/*****************************************************************************!
+ * 
+ *****************************************************************************/
+void
+TextDisplayVerseItem::leaveEvent
+(QEvent* )
+{
+  QPalette                              pal;
+
+  pal = palette();
+  pal.setBrush(QPalette::Window, QBrush(Background));
+  setPalette(pal);
+}
+
