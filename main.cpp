@@ -44,7 +44,7 @@
 #define VERSE_RANGES_COUNT                      50
 #define BOOK_COUNT                              66
 
-#define SQL_STATEMENT_INSERT_FORMATTING         \
+#define SQL_STATEMENT_INSERT_FORMATTING                         \
   "INSERT INTO Formatting VALUES(%d, %d, %d, '', %d);\n"
 
 #define MAIN_DOMAIN_NAME                        "www.gsaltis.com"
@@ -506,7 +506,7 @@ ProcessCommandLine
       continue;
     }
     break;
-}
+  }
 
   if ( MainFormatAdd ) {
     // The remaining options have been consumedm
@@ -1264,6 +1264,7 @@ int
 MainDBBReadBookInfoCB
 (void*, int InColumnCount, char** InColumnValues, char** InColumnNames)
 {
+  int                                   rightToLeft = 0;
   BookInfo*                             bookInfo;
   int                                   chapterCount = 0;
   int                                   bookIndex = 0;
@@ -1317,6 +1318,10 @@ MainDBBReadBookInfoCB
       nameAbbrev = columnValue;
       continue;
     }
+
+    if ( columnName == "RightToLeft" ) {
+      rightToLeft = columnValue.toInt();
+    }
   }
 
   bookInfo = new BookInfo();
@@ -1329,6 +1334,7 @@ MainDBBReadBookInfoCB
   bookInfo->hebrewBookOrder     = hebrewBookOrder;
   bookInfo->hebrewBookGroup     = hebrewBookGroup;
   bookInfo->groupEnd            = groupEnd;
+  bookInfo->RightToLeft         = rightToLeft;
 
   MainBookInfo->AddBookInfo(bookInfo);
   return 0;

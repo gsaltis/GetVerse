@@ -21,19 +21,19 @@
 /*****************************************************************************!
  * Static Elements
  *****************************************************************************/
-QFont 	InterlinearWord::contextualFormFont      = QFont("Times New Roman", 15, QFont::Bold);
+QFont 	InterlinearWord::contextualFormFont      = QFont("Times New Roman", 20, QFont::Bold);
 QColor  InterlinearWord::contextualFormColor     = QColor("#800000");
 bool    InterlinearWord::contextualFormDisplay   = true;
 
-QFont 	InterlinearWord::englishFont             = QFont("Arial", 10);
-QColor  InterlinearWord::englishColor            = QColor("#444444");
+QFont 	InterlinearWord::englishFont             = QFont("Arial", 13);
+QColor  InterlinearWord::englishColor            = QColor("#4444444");
 bool    InterlinearWord::englishDisplay          = true;
 
-QFont   InterlinearWord::strongsFont             = QFont("Arial", 10, QFont::Bold);
+QFont   InterlinearWord::strongsFont             = QFont("Arial", 9, QFont::Bold);
 QColor  InterlinearWord::strongsColor            = QColor("#008000");
 bool    InterlinearWord::strongsDisplay          = false;
 
-QFont   InterlinearWord::morphologyFont          = QFont("Arial", 10);
+QFont   InterlinearWord::morphologyFont          = QFont("Arial", 8);
 QColor  InterlinearWord::morphologyColor         = QColor("#880088");
 bool    InterlinearWord::morphologyDisplay       = false;
 

@@ -87,7 +87,6 @@ TextDisplayVerseScrollWindow::resizeEvent
   int					height;
   TextDisplayVerseWindow*               w = (TextDisplayVerseWindow*)widget();
 
-  TRACE_FUNCTION_START();
   size = InEvent->size();
   width = size.width();
   height = verseWindow->ArrangeItems(width);
@@ -95,14 +94,12 @@ TextDisplayVerseScrollWindow::resizeEvent
   if ( h > height ) {
     height = h;
   }
-  TRACE_FUNCTION_INT(height);
   verseWindowX = 0;
   verseWindowY = 0;
   verseWindowW = width;
   verseWindowH = height;
   w->move(verseWindowX, verseWindowY);
   w->resize(verseWindowW, verseWindowH);
-  TRACE_FUNCTION_END();
 }
 
 /*****************************************************************************!

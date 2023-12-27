@@ -34,7 +34,7 @@ class TextDisplayInterlinearReferenceItem : public QLabel
 
  //! Constructors
  public :
-  TextDisplayInterlinearReferenceItem (int InVerseNumber, int InX, int intY, QWidget* InParent);
+  TextDisplayInterlinearReferenceItem (int InVerseNumber, int InX, int intY, QWidget* InParent, int InRightToLeft);
 
  //! Destructor
  public :
@@ -64,7 +64,8 @@ class TextDisplayInterlinearReferenceItem : public QLabel
   QFont                         DisplayFont;
   QColor                        DisplayColor;
   int                           VerseNumber;
- 
+  int                           RightToLeft;
+  
  //! Public Slots
  public slots :
 

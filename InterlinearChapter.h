@@ -42,6 +42,9 @@ class InterlinearChapter : public QWidget
   int                           GetBookIndex            ();
   int                           GetChapterNumber        ();
   InterlinearWord*              FindWordByLocation      (QPoint InMouseCursor);
+  void                          Read                    ();
+  static int                    AddInterlinearChapterCB (void* InPointer, int InColumnCount, char** InColumnValues, char** InColumnNames);
+  void                          ReadVerses              ();
 
  //! Public Data
  public :

@@ -52,6 +52,8 @@ class BookInfo : public QWidget
   BookInfoWord*                         GetWordByIndex          (int InIndex);
   int                                   GetIndex                (void);
   int                                   GetChapterCount         (void);
+  int                                   GetRightToLeft          (void);
+  void                                  SetRightToLeft          (int InRightToLeft);
 
  //! Public Data
  public :
@@ -65,7 +67,8 @@ class BookInfo : public QWidget
   int                                   hebrewBookGroup;
   int                                   groupEnd;
   QList<BookInfoWord*>                  wordItems;
-  
+  int                                   RightToLeft;
+ 
  //! Protected Methods
  protected :
 
@@ -77,7 +80,7 @@ class BookInfo : public QWidget
 
  //! Private Data
  private :
-
+ 
  //! Public Slots
  public slots :
 

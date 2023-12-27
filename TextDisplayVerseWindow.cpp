@@ -162,7 +162,9 @@ TextDisplayVerseWindow::CreateDisplayItems
                                            verseNumber,
                                            wordText, i, DisplayFont);
     displayItem->setParent(this);
-    displayItem->hide();
+#if 0    
+     displayItem->hide();
+#endif     
     DisplayItems << displayItem;  
   }
   ArrangeItems();
@@ -197,10 +199,7 @@ TextDisplayVerseWindow::ArrangeItems
 ()
 {
   int                                   height;
-  TRACE_FUNCTION_START();
   height =  ArrangeItems(size().width());
-  TRACE_FUNCTION_INT(height);
-  TRACE_FUNCTION_END();
   return height;
 }
 
@@ -227,25 +226,19 @@ TextDisplayVerseWindow::ArrangeItems
   int                                   verticalSkip = 5;
   int                                   height = 0;
 
-  TRACE_FUNCTION_START();
-  TRACE_FUNCTION_INT(InWidth);
   x = LeftMargin;
   y = TopMargin;
   n = DisplayItems.size();
   windowWidth = InWidth;
   windowWidth -= (LeftMargin + RightMargin);
 
-  TRACE_FUNCTION_INT(Chapter);
-  TRACE_FUNCTION_INT(n);
   lineHeight = 15;
   if ( n == 0 ) {
-    TRACE_FUNCTION_END();
     return 0;
   }
   item = DisplayItems[0];
 
   currentVerse = item->GetVerseNumber();
-  TRACE_FUNCTION_INT(windowWidth);
   
   x = 0;
   referenceItem = FindReferenceByVerseNumber(currentVerse);
@@ -266,31 +259,22 @@ TextDisplayVerseWindow::ArrangeItems
       referenceItem->move(x, y);
       referenceItem->show();
       x = LeftMargin;
-      TRACE_FUNCTION_INT(currentVerse);
-      TRACE_FUNCTION_INT(i);
-      TRACE_FUNCTION_INT(y);
     }
     itemSize = item->GetSize();
     itemWidth = itemSize.width();
     if ( itemWidth + x > windowWidth ) {
       y += lineHeight;
       x = LeftMargin;
-      TRACE_FUNCTION_INT(i);
-      TRACE_FUNCTION_INT(y);
     }
     item->move(x, y);
     x += (itemWidth + HorizontalSkip);
     if ( x > windowWidth ) {
       y += lineHeight;
       x = LeftMargin;
-      TRACE_FUNCTION_INT(i);
-      TRACE_FUNCTION_INT(y);
     }
     item->show();
   }
   height = y + lineHeight * 2;
-  TRACE_FUNCTION_INT(height);
-  TRACE_FUNCTION_END();
   return height;
 }
 

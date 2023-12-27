@@ -87,7 +87,6 @@ TextDisplayInterlinearScrollWindow::resizeEvent
   int					height;
   TextDisplayInterlinearWindow*               w = (TextDisplayInterlinearWindow*)widget();
 
-  TRACE_FUNCTION_START();
   size = InEvent->size();
   width = size.width();
   height = verseWindow->ArrangeItems(width);
@@ -95,14 +94,12 @@ TextDisplayInterlinearScrollWindow::resizeEvent
   if ( h > height ) {
     height = h;
   }
-  TRACE_FUNCTION_INT(height);
   verseWindowX = 0;
   verseWindowY = 0;
   verseWindowW = width;
   verseWindowH = height;
   w->move(verseWindowX, verseWindowY);
   w->resize(verseWindowW, verseWindowH);
-  TRACE_FUNCTION_END();
 }
 
 /*****************************************************************************!

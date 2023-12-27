@@ -38,16 +38,19 @@ class InterlinearVerse
 
  //! Public Methods
  public :
-  void                          AddWord         (InterlinearWord* InWord);
-  int                           GetWordCount    ();
-  InterlinearWord*              GetWordByIndex  (int InIndex);
-  InterlinearWord*              GetWordByID     (int InID);
-  int                           GetVerseID      ();
-  int                           GetVerseNumber  ();
-  int                           GetChapterNumber();
-  int                           GetBookIndex    ();
+  void                          AddWord         	(InterlinearWord* InWord);
+  int                           GetWordCount    	();
+  InterlinearWord*              GetWordByIndex  	(int InIndex);
+  InterlinearWord*              GetWordByID     	(int InID);
+  int                           GetVerseID      	();
+  int                           GetVerseNumber  	();
+  int                           GetChapterNumber	();
+  int                           GetBookIndex    	();
+  void                          Read                    (void);
   InterlinearWord*              FindWordByLocation      (QPoint InMouseCursor);  
- //! Public Data
+  static int                    AddInterlinearVerseCB   (void* InPointer, int InColumnCount, char** InColumnValues, char** InColumnNames);
+  
+//! Public Data
  public :
 
  //! Protected Methods

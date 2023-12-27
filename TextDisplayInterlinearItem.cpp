@@ -8,7 +8,7 @@
 /*****************************************************************************!
  * Global Headers
  *****************************************************************************/
-#include <trace_winnet.h>
+#include <trace_winnetqt.h>
 #include <QtCore>
 #include <QtGui>
 #include <QWidget>
@@ -23,46 +23,29 @@
  * Function : TextDisplayInterlinearItem
  *****************************************************************************/
 TextDisplayInterlinearItem::TextDisplayInterlinearItem
-(int InBook, int InChapter, int InVerse, QString InWord, int InWordIndex, QFont InFont) : QLabel()
+(InterlinearWord* InWord, int InWordIndex, QWidget* InParent, int InRightToLeft) : QFrame(InParent)
 {
-  int                                   width;
-  QPalette                              pal;
-  QRect                                 rect;
-  int                                   height;
-  QSize                                 s;
-  
-  StripQuotes = false;
-
-  // setFrameShape(QFrame::Box);
-  
-  Book          = InBook;
-  Chapter       = InChapter;
-  Verse         = InVerse;
   WordIndex     = InWordIndex;
   Word          = InWord;
-  Font          = InFont;
 
-  CreateStrippedWord();
-
-  setText(GetWord());
-  Foreground = QColor(80, 64, 42);
+  setFrameShape(QFrame::Panel);
+  setFrameStyle(QFrame::Plain);
+  setLineWidth(1);
+  
+  RightToLeft = InRightToLeft;
+  
   Background = QColor(255, 255, 255);
   OverBackground = QColor(208, 208, 208); 
-  setFont(Font);
-  setAlignment(Qt::AlignLeft | Qt::AlignTop);
-  setIndent(0);
-  QFontMetrics				fm(Font);
 
-  rect = fm.boundingRect(Word);
-  height = rect.height() + 4;
-  width = rect.width() + 4;
-  s = QSize(width, height);
-  resize(s);
+  CreateStrongsLabel();
+  CreateContextualLabel();
+  CreateEnglishLabel();
+  CreateTransliterateLabel();
+  CreateMorphologyLabel();
+  ComputeSize();
   
-  pal = palette();
-  pal.setBrush(QPalette::Window, QBrush(Background));
-  pal.setBrush(QPalette::WindowText, QBrush(Foreground));
-  setPalette(pal);
+  resize(Size);
+  
   setAutoFillBackground(true);
 }
 
@@ -72,93 +55,6 @@ TextDisplayInterlinearItem::TextDisplayInterlinearItem
 TextDisplayInterlinearItem::~TextDisplayInterlinearItem
 ()
 {
-}
-
-/*****************************************************************************!
- * Function : GetWordIndex
- *****************************************************************************/
-int
-TextDisplayInterlinearItem::GetWordIndex(void)
-{
-  return WordIndex;  
-}
-
-/*****************************************************************************!
- * Function : SetWordIndex
- *****************************************************************************/
-void
-TextDisplayInterlinearItem::SetWordIndex
-(int InWordIndex)
-{
-  WordIndex = InWordIndex;  
-}
-
-/*****************************************************************************!
- * Function : GetWord
- *****************************************************************************/
-QString
-TextDisplayInterlinearItem::GetWord(void)
-{
-  if ( ! StripQuotes ) {
-    return Word.trimmed();
-  }
-  return StrippedWord;
-}
-
-/*****************************************************************************!
- * Function : CreateStrippedWord
- *****************************************************************************/
-void
-TextDisplayInterlinearItem::CreateStrippedWord
-()
-{
-  QString                       s;
-  int                           n = Word.length();
-  QChar                         ch;
-  int                           i;
-
-  s = QString();
-  for (i = 0; i < n; i++) {
-    ch = Word[i];
-    if ( ch == '\'' || ch == '`' ) {
-      continue;
-    }
-    s += ch;
-  }
-  StrippedWord = s.trimmed();
-}
-
-/*****************************************************************************!
- * Function : GetText
- *****************************************************************************/
-QString
-TextDisplayInterlinearItem::GetText(void)
-{
-  return GetWord();  
-}
-
-/*****************************************************************************!
- * Function : SetWord
- *****************************************************************************/
-void
-TextDisplayInterlinearItem::SetWord
-(QString InWord)
-{
-  Word = InWord;
-  CreateStrippedWord();
-}
-
-/*****************************************************************************!
- * Function : SetFont
- *****************************************************************************/
-void
-TextDisplayInterlinearItem::SetFont
-(QFont InFont)
-{
-  QFontMetrics                          fm(InFont);
-  Font = QFont(InFont);
-  Size = fm.size(0, GetWord());
-  setFont(Font);
 }
 
 /*****************************************************************************!
@@ -173,38 +69,16 @@ TextDisplayInterlinearItem::Contains
 }
 
 /*****************************************************************************!
- * Function : IsReference
- *****************************************************************************/
-bool
-TextDisplayInterlinearItem::IsReference
-(const int InBook, const int InChapter, const int InVerse, const int InWord)
-{
-  if ( InBook == Book && InChapter == Chapter && InVerse == Verse && InWord == WordIndex ) {
-    return true;
-  }
-  return false;
-}
-
-/*****************************************************************************!
  * Function : GetSize
  *****************************************************************************/
 QSize
 TextDisplayInterlinearItem::GetSize()
 {
-  return size();
+  return Size;
 }
 
 /*****************************************************************************!
- * Function : GetVerseNumber
- *****************************************************************************/
-int
-TextDisplayInterlinearItem::GetVerseNumber(void)
-{
-  return Verse;
-}
-
-/*****************************************************************************!
- * 
+ * Function : enterEvent
  *****************************************************************************/
 void
 TextDisplayInterlinearItem::enterEvent
@@ -218,7 +92,7 @@ TextDisplayInterlinearItem::enterEvent
 }
 
 /*****************************************************************************!
- * 
+ * Function : leaveEvent
  *****************************************************************************/
 void
 TextDisplayInterlinearItem::leaveEvent
@@ -229,5 +103,288 @@ TextDisplayInterlinearItem::leaveEvent
   pal = palette();
   pal.setBrush(QPalette::Window, QBrush(Background));
   setPalette(pal);
+}
+
+/*****************************************************************************!
+ * Function : CreateEnglishLabel
+ *****************************************************************************/
+void
+TextDisplayInterlinearItem::CreateEnglishLabel(void)
+{
+  int                                   height;
+  int                                   width;
+  QRect                                 rect;
+  QPalette                              pal;
+  QString                               text;
+  QFontMetrics                          metric(Word->englishFont);
+
+  setLineWidth(1);
+  EnglishLabel = new QLabel(this);
+
+  EnglishLabel->setFont(Word->englishFont);
+  text = Word->GetEnglish();
+  text = text.trimmed();
+  EnglishLabel->setText(text);
+
+  pal = EnglishLabel->palette();
+  pal.setBrush(QPalette::WindowText, QBrush(Word->englishColor));
+  EnglishLabel->setPalette(pal);
+  EnglishLabel->setAutoFillBackground(true);
+  
+  rect = metric.boundingRect(text);
+  width = rect.width();
+
+  height = rect.height();
+  EnglishSize = QSize(width, height);
+  EnglishLabel->resize(EnglishSize);
+}
+
+/*****************************************************************************!
+ * Function : CreateStrongsLabel
+ *****************************************************************************/
+void
+TextDisplayInterlinearItem::CreateStrongsLabel(void)
+{
+  int                                   height;
+  int                                   width;
+  QRect                                 rect;
+  QPalette                              pal;
+  QString                               text;
+  QFontMetrics                          metric(Word->strongsFont);
+
+  setLineWidth(1);
+  StrongsLabel = new QLabel(this);
+
+  StrongsLabel->setFont(Word->strongsFont);
+  text = Word->GetStrongsWordID();
+  text = text.trimmed();
+  StrongsLabel->setText(text);
+
+  pal = StrongsLabel->palette();
+  pal.setBrush(QPalette::WindowText, QBrush(Word->strongsColor));
+  StrongsLabel->setPalette(pal);
+  StrongsLabel->setAutoFillBackground(true);
+  
+  rect = metric.boundingRect(text);
+  width = rect.width() + 2;
+
+  height = rect.height();
+  StrongsSize = QSize(width, height);
+  StrongsLabel->resize(StrongsSize);
+}
+
+/*****************************************************************************!
+ * Function : CreateMorphologyLabel
+ *****************************************************************************/
+void
+TextDisplayInterlinearItem::CreateMorphologyLabel(void)
+{
+  int                                   height;
+  int                                   width;
+  QRect                                 rect;
+  QPalette                              pal;
+  QString                               text;
+  QFontMetrics                          metric(Word->morphologyFont);
+
+  setLineWidth(1);
+  MorphologyLabel = new QLabel(this);
+
+  MorphologyLabel->setFont(Word->morphologyFont);
+  text = Word->GetMorphologyID();
+  text = text.trimmed();
+  MorphologyLabel->setText(text);
+
+  pal = MorphologyLabel->palette();
+  pal.setBrush(QPalette::WindowText, QBrush(Word->morphologyColor));
+  MorphologyLabel->setPalette(pal);
+  MorphologyLabel->setAutoFillBackground(true);
+  
+  rect = metric.boundingRect(text);
+  width = rect.width() + 2;
+
+  height = rect.height();
+  MorphologySize = QSize(width, height);
+  MorphologyLabel->resize(MorphologySize);
+  MorphologyLabel->setAlignment(Qt::AlignRight);
+}
+
+/*****************************************************************************!
+ * Function : CreateTransliterateLabel
+ *****************************************************************************/
+void
+TextDisplayInterlinearItem::CreateTransliterateLabel(void)
+{
+  int                                   height;
+  int                                   width;
+  QRect                                 rect;
+  QPalette                              pal;
+  QString                               text;
+  QFontMetrics                          metric(Word->transliterateFont);
+
+  setLineWidth(1);
+  TransliterateLabel = new QLabel(this);
+
+  TransliterateLabel->setFont(Word->transliterateFont);
+  text = Word->GetTransliteratedContextualForm();
+  text = text.trimmed();
+  TransliterateLabel->setText(text);
+
+  pal = TransliterateLabel->palette();
+  pal.setBrush(QPalette::WindowText, QBrush(Word->transliterateColor));
+  TransliterateLabel->setPalette(pal);
+  TransliterateLabel->setAutoFillBackground(true);
+  
+  rect = metric.boundingRect(text);
+  width = rect.width() + 2;
+
+  height = rect.height();
+  TransliterateSize = QSize(width, height);
+  TransliterateLabel->resize(TransliterateSize);
+}
+
+/*****************************************************************************!
+ * Function : CreateContextualLabel
+ *****************************************************************************/
+void
+TextDisplayInterlinearItem::CreateContextualLabel(void)
+{
+  int                                   height;
+  int                                   width;
+  QRect                                 rect;
+  QPalette                              pal;
+  QString                               text;
+  QFontMetrics                          metric(Word->contextualFormFont);
+
+  setLineWidth(1);
+  ContextualLabel = new QLabel(this);
+
+  ContextualLabel->setFont(Word->contextualFormFont);
+  text = Word->GetContextualForm();
+  text = text.trimmed();
+  ContextualLabel->setText(text);
+
+  pal = ContextualLabel->palette();
+  pal.setBrush(QPalette::WindowText, QBrush(Word->contextualFormColor));
+  ContextualLabel->setPalette(pal);
+  ContextualLabel->setAutoFillBackground(true);
+  
+  rect = metric.boundingRect(text);
+  width = rect.width();
+  ContextualLabel->setAlignment(Qt::AlignLeft);
+  
+
+  height = rect.height();
+  ContextualSize = QSize(width, height);
+  ContextualLabel->resize(ContextualSize);
+}
+
+/*****************************************************************************!
+ * Function : ComputeSize
+ *****************************************************************************/
+void
+TextDisplayInterlinearItem::ComputeSize(void)
+{
+  int                                   w2;
+  int                                   h2;
+  Qt::Alignment                         alignment;
+  int                                   y;
+  int                                   height;
+  int                                   width;
+  
+  int                                   contextualHeight;
+  int                                   contextualWidth;
+
+  int                                   morphologyHeight;
+  int                                   morphologyWidth;
+
+  int                                   englishHeight;
+  int                                   englishWidth;
+  int                                   strongsHeight;
+  int                                   strongsWidth;
+  int                                   transliterateHeight;
+  int                                   transliterateWidth;
+
+  englishWidth = EnglishSize.width();
+  englishHeight = EnglishSize.height();
+
+  contextualWidth = ContextualSize.width();
+  contextualHeight = ContextualSize.height();
+
+  strongsWidth = StrongsSize.width();
+  strongsHeight = StrongsSize.height();
+
+  morphologyWidth = MorphologySize.width();
+  morphologyHeight = MorphologySize.height();
+
+  transliterateWidth = TransliterateSize.width();
+  transliterateHeight = TransliterateSize.height();
+
+  width = englishWidth;
+
+  if ( width < contextualWidth ) {
+    width = contextualWidth;
+  }
+
+  w2 = strongsWidth + morphologyWidth + 5;
+  
+  if ( width < w2 ) {
+    width = w2;
+  }
+  
+  if ( width < transliterateWidth ) {
+    width = transliterateWidth;
+  }
+
+  h2 = strongsHeight;
+  if ( h2 == 0 ) {
+    h2 = morphologyHeight;
+  }
+  height = contextualHeight + englishHeight + h2 + transliterateHeight;
+
+  y = 0;
+
+  //!
+  StrongsLabel->move(0, y);
+
+  morphologyWidth = width - (strongsWidth + 5);
+  MorphologyLabel->move(strongsWidth + 5 , y);
+  MorphologyLabel->resize(morphologyWidth, morphologyHeight);
+  y += strongsHeight;
+
+  //!
+  ContextualLabel->move(0, y);
+  y += contextualHeight;
+
+  EnglishLabel->move(0, y);
+  y += englishHeight;
+
+  TransliterateLabel->move(0, y);
+  y += transliterateHeight;
+
+  height = y;
+  
+  Size = QSize(width, height);
+
+  EnglishLabel->resize(width, englishHeight);
+  ContextualLabel->resize(width, contextualHeight);
+  TransliterateLabel->resize(width, transliterateHeight);
+  
+  alignment = RightToLeft ? Qt::AlignRight  : Qt::AlignLeft;
+
+  EnglishLabel->setAlignment(alignment);
+  StrongsLabel->setAlignment(alignment);
+  TransliterateLabel->setAlignment(alignment);
+  
+  resize(Size);
+}
+
+/*****************************************************************************!
+ * Function : GetVerseNumber
+ *****************************************************************************/
+int
+TextDisplayInterlinearItem::GetVerseNumber
+()
+{
+  return Word->GetVerseNumber();
 }
 

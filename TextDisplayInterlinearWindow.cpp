@@ -47,17 +47,16 @@ TextDisplayInterlinearWindow::initialize()
 
   Book = NULL;
   Chapter = 0;
-
+  interlinearChapter = NULL;
+  
   setMouseTracking(true);
   LeftMargin = TEXT_DISPLAY_INTERLINEAR_REFERENCE_ITEM_WIDTH + 5;
   LeftIndent = 40;
   RightMargin = 30;
   TopMargin = 20;
-  HorizontalSkip = 3;
+  HorizontalSkip = 10;
+  VerticalSkip = 20;
   
-  DisplayFont = QFont("Arial", 11, QFont::Normal);
-  ReferenceFont = QFont("Arial", 11, QFont::Bold);
-
   DisplayColor = QColor(32, 32, 32);
   ReferenceColor = QColor(32, 0, 0);
   BackgroundColor = QColor(255, 255, 255);
@@ -118,6 +117,16 @@ TextDisplayInterlinearWindow::SlotChapterSelected
 (int InChapter)
 {
   Chapter = InChapter;
+  if ( interlinearChapter ) {
+    delete interlinearChapter;
+  }
+  if ( NULL == Book ) {
+    return;
+  }
+  
+  interlinearChapter = new InterlinearChapter(Book->GetIndex(), Chapter);
+  interlinearChapter->Read();
+  interlinearChapter->ReadVerses();
   ClearDisplayItems();
   CreateDisplayItems();
 }
@@ -129,41 +138,42 @@ void
 TextDisplayInterlinearWindow::CreateDisplayItems
 ()
 {
-  TextDisplayInterlinearReferenceItem*        referenceItem;
-  int                                   lastVerseNumber;
-  int                                   startIndex;
-  int                                   endIndex;
-  int                                   i;
+  int                                   rightToLeft;
   int                                   verseNumber;
-  BookInfoWord*                         word;
-  QString                               wordText;
-  TextDisplayInterlinearItem*                 displayItem;
+  int                                   j;
+  int                                   k;
+  int                                   wordCount;
+  InterlinearVerse*                     verse;
+  int                                   verseCount;
+  TextDisplayInterlinearReferenceItem*  referenceItem;
+  int                                   i;
+  InterlinearWord*                      word;
+  TextDisplayInterlinearItem*           displayItem;
 
   ClearDisplayItems();
-  if ( NULL == Book ) {
+  if ( interlinearChapter == NULL ) {
     return;
   }
-  lastVerseNumber = 0;
-  Book->GetChapterWordIndices(Chapter, startIndex, endIndex);
-  for ( i = startIndex ; i <= endIndex ; i++ ) {
-    word = Book->GetWordByIndex(i);
-    verseNumber = word->GetVerse();
-    if ( verseNumber != lastVerseNumber ) {
-      referenceItem = new TextDisplayInterlinearReferenceItem(verseNumber, 0, 0, this);
-      ReferenceItems << referenceItem;
-      connect(referenceItem, TextDisplayInterlinearReferenceItem::SignalSelected,
-              this, TextDisplayInterlinearWindow::SlotReferenceSelected);
-      lastVerseNumber = verseNumber;
+
+
+  verseCount = interlinearChapter->GetVerseCount();
+  if ( verseCount == 0 ) {
+    return;
+  }
+  rightToLeft = Book->GetRightToLeft();
+  k = 0;
+  for (i = 0; i < verseCount; i++) {
+    verse = interlinearChapter->GetVerseByIndex(i);
+    verseNumber = verse->GetVerseNumber();
+    referenceItem = new TextDisplayInterlinearReferenceItem(verseNumber, 0, 0, this, rightToLeft);
+    ReferenceItems << referenceItem;
+    wordCount = verse->GetWordCount();
+    for (j = 0; j < wordCount; j++) {
+      word = verse->GetWordByIndex(j);
+      displayItem = new TextDisplayInterlinearItem(word, k, this, rightToLeft);
+      DisplayItems << displayItem;
+      k++;
     }
-    wordText = word->GetWord();
-    wordText = wordText.trimmed();
-    displayItem = new TextDisplayInterlinearItem(word->GetBook(),
-                                           word->GetChapter(),
-                                           verseNumber,
-                                           wordText, i, DisplayFont);
-    displayItem->setParent(this);
-    displayItem->hide();
-    DisplayItems << displayItem;  
   }
   ArrangeItems();
 }
@@ -197,10 +207,7 @@ TextDisplayInterlinearWindow::ArrangeItems
 ()
 {
   int                                   height;
-  TRACE_FUNCTION_START();
   height =  ArrangeItems(size().width());
-  TRACE_FUNCTION_INT(height);
-  TRACE_FUNCTION_END();
   return height;
 }
 
@@ -214,45 +221,46 @@ TextDisplayInterlinearWindow::ArrangeItems
   QSize                                 itemSize;
   int                                   itemWidth;
   int                                   windowWidth;
-  TextDisplayInterlinearReferenceItem*        referenceItem;
+  TextDisplayInterlinearReferenceItem*  referenceItem;
   int                                   verseNumber;
   QSize                                 s;
   int                                   y;
   int                                   x;
-  TextDisplayInterlinearItem*                 item;
+  TextDisplayInterlinearItem*           item;
   int                                   i;
   int                                   n;
   int                                   currentVerse;
   int                                   lineHeight;
-  int                                   verticalSkip = 5;
   int                                   height = 0;
 
-  TRACE_FUNCTION_START();
-  TRACE_FUNCTION_INT(InWidth);
+  if ( Book == NULL ) {
+    return 0 ;
+  }
+  if ( Book->GetRightToLeft() ) {
+    return ArrangeItemsRightToLeft(size().width());
+  }
+  
   x = LeftMargin;
   y = TopMargin;
   n = DisplayItems.size();
   windowWidth = InWidth;
   windowWidth -= (LeftMargin + RightMargin);
 
-  TRACE_FUNCTION_INT(Chapter);
-  TRACE_FUNCTION_INT(n);
-  lineHeight = 15;
+  lineHeight = 0;
   if ( n == 0 ) {
-    TRACE_FUNCTION_END();
     return 0;
   }
   item = DisplayItems[0];
 
   currentVerse = item->GetVerseNumber();
-  TRACE_FUNCTION_INT(windowWidth);
-  
   x = 0;
   referenceItem = FindReferenceByVerseNumber(currentVerse);
   referenceItem->move(x, y);
   referenceItem->show();
   x = LeftMargin;
 
+  lineHeight = DisplayItems[0]->GetSize().height();
+  TRACE_FUNCTION_INT(lineHeight);
   //!
   for (i = 0; i < n; i++) {
     item = DisplayItems[i];
@@ -260,37 +268,104 @@ TextDisplayInterlinearWindow::ArrangeItems
     verseNumber = item->GetVerseNumber();
     if ( currentVerse != verseNumber ) {
       x = 0;
-      y += (lineHeight + verticalSkip);
+      y += (lineHeight + VerticalSkip);
       currentVerse = verseNumber;
       referenceItem = FindReferenceByVerseNumber(currentVerse);
       referenceItem->move(x, y);
       referenceItem->show();
       x = LeftMargin;
-      TRACE_FUNCTION_INT(currentVerse);
-      TRACE_FUNCTION_INT(i);
-      TRACE_FUNCTION_INT(y);
     }
     itemSize = item->GetSize();
     itemWidth = itemSize.width();
     if ( itemWidth + x > windowWidth ) {
       y += lineHeight;
       x = LeftMargin;
-      TRACE_FUNCTION_INT(i);
-      TRACE_FUNCTION_INT(y);
     }
     item->move(x, y);
     x += (itemWidth + HorizontalSkip);
     if ( x > windowWidth ) {
       y += lineHeight;
       x = LeftMargin;
-      TRACE_FUNCTION_INT(i);
-      TRACE_FUNCTION_INT(y);
     }
     item->show();
   }
   height = y + lineHeight * 2;
-  TRACE_FUNCTION_INT(height);
-  TRACE_FUNCTION_END();
+  return height;
+}
+
+/*****************************************************************************!
+ * Function : ArrangeItemsRightToLeft
+ *****************************************************************************/
+int
+TextDisplayInterlinearWindow::ArrangeItemsRightToLeft
+(int InWidth)
+{
+  int                                   referenceX;
+  int                                   verseX;
+  QSize                                 itemSize;
+  int                                   itemWidth;
+  TextDisplayInterlinearReferenceItem*  referenceItem;
+  int                                   verseNumber;
+  QSize                                 s;
+  int                                   y;
+  int                                   x;
+  TextDisplayInterlinearItem*           item;
+  int                                   i;
+  int                                   n;
+  int                                   currentVerse;
+  int                                   lineHeight;
+  int                                   height = 0;
+
+
+  n = DisplayItems.size();
+  if ( n == 0 ) {
+    return 0;
+  }
+
+  //!
+  verseX = InWidth - (TEXT_DISPLAY_INTERLINEAR_REFERENCE_ITEM_WIDTH + 5);
+  referenceX = InWidth - TEXT_DISPLAY_INTERLINEAR_REFERENCE_ITEM_WIDTH;
+  y = TopMargin;
+  
+  lineHeight = DisplayItems[0]->GetSize().height();
+
+  //!
+  item = DisplayItems[0];
+  currentVerse = item->GetVerseNumber();
+  referenceItem = FindReferenceByVerseNumber(currentVerse);
+  referenceItem->move(referenceX, y);
+  referenceItem->show();
+  x = verseX;
+
+  //!
+  for (i = 0; i < n; i++) {
+    item = DisplayItems[i];
+    s = item->GetSize();
+    verseNumber = item->GetVerseNumber();
+    if ( currentVerse != verseNumber ) {
+      y += (lineHeight + VerticalSkip);
+      currentVerse = verseNumber;
+      referenceItem = FindReferenceByVerseNumber(currentVerse);
+      referenceItem->move(referenceX, y);
+      referenceItem->show();
+      x = verseX;
+    }
+    itemSize = item->GetSize();
+    itemWidth = itemSize.width();
+    if ( itemWidth + x < LeftMargin ) {
+      y += lineHeight;
+      x = verseX;
+    }
+    x -= itemWidth;
+    item->move(x, y);
+    x -= HorizontalSkip;
+    if ( x < LeftMargin ) {
+      y += lineHeight;
+      x = verseX;
+    }
+    item->show();
+  }
+  height = y + lineHeight * 2;
   return height;
 }
 
@@ -423,3 +498,4 @@ TextDisplayInterlinearWindow::mouseMoveEvent
 {
   setFocus();
 }
+

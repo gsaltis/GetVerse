@@ -13,6 +13,7 @@
 #include <QtCore>
 #include <QtGui>
 #include <QWidget>
+#include <QFrame>
 #include <QLabel>
 
 /*****************************************************************************!
@@ -20,6 +21,7 @@
  *****************************************************************************/
 #include "TextDisplayItem.h"
 #include "TextDisplayWordFormattingItem.h"
+#include "InterlinearWord.h"
 
 /*****************************************************************************!
  * Exported Macros
@@ -28,11 +30,11 @@
 /*****************************************************************************!
  * Exported Class : TextDisplayInterlinearItem
  *****************************************************************************/
-class TextDisplayInterlinearItem : public QLabel
+class TextDisplayInterlinearItem : public QFrame
 {
   //! Constructors
 public :
-  TextDisplayInterlinearItem          (int InBook, int InChapter, int InVerse, QString InWord, int InWordIndex, QFont InFont);
+  TextDisplayInterlinearItem          (InterlinearWord* InWord, int InWordIndex, QWidget* InParent, int InRightToLeft);
 
   //! Destructor
 public :
@@ -50,7 +52,7 @@ public :
   void                          SetWord                 (QString InWord);
   QSize                         GetSize                 ();
   int                           GetVerseNumber          (void);
-
+  
   //! Public Data
 public :
 
@@ -64,25 +66,38 @@ protected :
 
   //! Private Methods
 private :
-  void                          CreateStrippedWord      ();
+  void                          CreateEnglishLabel      (void);
+  void                          CreateStrongsLabel      (void);
+  void                          CreateContextualLabel   (void);
+  void                          CreateTransliterateLabel(void);
+  void                          CreateMorphologyLabel   (void);
+  void                          ComputeSize             (void);
   
   //! Private Data
 private :
-  bool                          StripQuotes;
+  InterlinearWord*              Word;
   int                           WordIndex;
-  QString                       Word;
-  QString                       StrippedWord;
-  int                           Book;
-  int                           Chapter;
-  int                           Verse;
-  QString                       Text;
   QSize                         Size;
   QPoint                        Location;
-  QFont                         Font;
   QColor                        Background;
-  QColor                        Foreground;
   QColor                        OverBackground;
+  
+  QLabel*                       EnglishLabel;
+  QSize                         EnglishSize;
 
+  QLabel*                       ContextualLabel;
+  QSize                         ContextualSize;
+  
+  QLabel*                       StrongsLabel;
+  QSize                         StrongsSize;
+  
+  QLabel*                       MorphologyLabel;
+  QSize                         MorphologySize;
+  
+  QLabel*                       TransliterateLabel;
+  QSize                         TransliterateSize;
+  
+  int                           RightToLeft;
 };
 
 #endif /* _textdisplayinterlinearitem_h_*/

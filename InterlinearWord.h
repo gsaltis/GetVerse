@@ -31,16 +31,16 @@
  *****************************************************************************/
 class InterlinearWord
 {
- //! Constructors
- public :
+  //! Constructors
+public :
   InterlinearWord               (int InBookIndex, int InChapterNumber, int InVerseNumber, int InVerseID);
 
- //! Destructor
- public :
+  //! Destructor
+public :
   ~InterlinearWord              ();
 
- //! Public Methods
- public :
+  //! Public Methods
+public :
   int                           GetID                           ();
   int                           GetVerseID                      ();
   QString                       GetContextualForm               ();
@@ -49,6 +49,7 @@ class InterlinearWord
   QString                       GetStrongsWordID                ();
   QString                       GetEnglish                      ();
 
+  int                           GetVerseNumber                  (void);
   void                          SetID                           (int InID);
   void                          SetVerseID                      (int InVerseID);
   void                          SetContextualForm               (QString InContextualForm);
@@ -73,8 +74,8 @@ class InterlinearWord
   static void                   GetValues                       ();
   static void                   SetValues                       ();
   
- //! Public Data
- public :
+  //! Public Data
+public :
   static QFont                  strongsFont;
   static QColor                 strongsColor;
   QSize                         strongsSize;
@@ -100,19 +101,18 @@ class InterlinearWord
   static bool                   englishDisplay;
   static int                    Lineskip;
 
- //! Protected Methods
- protected :
+  //! Protected Methods
+protected :
 
- //! Protected Data
- protected :
+  //! Protected Data
+protected :
 
- //! Private Methods
- private :
-  int                           GetVerseNumber          (void);
+  //! Private Methods
+private :
   int                           GetChapterNumber        (void);
 
- //! Private Data
- private :
+  //! Private Data
+private :
   int                           ID;
   int                           VerseID;
   int                           VerseNumber;

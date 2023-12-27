@@ -20,6 +20,7 @@
 #include "BookInfo.h"
 #include "TextDisplayInterlinearItem.h"
 #include "TextDisplayInterlinearReferenceItem.h"
+#include "InterlinearChapter.h"
 
 /*****************************************************************************!
  * Exported Macros
@@ -48,6 +49,7 @@ class TextDisplayInterlinearWindow : public QWidget
  public :
   int                           ArrangeItems            ();
   int                           ArrangeItems            (int InWidth);
+  int                           ArrangeItemsRightToLeft (int InWidth);
   void                          ClearDisplayItems       ();
 
  //! Public Data
@@ -75,9 +77,7 @@ class TextDisplayInterlinearWindow : public QWidget
  private :
   int                           Chapter;
   BookInfo*                     Book;
-  QFont                         DisplayFont;
   QList<TextDisplayInterlinearItem*>  DisplayItems;
-  QFont                         ReferenceFont;
   QColor                        DisplayColor;
   QColor                        ReferenceColor;
   QColor                        BackgroundColor;
@@ -88,6 +88,9 @@ class TextDisplayInterlinearWindow : public QWidget
   int                           HorizontalSkip;
   QList<TextDisplayInterlinearReferenceItem*> ReferenceItems;
   int                           maxChapters;
+  InterlinearChapter*           interlinearChapter;
+  
+  int                           VerticalSkip;
 
  //! Public Slots
  public slots :

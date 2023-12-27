@@ -317,3 +317,22 @@ BookInfo::GetChapterCount(void)
 {
   return chapters;
 }
+
+/*****************************************************************************!
+ * Function : GetRightToLeft
+ *****************************************************************************/
+int
+BookInfo::GetRightToLeft(void)
+{
+  return RightToLeft;  
+}
+
+/*****************************************************************************!
+ * Function : SetRightToLeft
+ *****************************************************************************/
+void
+BookInfo::SetRightToLeft
+(int InRightToLeft)
+{
+  RightToLeft = InRightToLeft;  
+}

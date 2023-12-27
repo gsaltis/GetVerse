@@ -21,12 +21,13 @@
  * Function : TextDisplayInterlinearReferenceItem
  *****************************************************************************/
 TextDisplayInterlinearReferenceItem::TextDisplayInterlinearReferenceItem
-(int InVerseNumber, int InX, int InY, QWidget* InParent) : QLabel(InParent)
+(int InVerseNumber, int InX, int InY, QWidget* InParent, int InRightToLeft) : QLabel(InParent)
 {
   QPalette pal;
   DisplayFont = QFont("Arial", 10, QFont::Bold);
   DisplayColor = QColor(64, 0, 0);
   VerseNumber = InVerseNumber;
+  RightToLeft = InRightToLeft;
 
   pal = palette();
   pal.setBrush(QPalette::WindowText, QBrush(DisplayColor));
@@ -38,10 +39,14 @@ TextDisplayInterlinearReferenceItem::TextDisplayInterlinearReferenceItem
   setCursor(Qt::PointingHandCursor);
   move(InX, InY);
   resize(TEXT_DISPLAY_INTERLINEAR_REFERENCE_ITEM_WIDTH, TEXT_DISPLAY_INTERLINEAR_REFERENCE_ITEM_HEIGHT);
-  
-  setAlignment(Qt::AlignRight);
-  setText(QString("%1:").arg(VerseNumber));
 
+  if ( RightToLeft ) {
+    setAlignment(Qt::AlignLeft);
+    setText(QString(":%1").arg(VerseNumber));
+  } else {
+    setAlignment(Qt::AlignRight);
+    setText(QString("%1:").arg(VerseNumber));
+  }
   initialize();
 }
 

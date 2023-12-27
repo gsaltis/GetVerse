@@ -18,7 +18,7 @@
 #include "SQLStatement.h"
 
 #define SQL_STATEMENT_INSERT_FORMATTING         \
-  "INSERT INTO Formatting VALUES(%d, %d, %d, %d, '%s', %d);\n"
+  "INSERT INTO Formatting VALUES(%d, %d, %d, %d, '%s', %d, '');\n"
 
 #define SQL_STATEMENT_DELETE_WORD_FORMATTING    \
   "DELETE FROM Formatting where book is %d "    \

@@ -242,7 +242,7 @@ TextDisplayOuterWindow::SlotBookSelected
   if ( NULL == bookInfo ) {
     return;
   }
-  BookSelected(bookInfo, 1);
+  BookSelected(bookInfo, 0);
 }
 
 /*****************************************************************************!
@@ -255,10 +255,14 @@ TextDisplayOuterWindow::BookSelected
   InBookInfo->ReadVerses();
   header->SetText(InBookInfo->GetCapitalizedBookName());
   viewWindow->ClearText();
-  controlBar->SlotSetChapter(InChapter);
+  if ( InChapter > 0 ) {
+    controlBar->SlotSetChapter(InChapter);
+  }
   controlBar->SlotSetChapterSelectMax(InBookInfo->chapters);
   emit SignalBookSelected(InBookInfo);
-  emit SignalChapterSelected(1);
+  if ( InChapter > 0 ) {
+    emit SignalChapterSelected(InChapter);
+  }
   emit SignalBookIndexSelected(InBookInfo->GetIndex());
 }
 
