@@ -56,7 +56,7 @@ TextDisplayInterlinearWindow::initialize()
   TopMargin = 20;
   HorizontalSkip = 10;
   VerticalSkip = 20;
-  
+  VerticalSkipSmall = VerticalSkip / 2;
   DisplayColor = QColor(32, 32, 32);
   ReferenceColor = QColor(32, 0, 0);
   BackgroundColor = QColor(255, 255, 255);
@@ -278,13 +278,13 @@ TextDisplayInterlinearWindow::ArrangeItems
     itemSize = item->GetSize();
     itemWidth = itemSize.width();
     if ( itemWidth + x > windowWidth ) {
-      y += lineHeight;
+      y += lineHeight + VerticalSkipSmall;
       x = LeftMargin;
     }
     item->move(x, y);
     x += (itemWidth + HorizontalSkip);
     if ( x > windowWidth ) {
-      y += lineHeight;
+      y += lineHeight + VerticalSkipSmall;
       x = LeftMargin;
     }
     item->show();
@@ -356,13 +356,13 @@ TextDisplayInterlinearWindow::ArrangeItemsRightToLeft
       y += lineHeight;
       x = verseX;
     }
+    if ( x - itemWidth < LeftMargin ) {
+      y += lineHeight + VerticalSkipSmall;
+      x = verseX;
+    }
     x -= itemWidth;
     item->move(x, y);
     x -= HorizontalSkip;
-    if ( x < LeftMargin ) {
-      y += lineHeight;
-      x = verseX;
-    }
     item->show();
   }
   height = y + lineHeight * 2;

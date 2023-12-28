@@ -91,6 +91,7 @@ class TextDisplayInterlinearWindow : public QWidget
   InterlinearChapter*           interlinearChapter;
   
   int                           VerticalSkip;
+  int                           VerticalSkipSmall;
 
  //! Public Slots
  public slots :

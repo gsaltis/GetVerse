@@ -18,6 +18,7 @@
  *****************************************************************************/
 #include "TextDisplayInterlinearItem.h"
 #include "common.h"
+#include "StrongsReferenceDisplayDialog.h"
 
 /*****************************************************************************!
  * Function : TextDisplayInterlinearItem
@@ -388,3 +389,30 @@ TextDisplayInterlinearItem::GetVerseNumber
   return Word->GetVerseNumber();
 }
 
+/*****************************************************************************!
+ * Function : mousePressEvent
+ *****************************************************************************/
+void
+TextDisplayInterlinearItem::mousePressEvent
+(QMouseEvent* InEvent)
+{
+  QString                               strongsWord;
+  StrongsReferenceDisplayDialog*        dialog;
+  Qt::KeyboardModifiers                 modifiers;
+  Qt::MouseButton                       button;
+
+  button = InEvent->button();  
+  modifiers = InEvent->modifiers();
+
+  if ( ! ( modifiers == Qt::NoModifier ) && (button == Qt::LeftButton) ) {
+    return;
+  }
+
+  strongsWord = Word->GetStrongsWordID();
+  if ( strongsWord == "-" ) {
+    return;
+  }
+  dialog = new StrongsReferenceDisplayDialog(Word);
+  dialog->exec();
+  delete dialog;
+}

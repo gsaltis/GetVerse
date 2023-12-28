@@ -60,6 +60,7 @@ public :
 protected :
   void                          enterEvent              (QEnterEvent* InEvent);
   void                          leaveEvent              (QEvent* InEvent);
+  void                          mousePressEvent         (QMouseEvent* InEvent);
   
   //! Protected Data
 protected :

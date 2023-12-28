@@ -53,7 +53,7 @@ StrongsReferenceDisplayDialog::Initialize(void)
   LabelFont = QFont("Segoe UI", 10, QFont::Bold);
   HeaderFont = QFont("Segoe UI", 13, QFont::Bold);
   DataFont = QFont("Segoe UI", 10, QFont::Normal);
-  ContextualFont = QFont("Times New Roman", 14, QFont::Normal);
+  ContextualFont = QFont("Times New Roman", 17, QFont::Normal);
   resize(STRONGS_REFERENCE_DISPLAY_DIALOG_WIDTH, STRONGS_REFERENCE_DISPLAY_DIALOG_HEIGHT);
   CreateSubWindows();  
   CreateConnections();
@@ -252,7 +252,7 @@ StrongsReferenceDisplayDialog::CreateLabelBlock(void)
   LabelBlock->setAutoFillBackground(true);
   LabelBlock->setPalette(pal);
 
-  labelHeight = 14;
+  labelHeight = 18;
   labelWidth = STRONGS_REFERENCE_DISPLAY_LABEL_WIDTH - 5;
 
   y = 10;
@@ -294,7 +294,7 @@ StrongsReferenceDisplayDialog::CreateDataBlock(void)
   height = STRONGS_REFERENCE_DISPLAY_DIALOG_HEIGHT - (STRONGS_REFERENCE_DISPLAY_HEADER_HEIGHT + 50);
   width = STRONGS_REFERENCE_DISPLAY_DIALOG_WIDTH - STRONGS_REFERENCE_DISPLAY_LABEL_WIDTH;
 
-  labelHeight = 14;
+  labelHeight = 18;
 
   DataBlock->move(x, y);
   DataBlock->resize(width, height);
