@@ -19,6 +19,7 @@
  *****************************************************************************/
 #include "TextDisplayInterlinearScrollWindow.h"
 #include "ChapterHeaderWindow.h"
+#include "TextDisplayInterlinearWordSelect.h"
 
 /*****************************************************************************!
  * Exported Macros
@@ -67,6 +68,7 @@ private :
 private :
   TextDisplayInterlinearScrollWindow* interlinearWindow;
   ChapterHeaderWindow*          header;
+  TextDisplayInterlinearWordSelect* wordSelect;
 
   //! Public Slots
 public slots :

@@ -59,6 +59,8 @@ TextDisplayInterlinearContainerWindow::CreateSubWindows()
   interlinearWindow = new TextDisplayInterlinearScrollWindow();  
   interlinearWindow->setParent(this);
   header = new ChapterHeaderWindow("Chapter", this);
+  wordSelect = new TextDisplayInterlinearWordSelect();
+  wordSelect->setParent(this);
 }
 
 /*****************************************************************************!
@@ -69,6 +71,7 @@ TextDisplayInterlinearContainerWindow::InitializeSubWindows()
 {
   interlinearWindow = NULL;
   header = NULL;
+  wordSelect = NULL;
 }
 
 /*****************************************************************************!
@@ -78,14 +81,21 @@ void
 TextDisplayInterlinearContainerWindow::resizeEvent
 (QResizeEvent* InEvent)
 {
+  int                                   wordSelectW;
+  int                                   wordSelectH;
+  int                                   wordSelectY;
+  int                                   wordSelectX;
+
   int                                   headerW;
   int                                   headerH;
   int                                   headerY;
   int                                   headerX;
+
   int                                   interlinearWindowW;
   int                                   interlinearWindowH;
   int                                   interlinearWindowY;
   int                                   interlinearWindowX;
+
   QSize					size;  
   int					width;
   int					height;
@@ -96,7 +106,7 @@ TextDisplayInterlinearContainerWindow::resizeEvent
 
   interlinearWindowX = 0;
   interlinearWindowY = CHAPTER_HEADER_WINDOW_HEIGHT;
-  interlinearWindowW = width;
+  interlinearWindowW = width - TEXT_DISPLAY_INTERLINEAR_WORD_SELECT_WIDTH;
   interlinearWindowH = height - CHAPTER_HEADER_WINDOW_HEIGHT;
   interlinearWindow->move(interlinearWindowX, interlinearWindowY);
   interlinearWindow->resize(interlinearWindowW, interlinearWindowH);
@@ -107,6 +117,13 @@ TextDisplayInterlinearContainerWindow::resizeEvent
   headerH = CHAPTER_HEADER_WINDOW_HEIGHT;
   header->move(headerX, headerY);
   header->resize(headerW, headerH);
+
+  wordSelectX = interlinearWindowW;
+  wordSelectY = 0;
+  wordSelectW = TEXT_DISPLAY_INTERLINEAR_WORD_SELECT_WIDTH;
+  wordSelectH = height - CHAPTER_HEADER_WINDOW_HEIGHT;
+  wordSelect->move(wordSelectX, wordSelectY);
+  wordSelect->resize(wordSelectW, wordSelectH);
 }
 
 /*****************************************************************************!

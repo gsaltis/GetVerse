@@ -65,6 +65,7 @@ SOURCES                         += \
 				   TextDisplayInterlinearContainerWindow.cpp    \
 				   TextDisplayInterlinearReferenceItem.cpp      \
 				   TextDisplayInterlinearWindow.cpp             \
+				   TextDisplayInterlinearWordSelect.cpp         \
 				   TextDisplayInterlinearScrollWindow.cpp       \
 				   TextDisplayItem.cpp                          \
 				   TextDisplayOuterWindow.cpp                   \
@@ -125,6 +126,7 @@ HEADERS                         += \
 				   TextDisplayInterlinearReferenceItem.h        \
 				   TextDisplayInterlinearScrollWindow.h         \
 				   TextDisplayInterlinearWindow.h               \
+				   TextDisplayInterlinearWordSelect.h           \
 				   TextDisplayItem.h                            \
 				   TextDisplayOuterWindow.h                     \
 				   TextDisplayReferenceItem.h                   \
