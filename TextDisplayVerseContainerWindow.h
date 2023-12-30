@@ -67,6 +67,7 @@ private :
 private :
   TextDisplayVerseScrollWindow* verseWindow;
   ChapterHeaderWindow*          header;
+  BookInfo*                     Book;
 
   //! Public Slots
 public slots :

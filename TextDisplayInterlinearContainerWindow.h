@@ -63,12 +63,15 @@ private :
   void                          InitializeSubWindows    ();
   void                          resizeEvent             (QResizeEvent* InEvent);
   void                          CreateConnections       (void);
-
+  void                          PerformResize           (QSize InSize);
+  
   //! Private Data
 private :
-  TextDisplayInterlinearScrollWindow* interlinearWindow;
-  ChapterHeaderWindow*          header;
-  TextDisplayInterlinearWordSelect* wordSelect;
+  TextDisplayInterlinearScrollWindow*   interlinearWindow;
+  ChapterHeaderWindow*                  header;
+  TextDisplayInterlinearWordSelect*     wordSelect;
+  BookInfo*                             Book;
+  bool                                  DisplayWordSelect;
 
   //! Public Slots
 public slots :
@@ -77,6 +80,8 @@ public slots :
   void                          SlotWindowChange        (int InNewWindow);
   void                          SlotSetStartupBookmarkInfo (BookInfo* InBookInfo, int InChapter);
   void                          SlotChapterArrowSelected (int InChapter);
+  void                          SlotSelectStrongsWord   (QString InStrongsWord);
+  void                          SlotCloseStrongsReference (void);
 
   //! Public Signals
 signals :
@@ -85,6 +90,8 @@ signals :
   void                          SignalWindowChange      (int InNewWindow);
   void                          SignalSetStartupBookmarkInfo (BookInfo* InBookInfo, int InChapter);
   void                          SignalChapterArrowSelected (int InChapter);
+  void                          SignalSelectStrongsWord (QString InStrongsWord);
+  void                          SignalCloseStrongsReference (void);
 
   //! Public Actions
 public :

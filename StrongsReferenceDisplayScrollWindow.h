@@ -1,46 +1,47 @@
 /*****************************************************************************
- * FILE NAME    : TextDisplayInterlinearWordSelect.h
- * DATE         : December 27 2023
+ * FILE NAME    : StrongsReferenceDisplayScrollWindow.h
+ * DATE         : December 30 2023
  * PROJECT      : 
  * COPYRIGHT    : Copyright (C) 2023 by Gregory R Saltis
  *****************************************************************************/
-#ifndef _textdisplayinterlinearwordselect_h_
-#define _textdisplayinterlinearwordselect_h_
+#ifndef _strongsreferencedisplayscrollwindow_h_
+#define _strongsreferencedisplayscrollwindow_h_
 
 /*****************************************************************************!
  * Global Headers
  *****************************************************************************/
 #include <QtCore>
 #include <QtGui>
+#include <QScrollArea>
 #include <QWidget>
 
 /*****************************************************************************!
  * Local Headers
  *****************************************************************************/
-#include "StrongsReferenceForm.h"
+#include "StrongsReferenceDisplayWordsWindow.h"
 
 /*****************************************************************************!
  * Exported Macros
  *****************************************************************************/
-#define TEXT_DISPLAY_INTERLINEAR_WORD_SELECT_X 200
-#define TEXT_DISPLAY_INTERLINEAR_WORD_SELECT_Y 200
-#define TEXT_DISPLAY_INTERLINEAR_WORD_SELECT_WIDTH 300
-#define TEXT_DISPLAY_INTERLINEAR_WORD_SELECT_HEIGHT 200
+#define STRONGS_REFERENCE_DISPLAY_SCROLL_WINDOW_X 200
+#define STRONGS_REFERENCE_DISPLAY_SCROLL_WINDOW_Y 200
+#define STRONGS_REFERENCE_DISPLAY_SCROLL_WINDOW_WIDTH 200
+#define STRONGS_REFERENCE_DISPLAY_SCROLL_WINDOW_HEIGHT 200
 
 /*****************************************************************************!
- * Exported Class : TextDisplayInterlinearWordSelect
+ * Exported Class : StrongsReferenceDisplayScrollWindow
  *****************************************************************************/
-class TextDisplayInterlinearWordSelect : public QWidget
+class StrongsReferenceDisplayScrollWindow : public QScrollArea
 {
   Q_OBJECT;
 
  //! Constructors
  public :
-  TextDisplayInterlinearWordSelect ();
+  StrongsReferenceDisplayScrollWindow ();
 
  //! Destructor
  public :
-  ~TextDisplayInterlinearWordSelect ();
+  ~StrongsReferenceDisplayScrollWindow ();
 
  //! Public Methods
  public :
@@ -61,26 +62,24 @@ class TextDisplayInterlinearWordSelect : public QWidget
   void                          CreateConnections       ();
   void                          InitializeSubWindows    ();
   void                          resizeEvent             (QResizeEvent* InEvent);
-  void                          GetWordReferences       (QString InStrongsWord);
 
  //! Private Data
  private :
-  StrongsReferenceForm*         ReferenceWindow;
+  StrongsReferenceDisplayWordsWindow* WordsWindow;
 
  //! Public Slots
  public slots :
-  void                          SlotSelectStrongsWord   (QString InStrongsWord);
-  void                          SlotCloseStrongsReference (void);
+  void                          SlotVerseReferenceClear (void);
+  void                          SlotStrongsReferenceSelected (int InBookNumber, int InChapterNumber, int InVerseNumber);
 
  //! Public Signals
  signals :
-  void                          SignalVerseReferenceSelected (int InBookNumber, int InChapterNumber, int InVerseNumber);
-  void                          SignalVerseReferencesStart (void);
-  void                          SignalCloseStrongsReference (void);
+  void                          SignalVerseReferenceClear (void);
+  void                          SignalStrongsReferenceSelected (int InBookNumber, int InChapterNumber, int InVerseNumber);
 
  //! Public Actions
  public :
 
 };
 
-#endif /* _textdisplayinterlinearwordselect_h_*/
+#endif /* _strongsreferencedisplayscrollwindow_h_*/

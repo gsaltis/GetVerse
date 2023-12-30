@@ -32,6 +32,8 @@
  *****************************************************************************/
 class TextDisplayInterlinearItem : public QFrame
 {
+  Q_OBJECT;
+  
   //! Constructors
 public :
   TextDisplayInterlinearItem          (InterlinearWord* InWord, int InWordIndex, QWidget* InParent, int InRightToLeft);
@@ -73,6 +75,8 @@ private :
   void                          CreateTransliterateLabel(void);
   void                          CreateMorphologyLabel   (void);
   void                          ComputeSize             (void);
+  void                          DisplayStrongsReference (void);
+  void                          DisplayStrongCrossReference (void);
   
   //! Private Data
 private :
@@ -99,6 +103,10 @@ private :
   QSize                         TransliterateSize;
   
   int                           RightToLeft;
+
+ //! Public Signals
+ signals :
+  void                          SignalSelectStrongsWord (QString InStrongsWord);
 };
 
 #endif /* _textdisplayinterlinearitem_h_*/

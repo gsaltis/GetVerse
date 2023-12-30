@@ -98,12 +98,14 @@ class TextDisplayInterlinearWindow : public QWidget
   void                          SlotBookSelected        (BookInfo* InBook);
   void                          SlotChapterSelected     (int InChapter);
   void                          SlotReferenceSelected   (int InVerseNumber);
+  void                          SlotSelectStrongsWord   (QString InStrongsWord);
 
  //! Public Signals
  signals :
   void                          SignalWindowChange      (int InNewWindow);
   void                          SignalSetStartupBookmarkInfo (BookInfo* InBookInfo, int InChapter);
   void                          SignalChapterArrowSelected (int InChapter);
+  void                          SignalSelectStrongsWord (QString InStrongsWord);
 
  //! Public Actions
  public :

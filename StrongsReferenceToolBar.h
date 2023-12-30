@@ -1,49 +1,50 @@
 /*****************************************************************************
- * FILE NAME    : TextDisplayInterlinearWordSelect.h
- * DATE         : December 27 2023
+ * FILE NAME    : StrongsReferenceToolBar.h
+ * DATE         : December 28 2023
  * PROJECT      : 
  * COPYRIGHT    : Copyright (C) 2023 by Gregory R Saltis
  *****************************************************************************/
-#ifndef _textdisplayinterlinearwordselect_h_
-#define _textdisplayinterlinearwordselect_h_
+#ifndef _strongsreferencetoolbar_h_
+#define _strongsreferencetoolbar_h_
 
 /*****************************************************************************!
  * Global Headers
  *****************************************************************************/
 #include <QtCore>
 #include <QtGui>
+#include <QFrame>
 #include <QWidget>
+#include <QPushButton>
+#include <QAction>
+#include <QLabel>
 
 /*****************************************************************************!
  * Local Headers
  *****************************************************************************/
-#include "StrongsReferenceForm.h"
 
 /*****************************************************************************!
  * Exported Macros
  *****************************************************************************/
-#define TEXT_DISPLAY_INTERLINEAR_WORD_SELECT_X 200
-#define TEXT_DISPLAY_INTERLINEAR_WORD_SELECT_Y 200
-#define TEXT_DISPLAY_INTERLINEAR_WORD_SELECT_WIDTH 300
-#define TEXT_DISPLAY_INTERLINEAR_WORD_SELECT_HEIGHT 200
-
+#define STRONGS_REFERENCE_TOOL_BAR_HEIGHT 24
 /*****************************************************************************!
- * Exported Class : TextDisplayInterlinearWordSelect
+ * Exported Class : StrongsReferenceToolBar
  *****************************************************************************/
-class TextDisplayInterlinearWordSelect : public QWidget
+class StrongsReferenceToolBar : public QFrame
 {
   Q_OBJECT;
 
  //! Constructors
  public :
-  TextDisplayInterlinearWordSelect ();
+  StrongsReferenceToolBar       ();
 
  //! Destructor
  public :
-  ~TextDisplayInterlinearWordSelect ();
+  ~StrongsReferenceToolBar      ();
 
  //! Public Methods
  public :
+  QString                       GetStrongsReference     (void);
+  void                          SetStrongsReference     (QString InStrongsReference);
 
  //! Public Data
  public :
@@ -61,26 +62,25 @@ class TextDisplayInterlinearWordSelect : public QWidget
   void                          CreateConnections       ();
   void                          InitializeSubWindows    ();
   void                          resizeEvent             (QResizeEvent* InEvent);
-  void                          GetWordReferences       (QString InStrongsWord);
 
  //! Private Data
  private :
-  StrongsReferenceForm*         ReferenceWindow;
+  QPushButton*                  Close;
+  QString                       StrongsReference;
+  QLabel*                       StrongsReferenceLabel;
 
  //! Public Slots
  public slots :
-  void                          SlotSelectStrongsWord   (QString InStrongsWord);
-  void                          SlotCloseStrongsReference (void);
+  void                          SlotClosePushed         (void);
 
  //! Public Signals
  signals :
-  void                          SignalVerseReferenceSelected (int InBookNumber, int InChapterNumber, int InVerseNumber);
-  void                          SignalVerseReferencesStart (void);
-  void                          SignalCloseStrongsReference (void);
+  void                          SignalClose             (void);
 
  //! Public Actions
  public :
+  QAction*                      ActionClosePushed;
 
 };
 
-#endif /* _textdisplayinterlinearwordselect_h_*/
+#endif /* _strongsreferencetoolbar_h_*/

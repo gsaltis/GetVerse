@@ -46,6 +46,7 @@ TextDisplaySentenceContainterWindow::~TextDisplaySentenceContainterWindow
 void
 TextDisplaySentenceContainterWindow::initialize()
 {
+  bookInfo = NULL;
   InitializeSubWindows();  
   CreateSubWindows();
   CreateConnections();
@@ -122,9 +123,13 @@ void
 TextDisplaySentenceContainterWindow::SlotBookSet
 (BookInfo* InBookInfo)
 {
-  QString                       chapterName;
+  QString                               name;
+  QString                               chapterName;
 
-  chapterName = QString("Chapter 1");
+  bookInfo = InBookInfo;
+
+  name = bookInfo ? bookInfo->GetName() : QString();
+  chapterName = QString("%1 11").arg(name);
   emit SignalChapterTextChanged(chapterName);
   emit SignalBookSet(InBookInfo);
 }
@@ -136,8 +141,12 @@ void
 TextDisplaySentenceContainterWindow::SlotChapterSet
 (int InChapter)
 {
-  QString                       text;
-  text = QString("Chapter %1").arg(InChapter);
+  QString                               text;
+  QString                               name;
+
+  name = bookInfo ? bookInfo->GetName() : QString();
+  
+  text = QString("%1 %2").arg(name).arg(InChapter);
   emit SignalChapterTextChanged(text);
   emit SignalChapterSet(InChapter);
   emit SignalChapterArrowSelected(InChapter);

@@ -74,6 +74,7 @@ class TextDisplayInterlinearScrollWindow : public QScrollArea
   void                          SlotWindowChange        (int InNewWindow);
   void                          SlotSetStartupBookmarkInfo (BookInfo* InBookInfo, int InChapter);
   void                          SlotChapterArrowSelected (int InChapter);
+  void                          SlotSelectStrongsWord   (QString InStrongsWord);
 
  //! Public Signals
  signals :
@@ -82,6 +83,7 @@ class TextDisplayInterlinearScrollWindow : public QScrollArea
   void                          SignalWindowChange      (int InNewWindow);
   void                          SignalSetStartupBookmarkInfo (BookInfo* InBookInfo, int InChapter);
   void                          SignalChapterArrowSelected (int InChapter);
+  void                          SignalSelectStrongsWord (QString InStrongsWord);
 
  //! Public Actions
  public :

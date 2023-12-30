@@ -396,17 +396,31 @@ void
 TextDisplayInterlinearItem::mousePressEvent
 (QMouseEvent* InEvent)
 {
-  QString                               strongsWord;
-  StrongsReferenceDisplayDialog*        dialog;
   Qt::KeyboardModifiers                 modifiers;
   Qt::MouseButton                       button;
 
   button = InEvent->button();  
   modifiers = InEvent->modifiers();
 
-  if ( ! ( modifiers == Qt::NoModifier ) && (button == Qt::LeftButton) ) {
+  if ( ( modifiers == Qt::NoModifier ) && (button == Qt::LeftButton) ) {
+    DisplayStrongsReference();
     return;
   }
+
+  if ( ( modifiers == Qt::ControlModifier ) && ( button == Qt::LeftButton ) ) {
+    DisplayStrongCrossReference();
+    return;
+  }
+}
+
+/*****************************************************************************!
+ * Function : DisplayStrongsReference
+ *****************************************************************************/
+void
+TextDisplayInterlinearItem::DisplayStrongsReference(void)
+{
+  QString                               strongsWord;
+  StrongsReferenceDisplayDialog*        dialog;
 
   strongsWord = Word->GetStrongsWordID();
   if ( strongsWord == "-" ) {
@@ -415,4 +429,21 @@ TextDisplayInterlinearItem::mousePressEvent
   dialog = new StrongsReferenceDisplayDialog(Word);
   dialog->exec();
   delete dialog;
+  
+}
+
+/*****************************************************************************!
+ * Function : DisplayStrongCrossReference
+ *****************************************************************************/
+void
+TextDisplayInterlinearItem::DisplayStrongCrossReference(void)
+{
+  QString                               strongsWord;
+
+  strongsWord = Word->GetStrongsWordID();
+  if ( strongsWord == "-" ) {
+    return;
+  }
+
+  emit SignalSelectStrongsWord(strongsWord);
 }

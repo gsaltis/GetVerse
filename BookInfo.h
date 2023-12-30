@@ -54,6 +54,8 @@ class BookInfo : public QWidget
   int                                   GetChapterCount         (void);
   int                                   GetRightToLeft          (void);
   void                                  SetRightToLeft          (int InRightToLeft);
+  QString                               GetName                 (void);
+  static QString                        GetVerseText            (int InBookNumber, int InChapterNumber, int InVerseNumber);
 
  //! Public Data
  public :

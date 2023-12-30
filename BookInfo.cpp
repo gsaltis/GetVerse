@@ -8,6 +8,7 @@
 /*****************************************************************************!
  * Global Headers
  *****************************************************************************/
+#include <trace_winnetqt.h>
 #include <QtCore>
 #include <QtGui>
 #include <QWidget>
@@ -335,4 +336,66 @@ BookInfo::SetRightToLeft
 (int InRightToLeft)
 {
   RightToLeft = InRightToLeft;  
+}
+
+/*****************************************************************************!
+ * Function : GetName
+ *****************************************************************************/
+QString
+BookInfo::GetName(void)
+{
+  return name;
+}
+
+/*****************************************************************************!
+ * Function : GetVerseText
+ *****************************************************************************/
+QString
+BookInfo::GetVerseText
+(int InBookNumber, int InChapterNumber, int InVerseNumber)
+{
+  int                                   retryCount;
+  QString                               verseText;
+  sqlite3_stmt*                         sqlStatement;
+  int                                   n;
+  QString selectStatement =
+    QString("SELECT text FROM VERSES "
+            "WHERE "
+            "book is %1 AND "
+            "chapter is %2 AND "
+            "verse is %3;").
+    arg(InBookNumber).
+    arg(InChapterNumber).
+    arg(InVerseNumber);
+
+  TRACE_FUNCTION_QSTRING(selectStatement);
+  
+  n = sqlite3_prepare_v2(MainDatabase, selectStatement.toStdString().c_str(), selectStatement.length(), &sqlStatement, NULL);
+  if ( n != SQLITE_OK ) {
+    return QString("");
+  }
+  retryCount = 0;
+
+  do {
+    n = sqlite3_step(sqlStatement);
+    if ( SQLITE_BUSY == n ) {
+      QThread::msleep(30);
+      retryCount++;
+      if ( retryCount > 10 ) {
+        break;
+      }
+      continue;
+    }
+    if ( SQLITE_DONE == n ) {
+      break;
+    }
+
+    if ( SQLITE_ROW == n ) {
+      verseText = QString((char*)sqlite3_column_text(sqlStatement, 0));
+    }
+  } while (true);
+
+  sqlite3_finalize(sqlStatement);
+  return verseText;
+  
 }

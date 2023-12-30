@@ -1,6 +1,7 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource>
     <file>Images/Form.png</file>
+    <file>Images/Close.png</file>
     <file>Images/List.png</file>
     <file>Images/Pen.png</file>
     <file>Images/Book.png</file>

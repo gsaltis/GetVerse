@@ -1,46 +1,46 @@
 /*****************************************************************************
- * FILE NAME    : TextDisplayInterlinearWordSelect.h
- * DATE         : December 27 2023
+ * FILE NAME    : StrongsReferenceVerseWindow.h
+ * DATE         : December 28 2023
  * PROJECT      : 
  * COPYRIGHT    : Copyright (C) 2023 by Gregory R Saltis
  *****************************************************************************/
-#ifndef _textdisplayinterlinearwordselect_h_
-#define _textdisplayinterlinearwordselect_h_
+#ifndef _strongsreferenceversewindow_h_
+#define _strongsreferenceversewindow_h_
 
 /*****************************************************************************!
  * Global Headers
  *****************************************************************************/
 #include <QtCore>
 #include <QtGui>
+#include <QTableWidget>
 #include <QWidget>
 
 /*****************************************************************************!
  * Local Headers
  *****************************************************************************/
-#include "StrongsReferenceForm.h"
 
 /*****************************************************************************!
  * Exported Macros
  *****************************************************************************/
-#define TEXT_DISPLAY_INTERLINEAR_WORD_SELECT_X 200
-#define TEXT_DISPLAY_INTERLINEAR_WORD_SELECT_Y 200
-#define TEXT_DISPLAY_INTERLINEAR_WORD_SELECT_WIDTH 300
-#define TEXT_DISPLAY_INTERLINEAR_WORD_SELECT_HEIGHT 200
+#define STRONGS_REFERENCE_VERSE_WINDOW_X 200
+#define STRONGS_REFERENCE_VERSE_WINDOW_Y 200
+#define STRONGS_REFERENCE_VERSE_WINDOW_WIDTH 200
+#define STRONGS_REFERENCE_VERSE_WINDOW_HEIGHT 200
 
 /*****************************************************************************!
- * Exported Class : TextDisplayInterlinearWordSelect
+ * Exported Class : StrongsReferenceVerseWindow
  *****************************************************************************/
-class TextDisplayInterlinearWordSelect : public QWidget
+class StrongsReferenceVerseWindow : public QTableWidget
 {
   Q_OBJECT;
 
  //! Constructors
  public :
-  TextDisplayInterlinearWordSelect ();
+  StrongsReferenceVerseWindow   ();
 
  //! Destructor
  public :
-  ~TextDisplayInterlinearWordSelect ();
+  ~StrongsReferenceVerseWindow  ();
 
  //! Public Methods
  public :
@@ -61,26 +61,25 @@ class TextDisplayInterlinearWordSelect : public QWidget
   void                          CreateConnections       ();
   void                          InitializeSubWindows    ();
   void                          resizeEvent             (QResizeEvent* InEvent);
-  void                          GetWordReferences       (QString InStrongsWord);
+  void                          Clear                   (void);
 
  //! Private Data
  private :
-  StrongsReferenceForm*         ReferenceWindow;
 
  //! Public Slots
  public slots :
-  void                          SlotSelectStrongsWord   (QString InStrongsWord);
-  void                          SlotCloseStrongsReference (void);
+  void                          SlotVerseReferenceClear (void);
+  void                          SlotVerseReferenceSelected (int InBookNumber, int InChapterNumber, int InVerseNumber);
+  void                          SlotItemSelected        (QTableWidgetItem* InItem);
 
  //! Public Signals
  signals :
   void                          SignalVerseReferenceSelected (int InBookNumber, int InChapterNumber, int InVerseNumber);
-  void                          SignalVerseReferencesStart (void);
-  void                          SignalCloseStrongsReference (void);
+  void                          SignalStrongsReferenceSelected (int InBookNumber, int InChapterNumber, int InVerseNumber);
 
  //! Public Actions
  public :
 
 };
 
-#endif /* _textdisplayinterlinearwordselect_h_*/
+#endif /* _strongsreferenceversewindow_h_*/

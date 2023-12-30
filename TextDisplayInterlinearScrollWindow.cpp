@@ -12,6 +12,7 @@
 #include <QtCore>
 #include <QtGui>
 #include <QWidget>
+#include <QScrollBar>
 
 /*****************************************************************************!
  * Local Headers
@@ -109,6 +110,7 @@ void
 TextDisplayInterlinearScrollWindow::SlotBookSelected
 (BookInfo* InBook)
 {
+  verticalScrollBar()->setSliderPosition(0);
   emit SignalBookSelected(InBook);  
 }
 
@@ -137,10 +139,16 @@ TextDisplayInterlinearScrollWindow::CreateConnections(void)
           TextDisplayInterlinearWindow::SignalSetStartupBookmarkInfo,
           this,
           TextDisplayInterlinearScrollWindow::SlotSetStartupBookmarkInfo);
+
   connect(verseWindow,
           TextDisplayInterlinearWindow::SignalChapterArrowSelected,
           this,
           TextDisplayInterlinearScrollWindow::SlotChapterArrowSelected);
+
+  connect(verseWindow,
+          TextDisplayInterlinearWindow::SignalSelectStrongsWord,
+          this,
+          TextDisplayInterlinearScrollWindow::SlotSelectStrongsWord);
 }
 
 /*****************************************************************************!
@@ -152,6 +160,8 @@ TextDisplayInterlinearScrollWindow::SlotChapterSelected
 {
   int                                   height;
   int                                   width;
+
+  verticalScrollBar()->setSliderPosition(0);
   emit SignalChapterSelected(InChapter);
   width = size().width();
   height = verseWindow->ArrangeItems(width);
@@ -187,3 +197,14 @@ TextDisplayInterlinearScrollWindow::SlotChapterArrowSelected
 {
   emit SignalChapterArrowSelected(InChapter);  
 }
+
+/*****************************************************************************!
+ * Function : SlotSelectStrongsWord
+ *****************************************************************************/
+void
+TextDisplayInterlinearScrollWindow::SlotSelectStrongsWord
+(QString InStrongsWord)
+{
+  emit SignalSelectStrongsWord(InStrongsWord);  
+}
+

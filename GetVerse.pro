@@ -57,6 +57,14 @@ SOURCES                         += \
 				   SQLStatement.cpp                             \
 				   SectionHeader.cpp                            \
 				   StrongsReferenceDisplayDialog.cpp            \
+				   StrongsReferenceDisplayScrollWindow.cpp      \
+				   StrongsReferenceDisplayWordsWindow.cpp       \
+				   StrongsReferenceDisplayWord.cpp              \
+                                   StrongsReferenceDisplayWindow.cpp            \
+                                   StrongsReferenceForm.cpp                     \
+                                   StrongsReferenceFormSplitter.cpp             \
+                                   StrongsReferenceToolBar.cpp                  \
+                                   StrongsReferenceVerseWindow.cpp              \                    
 				   SystemConfig.cpp                             \
 				   TextControlBar.cpp                           \
 				   TextControlBarCheckBox.cpp                   \
@@ -70,6 +78,7 @@ SOURCES                         += \
 				   TextDisplayItem.cpp                          \
 				   TextDisplayOuterWindow.cpp                   \
 				   TextDisplayReferenceItem.cpp                 \
+                                   StrongsReferenceVerseItem.cpp                \
 				   TextDisplayReferenceWindow.cpp               \
 				   TextDisplaySentenceContainterWindow.cpp      \
 				   TextDisplaySentenceItem.cpp                  \
@@ -117,6 +126,15 @@ HEADERS                         += \
 				   SQLStatement.h                               \
 				   SectionHeader.h                              \
 				   StrongsReferenceDisplayDialog.h              \
+                                   StrongsReferenceDisplayWindow.h              \
+				   StrongsReferenceDisplayScrollWindow.h        \
+				   StrongsReferenceDisplayWordsWindow.h         \
+				   StrongsReferenceDisplayWord.h                \
+                                   StrongsReferenceForm.h                       \
+                                   StrongsReferenceFormSplitter.h               \
+                                   StrongsReferenceToolBar.h                    \
+                                   StrongsReferenceVerseItem.h                  \
+                                   StrongsReferenceVerseWindow.h                \
 				   SystemConfig.h                               \
 				   TextControlBar.h                             \
 				   TextControlBarCheckBox.h                     \

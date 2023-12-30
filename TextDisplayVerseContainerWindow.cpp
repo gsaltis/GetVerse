@@ -45,6 +45,7 @@ TextDisplayVerseContainerWindow::~TextDisplayVerseContainerWindow
 void
 TextDisplayVerseContainerWindow::initialize()
 {
+  Book = NULL;
   InitializeSubWindows();  
   CreateSubWindows();
   CreateConnections();
@@ -144,6 +145,7 @@ void
 TextDisplayVerseContainerWindow::SlotBookSelected
 (BookInfo* InBook)
 {
+  Book = InBook;
   emit SignalBookSelected(InBook);
   emit SignalChapterSelected(1);
 }
@@ -155,9 +157,11 @@ void
 TextDisplayVerseContainerWindow::SlotChapterSelected
 (int InChapter)
 {
+  QString                               name;
   QString                               chapterText;
 
-  chapterText = QString("Chapter %1").arg(InChapter);
+  name = Book ? Book->GetName() : QString();
+  chapterText = QString("%1 %2").arg(name).arg(InChapter);
   header->SetText(chapterText);
   emit SignalChapterSelected(InChapter);
 }

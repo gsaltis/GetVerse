@@ -171,6 +171,7 @@ TextDisplayInterlinearWindow::CreateDisplayItems
     for (j = 0; j < wordCount; j++) {
       word = verse->GetWordByIndex(j);
       displayItem = new TextDisplayInterlinearItem(word, k, this, rightToLeft);
+      connect(displayItem, TextDisplayInterlinearItem::SignalSelectStrongsWord, this, TextDisplayInterlinearWindow::SlotSelectStrongsWord);
       DisplayItems << displayItem;
       k++;
     }
@@ -260,7 +261,6 @@ TextDisplayInterlinearWindow::ArrangeItems
   x = LeftMargin;
 
   lineHeight = DisplayItems[0]->GetSize().height();
-  TRACE_FUNCTION_INT(lineHeight);
   //!
   for (i = 0; i < n; i++) {
     item = DisplayItems[i];
@@ -499,3 +499,12 @@ TextDisplayInterlinearWindow::mouseMoveEvent
   setFocus();
 }
 
+/*****************************************************************************!
+ * Function : SlotSelectStrongsWord
+ *****************************************************************************/
+void
+TextDisplayInterlinearWindow::SlotSelectStrongsWord
+(QString InStrongsWord)
+{
+  emit SignalSelectStrongsWord(InStrongsWord);  
+}

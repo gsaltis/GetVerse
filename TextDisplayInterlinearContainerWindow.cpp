@@ -8,6 +8,7 @@
 /*****************************************************************************!
  * Global Headers
  *****************************************************************************/
+#include <trace_winnetqt.h>
 #include <QtCore>
 #include <QtGui>
 #include <QWidget>
@@ -45,6 +46,7 @@ TextDisplayInterlinearContainerWindow::~TextDisplayInterlinearContainerWindow
 void
 TextDisplayInterlinearContainerWindow::initialize()
 {
+  Book = NULL;
   InitializeSubWindows();  
   CreateSubWindows();
   CreateConnections();
@@ -61,6 +63,8 @@ TextDisplayInterlinearContainerWindow::CreateSubWindows()
   header = new ChapterHeaderWindow("Chapter", this);
   wordSelect = new TextDisplayInterlinearWordSelect();
   wordSelect->setParent(this);
+  wordSelect->hide();
+  DisplayWordSelect = false;
 }
 
 /*****************************************************************************!
@@ -81,11 +85,21 @@ void
 TextDisplayInterlinearContainerWindow::resizeEvent
 (QResizeEvent* InEvent)
 {
+  PerformResize(InEvent->size());
+}
+
+/*****************************************************************************!
+ * Function : PerformResize
+ *****************************************************************************/
+void
+TextDisplayInterlinearContainerWindow::PerformResize
+(QSize InSize)
+{
   int                                   wordSelectW;
   int                                   wordSelectH;
   int                                   wordSelectY;
   int                                   wordSelectX;
-
+  
   int                                   headerW;
   int                                   headerH;
   int                                   headerY;
@@ -96,17 +110,19 @@ TextDisplayInterlinearContainerWindow::resizeEvent
   int                                   interlinearWindowY;
   int                                   interlinearWindowX;
 
-  QSize					size;  
   int					width;
   int					height;
 
-  size = InEvent->size();
-  width = size.width();
-  height = size.height();
+  width = InSize.width();
+  height = InSize.height();
 
   interlinearWindowX = 0;
   interlinearWindowY = CHAPTER_HEADER_WINDOW_HEIGHT;
-  interlinearWindowW = width - TEXT_DISPLAY_INTERLINEAR_WORD_SELECT_WIDTH;
+
+  interlinearWindowW = width;
+  if ( DisplayWordSelect ) {
+    interlinearWindowW = width - TEXT_DISPLAY_INTERLINEAR_WORD_SELECT_WIDTH;
+  }
   interlinearWindowH = height - CHAPTER_HEADER_WINDOW_HEIGHT;
   interlinearWindow->move(interlinearWindowX, interlinearWindowY);
   interlinearWindow->resize(interlinearWindowW, interlinearWindowH);
@@ -118,12 +134,14 @@ TextDisplayInterlinearContainerWindow::resizeEvent
   header->move(headerX, headerY);
   header->resize(headerW, headerH);
 
-  wordSelectX = interlinearWindowW;
-  wordSelectY = 0;
-  wordSelectW = TEXT_DISPLAY_INTERLINEAR_WORD_SELECT_WIDTH;
-  wordSelectH = height - CHAPTER_HEADER_WINDOW_HEIGHT;
-  wordSelect->move(wordSelectX, wordSelectY);
-  wordSelect->resize(wordSelectW, wordSelectH);
+  if ( DisplayWordSelect ) {
+    wordSelectX = interlinearWindowW;
+    wordSelectY = CHAPTER_HEADER_WINDOW_HEIGHT;
+    wordSelectW = TEXT_DISPLAY_INTERLINEAR_WORD_SELECT_WIDTH;
+    wordSelectH = height - CHAPTER_HEADER_WINDOW_HEIGHT;
+    wordSelect->move(wordSelectX, wordSelectY);
+    wordSelect->resize(wordSelectW, wordSelectH);
+  }
 }
 
 /*****************************************************************************!
@@ -132,6 +150,21 @@ TextDisplayInterlinearContainerWindow::resizeEvent
 void
 TextDisplayInterlinearContainerWindow::CreateConnections(void)
 {
+  connect(wordSelect,
+          TextDisplayInterlinearWordSelect::SignalCloseStrongsReference,
+          this,
+          TextDisplayInterlinearContainerWindow::SlotCloseStrongsReference);
+  
+  connect(interlinearWindow,
+          TextDisplayInterlinearScrollWindow::SignalSelectStrongsWord,
+          this,
+          TextDisplayInterlinearContainerWindow::SlotSelectStrongsWord);
+
+  connect(this,
+          TextDisplayInterlinearContainerWindow::SignalSelectStrongsWord,
+          wordSelect,
+          TextDisplayInterlinearWordSelect::SlotSelectStrongsWord);
+  
   connect(this,
           TextDisplayInterlinearContainerWindow::SignalBookSelected,
           interlinearWindow,
@@ -152,6 +185,8 @@ TextDisplayInterlinearContainerWindow::CreateConnections(void)
           TextDisplayInterlinearScrollWindow::SignalChapterArrowSelected,
           this,
           TextDisplayInterlinearContainerWindow::SlotChapterArrowSelected);
+
+          
 }
 
 /*****************************************************************************!
@@ -161,6 +196,7 @@ void
 TextDisplayInterlinearContainerWindow::SlotBookSelected
 (BookInfo* InBook)
 {
+  Book = InBook;
   emit SignalBookSelected(InBook);
   emit SignalChapterSelected(1);
 }
@@ -173,8 +209,13 @@ TextDisplayInterlinearContainerWindow::SlotChapterSelected
 (int InChapter)
 {
   QString                               chapterText;
+  QString                               name;
 
-  chapterText = QString("Chapter %1").arg(InChapter);
+  name = "";
+  if ( Book ) {
+    name = Book->GetName();
+  }
+  chapterText = QString("%1 %2").arg(name).arg(InChapter);
   header->SetText(chapterText);
   emit SignalChapterSelected(InChapter);
 }
@@ -207,4 +248,38 @@ TextDisplayInterlinearContainerWindow::SlotChapterArrowSelected
 (int InChapter)
 {
   emit SignalChapterArrowSelected(InChapter);  
+}
+
+/*****************************************************************************!
+ * Function : SlotSelectStrongsWord
+ *****************************************************************************/
+void
+TextDisplayInterlinearContainerWindow::SlotSelectStrongsWord
+(QString InStrongsWord)
+{
+  QSize                                 s = size();
+  int                           width = s.width();
+  int                           height = s.height();
+
+  DisplayWordSelect = true;
+  wordSelect->show();
+  resize(width, height-1);
+  resize(width, height);
+  emit SignalSelectStrongsWord(InStrongsWord);
+}
+
+/*****************************************************************************!
+ * Function : SlotCloseStrongsReference
+ *****************************************************************************/
+void
+TextDisplayInterlinearContainerWindow::SlotCloseStrongsReference(void)
+{
+  QSize                         s = size();
+  int                           width = s.width();
+  int                           height = s.height();
+  
+  DisplayWordSelect = false;
+  wordSelect->hide();
+  resize(width, height-1);
+  resize(width, height);
 }
