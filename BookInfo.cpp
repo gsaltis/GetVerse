@@ -368,8 +368,6 @@ BookInfo::GetVerseText
     arg(InChapterNumber).
     arg(InVerseNumber);
 
-  TRACE_FUNCTION_QSTRING(selectStatement);
-  
   n = sqlite3_prepare_v2(MainDatabase, selectStatement.toStdString().c_str(), selectStatement.length(), &sqlStatement, NULL);
   if ( n != SQLITE_OK ) {
     return QString("");
