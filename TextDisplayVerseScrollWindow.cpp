@@ -109,7 +109,7 @@ void
 TextDisplayVerseScrollWindow::SlotBookSelected
 (BookInfo* InBook)
 {
-  emit SignalBookSelected(InBook);  
+  emit SignalBookSelected(InBook);
 }
 
 /*****************************************************************************!

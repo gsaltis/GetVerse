@@ -8,7 +8,7 @@
 /*****************************************************************************!
  * Global Headers
  *****************************************************************************/
-#include <trace_winnet.h>
+#include <trace_winnetqt.h>
 #include <QtCore>
 #include <QtGui>
 #include <QWidget>
@@ -123,14 +123,17 @@ void
 TextDisplaySentenceContainterWindow::SlotBookSet
 (BookInfo* InBookInfo)
 {
+  QString                               text;
   QString                               name;
-  QString                               chapterName;
 
   bookInfo = InBookInfo;
 
-  name = bookInfo ? bookInfo->GetName() : QString();
-  chapterName = QString("%1 11").arg(name);
-  emit SignalChapterTextChanged(chapterName);
+  if ( bookInfo ) {
+    name = bookInfo->GetName();
+    text = QString("%1 %2").arg(name).arg(1);
+    headerWindow->SetText(text);
+  }
+  
   emit SignalBookSet(InBookInfo);
 }
 

@@ -8,6 +8,7 @@
 /*****************************************************************************!
  * Global Headers
  *****************************************************************************/
+#include <trace_winnetqt.h>
 #include <QtCore>
 #include <QtGui>
 #include <QWidget>
@@ -148,6 +149,7 @@ TextDisplayVerseContainerWindow::SlotBookSelected
   Book = InBook;
   emit SignalBookSelected(InBook);
   emit SignalChapterSelected(1);
+  SlotChapterSelected(1);
 }
 
 /*****************************************************************************!

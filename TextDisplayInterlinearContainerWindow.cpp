@@ -196,9 +196,18 @@ void
 TextDisplayInterlinearContainerWindow::SlotBookSelected
 (BookInfo* InBook)
 {
+  QString                               text;
+  QString                               name;
+  TRACE_FUNCTION_START();
   Book = InBook;
   emit SignalBookSelected(InBook);
   emit SignalChapterSelected(1);
+  if ( InBook ) {
+    name = InBook->GetName();
+    text = QString("%1 %2").arg(name).arg(1);
+    header->SetText(text);
+  }
+  TRACE_FUNCTION_END();
 }
 
 /*****************************************************************************!

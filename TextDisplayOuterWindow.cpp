@@ -236,13 +236,16 @@ void
 TextDisplayOuterWindow::SlotBookSelected
 (int InBookIndex)
 {
+  TRACE_FUNCTION_START();
+  TRACE_FUNCTION_INT(InBookIndex);
   BookInfo*                             bookInfo;
 
   bookInfo = MainBookInfo->FindBookByIndex(InBookIndex);
   if ( NULL == bookInfo ) {
     return;
   }
-  BookSelected(bookInfo, 0);
+  BookSelected(bookInfo, 1);
+  TRACE_FUNCTION_END();
 }
 
 /*****************************************************************************!
@@ -252,18 +255,25 @@ void
 TextDisplayOuterWindow::BookSelected
 (BookInfo* InBookInfo, int InChapter)
 {
+  TRACE_FUNCTION_START();
   InBookInfo->ReadVerses();
   header->SetText(InBookInfo->GetCapitalizedBookName());
   viewWindow->ClearText();
+
+  TRACE_FUNCTION_EMIT(SignalBookIndexSelected);
+  emit SignalBookIndexSelected(InBookInfo->GetIndex());
+
+  TRACE_FUNCTION_EMIT(SignalBookSelected);
+  emit SignalBookSelected(InBookInfo);
   if ( InChapter > 0 ) {
     controlBar->SlotSetChapter(InChapter);
   }
   controlBar->SlotSetChapterSelectMax(InBookInfo->chapters);
-  emit SignalBookSelected(InBookInfo);
   if ( InChapter > 0 ) {
+    TRACE_FUNCTION_EMIT(SignalChapterSelected);
     emit SignalChapterSelected(InChapter);
   }
-  emit SignalBookIndexSelected(InBookInfo->GetIndex());
+  TRACE_FUNCTION_END();
 }
 
 /*****************************************************************************!
@@ -411,7 +421,12 @@ TextDisplayOuterWindow::CreateConnections(void)
           SIGNAL(SignalChapterSelected(int)),
           controlBar,
           SLOT(SlotSetChapter(int)));
-  
+#if 0
+  connect(this,
+          TextDisplayOuterWindow::SignalChapterSelected,
+          sentenceWindow,
+          TextDisplaySentenceContainterWindow::SlotChapterSet);
+#endif  
   connect(this,
           SIGNAL(SignalBookSelected(BookInfo*)),
           referenceWindow,

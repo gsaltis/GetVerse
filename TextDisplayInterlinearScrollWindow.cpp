@@ -110,8 +110,11 @@ void
 TextDisplayInterlinearScrollWindow::SlotBookSelected
 (BookInfo* InBook)
 {
+  TRACE_FUNCTION_START();
   verticalScrollBar()->setSliderPosition(0);
+  TRACE_FUNCTION_EMIT(SignalBookSelected);
   emit SignalBookSelected(InBook);  
+  TRACE_FUNCTION_END();
 }
 
 /*****************************************************************************!

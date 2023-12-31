@@ -753,7 +753,6 @@ TextControlBar::SlotSetChapterSelectMax
 {
   ChapterSelect->setMaximum(InChapter);
   ChapterSelect->setMinimum(1);
-  ChapterSelect->setValue(1);
 }
 
 /*****************************************************************************!

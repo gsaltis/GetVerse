@@ -8,7 +8,7 @@
 /*****************************************************************************!
  * Global Headers
  *****************************************************************************/
-#include <trace_winnet.h>
+#include <trace_winnetqt.h>
 #include <QtCore>
 #include <QtGui>
 #include <QWidget>
@@ -143,6 +143,7 @@ BookNameTableInnerTable::SlotBookSelected
   QObjectList                           ch;
   int                                   n;
   
+  TRACE_FUNCTION_START();
   ch = children();
   n = 0;
   for (auto  item : ch ) {
@@ -154,7 +155,9 @@ BookNameTableInnerTable::SlotBookSelected
     }
     bookItem->DeSelect();
   }
+  TRACE_FUNCTION_EMIT(SiganlBookSelected);
   emit SignalBookSelected(InBookIndex);
+  TRACE_FUNCTION_END();
 }
 
 /*****************************************************************************!
