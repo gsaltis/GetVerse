@@ -84,6 +84,7 @@ private :
   QPushButton*                  InterlinearButton;
   QPushButton*                  SentenceViewButton;
   QPushButton*                  StartupBookmarkButton;
+  QPushButton*                  ReaderViewButton;
   
   QLabel*                       WordLabel;
   QLabel*                       WordCountLabel;
@@ -144,6 +145,7 @@ public slots :
   void                          SlotClearBookMarks              (void);
   void                          SlotDisplayBookMarks            (void);
   void                          SlotBookmarkSelected            (BookInfo* InBook, int InChapter, int InVerse, int InWord);
+  void                          SlotReaderViewButtonPushed      (void);
   
   //! Public Signals
 signals :
@@ -159,6 +161,7 @@ signals :
   void                          SignalSetStartupBookmark        (int InBook, int InChapter, int InVerse);
   void                          SignalInterlinearWordChanged    (int InWord, bool InChecked);
   void                          SignalBookmarkSelected          (BookInfo* InBook, int InChapter, int InVerse, int InWord);
+  void                          SignalSetReaderMode     (void);
   
   //! Public Actions
 public :

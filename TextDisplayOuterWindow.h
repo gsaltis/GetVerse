@@ -27,6 +27,7 @@
 #include "TextDisplaySentenceContainterWindow.h"
 #include "TextDisplayVerseContainerWindow.h"
 #include "TextDisplayInterlinearContainerWindow.h"
+#include "TextDisplayReaderViewContainerWindow.h"
 
 /*****************************************************************************!
  * Exported Macros
@@ -75,18 +76,19 @@ class TextDisplayOuterWindow : public QFrame
   
  //! Private Data
  private :
-  SectionHeader*                        header;
-  TextDisplayReferenceWindow*           referenceWindow;
+  SectionHeader*                                header;
+  TextDisplayReferenceWindow*                   referenceWindow;
 
-  TextDisplaySentenceContainterWindow*  sentenceWindow;
-  TextDisplayVerseContainerWindow*      verseWindow;
-  TextDisplayInterlinearContainerWindow* interlinearWindow;
+  TextDisplaySentenceContainterWindow*          sentenceWindow;
+  TextDisplayVerseContainerWindow*              verseWindow;
+  TextDisplayInterlinearContainerWindow*        interlinearWindow;
 
-  TextDisplayViewScrollWindow*          viewWindow;
-  TextControlBar*                       controlBar;
-  QString                               BookName;
-  int                                   BookInfoIndex;
+  TextDisplayViewScrollWindow*                  viewWindow;
+  TextControlBar*                               controlBar;
+  QString                                       BookName;
+  int                                           BookInfoIndex;
   
+  TextDisplayReaderViewContainerWindow* readerWindow;
 
  //! Public Slots
  public slots :
@@ -115,6 +117,7 @@ class TextDisplayOuterWindow : public QFrame
   void                          SlotClearBookMarks      (void);
   void                          SlotDisplayBookMarks    (void);
   void                          SlotBookmarkSelected    (BookInfo* InBook, int InChapter, int InVerse, int InWord);
+  void                          SlotSetReaderMode       (void);
   
  //! Public Signals
  signals :
@@ -144,6 +147,7 @@ class TextDisplayOuterWindow : public QFrame
   void                          SignalClearBookMarks    (void);
   void                          SignalDisplayBookMarks  (void);
   void                          SignalBookmarkSelected  (BookInfo* InBook, int InChapter, int InVerse, int InWord);
+  void                          SignalSetReaderMode     (void);
   
  //! Public Actions
  public :

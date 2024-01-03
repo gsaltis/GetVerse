@@ -18,6 +18,7 @@
  * Local Headers
  *****************************************************************************/
 #include "BookInfoWord.h"
+#include "VerseInfoSet.h"
 
 /*****************************************************************************!
  * Exported Macros
@@ -56,6 +57,7 @@ class BookInfo : public QWidget
   void                                  SetRightToLeft          (int InRightToLeft);
   QString                               GetName                 (void);
   static QString                        GetVerseText            (int InBookNumber, int InChapterNumber, int InVerseNumber);
+  VerseInfoSet*                         GetVerses               ();
 
  //! Public Data
  public :

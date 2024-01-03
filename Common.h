@@ -25,6 +25,7 @@
 #include "SystemConfig.h"
 #include "BookMarkManager.h"
 #include "BookInfoManager.h"
+#include "ReaderViewFormatSet.h"
 
 /*****************************************************************************!
  * Exported Macros
@@ -47,6 +48,10 @@ MainSystemConfig;
 
 extern BookMarkManager*
 MainBookMarks;
+
+extern ReaderViewFormatSet*
+MainReaderViewFormats;
+
 
 /*****************************************************************************!
  * Exported Functions

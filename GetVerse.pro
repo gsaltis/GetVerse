@@ -54,31 +54,35 @@ SOURCES                         += \
 				   MainDisplayWindow.cpp                        \
 				   MainMessageWindow.cpp                        \
 				   MainWindow.cpp                               \
+				   ReaderViewFormat.cpp                         \
+				   ReaderViewFormatSet.cpp                      \
 				   SQLStatement.cpp                             \
 				   SectionHeader.cpp                            \
 				   StrongsReferenceDisplayDialog.cpp            \
 				   StrongsReferenceDisplayScrollWindow.cpp      \
-				   StrongsReferenceDisplayWordsWindow.cpp       \
+				   StrongsReferenceDisplayWindow.cpp            \
 				   StrongsReferenceDisplayWord.cpp              \
-                                   StrongsReferenceDisplayWindow.cpp            \
-                                   StrongsReferenceForm.cpp                     \
-                                   StrongsReferenceFormSplitter.cpp             \
-                                   StrongsReferenceToolBar.cpp                  \
-                                   StrongsReferenceVerseWindow.cpp              \                    
+				   StrongsReferenceDisplayWordsWindow.cpp       \
+				   StrongsReferenceForm.cpp                     \
+				   StrongsReferenceFormSplitter.cpp             \
+				   StrongsReferenceToolBar.cpp                  \
+				   StrongsReferenceVerseItem.cpp                \
+				   StrongsReferenceVerseWindow.cpp              \
 				   SystemConfig.cpp                             \
 				   TextControlBar.cpp                           \
 				   TextControlBarCheckBox.cpp                   \
 				   TextDisplayFormattingItem.cpp                \
-				   TextDisplayInterlinearItem.cpp               \
 				   TextDisplayInterlinearContainerWindow.cpp    \
+				   TextDisplayInterlinearItem.cpp               \
 				   TextDisplayInterlinearReferenceItem.cpp      \
+				   TextDisplayInterlinearScrollWindow.cpp       \
 				   TextDisplayInterlinearWindow.cpp             \
 				   TextDisplayInterlinearWordSelect.cpp         \
-				   TextDisplayInterlinearScrollWindow.cpp       \
 				   TextDisplayItem.cpp                          \
 				   TextDisplayOuterWindow.cpp                   \
+				   TextDisplayReaderViewContainerWindow.cpp     \
+				   TextDisplayReaderViewWindow.cpp              \
 				   TextDisplayReferenceItem.cpp                 \
-                                   StrongsReferenceVerseItem.cpp                \
 				   TextDisplayReferenceWindow.cpp               \
 				   TextDisplaySentenceContainterWindow.cpp      \
 				   TextDisplaySentenceItem.cpp                  \
@@ -96,6 +100,8 @@ SOURCES                         += \
 				   TextDisplayViewWindowReferenceItem.cpp       \
 				   TextDisplayWordFormattingItem.cpp            \
 				   TextDisplayWordItem.cpp                      \
+				   VerseInfo.cpp                                \
+				   VerseInfoSet.cpp                             \
 				   main.cpp                                     \
 				   sqlite3.c                                    \
 
@@ -123,18 +129,20 @@ HEADERS                         += \
 				   MainDisplayWindow.h                          \
 				   MainMessageWindow.h                          \
 				   MainWindow.h                                 \
+				   ReaderViewFormat.h                           \
+				   ReaderViewFormatSet.h                        \
 				   SQLStatement.h                               \
 				   SectionHeader.h                              \
 				   StrongsReferenceDisplayDialog.h              \
-                                   StrongsReferenceDisplayWindow.h              \
 				   StrongsReferenceDisplayScrollWindow.h        \
-				   StrongsReferenceDisplayWordsWindow.h         \
+				   StrongsReferenceDisplayWindow.h              \
 				   StrongsReferenceDisplayWord.h                \
-                                   StrongsReferenceForm.h                       \
-                                   StrongsReferenceFormSplitter.h               \
-                                   StrongsReferenceToolBar.h                    \
-                                   StrongsReferenceVerseItem.h                  \
-                                   StrongsReferenceVerseWindow.h                \
+				   StrongsReferenceDisplayWordsWindow.h         \
+				   StrongsReferenceForm.h                       \
+				   StrongsReferenceFormSplitter.h               \
+				   StrongsReferenceToolBar.h                    \
+				   StrongsReferenceVerseItem.h                  \
+				   StrongsReferenceVerseWindow.h                \
 				   SystemConfig.h                               \
 				   TextControlBar.h                             \
 				   TextControlBarCheckBox.h                     \
@@ -147,6 +155,8 @@ HEADERS                         += \
 				   TextDisplayInterlinearWordSelect.h           \
 				   TextDisplayItem.h                            \
 				   TextDisplayOuterWindow.h                     \
+				   TextDisplayReaderViewContainerWindow.h       \
+				   TextDisplayReaderViewWindow.h                \
 				   TextDisplayReferenceItem.h                   \
 				   TextDisplayReferenceWindow.h                 \
 				   TextDisplaySentenceContainterWindow.h        \
@@ -155,7 +165,7 @@ HEADERS                         += \
 				   TextDisplaySentenceWindow.h                  \
 				   TextDisplayVerseContainerWindow.h            \
 				   TextDisplayVerseItem.h                       \
-                                   TextDisplayVerseReferenceItem.h              \
+				   TextDisplayVerseReferenceItem.h              \
 				   TextDisplayVerseScrollWindow.h               \
 				   TextDisplayVerseWindow.h                     \
 				   TextDisplayViewScrollBar.h                   \
@@ -165,6 +175,8 @@ HEADERS                         += \
 				   TextDisplayViewWindowReferenceItem.h         \
 				   TextDisplayWordFormattingItem.h              \
 				   TextDisplayWordItem.h                        \
+				   VerseInfo.h                                  \
+				   VerseInfoSet.h                               \
 				   sqlite3.h                                    \
 
 FORMS                           += \

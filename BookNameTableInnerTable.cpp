@@ -143,7 +143,6 @@ BookNameTableInnerTable::SlotBookSelected
   QObjectList                           ch;
   int                                   n;
   
-  TRACE_FUNCTION_START();
   ch = children();
   n = 0;
   for (auto  item : ch ) {
@@ -155,9 +154,7 @@ BookNameTableInnerTable::SlotBookSelected
     }
     bookItem->DeSelect();
   }
-  TRACE_FUNCTION_EMIT(SiganlBookSelected);
   emit SignalBookSelected(InBookIndex);
-  TRACE_FUNCTION_END();
 }
 
 /*****************************************************************************!

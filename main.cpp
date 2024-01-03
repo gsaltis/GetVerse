@@ -27,6 +27,7 @@
 #include "BookMark.h"
 #include "BookMarkManager.h"
 #include "BookInfoManager.h"
+#include "ReaderViewFormatSet.h"
 
 /*****************************************************************************!
  * Local Macros
@@ -281,6 +282,9 @@ MainBookInfo;
 BookMarkManager*
 MainBookMarks;
 
+ReaderViewFormatSet*
+MainReaderViewFormats = NULL;
+
 /*****************************************************************************!
  * Function : main
  *****************************************************************************/
@@ -297,6 +301,9 @@ main
   TRACE_COMMAND_CLEAR();
   MainSystemConfig->ReadJSON(MainConfigFilename);
 
+  MainReaderViewFormats = new ReaderViewFormatSet();
+  MainReaderViewFormats->ReadDB(MainDatabase);
+  
   if ( MainFormatAdd ) {
     ProcessFormatAdd();
   }

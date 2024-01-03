@@ -134,6 +134,16 @@ TextControlBar::CreateSubWindows()
   connect(SentenceViewButton, SIGNAL(pressed()), this, SLOT(SlotSentenceViewButtonPushed()));
   x += ButtonWidth + 1;
 
+  //! Create the ReaderButton button 
+  ReaderViewButton = new QPushButton();
+  ReaderViewButton->setParent(this);
+  ReaderViewButton->setText("R");
+  ReaderViewButton->move(x, 0);
+  ReaderViewButton->resize(ButtonWidth, ButtonHeight);
+  ReaderViewButton->setCheckable(true);
+  connect(ReaderViewButton, SIGNAL(pressed()), this, SLOT(SlotReaderViewButtonPushed()));
+  x += ButtonWidth + 6;
+
   //! Create the BlockView button
   BlockViewButton = new QPushButton();
   BlockViewButton->setParent(this);
@@ -968,4 +978,14 @@ TextControlBar::SlotBookmarkSelected
 (BookInfo* InBook, int InChapter, int InVerse, int InWord)
 {
   emit SignalBookmarkSelected(InBook, InChapter, InVerse, InWord);
+}
+
+/*****************************************************************************!
+ * Function : SlotReaderViewButtonPushed
+ *****************************************************************************/
+void
+TextControlBar::SlotReaderViewButtonPushed
+()
+{
+  emit SignalSetReaderMode();
 }

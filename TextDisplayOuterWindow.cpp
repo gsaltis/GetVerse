@@ -99,6 +99,10 @@ TextDisplayOuterWindow::CreateSubWindows()
   interlinearWindow = new TextDisplayInterlinearContainerWindow();
   interlinearWindow->setParent(this);
   interlinearWindow->hide();
+
+  readerWindow = new TextDisplayReaderViewContainerWindow();
+  readerWindow->setParent(this);
+  readerWindow->hide();
 }
 
 /*****************************************************************************!
@@ -114,6 +118,7 @@ TextDisplayOuterWindow::InitializeSubWindows()
   controlBar            = NULL;
   verseWindow           = NULL;
   interlinearWindow     = NULL;
+  readerWindow          = NULL;
 }
 
 /*****************************************************************************!
@@ -123,6 +128,10 @@ void
 TextDisplayOuterWindow::resizeEvent
 (QResizeEvent* InEvent)
 {
+  int                                   readerWindowW;
+  int                                   readerWindowH;
+  int                                   readerWindowY;
+  int                                   readerWindowX;
   int                                   verseWindowW;
   int                                   verseWindowH;
   int                                   verseWindowY;
@@ -198,7 +207,12 @@ TextDisplayOuterWindow::resizeEvent
   interlinearWindowY = SECTION_HEADER_HEIGHT + TEXT_CONTROL_BAR_HEIGHT;
   interlinearWindowW = width;
   interlinearWindowH = height - (SECTION_HEADER_HEIGHT + TEXT_CONTROL_BAR_HEIGHT);
-  
+
+  readerWindowX = 0;
+  readerWindowY = SECTION_HEADER_HEIGHT + TEXT_CONTROL_BAR_HEIGHT;
+  readerWindowW = width;
+  readerWindowH = height - (TEXT_CONTROL_BAR_HEIGHT + SECTION_HEADER_HEIGHT);
+    
   //!
   if ( header ) {
     header->move(headerX, headerY);
@@ -227,6 +241,9 @@ TextDisplayOuterWindow::resizeEvent
 
   interlinearWindow->move(interlinearWindowX, interlinearWindowY);
   interlinearWindow->resize(interlinearWindowW, interlinearWindowH);
+
+  readerWindow->move(readerWindowX, readerWindowY);
+  readerWindow->resize(readerWindowW, readerWindowH);
 }
 
 /*****************************************************************************!
@@ -236,8 +253,6 @@ void
 TextDisplayOuterWindow::SlotBookSelected
 (int InBookIndex)
 {
-  TRACE_FUNCTION_START();
-  TRACE_FUNCTION_INT(InBookIndex);
   BookInfo*                             bookInfo;
 
   bookInfo = MainBookInfo->FindBookByIndex(InBookIndex);
@@ -245,7 +260,6 @@ TextDisplayOuterWindow::SlotBookSelected
     return;
   }
   BookSelected(bookInfo, 1);
-  TRACE_FUNCTION_END();
 }
 
 /*****************************************************************************!
@@ -255,25 +269,20 @@ void
 TextDisplayOuterWindow::BookSelected
 (BookInfo* InBookInfo, int InChapter)
 {
-  TRACE_FUNCTION_START();
   InBookInfo->ReadVerses();
   header->SetText(InBookInfo->GetCapitalizedBookName());
   viewWindow->ClearText();
 
-  TRACE_FUNCTION_EMIT(SignalBookIndexSelected);
   emit SignalBookIndexSelected(InBookInfo->GetIndex());
 
-  TRACE_FUNCTION_EMIT(SignalBookSelected);
   emit SignalBookSelected(InBookInfo);
   if ( InChapter > 0 ) {
     controlBar->SlotSetChapter(InChapter);
   }
   controlBar->SlotSetChapterSelectMax(InBookInfo->chapters);
   if ( InChapter > 0 ) {
-    TRACE_FUNCTION_EMIT(SignalChapterSelected);
     emit SignalChapterSelected(InChapter);
   }
-  TRACE_FUNCTION_END();
 }
 
 /*****************************************************************************!
@@ -397,6 +406,11 @@ TextDisplayOuterWindow::CreateConnections(void)
           sentenceWindow,
           TextDisplaySentenceContainterWindow::SlotBookSet);
 
+  connect(this,
+          TextDisplayOuterWindow::SignalBookSelected,
+          readerWindow,
+          TextDisplayReaderViewContainerWindow::SlotBookSelected);
+
   connect(controlBar,
           SIGNAL(SignalSetFormattingType(TextDisplayFormattingItem::FormatType)),
           viewWindow,
@@ -495,14 +509,22 @@ TextDisplayOuterWindow::CreateConnections(void)
           SIGNAL(SignalSetSentenceMode()),
           this,
           SLOT(SlotSetSentenceMode()));
+
+  connect(controlBar,
+          SIGNAL(SignalSetReaderMode()),
+          this,
+          SLOT(SlotSetReaderMode()));
+
   connect(controlBar,
           SIGNAL(SignalSetReferenceMode()),
           this,
           SLOT(SlotSetReferenceMode()));
+
   connect(controlBar,
           SIGNAL(SignalSetEditMode()),
           this,
           SLOT(SlotSetEditMode()));
+
   connect(controlBar,
           SIGNAL(SignalSetBlockMode()),
           this,
@@ -564,7 +586,6 @@ TextDisplayOuterWindow::CreateConnections(void)
           TextControlBar::SignalChapterChanged,
           interlinearWindow,
           TextDisplayInterlinearContainerWindow::SlotChapterSelected);
-
 }
 
 /*****************************************************************************!
@@ -625,6 +646,7 @@ TextDisplayOuterWindow::SlotSetSentenceMode(void)
   verseWindow->hide();
   interlinearWindow->hide();
   sentenceWindow->show();
+  readerWindow->hide();
   emit SignalSetSentenceMode();
 }
 
@@ -638,6 +660,7 @@ TextDisplayOuterWindow::SlotSetBlockMode(void)
   interlinearWindow->hide();
   verseWindow->hide();
   sentenceWindow->hide();
+  readerWindow->hide();
   emit SignalSetBlockMode();
 }
 
@@ -651,6 +674,7 @@ TextDisplayOuterWindow::SlotSetInterlinearMode(void)
   interlinearWindow->show();
   verseWindow->hide();
   sentenceWindow->hide();
+  readerWindow->hide();
   emit SignalSetInterlinearMode();
 }
 
@@ -664,6 +688,7 @@ TextDisplayOuterWindow::SlotSetReferenceMode(void)
   verseWindow->show();
   interlinearWindow->hide();
   sentenceWindow->hide();
+  readerWindow->hide();
   emit SignalSetReferenceMode();
 }
 
@@ -677,7 +702,22 @@ TextDisplayOuterWindow::SlotSetEditMode(void)
   sentenceWindow->hide();
   interlinearWindow->hide();
   verseWindow->hide();
+  readerWindow->hide();
   emit SignalSetEditMode();
+}
+
+/*****************************************************************************!
+ * Function : SlotSetReaderMode
+ *****************************************************************************/
+void
+TextDisplayOuterWindow::SlotSetReaderMode(void)
+{
+  viewWindow->hide();
+  sentenceWindow->hide();
+  interlinearWindow->hide();
+  verseWindow->hide();
+  readerWindow->show();
+  emit SignalSetReaderMode();
 }
 
 /*****************************************************************************!
@@ -828,3 +868,4 @@ TextDisplayOuterWindow::SlotBookmarkSelected
   BookSelected(InBook, InChapter);
   emit SignalChapterSelected(InChapter);
 }
+

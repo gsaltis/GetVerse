@@ -397,3 +397,17 @@ BookInfo::GetVerseText
   return verseText;
   
 }
+
+/*****************************************************************************!
+ * Function : GetVerses
+ *****************************************************************************/
+VerseInfoSet*
+BookInfo::GetVerses
+()
+{
+  VerseInfoSet*                         verseSet;
+
+  verseSet = new VerseInfoSet(GetIndex());
+  verseSet->ReadDB(MainDatabase);
+  return verseSet;
+}
