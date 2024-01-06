@@ -60,7 +60,7 @@ TextDisplaySentenceContainterWindow::CreateSubWindows()
 {
   sentenceWindow = new TextDisplaySentenceScrollWindow();
   sentenceWindow->setParent(this);
-  headerWindow = new ChapterHeaderWindow(QString("Chapter 999"), this);
+  headerWindow = new ChapterHeaderWindow(this);
 }
 
 /*****************************************************************************!
@@ -123,17 +123,9 @@ void
 TextDisplaySentenceContainterWindow::SlotBookSet
 (BookInfo* InBookInfo)
 {
-  QString                               text;
-  QString                               name;
-
   bookInfo = InBookInfo;
-
-  if ( bookInfo ) {
-    name = bookInfo->GetName();
-    text = QString("%1 %2").arg(name).arg(1);
-    headerWindow->SetText(text);
-  }
-  
+  emit SignalTotalChaptersChanged(bookInfo->GetChapterCount());
+  emit SignalChapterSet(1);
   emit SignalBookSet(InBookInfo);
 }
 
@@ -177,11 +169,6 @@ TextDisplaySentenceContainterWindow::CreateConnections(void)
           TextDisplaySentenceContainterWindow::SlotSentenceCountChanged);
   
   connect(this,
-          TextDisplaySentenceContainterWindow::SignalChapterTextChanged,
-          headerWindow,
-          ChapterHeaderWindow::SlotTextChanged);
-
-  connect(this,
           TextDisplaySentenceContainterWindow::SignalBookSet,
           sentenceWindow,
           TextDisplaySentenceScrollWindow::SlotBookSelected);
@@ -195,6 +182,16 @@ TextDisplaySentenceContainterWindow::CreateConnections(void)
           TextDisplaySentenceScrollWindow::SignalChapterArrowSelected,
           this,
           TextDisplaySentenceContainterWindow::SlotChapterSet);
+
+  connect(this,
+          TextDisplaySentenceContainterWindow::SignalChapterSet,
+          headerWindow,
+          ChapterHeaderWindow::SlotChapterSelected);
+
+  connect(this,
+          TextDisplaySentenceContainterWindow::SignalTotalChaptersChanged,
+          headerWindow,
+          ChapterHeaderWindow::SlotTotalChaptersChanged);
 }
 
 /*****************************************************************************!

@@ -78,6 +78,8 @@ class TextDisplayReaderViewContainerWindow : public QWidget
  //! Public Signals
  signals :
   void                          SignalBookSelected      (BookInfo* InBookInfo);
+  void                          SignalTotalChaptersChanged (int InTotalChapters);
+  void                          SignalChapterSelected   (int InChapter);
 
  //! Public Actions
  public :

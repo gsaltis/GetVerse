@@ -59,7 +59,7 @@ TextDisplayReaderViewContainerWindow::CreateSubWindows()
   readerWindow = new TextDisplayReaderViewWindow();  
   readerWindow->setParent(this);
   readerWindow->show();
-  header = new ChapterHeaderWindow("Chapter", this);
+  header = new ChapterHeaderWindow(this);
 }
 
 /*****************************************************************************!
@@ -72,6 +72,14 @@ TextDisplayReaderViewContainerWindow::CreateConnections()
           TextDisplayReaderViewContainerWindow::SignalBookSelected,
           readerWindow,
           TextDisplayReaderViewWindow::SlotBookSelected);
+  connect(this,
+          TextDisplayReaderViewContainerWindow::SignalTotalChaptersChanged,
+          header,
+          ChapterHeaderWindow::SlotTotalChaptersChanged);
+  connect(this,
+          TextDisplayReaderViewContainerWindow::SignalChapterSelected,
+          header,
+          ChapterHeaderWindow::SlotChapterSelected);
 }
 
 /*****************************************************************************!
@@ -135,7 +143,8 @@ TextDisplayReaderViewContainerWindow::SlotBookSelected
 
   Book = InBookInfo;
   name = Book->GetName();
-  header->SetText(name);
-  emit SignalBookSelected(InBookInfo);  
+  emit SignalBookSelected(InBookInfo);
+  emit SignalTotalChaptersChanged(InBookInfo->GetChapterCount());
+  emit SignalChapterSelected(1);
 }
 

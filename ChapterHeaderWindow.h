@@ -32,7 +32,7 @@ class ChapterHeaderWindow : public QWidget
 
  //! Constructors
  public :
-  ChapterHeaderWindow           (QString InText, QWidget* InParent); 
+  ChapterHeaderWindow           (QWidget* InParent); 
 
  //! Destructor
  public :
@@ -40,7 +40,10 @@ class ChapterHeaderWindow : public QWidget
 
  //! Public Methods
  public :
-  void                          SetText                 (QString InText);
+  int                           GetChapter              (void);
+  void                          SetChapter              (int InChapter);
+  int                           GetTotalChapters        (void);
+  void                          SetTotalChapters        (int InTotalChapters);
   
  //! Public Data
  public :
@@ -57,6 +60,7 @@ class ChapterHeaderWindow : public QWidget
   void                          initialize              ();
   void                          CreateSubWindows        ();
   void                          InitializeSubWindows    ();
+  void                          ResetText               (void);
 
  //! Private Data
  private :
@@ -65,11 +69,13 @@ class ChapterHeaderWindow : public QWidget
   bool                          fontBold;
   QString                       fontColorName;
   QString                       backgroundColorName;
-  
+  int                           Chapter;
+  int                           TotalChapters;
+
  //! Public Slots
  public slots :
-  void                          SlotTextChanged         (QString InText);
-  void                          SlotChapterChanged      (int InChapter);
+  void                          SlotChapterSelected     (int InChapter);
+  void                          SlotTotalChaptersChanged(int InTotalChapters);
   
  //! Public Signals
  signals :

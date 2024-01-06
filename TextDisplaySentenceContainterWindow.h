@@ -87,6 +87,7 @@ class TextDisplaySentenceContainterWindow : public QWidget
   void                          SignalSentenceCountChanged      (int InSentenceCount);
   void                          SignalWindowChange      (int InType);
   void                          SignalSetStartupBookmarkInfo (BookInfo* InBookInfo, int InChapter);
+  void                          SignalTotalChaptersChanged (int InTotalChapters);
   
  //! Public Actions
  public :

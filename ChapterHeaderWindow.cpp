@@ -21,9 +21,10 @@
  * Function : ChapterHeaderWindow
  *****************************************************************************/
 ChapterHeaderWindow::ChapterHeaderWindow
-(QString InText, QWidget* InParent) : QWidget(InParent)
+(QWidget* InParent) : QWidget(InParent)
 {
-  text                  = InText;
+  Chapter               = 0;
+  TotalChapters         = 0;
   fontName              = "Arial";
   fontBold              = true;
   fontColorName         = "#880000";
@@ -120,35 +121,70 @@ ChapterHeaderWindow::paintEvent
 }
 
 /*****************************************************************************!
- * Function : SetText
+ * Function : SlotChapterSelected
  *****************************************************************************/
 void
-ChapterHeaderWindow::SetText
-(QString InText)
-{
-  text = InText;
-  repaint();
-}
-
-/*****************************************************************************!
- * Function : SlotTextChanged
- *****************************************************************************/
-void
-ChapterHeaderWindow::SlotTextChanged
-(QString InText)
-{
-  SetText(InText);
-}
-
-/*****************************************************************************!
- * Function : SlotChapterChanged
- *****************************************************************************/
-void
-ChapterHeaderWindow::SlotChapterChanged
+ChapterHeaderWindow::SlotChapterSelected
 (int InChapter)
 {
-  QString                               s;
+  Chapter = InChapter;
+  ResetText();
+}
 
-  s = QString("Chapter %1").arg(InChapter);
-  SetText(s);
+/*****************************************************************************!
+ * Function : GetChapter
+ *****************************************************************************/
+int
+ChapterHeaderWindow::GetChapter(void)
+{
+  return Chapter;  
+}
+
+/*****************************************************************************!
+ * Function : SetChapter
+ *****************************************************************************/
+void
+ChapterHeaderWindow::SetChapter
+(int InChapter)
+{
+  Chapter = InChapter;  
+}
+
+/*****************************************************************************!
+ * Function : GetTotalChapters
+ *****************************************************************************/
+int
+ChapterHeaderWindow::GetTotalChapters(void)
+{
+  return TotalChapters;  
+}
+
+/*****************************************************************************!
+ * Function : SetTotalChapters
+ *****************************************************************************/
+void
+ChapterHeaderWindow::SetTotalChapters
+(int InTotalChapters)
+{
+  TotalChapters = InTotalChapters;  
+}
+
+/*****************************************************************************!
+ * Function : SlotTotalChaptersChanged
+ *****************************************************************************/
+void
+ChapterHeaderWindow::SlotTotalChaptersChanged
+(int InTotalChapters)
+{
+  SetTotalChapters(InTotalChapters);
+}
+
+/*****************************************************************************!
+ * Function : ResetText
+ *****************************************************************************/
+void
+ChapterHeaderWindow::ResetText(void)
+{
+  text = QString("Chapter %1 of %2").arg(Chapter).arg(TotalChapters);
+  repaint();
 }

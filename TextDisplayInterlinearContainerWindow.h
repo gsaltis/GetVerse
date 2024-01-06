@@ -92,6 +92,7 @@ signals :
   void                          SignalChapterArrowSelected (int InChapter);
   void                          SignalSelectStrongsWord (QString InStrongsWord);
   void                          SignalCloseStrongsReference (void);
+  void                          SignalTotalChaptersChanged (int InTotalChapters);
 
   //! Public Actions
 public :

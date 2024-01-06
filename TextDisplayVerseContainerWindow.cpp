@@ -60,7 +60,7 @@ TextDisplayVerseContainerWindow::CreateSubWindows()
 {
   verseWindow = new TextDisplayVerseScrollWindow();  
   verseWindow->setParent(this);
-  header = new ChapterHeaderWindow("Chapter", this);
+  header = new ChapterHeaderWindow(this);
 }
 
 /*****************************************************************************!
@@ -137,6 +137,14 @@ TextDisplayVerseContainerWindow::CreateConnections(void)
           TextDisplayVerseScrollWindow::SignalChapterArrowSelected,
           this,
           TextDisplayVerseContainerWindow::SlotChapterArrowSelected);
+  connect(this,
+          TextDisplayVerseContainerWindow::SignalChapterSelected,
+          header,
+          ChapterHeaderWindow::SlotChapterSelected);
+  connect(this,
+          TextDisplayVerseContainerWindow::SignalTotalChaptersChanged,
+          header,
+          ChapterHeaderWindow::SlotTotalChaptersChanged);
 }
 
 /*****************************************************************************!
@@ -149,6 +157,7 @@ TextDisplayVerseContainerWindow::SlotBookSelected
   Book = InBook;
   emit SignalBookSelected(InBook);
   emit SignalChapterSelected(1);
+  emit SignalTotalChaptersChanged(Book->GetChapterCount());
   SlotChapterSelected(1);
 }
 
@@ -159,12 +168,6 @@ void
 TextDisplayVerseContainerWindow::SlotChapterSelected
 (int InChapter)
 {
-  QString                               name;
-  QString                               chapterText;
-
-  name = Book ? Book->GetName() : QString();
-  chapterText = QString("%1 %2").arg(name).arg(InChapter);
-  header->SetText(chapterText);
   emit SignalChapterSelected(InChapter);
 }
 

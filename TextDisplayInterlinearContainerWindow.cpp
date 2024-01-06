@@ -60,7 +60,7 @@ TextDisplayInterlinearContainerWindow::CreateSubWindows()
 {
   interlinearWindow = new TextDisplayInterlinearScrollWindow();  
   interlinearWindow->setParent(this);
-  header = new ChapterHeaderWindow("Chapter", this);
+  header = new ChapterHeaderWindow(this);
   wordSelect = new TextDisplayInterlinearWordSelect();
   wordSelect->setParent(this);
   wordSelect->hide();
@@ -186,7 +186,14 @@ TextDisplayInterlinearContainerWindow::CreateConnections(void)
           this,
           TextDisplayInterlinearContainerWindow::SlotChapterArrowSelected);
 
-          
+  connect(this,          
+          TextDisplayInterlinearContainerWindow::SignalTotalChaptersChanged,
+          header,
+          ChapterHeaderWindow::SlotTotalChaptersChanged);
+  connect(this,
+          TextDisplayInterlinearContainerWindow::SignalChapterSelected,
+          header,
+          ChapterHeaderWindow::SlotChapterSelected);
 }
 
 /*****************************************************************************!
@@ -196,16 +203,10 @@ void
 TextDisplayInterlinearContainerWindow::SlotBookSelected
 (BookInfo* InBook)
 {
-  QString                               text;
-  QString                               name;
   Book = InBook;
   emit SignalBookSelected(InBook);
   emit SignalChapterSelected(1);
-  if ( InBook ) {
-    name = InBook->GetName();
-    text = QString("%1 %2").arg(name).arg(1);
-    header->SetText(text);
-  }
+  emit SignalTotalChaptersChanged(InBook->GetChapterCount());
 }
 
 /*****************************************************************************!
@@ -215,15 +216,6 @@ void
 TextDisplayInterlinearContainerWindow::SlotChapterSelected
 (int InChapter)
 {
-  QString                               chapterText;
-  QString                               name;
-
-  name = "";
-  if ( Book ) {
-    name = Book->GetName();
-  }
-  chapterText = QString("%1 %2").arg(name).arg(InChapter);
-  header->SetText(chapterText);
   emit SignalChapterSelected(InChapter);
 }
 

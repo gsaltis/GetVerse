@@ -84,6 +84,7 @@ signals :
   void                          SignalWindowChange      (int InNewWindow);
   void                          SignalSetStartupBookmarkInfo (BookInfo* InBookInfo, int InChapter);
   void                          SignalChapterArrowSelected (int InChapter);
+  void                          SignalTotalChaptersChanged (int InTotalChapters);
 
   //! Public Actions
 public :
