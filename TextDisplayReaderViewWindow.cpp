@@ -26,6 +26,7 @@
 TextDisplayReaderViewWindow::TextDisplayReaderViewWindow
 () : QTextEdit()
 {
+  Initialize();
   Book = NULL;
 }
 
@@ -39,10 +40,10 @@ TextDisplayReaderViewWindow::~TextDisplayReaderViewWindow
 }
 
 /*****************************************************************************!
- * Function : initialize
+ * Function : Initialize
  *****************************************************************************/
 void
-TextDisplayReaderViewWindow::initialize()
+TextDisplayReaderViewWindow::Initialize()
 {
   setReadOnly(true);
   setAlignment(Qt::AlignJustify);
@@ -98,6 +99,17 @@ TextDisplayReaderViewWindow::SlotBookSelected
     formatType = formatInfo->GetFormat();
     if ( formatType == ReaderViewFormatParagraph ) {
       text += QString("</p><p>") + verseText;
+      continue;
+    }
+    if ( formatType == ReaderViewFormatTitle ) {
+      text += QString("</p>\n");
+      text += QString("<h3>%1</h3>\n").arg(formatInfo->GetTitle());
+      text += QString("<p>%1").arg(verseText);
+      continue;
+    }
+    if ( formatType == ReaderViewFormatLineBreak ) {
+      text += QString("<br>%1").arg(verseText);
+      continue;
     }
   }
   text += "</p>";

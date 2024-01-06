@@ -57,7 +57,7 @@ class TextDisplayReaderViewWindow : public QTextEdit
 
  //! Private Methods
  private :
-  void                          initialize              ();
+  void                          Initialize              ();
 
  //! Private Data
  private :

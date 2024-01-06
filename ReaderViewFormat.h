@@ -23,6 +23,8 @@
  * Exported Macros
  *****************************************************************************/
 #define ReaderViewFormatParagraph       1
+#define ReaderViewFormatTitle           2
+#define ReaderViewFormatLineBreak       3
 
 /*****************************************************************************!
  * Exported Class : ReaderViewFormat

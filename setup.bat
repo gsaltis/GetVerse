@@ -16,8 +16,8 @@ doskey merge=git merge $*
 doskey status=git status $*
 doskey add=git add $*
 doskey commit=git commit $*
-o
+
 git status | head -1 | gawk "{print $3;}"> .branch.txt
 set /p P=<.branch.txt
-prompt SignalsDB [%p%] :
+prompt GetVerse [%p%] : 
 del .branch.txt
