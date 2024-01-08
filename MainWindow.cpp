@@ -180,3 +180,16 @@ MainWindow::CreateConnections
           displayWindow,
           MainDisplayWindow::SlotClearBookMarks);
 }
+
+/*****************************************************************************!
+ * Function : SetViewMode
+ *****************************************************************************/
+void
+MainWindow::SetViewMode
+(QString InMode)
+{
+  if ( NULL == displayWindow ) {
+    return;
+  }
+  displayWindow->SetViewMode(InMode);
+}

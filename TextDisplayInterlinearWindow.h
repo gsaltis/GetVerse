@@ -72,6 +72,7 @@ class TextDisplayInterlinearWindow : public QWidget
   void                          CreateDisplayItems      ();
   TextDisplayInterlinearReferenceItem* FindReferenceByVerseNumber (int InVerseNumber);
   bool                          KeyPress                (int InKey, Qt::KeyboardModifiers InModifiers);
+  void                          ReArrangeItems          (void);
 
  //! Private Data
  private :
@@ -99,6 +100,10 @@ class TextDisplayInterlinearWindow : public QWidget
   void                          SlotChapterSelected     (int InChapter);
   void                          SlotReferenceSelected   (int InVerseNumber);
   void                          SlotSelectStrongsWord   (QString InStrongsWord);
+  void                          SlotEnglishChanged      (bool InSet);
+  void                          SlotTransliterateChanged (bool InSet);
+  void                          SlotStrongsChanged      (bool InSet);
+  void                          SlotMorphologyChanged   (bool InSet);
 
  //! Public Signals
  signals :

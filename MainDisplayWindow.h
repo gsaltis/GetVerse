@@ -42,6 +42,7 @@ class MainDisplayWindow : public QWidget
 
  //! Public Methods
  public :
+  void                          SetViewMode             (QString InMode);
 
  //! Public Data
  public :

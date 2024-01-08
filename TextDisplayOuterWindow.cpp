@@ -586,6 +586,45 @@ TextDisplayOuterWindow::CreateConnections(void)
           TextControlBar::SignalChapterChanged,
           interlinearWindow,
           TextDisplayInterlinearContainerWindow::SlotChapterSelected);
+  
+  connect(this,
+          TextDisplayOuterWindow::SignalEnglishChanged,
+          interlinearWindow,
+          TextDisplayInterlinearContainerWindow::SlotEnglishChanged);
+  
+  connect(controlBar,
+          TextControlBar::SignalEnglishChanged,
+          this,
+          TextDisplayOuterWindow::SlotEnglishChanged);
+
+  connect(this,
+          TextDisplayOuterWindow::SignalTransliterateChanged,
+          interlinearWindow,
+          TextDisplayInterlinearContainerWindow::SlotTransliterateChanged);
+
+  connect(controlBar,
+          TextControlBar::SignalTransliterateChanged,
+          this,
+          TextDisplayOuterWindow::SlotTransliterateChanged);
+
+  connect(this,
+          TextDisplayOuterWindow::SignalStrongsChanged,
+          interlinearWindow,
+          TextDisplayInterlinearContainerWindow::SlotStrongsChanged);
+  
+  connect(controlBar,
+          TextControlBar::SignalStrongsChanged,
+          this,
+          TextDisplayOuterWindow::SlotStrongsChanged);
+
+  connect(this,
+          TextDisplayOuterWindow::SignalMorphologyChanged,
+          interlinearWindow,
+          TextDisplayInterlinearContainerWindow::SlotMorphologyChanged);
+  connect(controlBar,
+          TextControlBar::SignalMorphologyChanged,
+          this,
+          TextDisplayOuterWindow::SlotMorphologyChanged);
 }
 
 /*****************************************************************************!
@@ -869,3 +908,67 @@ TextDisplayOuterWindow::SlotBookmarkSelected
   emit SignalChapterSelected(InChapter);
 }
 
+/*****************************************************************************!
+ * Function : SlotEnglishChanged
+ *****************************************************************************/
+void
+TextDisplayOuterWindow::SlotEnglishChanged
+(bool InSet)
+{
+  emit SignalEnglishChanged(InSet);
+}
+
+/*****************************************************************************!
+ * Function : SlotTransliterateChanged
+ *****************************************************************************/
+void
+TextDisplayOuterWindow::SlotTransliterateChanged
+(bool InSet)
+{
+  emit SignalTransliterateChanged(InSet);  
+}
+
+/*****************************************************************************!
+ * Function : SlotMorphologyChanged
+ *****************************************************************************/
+void
+TextDisplayOuterWindow::SlotMorphologyChanged
+(bool InSet)
+{
+  emit SignalMorphologyChanged(InSet);  
+}
+
+/*****************************************************************************!
+ * Function : SlotStrongsChanged
+ *****************************************************************************/
+void
+TextDisplayOuterWindow::SlotStrongsChanged
+(bool InSet)
+{
+  emit SignalStrongsChanged(InSet);  
+}
+
+/*****************************************************************************!
+ * Function : SetViewMode
+ *****************************************************************************/
+void
+TextDisplayOuterWindow::SetViewMode
+(QString InMode)
+{
+  if ( InMode == "verse" ) {
+    SlotSetReferenceMode();
+    return;
+  }
+  if ( InMode == "sentence" ) {
+    SlotSetSentenceMode();
+    return;
+  }
+  if ( InMode == "reader" ) {
+    SlotSetReaderMode();
+    return;
+  }
+  if ( InMode == "interlinear" ) {
+    SlotSetInterlinearMode();
+    return;
+  }
+}

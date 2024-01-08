@@ -194,6 +194,22 @@ TextDisplayInterlinearContainerWindow::CreateConnections(void)
           TextDisplayInterlinearContainerWindow::SignalChapterSelected,
           header,
           ChapterHeaderWindow::SlotChapterSelected);
+  connect(this,
+          TextDisplayInterlinearContainerWindow::SignalEnglishChanged,
+          interlinearWindow,
+          TextDisplayInterlinearScrollWindow::SlotEnglishChanged);
+  connect(this,
+          TextDisplayInterlinearContainerWindow::SignalTransliterateChanged,
+          interlinearWindow,
+          TextDisplayInterlinearScrollWindow::SlotTransliterateChanged);
+  connect(this,
+          TextDisplayInterlinearContainerWindow::SignalMorphologyChanged,
+          interlinearWindow,
+          TextDisplayInterlinearScrollWindow::SlotMorphologyChanged);
+  connect(this,
+          TextDisplayInterlinearContainerWindow::SignalStrongsChanged,
+          interlinearWindow,
+          TextDisplayInterlinearScrollWindow::SlotStrongsChanged);
 }
 
 /*****************************************************************************!
@@ -281,4 +297,44 @@ TextDisplayInterlinearContainerWindow::SlotCloseStrongsReference(void)
   wordSelect->hide();
   resize(width, height-1);
   resize(width, height);
+}
+
+/*****************************************************************************!
+ * Function : SlotEnglishChanged
+ *****************************************************************************/
+void
+TextDisplayInterlinearContainerWindow::SlotEnglishChanged
+(bool InSet)
+{
+  emit SignalEnglishChanged(InSet);  
+}
+
+/*****************************************************************************!
+ * Function : SlotTransliterateChanged
+ *****************************************************************************/
+void
+TextDisplayInterlinearContainerWindow::SlotTransliterateChanged
+(bool InSet)
+{
+  emit SignalTransliterateChanged(InSet);  
+}
+
+/*****************************************************************************!
+ * Function : SlotStrongsChanged
+ *****************************************************************************/
+void
+TextDisplayInterlinearContainerWindow::SlotStrongsChanged
+(bool InSet)
+{
+  emit SignalStrongsChanged(InSet);  
+}
+
+/*****************************************************************************!
+ * Function : SlotMorphologyChanged
+ *****************************************************************************/
+void
+TextDisplayInterlinearContainerWindow::SlotMorphologyChanged
+(bool InSet)
+{
+  emit SignalMorphologyChanged(InSet);  
 }

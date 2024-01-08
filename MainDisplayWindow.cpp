@@ -306,3 +306,16 @@ MainDisplayWindow::SlotClearBookMarks(void)
 {
   emit SignalClearBookMarks();  
 }
+
+/*****************************************************************************!
+ * Function : SetViewMode
+ *****************************************************************************/
+void
+MainDisplayWindow::SetViewMode
+(QString InMode)
+{
+  if ( NULL == displayWindow ) {
+    return;
+  }
+  displayWindow->SetViewMode(InMode);
+}

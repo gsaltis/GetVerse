@@ -19,6 +19,7 @@
 #include "TextDisplayInterlinearWindow.h"
 #include "BookInfoWord.h"
 #include "TextDisplayInterlinearReferenceItem.h"
+#include "main.h"
 
 /*****************************************************************************!
  * Function : TextDisplayInterlinearWindow
@@ -48,6 +49,12 @@ TextDisplayInterlinearWindow::initialize()
   Book = NULL;
   Chapter = 0;
   interlinearChapter = NULL;
+
+  MainGetInterlinearWordDisplays(TextDisplayInterlinearItem::DisplayContextual,
+                                 TextDisplayInterlinearItem::DisplayStrongs,
+                                 TextDisplayInterlinearItem::DisplayTransliterate,
+                                 TextDisplayInterlinearItem::DisplayEnglish,
+                                 TextDisplayInterlinearItem::DisplayMorphology);
   
   setMouseTracking(true);
   LeftMargin = TEXT_DISPLAY_INTERLINEAR_REFERENCE_ITEM_WIDTH + 5;
@@ -508,3 +515,61 @@ TextDisplayInterlinearWindow::SlotSelectStrongsWord
 {
   emit SignalSelectStrongsWord(InStrongsWord);  
 }
+
+/*****************************************************************************!
+ * Function : SlotEnglishChanged
+ *****************************************************************************/
+void
+TextDisplayInterlinearWindow::SlotEnglishChanged
+(bool InSet)
+{
+  TextDisplayInterlinearItem::DisplayEnglish = InSet;
+  ReArrangeItems();
+}
+
+/*****************************************************************************!
+ * Function : SlotTransliterateChanged
+ *****************************************************************************/
+void
+TextDisplayInterlinearWindow::SlotTransliterateChanged
+(bool InSet)
+{
+  TextDisplayInterlinearItem::DisplayTransliterate = InSet;
+  ReArrangeItems();
+}
+
+/*****************************************************************************!
+ * Function : SlotStrongsChanged
+ *****************************************************************************/
+void
+TextDisplayInterlinearWindow::SlotStrongsChanged
+(bool InSet)
+{
+  TextDisplayInterlinearItem::DisplayStrongs = InSet;
+  ReArrangeItems();
+}
+
+/*****************************************************************************!
+ * Function : SlotMorphologyChanged
+ *****************************************************************************/
+void
+TextDisplayInterlinearWindow::SlotMorphologyChanged
+(bool InSet)
+{
+  TextDisplayInterlinearItem::DisplayMorphology = InSet;
+  ReArrangeItems();
+}
+
+/*****************************************************************************!
+ * Function : ReArrangeItems
+ *****************************************************************************/
+void
+TextDisplayInterlinearWindow::ReArrangeItems(void)
+{
+  for ( auto item : DisplayItems ) {
+    item->Reset();
+    item->ReComputeSize();
+  }
+  ArrangeItems();  
+}
+

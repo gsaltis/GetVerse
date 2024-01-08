@@ -912,6 +912,7 @@ TextControlBar::SlotStrongsChecked
 (bool InChecked)
 {
   emit SignalInterlinearWordChanged(INTERLINEAR_WORD_STRONGS_INDEX, InChecked);
+  emit SignalStrongsChanged(InChecked);
 }
 
 /*****************************************************************************!
@@ -922,7 +923,7 @@ TextControlBar::SlotMorphologyChecked
 (bool InChecked)
 {
   emit SignalInterlinearWordChanged(INTERLINEAR_WORD_MORPHOLOGY_INDEX, InChecked);
-  
+  emit SignalMorphologyChanged(InChecked);
 }
 
 /*****************************************************************************!
@@ -933,6 +934,7 @@ TextControlBar::SlotEnglishChecked
 (bool InChecked)
 {
   emit SignalInterlinearWordChanged(INTERLINEAR_WORD_ENGLISH_INDEX, InChecked);
+  emit SignalEnglishChanged(InChecked);
 }
 
 /*****************************************************************************!
@@ -943,6 +945,7 @@ TextControlBar::SlotTransliterateChecked
 (bool InChecked)
 {
   emit SignalInterlinearWordChanged(INTERLINEAR_WORD_TRANSLITERATE_INDEX, InChecked);
+  emit SignalTransliterateChanged(InChecked);
 }
 
 /*****************************************************************************!

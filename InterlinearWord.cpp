@@ -441,11 +441,6 @@ void
 InterlinearWord::GetValues
 ()
 {
-  MainGetInterlinearWordDisplays(contextualFormDisplay,
-                                 strongsDisplay,
-                                 transliterateDisplay,
-                                 englishDisplay,
-                                 morphologyDisplay);
 }
 
 /*****************************************************************************!
@@ -455,11 +450,6 @@ void
 InterlinearWord::SetValues
 ()
 {
-  MainSetInterlinearWordDisplays(contextualFormDisplay,
-                                 strongsDisplay,
-                                 transliterateDisplay,
-                                 englishDisplay,
-                                 morphologyDisplay);
 }
 
 /*****************************************************************************!

@@ -2477,37 +2477,8 @@ TextDisplayViewWindow::AddInterlinearItem
  *****************************************************************************/
 void
 TextDisplayViewWindow::SlotInterlinearWordSelected
-(int InWord, bool InSelected)
+(int, bool)
 {
-  switch (InWord) {
-    case INTERLINEAR_WORD_CONTEXTUAL_INDEX : {
-      InterlinearWord::contextualFormDisplay = InSelected;
-      break;
-    }
-
-    case INTERLINEAR_WORD_MORPHOLOGY_INDEX : {
-      InterlinearWord::morphologyDisplay = InSelected ;     
-      break;
-    }
-
-    case INTERLINEAR_WORD_TRANSLITERATE_INDEX : {
-      InterlinearWord::transliterateDisplay = InSelected;            
-      break;
-    }
-
-    case INTERLINEAR_WORD_STRONGS_INDEX : {
-      InterlinearWord::strongsDisplay = InSelected;                  
-      break;
-    }
-
-    case INTERLINEAR_WORD_ENGLISH_INDEX : {
-      InterlinearWord::englishDisplay = InSelected;                        
-      break;
-    }
-  }
-  InterlinearWord::SetValues();
-  ArrangeItems();
-  repaint();
 }
 
 /*****************************************************************************!

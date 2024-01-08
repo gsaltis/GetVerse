@@ -48,6 +48,7 @@ class MainWindow : public QMainWindow
 
  //! Public Methods
  public :
+  void                          SetViewMode             (QString InMode);
 
  //! Public Data
  public :

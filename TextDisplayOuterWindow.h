@@ -54,6 +54,7 @@ class TextDisplayOuterWindow : public QFrame
 
  //! Public Methods
  public :
+  void                          SetViewMode             (QString InMode);
 
  //! Public Data
  public :
@@ -118,6 +119,10 @@ class TextDisplayOuterWindow : public QFrame
   void                          SlotDisplayBookMarks    (void);
   void                          SlotBookmarkSelected    (BookInfo* InBook, int InChapter, int InVerse, int InWord);
   void                          SlotSetReaderMode       (void);
+  void                          SlotEnglishChanged      (bool InSet);
+  void                          SlotTransliterateChanged (bool InSet);
+  void                          SlotMorphologyChanged   (bool InSet);
+  void                          SlotStrongsChanged      (bool InSet);
   
  //! Public Signals
  signals :
@@ -148,6 +153,10 @@ class TextDisplayOuterWindow : public QFrame
   void                          SignalDisplayBookMarks  (void);
   void                          SignalBookmarkSelected  (BookInfo* InBook, int InChapter, int InVerse, int InWord);
   void                          SignalSetReaderMode     (void);
+  void                          SignalEnglishChanged    (bool InSet);
+  void                          SignalTransliterateChanged (bool InSet);
+  void                          SignalMorphologyChanged (bool InSet);
+  void                          SignalStrongsChanged    (bool InSet);
   
  //! Public Actions
  public :

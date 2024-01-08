@@ -21,6 +21,24 @@
 #include "StrongsReferenceDisplayDialog.h"
 
 /*****************************************************************************!
+ * Static Data
+ *****************************************************************************/
+bool
+TextDisplayInterlinearItem::DisplayEnglish = true;
+
+bool
+TextDisplayInterlinearItem::DisplayContextual = true;
+
+bool
+TextDisplayInterlinearItem::DisplayStrongs = true;
+
+bool
+TextDisplayInterlinearItem::DisplayMorphology = true;
+
+bool
+TextDisplayInterlinearItem::DisplayTransliterate = true;
+
+/*****************************************************************************!
  * Function : TextDisplayInterlinearItem
  *****************************************************************************/
 TextDisplayInterlinearItem::TextDisplayInterlinearItem
@@ -285,8 +303,9 @@ TextDisplayInterlinearItem::CreateContextualLabel(void)
 void
 TextDisplayInterlinearItem::ComputeSize(void)
 {
+  int                                   morphologyX;
+  int                                   strongsX;
   int                                   w2;
-  int                                   h2;
   Qt::Alignment                         alignment;
   int                                   y;
   int                                   height;
@@ -305,6 +324,7 @@ TextDisplayInterlinearItem::ComputeSize(void)
   int                                   transliterateHeight;
   int                                   transliterateWidth;
 
+  width = 0;
   englishWidth = EnglishSize.width();
   englishHeight = EnglishSize.height();
 
@@ -320,48 +340,86 @@ TextDisplayInterlinearItem::ComputeSize(void)
   transliterateWidth = TransliterateSize.width();
   transliterateHeight = TransliterateSize.height();
 
-  width = englishWidth;
 
-  if ( width < contextualWidth ) {
-    width = contextualWidth;
+  width = contextualWidth;
+  //!
+  if ( DisplayEnglish ) {
+    if ( width < englishWidth ) {
+      width = englishWidth;
+    }
   }
 
-  w2 = strongsWidth + morphologyWidth + 5;
+  //!
+  if ( DisplayTransliterate ) {
+    if ( width < transliterateWidth ) {
+      width = transliterateWidth;
+    }
+  }
+  
+  //!
+  w2 = 0;
+  do {
+    if ( ! DisplayStrongs && ! DisplayMorphology ) {
+      w2 = 0;
+      break;
+    }
+    if ( DisplayStrongs && DisplayMorphology ) {
+      w2 = strongsWidth + morphologyWidth + 5;
+      break;
+    }
+    if ( DisplayStrongs ) {
+      w2 = strongsWidth + 5;
+      break;
+    }
+
+    w2 = morphologyWidth + 5;
+  } while ( false ) ;
   
   if ( width < w2 ) {
     width = w2;
   }
-  
-  if ( width < transliterateWidth ) {
-    width = transliterateWidth;
-  }
-
-  h2 = strongsHeight;
-  if ( h2 == 0 ) {
-    h2 = morphologyHeight;
-  }
-  height = contextualHeight + englishHeight + h2 + transliterateHeight;
 
   y = 0;
 
   //!
-  StrongsLabel->move(0, y);
-
-  morphologyWidth = width - (strongsWidth + 5);
-  MorphologyLabel->move(strongsWidth + 5 , y);
-  MorphologyLabel->resize(morphologyWidth, morphologyHeight);
-  y += strongsHeight;
-
+  do {
+    if ( ! DisplayStrongs && ! DisplayMorphology ) {
+      break;
+    }
+    if ( DisplayStrongs && DisplayMorphology )
+    {
+      StrongsLabel->move(0, y);
+      morphologyWidth = width - (strongsWidth + 5);
+      MorphologyLabel->move(strongsWidth + 5 , y);
+      MorphologyLabel->resize(morphologyWidth, morphologyHeight);
+      y += strongsHeight;
+      break;
+    }
+    if ( DisplayStrongs ) {
+      strongsX = width - (strongsWidth + 5);
+      StrongsLabel->move(strongsX, y);
+      y += strongsHeight;
+      break;
+    }
+    // Display Morphology only
+    morphologyX = width - (morphologyWidth + 5);
+    MorphologyLabel->move(morphologyX, y);
+    y += morphologyHeight;
+  } while ( false ) ;
   //!
   ContextualLabel->move(0, y);
   y += contextualHeight;
 
-  EnglishLabel->move(0, y);
-  y += englishHeight;
+  if ( DisplayEnglish ) {
+    EnglishLabel->move(0, y);
+    y += englishHeight;
+  }
 
-  TransliterateLabel->move(0, y);
-  y += transliterateHeight;
-
+  if ( DisplayTransliterate ) {
+    TransliterateLabel->move(0, y);
+    y += transliterateHeight;
+  }
+  
   height = y;
   
   Size = QSize(width, height);
@@ -446,4 +504,42 @@ TextDisplayInterlinearItem::DisplayStrongCrossReference(void)
   }
 
   emit SignalSelectStrongsWord(strongsWord);
+}
+
+/*****************************************************************************!
+ * Function : Reset
+ *****************************************************************************/
+void
+TextDisplayInterlinearItem::Reset(void)
+{
+  if ( DisplayEnglish ) {
+    EnglishLabel->show();
+  } else {
+    EnglishLabel->hide();
+  }
+  if ( DisplayTransliterate ) {
+    TransliterateLabel->show();
+  } else {
+    TransliterateLabel->hide();
+  }
+  if ( DisplayStrongs ) {
+    StrongsLabel->show();
+  } else {
+    StrongsLabel->hide();
+  }
+  if ( DisplayMorphology ) {
+    MorphologyLabel->show();
+  } else {
+    MorphologyLabel->hide();
+  }
+}
+
+/*****************************************************************************!
+ * Function : ReComputeSize
+ *****************************************************************************/
+void
+TextDisplayInterlinearItem::ReComputeSize(void)
+{
+  ComputeSize();
+  resize(Size);
 }

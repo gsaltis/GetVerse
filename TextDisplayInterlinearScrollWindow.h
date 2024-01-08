@@ -57,11 +57,11 @@ class TextDisplayInterlinearScrollWindow : public QScrollArea
 
  //! Private Methods
  private :
-  void                          initialize              ();
-  void                          CreateSubWindows        ();
-  void                          InitializeSubWindows    ();
-  void                          resizeEvent             (QResizeEvent* InEvent);
-  void                          CreateConnections       (void);
+  void	initialize                      ();
+  void	CreateSubWindows                ();
+  void	InitializeSubWindows            ();
+  void	resizeEvent                     (QResizeEvent* InEvent);
+  void	CreateConnections               (void);
 
  //! Private Data
  private :
@@ -69,21 +69,29 @@ class TextDisplayInterlinearScrollWindow : public QScrollArea
 
  //! Public Slots
  public slots :
-  void                          SlotBookSelected        (BookInfo* InBook);
-  void                          SlotChapterSelected     (int InChapter);
-  void                          SlotWindowChange        (int InNewWindow);
-  void                          SlotSetStartupBookmarkInfo (BookInfo* InBookInfo, int InChapter);
-  void                          SlotChapterArrowSelected (int InChapter);
-  void                          SlotSelectStrongsWord   (QString InStrongsWord);
+  void	SlotBookSelected                (BookInfo* InBook);
+  void	SlotChapterSelected             (int InChapter);
+  void	SlotWindowChange                (int InNewWindow);
+  void	SlotSetStartupBookmarkInfo      (BookInfo* InBookInfo, int InChapter);
+  void	SlotChapterArrowSelected        (int InChapter);
+  void	SlotSelectStrongsWord           (QString InStrongsWord);
+  void	SlotEnglishChanged              (bool InSet);
+  void  SlotTransliterateChanged        (bool InSet);
+  void                          SlotStrongsChanged      (bool InSet);
+  void                          SlotMorphologyChanged   (bool InSet);
 
  //! Public Signals
  signals :
-  void                          SignalBookSelected      (BookInfo* InBook);
-  void                          SignalChapterSelected   (int InChapter);
-  void                          SignalWindowChange      (int InNewWindow);
-  void                          SignalSetStartupBookmarkInfo (BookInfo* InBookInfo, int InChapter);
-  void                          SignalChapterArrowSelected (int InChapter);
-  void                          SignalSelectStrongsWord (QString InStrongsWord);
+  void	SignalBookSelected              (BookInfo* InBook);
+  void	SignalChapterSelected           (int InChapter);
+  void	SignalWindowChange              (int InNewWindow);
+  void	SignalSetStartupBookmarkInfo    (BookInfo* InBookInfo, int InChapter);
+  void	SignalChapterArrowSelected      (int InChapter);
+  void	SignalSelectStrongsWord         (QString InStrongsWord);
+  void	SignalEnglishChanged            (bool InSet);
+  void SignalTransliterateChanged       (bool InSet);
+  void                          SignalStrongsChanged    (bool InSet);
+  void                          SignalMorphologyChanged (bool InSet);
 
  //! Public Actions
  public :

@@ -137,11 +137,13 @@ public slots :
   void                          SlotStartupBookmarkButtonPushed (void);
   void                          SlotBookSelected                (int InBookIndex);
   void                          SlotWindowChange                (int InWindow);
+
   void                          SlotContextualChecked           (bool InChecked);
   void                          SlotTransliterateChecked        (bool InChecked);
   void                          SlotMorphologyChecked           (bool InChecked);
   void                          SlotEnglishChecked              (bool InChecked);
   void                          SlotStrongsChecked              (bool InChecked);
+
   void                          SlotClearBookMarks              (void);
   void                          SlotDisplayBookMarks            (void);
   void                          SlotBookmarkSelected            (BookInfo* InBook, int InChapter, int InVerse, int InWord);
@@ -162,6 +164,10 @@ signals :
   void                          SignalInterlinearWordChanged    (int InWord, bool InChecked);
   void                          SignalBookmarkSelected          (BookInfo* InBook, int InChapter, int InVerse, int InWord);
   void                          SignalSetReaderMode     (void);
+  void                          SignalEnglishChanged    (bool InSet);
+  void                          SignalTransliterateChanged (bool InSet);
+  void                          SignalStrongsChanged    (bool InSet);
+  void                          SignalMorphologyChanged (bool InSet);
   
   //! Public Actions
 public :

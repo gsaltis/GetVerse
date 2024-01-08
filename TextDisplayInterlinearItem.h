@@ -54,10 +54,17 @@ public :
   void                          SetWord                 (QString InWord);
   QSize                         GetSize                 ();
   int                           GetVerseNumber          (void);
+  void                          Reset                   (void);
+  void                          ReComputeSize           (void);
   
   //! Public Data
 public :
-
+  static bool                   DisplayEnglish;
+  static bool                   DisplayContextual;
+  static bool                   DisplayStrongs;
+  static bool                   DisplayMorphology;
+  static bool                   DisplayTransliterate;
+  
   //! Protected Methods
 protected :
   void                          enterEvent              (QEnterEvent* InEvent);

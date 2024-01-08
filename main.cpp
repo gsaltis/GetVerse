@@ -28,6 +28,7 @@
 #include "BookMarkManager.h"
 #include "BookInfoManager.h"
 #include "ReaderViewFormatSet.h"
+#include "main.h"
 
 /*****************************************************************************!
  * Local Macros
@@ -183,6 +184,9 @@ InitializeSettings
 /*****************************************************************************!
  * Local Data
  *****************************************************************************/
+QString
+MainInitialView = "verse";
+
 SystemConfig*
 MainSystemConfig;
 
@@ -356,6 +360,7 @@ MainInitializeGUI
   
   w->resize(size);
   w->move(pos);
+  w->SetViewMode(MainInitialView);
   w->show();
   return InApplication.exec();
 }
@@ -508,13 +513,32 @@ ProcessCommandLine
       continue;
     }
     //!
-    if ( command == "-v" || command == "--verbose" ) {
+    if ( command == "-V" || command == "--verbose" ) {
       MainVerbose = true;
+      continue;
+    }
+
+    if ( command == "-S" || command == "--screenview" ) {
+      i++;
+      if ( i == argc ) {
+        fprintf(stderr, "Missing config file name\n");
+        DisplayHelp();
+      }
+      s = QString(argv[i]);
+      if ( ! ( s == "verse" || s == "sentence" || s == "reader" || s == "interlinear" ) ) {
+        fprintf(stderr, "%s is not a valid screen view\n", s.toStdString().c_str());
+        DisplayHelp();
+        exit(EXIT_FAILURE);
+      }
+      MainInitialView = s;
       continue;
     }
     break;
   }
 
+  //!
+
+  //!
   if ( MainFormatAdd ) {
     // The remaining options have been consumedm
     return;
@@ -585,9 +609,10 @@ DisplayHelp
   printf("                            Requires that '-f, --filename' is specified\n");
   printf("  -r, --reference         : Specifies whether to display the verse reference\n");
   printf("  -s, --split             : Specifies whether to split lines at puncations\n");
+  printf("  -s, --screen view       : Specify the initial view to begining with\n");
+  printf("                            [verse sentence reader interlinear]\n");
   printf("  -e, --easysplit         : Specifies whether to split lines only at end of sentence\n");
-  printf("  -d, --database          : Populates the database\n");
-  printf("  -v, --verbose           : Specifies 'verbose' operation\n");
+  printf("  -V, --verbose           : Specifies 'verbose' operation\n");
   printf("  -v, --version           : Display the version information\n");
 }
 
