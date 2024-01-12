@@ -61,6 +61,7 @@ TextDisplayInterlinearItem::TextDisplayInterlinearItem
   CreateEnglishLabel();
   CreateTransliterateLabel();
   CreateMorphologyLabel();
+  Reset();
   ComputeSize();
   
   resize(Size);

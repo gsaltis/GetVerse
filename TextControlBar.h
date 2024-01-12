@@ -55,6 +55,7 @@ public :
 
   //! Public Methods
 public :
+  void                          SetInterlinearElements  (void);
 
   //! Public Data
 public :

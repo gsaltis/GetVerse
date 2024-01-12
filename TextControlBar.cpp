@@ -685,24 +685,8 @@ TextControlBar::SlotEditButtonPushed(void)
 void
 TextControlBar::SlotInterlinearButtonPushed(void)
 {
-  GroupingLabel->setText("Verses :");
-  GroupingCountLabel->setText("0");
-
-  EditButton->setChecked(false);
-  BlockViewButton->setChecked(false);
-  SentenceViewButton->setChecked(false);  
-  ReferenceButton->setChecked(false);  
-
-  ChapterSelect->show();
-  ChapterSelectLabel->show();
-  
-  GroupingLabel->show();
-  GroupingCountLabel->show();
-  WordBreakTypeCombo->hide();
-  WordBreakTypeLabel->hide();
- 
+  SetInterlinearElements();
   emit SignalSetInterlinearMode();
-  InterlinearElementsDisplay(true);
 }
 
 /*****************************************************************************!
@@ -991,4 +975,28 @@ TextControlBar::SlotReaderViewButtonPushed
 ()
 {
   emit SignalSetReaderMode();
+}
+
+/*****************************************************************************!
+ * Function : SetInterlinearElements
+ *****************************************************************************/
+void
+TextControlBar::SetInterlinearElements(void)
+{
+  GroupingLabel->setText("Verses :");
+  GroupingCountLabel->setText("0");
+
+  EditButton->setChecked(false);
+  BlockViewButton->setChecked(false);
+  SentenceViewButton->setChecked(false);  
+  ReferenceButton->setChecked(false);  
+
+  ChapterSelect->show();
+  ChapterSelectLabel->show();
+  
+  GroupingLabel->show();
+  GroupingCountLabel->show();
+  WordBreakTypeCombo->hide();
+  WordBreakTypeLabel->hide();
+  InterlinearElementsDisplay(true);
 }

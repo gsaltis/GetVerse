@@ -714,6 +714,7 @@ TextDisplayOuterWindow::SlotSetInterlinearMode(void)
   verseWindow->hide();
   sentenceWindow->hide();
   readerWindow->hide();
+  controlBar->SetInterlinearElements();
   emit SignalSetInterlinearMode();
 }
 
