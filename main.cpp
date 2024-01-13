@@ -29,6 +29,7 @@
 #include "BookInfoManager.h"
 #include "ReaderViewFormatSet.h"
 #include "main.h"
+#include "SystemSettings.h"
 
 /*****************************************************************************!
  * Local Macros
@@ -289,6 +290,9 @@ MainBookMarks;
 ReaderViewFormatSet*
 MainReaderViewFormats = NULL;
 
+SystemSettings*
+MainSystemSettings;
+
 /*****************************************************************************!
  * Function : main
  *****************************************************************************/
@@ -355,8 +359,10 @@ MainInitializeGUI
   InApplication.setOrganizationDomain(MAIN_DOMAIN_NAME);
   w = new MainWindow(MainSearchBook ? MainSearchBook->name : QString(""));
 
-  size = MainSystemConfig->GetMainWindowSize();
-  pos = MainSystemConfig->GetMainWindowLocation();
+  size = QSize(MainSystemSettings->GetMainWindowWidth(),
+               MainSystemSettings->GetMainWindowHeight());
+  pos = QPoint(MainSystemSettings->GetMainWindowX(),
+               MainSystemSettings->GetMainWindowY());
   
   w->resize(size);
   w->move(pos);
@@ -376,6 +382,7 @@ MainInitialize
   QSettings                             settings(MAIN_ORG_NAME, MAIN_APP_NAME);
 
   MainSystemConfig                      = new SystemConfig();
+  MainSystemSettings                    = new SystemSettings();
   
   MainFilename                          = NULL;
   MainDatabaseFilename                  = QString(DEFAULT_DB_FILENAME);

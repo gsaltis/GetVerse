@@ -69,6 +69,7 @@ SOURCES                         += \
 				   StrongsReferenceVerseItem.cpp                \
 				   StrongsReferenceVerseWindow.cpp              \
 				   SystemConfig.cpp                             \
+				   SystemSettings.cpp                           \
 				   TextControlBar.cpp                           \
 				   TextControlBarCheckBox.cpp                   \
 				   TextDisplayFormattingItem.cpp                \
@@ -144,6 +145,7 @@ HEADERS                         += \
 				   StrongsReferenceVerseItem.h                  \
 				   StrongsReferenceVerseWindow.h                \
 				   SystemConfig.h                               \
+				   SystemSettings.h                             \
 				   TextControlBar.h                             \
 				   TextControlBarCheckBox.h                     \
 				   TextDisplayFormattingItem.h                  \

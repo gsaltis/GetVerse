@@ -68,6 +68,7 @@ class MainWindow : public QMainWindow
   void                          CreateActions           ();
   void                          CreateMenus             ();
   void                          CreateConnections       ();
+  void                          moveEvent               (QMoveEvent* InEvent);
 
  //! Private Data
  private :

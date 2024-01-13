@@ -73,6 +73,8 @@ class SystemConfig : public QWidget
   QColor                        BlockWindowBackgroundColor;
   QFont                         WordItemFont;
   
+  QSettings*                    Settings;
+
  //! Public Slots
  public slots :
 
