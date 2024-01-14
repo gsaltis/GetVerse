@@ -182,6 +182,14 @@ void
 InitializeSettings
 ();
 
+void
+ReadCommandLineGeometry
+(QPoint& InPos, QSize& InSize);
+
+void
+DisplayErrorMessage
+(QString InMessage);
+
 /*****************************************************************************!
  * Local Data
  *****************************************************************************/
@@ -293,6 +301,9 @@ MainReaderViewFormats = NULL;
 SystemSettings*
 MainSystemSettings;
 
+QString
+MainGeometryString;
+
 /*****************************************************************************!
  * Function : main
  *****************************************************************************/
@@ -331,6 +342,10 @@ int
 MainInitializeGUI
 (QApplication& InApplication)
 {
+  int                                   screenHeight;
+  int                                   screenWidth;
+  QRect                                 screenGeometry;
+  QScreen*                              screen;
   int                                   b;
   MainWindow* 				w;
   QSize                                 size;
@@ -359,11 +374,21 @@ MainInitializeGUI
   InApplication.setOrganizationDomain(MAIN_DOMAIN_NAME);
   w = new MainWindow(MainSearchBook ? MainSearchBook->name : QString(""));
 
+  screen = w->screen();
+  screenGeometry = screen->availableGeometry();
+  screenWidth = screenGeometry.width();
+  screenHeight = screenGeometry.height();
+  TRACE_FUNCTION_INT(screenWidth);
+  TRACE_FUNCTION_INT(screenHeight);
+  
   size = QSize(MainSystemSettings->GetMainWindowWidth(),
                MainSystemSettings->GetMainWindowHeight());
   pos = QPoint(MainSystemSettings->GetMainWindowX(),
                MainSystemSettings->GetMainWindowY());
-  
+
+  if ( ! MainGeometryString.isEmpty() ) {
+    ReadCommandLineGeometry(pos, size);
+  }
   w->resize(size);
   w->move(pos);
   w->SetViewMode(MainInitialView);
@@ -492,6 +517,16 @@ ProcessCommandLine
       continue;
     }
     
+    if ( command == "-g" || command == "--geometry" ) {
+      i++;
+      if ( i == argc ) {
+        fprintf(stderr, "Missing geometry string\n");
+        DisplayHelp();
+      }
+      MainGeometryString = QString(argv[i]);
+      continue;
+    }
+    
     //!
     if ( command == "-p" || command == "--populate" ) {
       MainDataBasePopulate();
@@ -610,6 +645,7 @@ DisplayHelp
   printf("  -e, --easysplit         : Specifies whether to split lines only at end of sentence\n");
   printf("  -f, --file filename     : Specify the input filename\n");
   printf("  -F, --format            : Apply formatting\n");
+  printf("  -g, --geometry string   : Set initial geometry (XxY:W+H)\n");
   printf("  -h, --help              : Display this information\n");
   printf("  -n, --nogui             : Don't use GUI\n");
   printf("  -p, --populate filename : Specify the database filename (Default %s)\n", DEFAULT_DB_FILENAME);
@@ -1707,3 +1743,81 @@ MainGetInterlinearWordDisplays
   InMorphologyDisplay = settings.value("Interlinear/Values/Morphology/Display", true).toBool();
 }
 
+
+/*****************************************************************************!
+ * Function : ReadCommandLineGeometry
+ *****************************************************************************/
+void
+ReadCommandLineGeometry
+(QPoint& InPos, QSize& InSize)
+{
+  int                                   height;
+  int                                   width;
+  int                                   x;
+  int                                   y;
+  int                                   ss;
+  int                                   ps;
+  int                                   m;
+  QStringList                           s1;
+  QStringList                           posList;
+  QStringList                           sizeList;
+
+  s1 = MainGeometryString.split(":");
+  m = s1.size();
+
+  switch (m) {
+    case 1 : {
+      if ( MainGeometryString.contains("x") ) {
+        sizeList = MainGeometryString.split("x");
+        break;
+      }
+      if ( MainGeometryString.contains("+") ) {
+        posList = MainGeometryString.split("+");
+        break;
+      }
+      DisplayErrorMessage(QString("%1 is an invalid geometry string").arg(MainGeometryString));
+      exit(EXIT_FAILURE);
+      break;
+    }
+    case 2 : {
+      posList  = s1[0].split("+");
+      sizeList = s1[1].split("x");
+      break;
+    }
+    default : {
+      DisplayErrorMessage(QString("%1 is an invalid geometry string").arg(MainGeometryString));
+      exit(EXIT_FAILURE);
+      break;
+    }
+  }
+  ps = posList.size();
+  ss = sizeList.size();
+
+  if ( ! (ps == 0 || ps == 2 || ss == 0 || ss == 2) ) {
+    DisplayErrorMessage(QString("%1 is an invalid geometry string").arg(MainGeometryString));
+    exit(EXIT_FAILURE);
+  }
+
+  if ( ps == 2 ) {
+    x = posList[0].toInt();
+    y = posList[1].toInt();
+    InPos.setX(x);
+    InPos.setY(y);
+  }
+  if ( ss == 2 ) {
+    width = sizeList[0].toInt();
+    height = sizeList[1].toInt();
+    InSize.setWidth(width);
+    InSize.setHeight(height);
+  }
+}
+
+/*****************************************************************************!
+ * Function : DisplayErrorMessage
+ *****************************************************************************/
+void
+DisplayErrorMessage
+(QString InMessage)
+{
+  fprintf(stderr, "%s\n", InMessage.toStdString().c_str());
+}
