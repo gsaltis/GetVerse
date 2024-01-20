@@ -70,6 +70,7 @@ class TextDisplayVerseWindow : public QWidget
   void                          CreateDisplayItems      ();
   TextDisplayVerseReferenceItem* FindReferenceByVerseNumber (int InVerseNumber);
   bool                          KeyPress                (int InKey, Qt::KeyboardModifiers InModifiers);
+  void                          SetBookMark             ();
 
  //! Private Data
  private :
@@ -94,12 +95,14 @@ class TextDisplayVerseWindow : public QWidget
   void                          SlotBookSelected        (BookInfo* InBook);
   void                          SlotChapterSelected     (int InChapter);
   void                          SlotReferenceSelected   (int InVerseNumber);
+  void                          SlotSetBookmark         (int InBook, int InChapter, int InVerse, int InWordIndex);
 
  //! Public Signals
  signals :
   void                          SignalWindowChange      (int InNewWindow);
   void                          SignalSetStartupBookmarkInfo (BookInfo* InBookInfo, int InChapter);
   void                          SignalChapterArrowSelected (int InChapter);
+  void                          SignalSetBookmark       (int InBook, int InChapter, int InVerse, int InWordIndex);
 
  //! Public Actions
  public :

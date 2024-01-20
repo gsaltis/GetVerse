@@ -231,3 +231,24 @@ TextDisplayVerseItem::leaveEvent
   setPalette(pal);
 }
 
+/*****************************************************************************!
+ * Function : mousePressEvent
+ *****************************************************************************/
+void
+TextDisplayVerseItem::mousePressEvent
+(QMouseEvent* InEvent)
+{
+  Qt::KeyboardModifiers                 modifiers;
+  Qt::MouseButton                       button;
+
+  button = InEvent->button();
+  modifiers = InEvent->modifiers();
+
+  if ( modifiers != Qt::ControlModifier ) {
+    return;
+  }
+  if ( button != Qt::LeftButton ) {
+    return;
+  }
+  emit SignalSetBookmark(Book, Chapter, Verse, 0);
+}

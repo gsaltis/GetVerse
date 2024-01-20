@@ -19,6 +19,7 @@
 #include "TextDisplayVerseWindow.h"
 #include "BookInfoWord.h"
 #include "TextDisplayVerseReferenceItem.h"
+#include "Common.h"
 
 /*****************************************************************************!
  * Function : TextDisplayVerseWindow
@@ -87,7 +88,10 @@ TextDisplayVerseWindow::CreateSubWindows()
 void
 TextDisplayVerseWindow::CreateConnections()
 {
-  
+  connect(this,
+          TextDisplayVerseWindow::SignalSetBookmark,
+          MainBookMarks,
+          BookMarkManager::SlotSetBookmark);
 }
 
 /*****************************************************************************!
@@ -162,6 +166,10 @@ TextDisplayVerseWindow::CreateDisplayItems
                                            verseNumber,
                                            wordText, i, DisplayFont);
     displayItem->setParent(this);
+    connect(displayItem,
+            TextDisplayVerseItem::SignalSetBookmark,
+            this,
+            TextDisplayVerseWindow::SlotSetBookmark);
 #if 0    
      displayItem->hide();
 #endif     
@@ -406,4 +414,16 @@ TextDisplayVerseWindow::mouseMoveEvent
 (QMouseEvent* )
 {
   setFocus();
+}
+
+/*****************************************************************************!
+ * Function : SlotSetBookmark
+ *****************************************************************************/
+void
+TextDisplayVerseWindow::SlotSetBookmark
+(int InBook, int InChapter, int InVerse, int InWordIndex)
+{
+  TRACE_FUNCTION_START();
+  emit SignalSetBookmark(InBook, InChapter, InVerse, InWordIndex);
+  TRACE_FUNCTION_END();
 }

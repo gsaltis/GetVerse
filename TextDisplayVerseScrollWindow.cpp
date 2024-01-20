@@ -137,10 +137,16 @@ TextDisplayVerseScrollWindow::CreateConnections(void)
           TextDisplayVerseWindow::SignalSetStartupBookmarkInfo,
           this,
           TextDisplayVerseScrollWindow::SlotSetStartupBookmarkInfo);
+
   connect(verseWindow,
           TextDisplayVerseWindow::SignalChapterArrowSelected,
           this,
           TextDisplayVerseScrollWindow::SlotChapterArrowSelected);
+
+  connect(verseWindow,
+          TextDisplayVerseWindow::SignalSetBookmark,
+          this,
+          TextDisplayVerseScrollWindow::SlotSetBookmark);
 }
 
 /*****************************************************************************!
@@ -186,4 +192,14 @@ TextDisplayVerseScrollWindow::SlotChapterArrowSelected
 (int InChapter)
 {
   emit SignalChapterArrowSelected(InChapter);  
+}
+
+/*****************************************************************************!
+ * Function : SlotSetBookmark
+ *****************************************************************************/
+void
+TextDisplayVerseScrollWindow::SlotSetBookmark
+(int InBook, int InChapter, int InVerse, int InWordIndex)
+{
+  emit SignalSetBookmark(InBook, InChapter, InVerse, InWordIndex);  
 }

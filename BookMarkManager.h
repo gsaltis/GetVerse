@@ -68,6 +68,7 @@ private :
 
   //! Public Slots
 public slots :
+  void                          SlotSetBookmark         (int InBook, int InChapter, int InVerse, int InWordIndex);
 
   //! Public Signals
 signals :

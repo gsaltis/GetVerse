@@ -30,6 +30,7 @@
  *****************************************************************************/
 class TextDisplayVerseItem : public QLabel
 {
+  Q_OBJECT;
   //! Constructors
 public :
   TextDisplayVerseItem          (int InBook, int InChapter, int InVerse, QString InWord, int InWordIndex, QFont InFont);
@@ -65,6 +66,7 @@ protected :
   //! Private Methods
 private :
   void                          CreateStrippedWord      ();
+  void                          mousePressEvent         (QMouseEvent* InEvent);
   
   //! Private Data
 private :
@@ -83,6 +85,10 @@ private :
   QColor                        Foreground;
   QColor                        OverBackground;
 
+  //! Public Signals
+ signals :
+  void                          SignalSetBookmark       (int InBook, int InChapter, int InVerse, int InWordIndex);
+  
 };
 
 #endif /* _textdisplayverseitem_h_*/

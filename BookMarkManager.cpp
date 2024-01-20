@@ -140,3 +140,13 @@ BookMarkManager::Clear(void)
     bookMarks[i]->Clear(settings);
   }
 }
+
+/*****************************************************************************!
+ * Function : SlotSetBookmark
+ *****************************************************************************/
+void
+BookMarkManager::SlotSetBookmark
+(int InBook, int InChapter, int InVerse, int InWordIndex)
+{
+  SetBookMark(InBook, InChapter, InVerse, InWordIndex);
+}

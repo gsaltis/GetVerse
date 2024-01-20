@@ -145,6 +145,10 @@ TextDisplayVerseContainerWindow::CreateConnections(void)
           TextDisplayVerseContainerWindow::SignalTotalChaptersChanged,
           header,
           ChapterHeaderWindow::SlotTotalChaptersChanged);
+  connect(verseWindow,
+          TextDisplayVerseScrollWindow::SignalSetBookmark,
+          this,
+          TextDisplayVerseContainerWindow::SlotSetBookmark);
 }
 
 /*****************************************************************************!
@@ -199,4 +203,19 @@ TextDisplayVerseContainerWindow::SlotChapterArrowSelected
 (int InChapter)
 {
   emit SignalChapterArrowSelected(InChapter);  
+}
+
+/*****************************************************************************!
+ * Function : SlotSetBookmark
+ *****************************************************************************/
+void
+TextDisplayVerseContainerWindow::SlotSetBookmark
+(int InBook, int InChapter, int InVerse, int InWordIndex)
+{
+  QString                               st;
+  
+  TRACE_FUNCTION_START();
+  st = QString("%1 %2:%3.%4").arg(InBook).arg(InChapter).arg(InVerse).arg(InWordIndex);
+  TRACE_FUNCTION_QSTRING(st);
+  TRACE_FUNCTION_END();
 }

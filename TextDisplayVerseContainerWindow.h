@@ -76,6 +76,7 @@ public slots :
   void                          SlotWindowChange        (int InNewWindow);
   void                          SlotSetStartupBookmarkInfo (BookInfo* InBookInfo, int InChapter);
   void                          SlotChapterArrowSelected (int InChapter);
+  void                          SlotSetBookmark         (int InBook, int InChapter, int InVerse, int InWordIndex);
 
   //! Public Signals
 signals :
