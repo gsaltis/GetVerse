@@ -27,6 +27,7 @@ TextDisplayReaderViewWindow::TextDisplayReaderViewWindow
 () : QTextEdit()
 {
   Initialize();
+  setReadOnly(true);
   Book = NULL;
 }
 
@@ -58,63 +59,48 @@ void
 TextDisplayReaderViewWindow::SlotBookSelected
 (BookInfo* InBook)
 {
-  int                                   formatType;
-  ReaderViewFormat*                     formatInfo;
+  int                                   n;
   VerseInfo*                            verseInfo;
   int                                   i;
   QString                               text;
   QString                               verseText;
   VerseInfoSet*                         verseSet;
   int                                   verseCount;
-
+  
   Book = InBook;
-  setStyleSheet("QTextEdit { "
-                "  background : #FFFFFF; "
-                "  font-size : 14pt "
-                "} "
-                "H1 {"
-                "  font-size : 8pt; "
-                "}"
-                "div { "
-                "  text-align : justify; "
-                "  color : red; "
-                "  text-justify : inter-word; "
-                "}"
-                "QFrame { "
-                "  margin : 20px; "
-                "  margin-right : 100px; "
-                "}");
   verseSet = Book->GetVerses();
 
   verseCount = verseSet->GetVerseCount();
-  text += "<p>";
+
   for (i = 0; i < verseCount; i++) {
     verseInfo = verseSet->GetVerseByIndex(i);
     verseText = verseInfo->GetText();
-    formatInfo = MainReaderViewFormats->FindFormat(verseInfo->GetBook(), verseInfo->GetChapter(), verseInfo->GetVerse(), 0);
-    if ( NULL == formatInfo ) {
-      text += QString(" %1").arg(verseText);
-      continue;
-    }
-    formatType = formatInfo->GetFormat();
-    if ( formatType == ReaderViewFormatParagraph ) {
-      text += QString("</p><p>") + verseText;
-      continue;
-    }
-    if ( formatType == ReaderViewFormatTitle ) {
-      text += QString("</p>\n");
-      text += QString("<h3>%1</h3>\n").arg(formatInfo->GetTitle());
-      text += QString("<p>%1").arg(verseText);
-      continue;
-    }
-    if ( formatType == ReaderViewFormatLineBreak ) {
-      text += QString("<br>%1").arg(verseText);
-      continue;
+    text += verseText + QString(" ");
+  }
+  setPlainText(text);
+  CurrentText = text;
+  delete verseSet;
+  n = CurrentText.length();
+
+  CurrentTextStart = 0;
+  for ( i = 0 ; i < n ; i++ ) {
+    if ( CurrentText[i].isPunct() ) {
+      i++;
+      break;
     }
   }
-  text += "</p>";
-  setHtml(text);
-  delete verseSet;
+  CurrentTextEnd = i;
+
+  QTextCursor                           textC(document());
+  QTextCharFormat                       fmt;
+
+  fmt = textC.charFormat();
+  fmt.setForeground(Qt::red);
+  textC.setCharFormat(fmt);
+  textC.setPosition(0);
+  textC.setPosition(i, QTextCursor::KeepAnchor);
+  setTextCursor(textC);
+  setFocus();
 }
 
 /*****************************************************************************!

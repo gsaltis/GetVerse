@@ -89,7 +89,7 @@ class TextDisplayOuterWindow : public QFrame
   QString                                       BookName;
   int                                           BookInfoIndex;
   
-  TextDisplayReaderViewContainerWindow* readerWindow;
+  TextDisplayReaderViewContainerWindow*         readerWindow;
 
  //! Public Slots
  public slots :

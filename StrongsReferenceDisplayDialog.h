@@ -52,6 +52,7 @@ class StrongsReferenceDisplayDialog : public QDialog
 
  //! Protected Methods
  protected :
+  void                          resizeEvent             (QResizeEvent* InEvent);
 
  //! Protected Data
  protected :
@@ -94,6 +95,9 @@ class StrongsReferenceDisplayDialog : public QDialog
   QString                       DefinitionText;
   QString                       OriginText;
   QString                       UsageText;
+  QLabel*                       OriginLabel;
+  QLabel*                       UsageLabel;
+  QLabel*                       UsageNameLabel;
 
  //! Public Slots
  public slots :

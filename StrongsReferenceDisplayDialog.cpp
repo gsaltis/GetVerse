@@ -8,7 +8,7 @@
 /*****************************************************************************!
  * Global Headers
  *****************************************************************************/
-#include <trace_winnet.h>
+#include <trace_winnetqt.h>
 #include <QtCore>
 #include <QtGui>
 #include <QWidget>
@@ -50,6 +50,7 @@ StrongsReferenceDisplayDialog::Initialize(void)
   GradientColorLight = QColor(205, 205, 205);
   GradientColorDark = QColor(114, 114, 114);
 
+  setMinimumHeight(500);
   LabelFont = QFont("Segoe UI", 10, QFont::Bold);
   HeaderFont = QFont("Segoe UI", 13, QFont::Bold);
   DataFont = QFont("Segoe UI", 10, QFont::Normal);
@@ -258,6 +259,7 @@ StrongsReferenceDisplayDialog::CreateLabelBlock(void)
   y = 10;
   x = 0;
 
+  //!
   n = labelNames.length();
   for ( i = 0 ; i < n; i++ ) {
     label = new QLabel(LabelBlock);
@@ -267,6 +269,9 @@ StrongsReferenceDisplayDialog::CreateLabelBlock(void)
     label->setText(labelNames[i] + QString(" :"));
     label->setAlignment(Qt::AlignRight);
 
+    if ( labelNames[i] == "USAGE" ) {
+      UsageNameLabel = label;
+    }
     if ( i + 2 < n ) {
       y += labelHeight + 10;
     } else {
@@ -322,10 +327,10 @@ StrongsReferenceDisplayDialog::CreateDataBlock(void)
   CreateDataBlockData(y, width, labelHeight, DefinitionText);
   y += labelHeight + 10;
   
-  CreateDataBlockData(y, width, 90, OriginText);
+  OriginLabel = CreateDataBlockData(y, width, 90, OriginText);
   y += 100;
 
-  CreateDataBlockData(y, width, 90, UsageText);
+  UsageLabel = CreateDataBlockData(y, width, 90, UsageText);
 }
 
 /*****************************************************************************!
@@ -347,3 +352,112 @@ StrongsReferenceDisplayDialog::CreateDataBlockData
   return label;
 }
 
+/*****************************************************************************!
+ * Function : resizeEvent
+ *****************************************************************************/
+void
+StrongsReferenceDisplayDialog::resizeEvent
+(QResizeEvent* InEvent)
+{
+  int                                   UsageNameLabelW;
+  int                                   UsageNameLabelH;
+  int                                   UsageNameLabelY;
+  int                                   UsageNameLabelX;
+  int                                   DataBlockW;
+  int                                   DataBlockH;
+  int                                   DataBlockY;
+  int                                   DataBlockX;
+  int                                   LabelBlockW;
+  int                                   LabelBlockH;
+  int                                   LabelBlockY;
+  int                                   LabelBlockX;
+  int                                   bottom;
+  int                                   top;
+  int                                   h;
+  int                                   OKButtonW;
+  int                                   OKButtonH;
+  int                                   OKButtonY;
+  int                                   OKButtonX;
+  int                                   HeaderBlockW;
+  int                                   HeaderBlockH;
+  int                                   HeaderBlockY;
+  int                                   HeaderBlockX;
+  int                                   OriginLabelW;
+  int                                   OriginLabelH;
+  int                                   OriginLabelY;
+  int                                   OriginLabelX;
+  int                                   UsageLabelW;
+  int                                   UsageLabelH;
+  int                                   UsageLabelY;
+  int                                   UsageLabelX;
+  QSize                                 size;
+  int                                   width;
+  int                                   height;
+
+  size = InEvent->size();
+  width = size.width();
+  height = size.height();
+
+  HeaderBlockX = HeaderBlock->pos().x();
+  HeaderBlockY = HeaderBlock->pos().y();;
+  HeaderBlockW = width;
+  HeaderBlockH = HeaderBlock->size().height();
+  HeaderBlock->move(HeaderBlockX, HeaderBlockY);
+  HeaderBlock->resize(HeaderBlockW, HeaderBlockH);
+
+  TRACE_FUNCTION_INT(HeaderBlockH);
+  LabelBlockX = LabelBlock->pos().x();
+  LabelBlockY = LabelBlock->pos().y();
+  LabelBlockW = LabelBlock->size().width();
+  LabelBlockH = height - HeaderBlockH;
+  LabelBlock->move(LabelBlockX, LabelBlockY);
+  LabelBlock->resize(LabelBlockW, LabelBlockH);
+  TRACE_FUNCTION_INT(LabelBlockH);
+
+  OKButtonW = OKButton->size().width();
+  OKButtonH = OKButton->size().height();
+  OKButtonX = width - (OKButtonW + 5);
+  OKButtonY = height - (OKButtonH + 5);
+  OKButton->move(OKButtonX, OKButtonY);
+  OKButton->resize(OKButtonW, OKButtonH);
+
+  DataBlockX = LabelBlockW;
+  DataBlockY = DataBlock->pos().y();;
+  DataBlockW = width - LabelBlockW;
+  DataBlockH = height - (HeaderBlockH + (OKButtonH + 10));
+  DataBlock->move(DataBlockX, DataBlockY);
+  DataBlock->resize(DataBlockW, DataBlockH);
+  TRACE_FUNCTION_INT(DataBlockH);
+
+  //!
+  OriginLabelX = OriginLabel->pos().x();
+  OriginLabelY = OriginLabel->pos().y();
+  OriginLabelW = DataBlockW - 10;
+
+  top = OriginLabelY;
+  bottom = DataBlockH;
+  TRACE_FUNCTION_INT(OKButtonY);
+  TRACE_FUNCTION_INT(top);
+  TRACE_FUNCTION_INT(bottom);
+  h = (bottom - top) - 5;
+  h /= 2;
+  TRACE_FUNCTION_INT(h);
+  
+  OriginLabelH = h;
+  OriginLabel->move(OriginLabelX, OriginLabelY);
+  OriginLabel->resize(OriginLabelW, OriginLabelH);
+
+  UsageLabelX = UsageLabel->pos().x();  
+  UsageLabelY = OriginLabelY + h + 5;
+  UsageLabelW = OriginLabelW;
+  UsageLabelH = h;
+  UsageLabel->move(UsageLabelX, UsageLabelY);
+  UsageLabel->resize(UsageLabelW, UsageLabelH);
+
+  UsageNameLabelX = UsageNameLabel->pos().x();  
+  UsageNameLabelY = UsageLabelY;
+  UsageNameLabelW = UsageNameLabel->size().width();
+  UsageNameLabelH = UsageNameLabel->size().height();;
+  UsageNameLabel->move(UsageNameLabelX, UsageNameLabelY);
+  UsageNameLabel->resize(UsageNameLabelW, UsageNameLabelH);
+}

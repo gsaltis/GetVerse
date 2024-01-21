@@ -63,7 +63,10 @@ class TextDisplayReaderViewWindow : public QTextEdit
  private :
   BookInfo*                     Book;
   int                           Chapter;
-
+  QString                       CurrentText;
+  int                           CurrentTextStart;
+  int                           CurrentTextEnd;
+  
  //! Public Slots
  public slots :
   void                          SlotBookSelected        (BookInfo* InBook);
