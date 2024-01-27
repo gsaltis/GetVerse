@@ -24,11 +24,16 @@
  * Function : MainDisplayWindow
  *****************************************************************************/
 MainDisplayWindow::MainDisplayWindow
-(QString InBookName) : QWidget()
+(QString InBookName, int InChapterNumber, int InVerseNumber) : QWidget()
 {
   QPalette				pal;
 
+  //! 
   BookName = InBookName;
+  ChapterNumber = InChapterNumber;
+  VerseNumber = InVerseNumber;
+  
+  //! 
   pal = palette();
   pal.setBrush(QPalette::Window, QBrush(QColor(160, 160, 192)));
   setPalette(pal);
@@ -58,7 +63,7 @@ MainDisplayWindow::Initialize()
   InitializeSubWindows();  
   CreateSubWindows();
   CreateConnections();
-  MainGetStartLocation(book, chapter, verse);
+  GetInitialLocation(book, chapter, verse);
 
   emit SignalMoveToBookChapter(book, chapter, verse);
   displayWindow->SlotChapterSelected(chapter);
@@ -318,4 +323,26 @@ MainDisplayWindow::SetViewMode
     return;
   }
   displayWindow->SetViewMode(InMode);
+}
+
+/*****************************************************************************!
+ * Function : GetInitialLocation
+ *****************************************************************************/
+void
+MainDisplayWindow::GetInitialLocation
+(int& InBook, int& InChapterNumber, int& InVerseNumber)
+{
+  int                                   index;
+  BookInfo*                             bookInfo;
+  if ( ! BookName.isEmpty() ) {
+    bookInfo = MainBookInfo->GetBookByName(BookName);
+    if ( bookInfo ) {
+      index = bookInfo->GetIndex();
+      InBook = index;
+      InChapterNumber = ChapterNumber;
+      InVerseNumber = VerseNumber;
+      return;
+    }
+  }
+  MainGetStartLocation(InBook, InChapterNumber, InVerseNumber);
 }

@@ -49,7 +49,7 @@ class BookInfoManager : public QWidget
   BookInfo*                     GetSearchableBookName   (QString InBookName);
   int                           GetSize                 (void);
   BookInfo*                     GetByIndex              (int InIndex);
-  BookInfo*                     GetBookByName           (QString InBookName);
+  BookInfo*                     GetBookByName           (QString InBookName, bool InUseAbbrev = false);
 
  //! Public Data
  public :

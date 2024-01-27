@@ -134,11 +134,19 @@ BookInfoManager::GetByIndex
  *****************************************************************************/
 BookInfo*
 BookInfoManager::GetBookByName
-(QString InBookName)
+(QString InBookName, bool InUseAbbrev)
 {
+  QString                               st;
+
+  st = InBookName.toLower();
   for ( auto bookInfo : Books ) {
-    if ( bookInfo->name == InBookName ) {
+    if ( bookInfo->name.toLower() == st ) {
       return bookInfo;
+    }
+    if ( InUseAbbrev ) {
+      if ( bookInfo->nameAbbrev.toLower() == InBookName ) {
+        return bookInfo;
+      }
     }
   }
   return NULL;

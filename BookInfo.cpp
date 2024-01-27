@@ -411,3 +411,53 @@ BookInfo::GetVerses
   verseSet->ReadDB(MainDatabase);
   return verseSet;
 }
+
+/*****************************************************************************!
+ * Function : GetChapterVerseCount
+ *****************************************************************************/
+int
+BookInfo::GetChapterVerseCount
+(int InChapterNumber)
+{
+  int                                   verseCount;
+  int                                   retryCount;
+  sqlite3_stmt*                         sqlStatement;
+  int                                   n;
+  QString selectStatement =
+    QString("SELECT verseCount FROM Chapters "
+            "WHERE "
+            "book is %1 AND "
+            "chapter is %2;")
+    .arg(index)
+    .arg(InChapterNumber);
+  
+  n = sqlite3_prepare_v2(MainDatabase, selectStatement.toStdString().c_str(), selectStatement.length(), &sqlStatement, NULL);
+  if ( n != SQLITE_OK ) {
+    return 0;
+  }
+  retryCount = 0;
+  verseCount = 0;
+  
+  do {
+    n = sqlite3_step(sqlStatement);
+    if ( SQLITE_BUSY == n ) {
+      QThread::msleep(30);
+      retryCount++;
+      if ( retryCount > 10 ) {
+        break;
+      }
+      continue;
+    }
+    if ( SQLITE_DONE == n ) {
+      break;
+    }
+
+    if ( SQLITE_ROW == n ) {
+      verseCount = sqlite3_column_int(sqlStatement, 0);
+      break;
+    }
+  } while (true);
+
+  sqlite3_finalize(sqlStatement);
+  return verseCount;
+}

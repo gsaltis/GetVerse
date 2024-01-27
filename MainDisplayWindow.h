@@ -34,7 +34,7 @@ class MainDisplayWindow : public QWidget
 
  //! Constructors
  public :
-  MainDisplayWindow             (QString InBookName);
+  MainDisplayWindow             (QString InBookName, int InChapterNumber, int InVerseNumber);
 
  //! Destructor
  public :
@@ -60,6 +60,7 @@ class MainDisplayWindow : public QWidget
   void                          CreateSubWindows        ();
   void                          resizeEvent             (QResizeEvent* InEvent);
   void                          CreateConnections       (void);
+  void                          GetInitialLocation      (int& InBook, int& InChapterNumber, int& InVerseNumber);
 
  //! Private Data
  private :
@@ -67,6 +68,8 @@ class MainDisplayWindow : public QWidget
   MainMessageWindow*            messageWindow;
   TextDisplayOuterWindow*       displayWindow;
   QString                       BookName;
+  int                           ChapterNumber;
+  int                           VerseNumber;
 
  //! Public Slots
  public slots :

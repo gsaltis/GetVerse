@@ -40,7 +40,8 @@ class MainWindow : public QMainWindow
  public :
   MainWindow                    ();
   MainWindow                    (QWidget* );
-  MainWindow                    (QString InBookName);
+  MainWindow                    (QString InBookName, int InChapterNumber,
+                                 int InVerseNumber);
   
  //! Destructor
  public :
@@ -78,7 +79,9 @@ class MainWindow : public QMainWindow
   QMenu*                        settingsMenu;
   QStatusBar*                   statusbar;
   QString                       BookName;
-  
+  int                           ChapterNumber;
+  int                           VerseNumber;
+
  //! Public Slots
  public slots :
   void                          SlotExit                (void);

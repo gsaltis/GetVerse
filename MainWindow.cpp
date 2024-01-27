@@ -47,10 +47,15 @@ MainWindow::MainWindow
  * Function : MainWindow
  *****************************************************************************/
 MainWindow::MainWindow
-(QString InBookName)
+(QString InBookName, int InChapterNumber, int InVerseNumber)
 {
-  BookName = InBookName;
+  //! 
   Initialize();
+
+  BookName = InBookName;
+  ChapterNumber = InChapterNumber;
+  VerseNumber = InVerseNumber;
+  
   CreateActions();
   CreateMenus();
   InitializeSubWindows();
@@ -72,6 +77,8 @@ MainWindow::~MainWindow
 void
 MainWindow::Initialize()
 {
+  ChapterNumber = 0;
+  VerseNumber = 0;
   setWindowTitle(SystemConfig::SystemName);
   setWindowIcon(QIcon(":/Images/Book.png")); 
 }
@@ -83,7 +90,7 @@ MainWindow::Initialize()
 void
 MainWindow::CreateSubWindows()
 {
-  displayWindow = new MainDisplayWindow(BookName);
+  displayWindow = new MainDisplayWindow(BookName, ChapterNumber, VerseNumber);
   displayWindow->setParent(this);
   statusbar = statusBar();
 }

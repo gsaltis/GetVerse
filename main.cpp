@@ -266,7 +266,7 @@ int
 MainBookIndex = 0;
 
 int
-MainChapter = 0;
+MainChapterNumber = 0;
 
 int
 MainVerse[MAIN_FORMAT_COUNT_MAX] = { 0 };;
@@ -303,6 +303,9 @@ MainSystemSettings;
 
 QString
 MainGeometryString;
+
+int
+MainVerseNumber = 0;
 
 /*****************************************************************************!
  * Function : main
@@ -370,7 +373,8 @@ MainInitializeGUI
   InApplication.setApplicationVersion(VERSION);
   InApplication.setOrganizationName(MAIN_ORG_NAME);
   InApplication.setOrganizationDomain(MAIN_DOMAIN_NAME);
-  w = new MainWindow(MainSearchBook ? MainSearchBook->name : QString(""));
+  w = new MainWindow(MainSearchBook ? MainSearchBook->name : QString(""),
+                     MainChapterNumber, MainVerseNumber);
 
   screen = w->screen();
   screenGeometry = screen->availableGeometry();
@@ -429,15 +433,18 @@ void
 ProcessCommandLine
 (int argc, char** argv)
 {
+  int                                   n;
+  int                                   verseNumber;
+  int                                   verseCount;
+  BookInfo*                             bookInfo;
   int                                   chapterNumber;
-  int                                   k;
+  QString                               bookName;
   QString                               chapterString;
   QString                               verseString;
   QString                               command;
   int                                   i;
   QStringList                           st;
   QString                               s;
-  bool                                  b;
   
   for (i = 1; i < argc; i++) {
     command = argv[i];
@@ -572,6 +579,19 @@ ProcessCommandLine
   }
 
   //!
+  n = sqlite3_open(MainDatabaseFilename.toStdString().c_str(), &MainDatabase);
+  if ( n != SQLITE_OK ) {
+    fprintf(stderr, "Could not open database %s : %s\n", MainDatabaseFilename.toStdString().c_str(), sqlite3_errstr(n));
+    exit(EXIT_FAILURE);
+  }
+  
+  //! 
+  QFileInfo                             fileInfo2(MainDatabaseFilename);
+  if ( ! fileInfo2.exists() ) {
+    fprintf(stderr, "File %s does not exist\n", MainDatabaseFilename.toStdString().c_str());
+    exit(EXIT_FAILURE);
+  }
+  MainDBBReadBookInfo();
 
   //!
   if ( MainFormatAdd ) {
@@ -580,45 +600,55 @@ ProcessCommandLine
   }
 
   if ( i == argc ) {
-    if ( ! MainUseGUI ) {
-      fprintf(stderr, "Missing book reference\n");
-      exit(EXIT_FAILURE);
-    }
+    return;
   }
-
-  MainBook = QString(argv[i]);
+  
+  //! 
+  bookName = argv[i];
   i++;
 
-  //!
-  for ( k = i; k < argc; k++ ) {
-    s = QString(argv[k]);
-    st = s.split(":");
-    if ( st.count() < 1 || st.count() > 2 ) {
-      fprintf(stderr, "Invalid chapter/verse reference\n");
+  //! 
+  bookInfo = MainBookInfo->GetBookByName(bookName, true);
+  if ( NULL == bookInfo ) {
+    DisplayErrorMessage(QString("Book %1 is not found").arg(bookName));
+    exit(EXIT_FAILURE);
+  }
+  
+  //! 
+  if ( i == argc ) {
+    MainBook = bookName;
+    MainChapterNumber = 1;
+    MainVerseNumber = 1;
+    return;
+  }
+  
+  //! 
+  s = QString(argv[i]);
+  st = s.split(":");
+  chapterNumber = st[0].toInt();
+  if ( chapterNumber == 0 || chapterNumber > bookInfo->GetChapterCount() ) {
+    DisplayErrorMessage(QString("%1 is not a valid chapter for book %2")
+                        .arg(chapterNumber)
+                        .arg(bookName));
+    exit(EXIT_FAILURE);
+  }
+  verseNumber = 1;
+  MainBook = bookName;
+  MainChapterNumber = chapterNumber;
+  MainVerseNumber = 1;
+  
+  if ( st.size() == 2 ) {
+    verseNumber = st[1].toInt();
+    verseCount = bookInfo->GetChapterVerseCount(MainChapterNumber);
+    if ( verseNumber == 0 || verseNumber > verseCount ) {
+      DisplayErrorMessage(QString("%1 is not a valid verse for %2 %3 (max %4)")
+                          .arg(verseNumber)
+                          .arg(bookName)
+                          .arg(chapterNumber)
+                          .arg(verseCount));
       exit(EXIT_FAILURE);
     }
-    do {
-      if ( st.count() == 2 ) {
-        chapterString = st[0];
-        verseString = st[1];
-        break;
-      }
-      chapterString = argv[k];
-      k++;
-      
-      if ( k == argc ) {
-        verseString = ALL_VERSES_STRING;
-        break;
-      }
-      verseString = argv[k];
-    } while (false);
-    chapterString.toInt(&b, 10);
-    if ( ! b ) {
-      fprintf(stderr, "Chapter reference is not a number\n");
-      exit(EXIT_FAILURE);
-    }
-    chapterNumber = chapterString.toInt();
-    ProcessCommandLineVerseDeclaration(chapterNumber, verseString);
+    MainVerseNumber = verseNumber;
   }
 }
 
@@ -630,7 +660,7 @@ DisplayHelp
 (void)
 {
   printf("Usage : %s options\n", ProgramName.toStdString().c_str());
-  printf("options book chapter verse \n");
+  printf("options book chapter{:verse} \n");
   printf("  -a, --addformatting     : Add formatting to database\n");
   printf("  -b, --block             : Specify the block output style\n");
   printf("  -c, --config filename   : Specify the system configuration file\n");
@@ -674,7 +704,7 @@ HandleCommandLineFormatAdd
   MainBookIndex = atoi(argv[k]);
   k++;
 
-  MainChapter = atoi(argv[k]);
+  MainChapterNumber = atoi(argv[k]);
   k++;
 
   for ( i = k ; i < argc; i += 2 ) {
@@ -1238,11 +1268,6 @@ VerifyCommandLine
     }
   }
 
-  QFileInfo                             fileInfo2(MainDatabaseFilename);
-  if ( ! fileInfo2.exists() ) {
-    fprintf(stderr, "File %s does not exist\n", MainDatabaseFilename.toStdString().c_str());
-    exit(EXIT_FAILURE);
-  }
 
   n = sqlite3_open(MainInterlinearDatabaseFilename.toStdString().c_str(), &MainInterlinearDatabase);
   if ( n != SQLITE_OK ) {
@@ -1260,7 +1285,6 @@ VerifyCommandLine
     exit(ProcessFormatAdd() ? EXIT_SUCCESS : EXIT_FAILURE);
   }
 
-  MainDBBReadBookInfo();
   if ( MainUseGUI ) {
     return;
   }
@@ -1297,7 +1321,7 @@ ProcessFormatAdd
 
   for ( i = 0 ; i < MainFormatCount; i++ ) {
     sprintf(sqlstatement, SQL_STATEMENT_INSERT_FORMATTING,
-            MainBookIndex, MainChapter, MainVerse[i], MainFormatType[i]);
+            MainBookIndex, MainChapterNumber, MainVerse[i], MainFormatType[i]);
     m  = sqlite3_exec(MainDatabase, sqlstatement, NULL, NULL, NULL);
     if ( m != SQLITE_OK ) {
       fprintf(stderr, "sqlite_exec() failed\n %s\n %d : %s\n", sqlstatement, m, sqlite3_errstr(m));
