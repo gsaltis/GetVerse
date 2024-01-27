@@ -423,7 +423,5 @@ void
 TextDisplayVerseWindow::SlotSetBookmark
 (int InBook, int InChapter, int InVerse, int InWordIndex)
 {
-  TRACE_FUNCTION_START();
   emit SignalSetBookmark(InBook, InChapter, InVerse, InWordIndex);
-  TRACE_FUNCTION_END();
 }

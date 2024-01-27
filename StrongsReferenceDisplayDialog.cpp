@@ -405,14 +405,12 @@ StrongsReferenceDisplayDialog::resizeEvent
   HeaderBlock->move(HeaderBlockX, HeaderBlockY);
   HeaderBlock->resize(HeaderBlockW, HeaderBlockH);
 
-  TRACE_FUNCTION_INT(HeaderBlockH);
   LabelBlockX = LabelBlock->pos().x();
   LabelBlockY = LabelBlock->pos().y();
   LabelBlockW = LabelBlock->size().width();
   LabelBlockH = height - HeaderBlockH;
   LabelBlock->move(LabelBlockX, LabelBlockY);
   LabelBlock->resize(LabelBlockW, LabelBlockH);
-  TRACE_FUNCTION_INT(LabelBlockH);
 
   OKButtonW = OKButton->size().width();
   OKButtonH = OKButton->size().height();
@@ -427,7 +425,6 @@ StrongsReferenceDisplayDialog::resizeEvent
   DataBlockH = height - (HeaderBlockH + (OKButtonH + 10));
   DataBlock->move(DataBlockX, DataBlockY);
   DataBlock->resize(DataBlockW, DataBlockH);
-  TRACE_FUNCTION_INT(DataBlockH);
 
   //!
   OriginLabelX = OriginLabel->pos().x();
@@ -436,12 +433,8 @@ StrongsReferenceDisplayDialog::resizeEvent
 
   top = OriginLabelY;
   bottom = DataBlockH;
-  TRACE_FUNCTION_INT(OKButtonY);
-  TRACE_FUNCTION_INT(top);
-  TRACE_FUNCTION_INT(bottom);
   h = (bottom - top) - 5;
   h /= 2;
-  TRACE_FUNCTION_INT(h);
   
   OriginLabelH = h;
   OriginLabel->move(OriginLabelX, OriginLabelY);

@@ -342,8 +342,6 @@ int
 MainInitializeGUI
 (QApplication& InApplication)
 {
-  int                                   screenHeight;
-  int                                   screenWidth;
   QRect                                 screenGeometry;
   QScreen*                              screen;
   int                                   b;
@@ -376,11 +374,6 @@ MainInitializeGUI
 
   screen = w->screen();
   screenGeometry = screen->availableGeometry();
-  screenWidth = screenGeometry.width();
-  screenHeight = screenGeometry.height();
-  TRACE_FUNCTION_INT(screenWidth);
-  TRACE_FUNCTION_INT(screenHeight);
-  
   size = QSize(MainSystemSettings->GetMainWindowWidth(),
                MainSystemSettings->GetMainWindowHeight());
   pos = QPoint(MainSystemSettings->GetMainWindowX(),

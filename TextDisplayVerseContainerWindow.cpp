@@ -214,8 +214,5 @@ TextDisplayVerseContainerWindow::SlotSetBookmark
 {
   QString                               st;
   
-  TRACE_FUNCTION_START();
   st = QString("%1 %2:%3.%4").arg(InBook).arg(InChapter).arg(InVerse).arg(InWordIndex);
-  TRACE_FUNCTION_QSTRING(st);
-  TRACE_FUNCTION_END();
 }

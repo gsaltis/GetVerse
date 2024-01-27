@@ -106,14 +106,12 @@ void
 MainWindow::resizeEvent
 (QResizeEvent* InEvent)
 {
-  QEvent::Type                          type;
   int                                   width;
   int                                   height;
   QSize                                 size;
   QSize                                 statusbar_size;
   QSize                                 menu_size;
 
-  TRACE_FUNCTION_START();
   size = InEvent->size();  
   menu_size = menubar->size();
   statusbar_size = statusbar->size();
@@ -123,14 +121,8 @@ MainWindow::resizeEvent
     displayWindow->move(0, menu_size.height());
     displayWindow->resize(width, height);
   }
-  if ( isMaximized() ) {
-    TRACE_FUNCTION_LOCATION();
-  }
-  type = InEvent->type();
-  TRACE_FUNCTION_INT(type);
   MainSystemSettings->SetMainWindowWidth(size.width());
   MainSystemSettings->SetMainWindowHeight(size.height());
-  TRACE_FUNCTION_END();
 }
 
 /*****************************************************************************!
@@ -214,12 +206,7 @@ MainWindow::moveEvent
 {
   QPoint                                p;
 
-  TRACE_FUNCTION_START();
-  if ( isMaximized() ) {
-    TRACE_FUNCTION_LOCATION();
-  }
   p = InEvent->pos();
   MainSystemSettings->SetMainWindowX(p.x());
-  MainSystemSettings->SetMainWindowY(p.y());
-  TRACE_FUNCTION_END();
+  MainSystemSettings->SetMainWindowY(p.y() -31);
 }
