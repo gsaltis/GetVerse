@@ -441,8 +441,10 @@ void
 InterlinearWord::GetValues
 ()
 {
-}
+  MainGetInterlinearWordDisplays(contextualFormDisplay, englishDisplay, strongsDisplay,
+                                 morphologyDisplay, transliterateDisplay);
 
+}
 /*****************************************************************************!
  * Function : SetValues
  *****************************************************************************/

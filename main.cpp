@@ -420,6 +420,7 @@ MainInitialize
   MainBookMarks->Read();
 
   InterlinearWord::GetValues();
+  TextDisplayInterlinearItem::GetPartsDisplay();
   s = getenv(DATABASE_ENV_LOCATION);
   if ( ! s.isEmpty() ) {
     MainDatabaseFilename = s;

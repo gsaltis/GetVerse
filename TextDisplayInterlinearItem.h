@@ -56,6 +56,8 @@ public :
   int                           GetVerseNumber          (void);
   void                          Reset                   (void);
   void                          ReComputeSize           (void);
+  static void                   SavePartsDisplay        (void);
+  static void                   GetPartsDisplay         (void);
   
   //! Public Data
 public :

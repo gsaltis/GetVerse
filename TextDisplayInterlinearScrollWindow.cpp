@@ -78,20 +78,28 @@ void
 TextDisplayInterlinearScrollWindow::resizeEvent
 (QResizeEvent* InEvent)
 {
+  PerformResize(InEvent->size());
+}
+
+/*****************************************************************************!
+ * Function : PerformResize
+ *****************************************************************************/
+void
+TextDisplayInterlinearScrollWindow::PerformResize
+(QSize InSize)
+{
   int                                   h;
   int                                   verseWindowW;
   int                                   verseWindowH;
   int                                   verseWindowY;
   int                                   verseWindowX;
-  QSize					size;  
   int					width;
   int					height;
   TextDisplayInterlinearWindow*               w = (TextDisplayInterlinearWindow*)widget();
 
-  size = InEvent->size();
-  width = size.width();
+  width = InSize.width();
   height = verseWindow->ArrangeItems(width);
-  h = size.height();
+  h = InSize.height();
   if ( h > height ) {
     height = h;
   }
@@ -223,7 +231,8 @@ void
 TextDisplayInterlinearScrollWindow::SlotSelectStrongsWord
 (QString InStrongsWord)
 {
-  emit SignalSelectStrongsWord(InStrongsWord);  
+  emit SignalSelectStrongsWord(InStrongsWord);
+  PerformResize(size());
 }
 
 /*****************************************************************************!
@@ -234,6 +243,7 @@ TextDisplayInterlinearScrollWindow::SlotEnglishChanged
 (bool InSet)
 {
   emit SignalEnglishChanged(InSet);  
+  PerformResize(size());
 }
 
 /*****************************************************************************!
@@ -245,6 +255,7 @@ TextDisplayInterlinearScrollWindow::SlotTransliterateChanged
 {
   
   emit SignalTransliterateChanged(InSet);
+  PerformResize(size());
 }
 
 /*****************************************************************************!
@@ -255,6 +266,7 @@ TextDisplayInterlinearScrollWindow::SlotStrongsChanged
 (bool InSet)
 {
   emit SignalStrongsChanged(InSet);  
+  PerformResize(size());
 }
 
 /*****************************************************************************!
@@ -265,4 +277,5 @@ TextDisplayInterlinearScrollWindow::SlotMorphologyChanged
 (bool InSet)
 {
   emit SignalMorphologyChanged(InSet);  
+  PerformResize(size());
 }

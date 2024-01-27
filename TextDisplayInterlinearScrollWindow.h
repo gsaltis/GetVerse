@@ -62,7 +62,8 @@ class TextDisplayInterlinearScrollWindow : public QScrollArea
   void	InitializeSubWindows            ();
   void	resizeEvent                     (QResizeEvent* InEvent);
   void	CreateConnections               (void);
-
+  void  PerformResize                   (QSize InSize);
+  
  //! Private Data
  private :
   TextDisplayInterlinearWindow* verseWindow;

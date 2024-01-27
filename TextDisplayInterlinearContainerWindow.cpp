@@ -273,13 +273,10 @@ TextDisplayInterlinearContainerWindow::SlotSelectStrongsWord
 (QString InStrongsWord)
 {
   QSize                                 s = size();
-  int                           width = s.width();
-  int                           height = s.height();
 
   DisplayWordSelect = true;
   wordSelect->show();
-  resize(width, height-1);
-  resize(width, height);
+  PerformResize(s);
   emit SignalSelectStrongsWord(InStrongsWord);
 }
 
@@ -290,13 +287,10 @@ void
 TextDisplayInterlinearContainerWindow::SlotCloseStrongsReference(void)
 {
   QSize                         s = size();
-  int                           width = s.width();
-  int                           height = s.height();
   
   DisplayWordSelect = false;
   wordSelect->hide();
-  resize(width, height-1);
-  resize(width, height);
+  PerformResize(s);
 }
 
 /*****************************************************************************!

@@ -18,6 +18,7 @@
  *****************************************************************************/
 #include "TextDisplayInterlinearItem.h"
 #include "common.h"
+#include "main.h"
 #include "StrongsReferenceDisplayDialog.h"
 
 /*****************************************************************************!
@@ -543,4 +544,30 @@ TextDisplayInterlinearItem::ReComputeSize(void)
 {
   ComputeSize();
   resize(Size);
+}
+
+/*****************************************************************************!
+ * Function : SavePartsDisplay
+ *****************************************************************************/
+void
+TextDisplayInterlinearItem::SavePartsDisplay(void)
+{
+  MainSetInterlinearWordDisplays(DisplayContextual,
+                                 DisplayEnglish,
+                                 DisplayStrongs,
+                                 DisplayMorphology,
+                                 DisplayTransliterate);
+}
+
+/*****************************************************************************!
+ * Function : GetPartsDisplay
+ *****************************************************************************/
+void
+TextDisplayInterlinearItem::GetPartsDisplay(void)
+{
+  MainGetInterlinearWordDisplays(DisplayContextual,
+                                 DisplayEnglish,
+                                 DisplayStrongs,
+                                 DisplayMorphology,
+                                 DisplayTransliterate);
 }

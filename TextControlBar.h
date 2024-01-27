@@ -75,6 +75,7 @@ private :
   QStringList                   WordBreakTypeComboAddItems      (void);
   void                          CreateConnections               ();
   void                          InterlinearElementsDisplay      (bool InDisplay);
+  void                          CreateActions                   ();
   
   //! Private Data
 private :

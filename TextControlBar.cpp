@@ -21,6 +21,7 @@
 #include "InterlinearWord.h"
 #include "Common.h"
 #include "BookMark.h"
+#include "main.h"
 
 /*****************************************************************************!
  * Function : TextControlBar
@@ -54,15 +55,25 @@ TextControlBar::initialize()
   ButtonHeight = 25;
   InterWordSkip = 5;
   RightMargin = 10;
-  InitializeSubWindows();  
   CreateSubWindows();
+  InitializeSubWindows();
+  CreateActions();
+  CreateConnections();
+}
+
+/*****************************************************************************!
+ * Function : CreateActions
+ *****************************************************************************/
+void
+TextControlBar::CreateActions
+()
+{
   ActionReferenceButtonPushed = new QAction("ReferenceButtonPushed", this);
   connect(ActionReferenceButtonPushed, SIGNAL(triggered()), this, SLOT(SlotReferenceButtonPushed()));
   ActionEditButtonPushed = new QAction("EditButtonPushed", this);
   connect(ActionEditButtonPushed, SIGNAL(triggered()), this, SLOT(SlotEditButtonPushed()));
   ActionAnalyzeButtonPushed = new QAction("AnalyzeButtonPushed", this);
   connect(ActionAnalyzeButtonPushed, SIGNAL(triggered()), this, SLOT(SlotAnalyzeButtonPushed()));
-  CreateConnections();
 }
 
 /*****************************************************************************!
@@ -360,7 +371,20 @@ TextControlBar::CreateSubWindows()
 void
 TextControlBar::InitializeSubWindows()
 {
-  
+  bool                                  morphologyDisplay;
+  bool                                  transliterateDisplay;
+  bool                                  strongsDisplay;
+  bool                                  englishDisplay;
+  bool                                  contextualDisplay;
+
+  MainGetInterlinearWordDisplays(contextualDisplay, englishDisplay, strongsDisplay,
+                                 morphologyDisplay, transliterateDisplay);
+
+  InterlinearTransliterateCheckBox->SetChecked(transliterateDisplay);
+  InterlinearMorphologyCheckBox->SetChecked(morphologyDisplay);
+  InterlinearEnglishCheckBox->SetChecked(englishDisplay);
+  InterlinearStrongsCheckBox->SetChecked(strongsDisplay);
+  InterlinearContextualCheckBox->SetChecked(contextualDisplay);
 }
 
 /*****************************************************************************!
@@ -839,12 +863,6 @@ TextControlBar::InterlinearElementsDisplay
   InterlinearStrongsCheckBox->setVisible(InDisplay);
   InterlinearMorphologyCheckBox->setVisible(InDisplay);
   InterlinearTransliterateCheckBox->setVisible(InDisplay);
-
-  InterlinearContextualCheckBox->SetChecked(InterlinearWord::contextualFormDisplay);
-  InterlinearEnglishCheckBox->SetChecked(InterlinearWord::englishDisplay);
-  InterlinearStrongsCheckBox->SetChecked(InterlinearWord::strongsDisplay);
-  InterlinearMorphologyCheckBox->SetChecked(InterlinearWord::morphologyDisplay);
-  InterlinearTransliterateCheckBox->SetChecked(InterlinearWord::transliterateDisplay);
 }
 
 /*****************************************************************************!

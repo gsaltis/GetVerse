@@ -51,10 +51,10 @@ TextDisplayInterlinearWindow::initialize()
   interlinearChapter = NULL;
 
   MainGetInterlinearWordDisplays(TextDisplayInterlinearItem::DisplayContextual,
-                                 TextDisplayInterlinearItem::DisplayStrongs,
-                                 TextDisplayInterlinearItem::DisplayTransliterate,
                                  TextDisplayInterlinearItem::DisplayEnglish,
-                                 TextDisplayInterlinearItem::DisplayMorphology);
+                                 TextDisplayInterlinearItem::DisplayStrongs,
+                                 TextDisplayInterlinearItem::DisplayMorphology,
+                                 TextDisplayInterlinearItem::DisplayTransliterate);
   
   setMouseTracking(true);
   LeftMargin = TEXT_DISPLAY_INTERLINEAR_REFERENCE_ITEM_WIDTH + 5;
@@ -524,6 +524,7 @@ TextDisplayInterlinearWindow::SlotEnglishChanged
 (bool InSet)
 {
   TextDisplayInterlinearItem::DisplayEnglish = InSet;
+  TextDisplayInterlinearItem::SavePartsDisplay();
   ReArrangeItems();
 }
 
@@ -535,6 +536,7 @@ TextDisplayInterlinearWindow::SlotTransliterateChanged
 (bool InSet)
 {
   TextDisplayInterlinearItem::DisplayTransliterate = InSet;
+  TextDisplayInterlinearItem::SavePartsDisplay();
   ReArrangeItems();
 }
 
@@ -546,6 +548,7 @@ TextDisplayInterlinearWindow::SlotStrongsChanged
 (bool InSet)
 {
   TextDisplayInterlinearItem::DisplayStrongs = InSet;
+  TextDisplayInterlinearItem::SavePartsDisplay();
   ReArrangeItems();
 }
 
@@ -557,6 +560,7 @@ TextDisplayInterlinearWindow::SlotMorphologyChanged
 (bool InSet)
 {
   TextDisplayInterlinearItem::DisplayMorphology = InSet;
+  TextDisplayInterlinearItem::SavePartsDisplay();
   ReArrangeItems();
 }
 
