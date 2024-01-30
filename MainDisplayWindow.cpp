@@ -64,7 +64,6 @@ MainDisplayWindow::Initialize()
   CreateSubWindows();
   CreateConnections();
   GetInitialLocation(book, chapter, verse);
-
   emit SignalMoveToBookChapter(book, chapter, verse);
   displayWindow->SlotChapterSelected(chapter);
 }

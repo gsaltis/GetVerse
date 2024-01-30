@@ -61,11 +61,13 @@ BookNameWindow::initialize()
 void
 BookNameWindow::CreateSubWindows()
 {
+  TRACE_FUNCTION_START();
   header = new SectionHeader();  
   header->setParent(this);
   header->SetText("Books");
   nameTable = new BookNameTable();
   nameTable->setParent(this);
+  TRACE_FUNCTION_END();
 }
 
 /*****************************************************************************!

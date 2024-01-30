@@ -255,11 +255,13 @@ TextDisplayOuterWindow::SlotBookSelected
 {
   BookInfo*                             bookInfo;
 
+  TRACE_FUNCTION_START();
   bookInfo = MainBookInfo->FindBookByIndex(InBookIndex);
   if ( NULL == bookInfo ) {
     return;
   }
   BookSelected(bookInfo, 1);
+  TRACE_FUNCTION_END();
 }
 
 /*****************************************************************************!
@@ -269,12 +271,15 @@ void
 TextDisplayOuterWindow::BookSelected
 (BookInfo* InBookInfo, int InChapter)
 {
+  TRACE_FUNCTION_START();
   InBookInfo->ReadVerses();
   header->SetText(InBookInfo->GetCapitalizedBookName());
   viewWindow->ClearText();
 
+  TRACE_FUNCTION_LOCATION();
   emit SignalBookIndexSelected(InBookInfo->GetIndex());
 
+  TRACE_FUNCTION_LOCATION();
   emit SignalBookSelected(InBookInfo);
   if ( InChapter > 0 ) {
     controlBar->SlotSetChapter(InChapter);
@@ -283,6 +288,7 @@ TextDisplayOuterWindow::BookSelected
   if ( InChapter > 0 ) {
     emit SignalChapterSelected(InChapter);
   }
+  TRACE_FUNCTION_END();
 }
 
 /*****************************************************************************!
@@ -905,8 +911,10 @@ void
 TextDisplayOuterWindow::SlotBookmarkSelected
 (BookInfo* InBook, int InChapter, int, int)
 {
+  TRACE_FUNCTION_START();
   BookSelected(InBook, InChapter);
   emit SignalChapterSelected(InChapter);
+  TRACE_FUNCTION_END();
 }
 
 /*****************************************************************************!

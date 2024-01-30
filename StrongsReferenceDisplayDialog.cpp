@@ -308,12 +308,12 @@ StrongsReferenceDisplayDialog::CreateDataBlock(void)
   x = 0;
 
   CreateDataBlockData(y, width, labelHeight, IDText);
-  y += labelHeight + 10;
+  y += labelHeight + 5;
     
-  label = CreateDataBlockData(y, width, labelHeight, LexicalFormText);
-  label->setAlignment(Qt::AlignRight);
+  label = CreateDataBlockData(y, width, labelHeight + 10, LexicalFormText);
+  label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
   label->setFont(ContextualFont);
-  y += labelHeight + 10;
+  y += labelHeight + 15;
   
   CreateDataBlockData(y, width, labelHeight, TransliteratedFormText);
   y += labelHeight + 10;

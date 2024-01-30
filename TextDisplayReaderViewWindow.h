@@ -58,6 +58,7 @@ class TextDisplayReaderViewWindow : public QTextEdit
  //! Private Methods
  private :
   void                          Initialize              ();
+  void                          CreateNewBlock          (QTextCursor& InCursorx);
 
  //! Private Data
  private :

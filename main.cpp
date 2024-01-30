@@ -676,7 +676,7 @@ DisplayHelp
   printf("                            Requires that '-f, --filename' is specified\n");
   printf("  -r, --reference         : Specifies whether to display the verse reference\n");
   printf("  -s, --split             : Specifies whether to split lines at puncations\n");
-  printf("  -s, --screen view       : Specify the initial view to begining with\n");
+  printf("  -S, --screen view       : Specify the initial view to begining with\n");
   printf("                            [verse sentence reader interlinear]\n");
   printf("  -e, --easysplit         : Specifies whether to split lines only at end of sentence\n");
   printf("  -V, --verbose           : Specifies 'verbose' operation\n");

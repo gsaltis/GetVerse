@@ -48,6 +48,10 @@ class SystemSettings : public QWidget
   void                          SetMainWindowWidth      (int InWidth);
   int                           GetMainWindowHeight     ();
   void                          SetMainWindowHeight     (int InHeight);
+  QString                       GetReaderViewFontName   ();
+  void                          SetReaderViewFontName   (QString InFontName);
+  int                           GetReaderViewFontSize   ();
+  void                          SetReaderViewFontSize   (int InFontSize);
 
  //! Public Data
  public :
@@ -65,6 +69,8 @@ class SystemSettings : public QWidget
   void                          VerifyMainWindowY       ();
   void                          VerifyMainWindowWidth   ();
   void                          VerifyMainWindowHeight  ();
+  void                          VerifyReaderViewFontName ();
+  void                          VerifyReaderViewFontSize ();
 
  //! Private Data
  private :
@@ -79,6 +85,12 @@ class SystemSettings : public QWidget
   int                           MainWindowWidthDefault;
   QString                       MainWindowHeightTag;
   int                           MainWindowHeightDefault;
+  QString                       FontName;
+  QString                       ReaderViewFontNameTag;
+  QString                       ReaderViewFontNameDefault;
+  int                           FontSize;
+  QString                       ReaderViewFontSizeTag;
+  int                           ReaderViewFontSizeDefault;
 
  //! Public Slots
  public slots :

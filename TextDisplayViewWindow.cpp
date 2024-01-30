@@ -137,26 +137,39 @@ TextDisplayViewWindow::SlotBookSelected
 {
   QSize                                 s;
 
+  TRACE_FUNCTION_START();
   emit SignalShowProgressBar();
+  TRACE_FUNCTION_LOCATION();
   bookInfo = InBookInfo;
   verseCount = GetVerseCount();
   maxChapters = bookInfo->chapters;
   if ( mode == ReferenceMode ) {
     emit SignalVerseCountChanged(verseCount);
+  TRACE_FUNCTION_LOCATION();
   }
   emit SignalSetProgressBar(0, verseCount);
+  TRACE_FUNCTION_LOCATION();
   GetMaxReferenceWidth();
+  TRACE_FUNCTION_LOCATION();
   SetBook();
+  TRACE_FUNCTION_LOCATION();
   ItemsArranged = false;
 
+  TRACE_FUNCTION_LOCATION();
   ArrangeItems();
+  TRACE_FUNCTION_LOCATION();
   ComputeSize();
+  TRACE_FUNCTION_LOCATION();
   ItemsArranged = true;
   resize(tableSize);
   ItemsArranged = false;
+  TRACE_FUNCTION_LOCATION();
   repaint();
+  TRACE_FUNCTION_LOCATION();
   s = size();
   emit SignalHideProgressBar();
+  TRACE_FUNCTION_LOCATION();
+  TRACE_FUNCTION_END();
 }
 
 /*****************************************************************************!
@@ -194,8 +207,10 @@ TextDisplayViewWindow::ArrangeItems
       break;
     }
     case BlockMode : {
+#if 0
       windowWidth = tableWidth - (BlockLeftMargin + BlockRightMargin);
       height = ArrangeItemsBlock(BlockLeftMargin, y, windowWidth);
+#endif      
       break;
     }
     case EditMode : {
@@ -349,6 +364,7 @@ TextDisplayViewWindow::SetBook
   int                                   n;
   QString                               query;
   
+  TRACE_FUNCTION_START();
   tmpVerseCount = 0;
   wordCount = 0;
   ClearText();
@@ -367,7 +383,9 @@ TextDisplayViewWindow::SetBook
     delete currentInterlinearChapter;
   }
   currentInterlinearChapter = AddInterlinearChapter(bookInfo->index, 1);
+  TRACE_FUNCTION_LOCATION();
   emit SignalWordCountChanged(wordCount);
+  TRACE_FUNCTION_END();
 }
 
 /*****************************************************************************!
@@ -779,7 +797,9 @@ TextDisplayViewWindow::paintEvent
       break;
     }
     case BlockMode : {
-      PaintBlockMode(&painter, rect);
+#if 0      
+      // PaintBlockMode(&painter, rect);
+#endif      
       break;
     }
     case InterlinearMode : {

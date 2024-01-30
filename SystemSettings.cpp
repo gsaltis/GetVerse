@@ -51,6 +51,10 @@ SystemSettings::Initialize()
   MainWindowWidthDefault = 1000;
   MainWindowHeightTag = "MainWindow/Height";
   MainWindowHeightDefault = 800;
+  ReaderViewFontNameTag = "ReaderView/FontName";
+  ReaderViewFontNameDefault = QString("Times New Roman");
+  ReaderViewFontSizeTag = "ReaderView/FontSize";
+  ReaderViewFontSizeDefault = 11;
 }
 
 /*****************************************************************************!
@@ -179,4 +183,68 @@ SystemSettings::SetMainWindowHeight
 (int InHeight)
 {
   Settings->setValue(MainWindowHeightTag, InHeight);
+}
+
+/*****************************************************************************!
+ * Function : GetReaderViewFontName
+ *****************************************************************************/
+QString
+SystemSettings::GetReaderViewFontName()
+{
+  VerifyReaderViewFontName();  
+  return Settings->value(ReaderViewFontNameTag).toString();
+}
+
+/*****************************************************************************!
+ * Function : VerifyReaderViewFontName
+ *****************************************************************************/
+void
+SystemSettings::VerifyReaderViewFontName()
+{
+  if ( ! Settings->contains(ReaderViewFontNameTag) ) {  
+    Settings->setValue(ReaderViewFontNameTag, ReaderViewFontNameDefault);
+  }
+}
+
+/*****************************************************************************!
+ * Function : SetReaderViewFontName
+ *****************************************************************************/
+void
+SystemSettings::SetReaderViewFontName
+(QString InFontName)
+{
+  
+  Settings->setValue(ReaderViewFontNameTag, InFontName);
+}
+
+/*****************************************************************************!
+ * Function : GetReaderViewFontSize
+ *****************************************************************************/
+int
+SystemSettings::GetReaderViewFontSize()
+{
+  VerifyReaderViewFontSize();  
+  return Settings->value(ReaderViewFontSizeTag).toInt();
+}
+
+/*****************************************************************************!
+ * Function : VerifyReaderViewFontSize
+ *****************************************************************************/
+void
+SystemSettings::VerifyReaderViewFontSize()
+{
+  if ( ! Settings->contains(ReaderViewFontSizeTag) ) {  
+    Settings->setValue(ReaderViewFontSizeTag, ReaderViewFontSizeDefault);
+  }
+}
+
+/*****************************************************************************!
+ * Function : SetReaderViewFontSize
+ *****************************************************************************/
+void
+SystemSettings::SetReaderViewFontSize
+(int InFontSize)
+{
+  
+  Settings->setValue(ReaderViewFontSizeTag, InFontSize);
 }
