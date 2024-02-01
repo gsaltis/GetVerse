@@ -66,9 +66,9 @@ void
 TextDisplayReaderViewWindow::SlotBookSelected
 (BookInfo* InBook)
 {
-  int                                   blockCount;
+  QString                               t;
+  int                                   k;
   QTextDocument*                        doc;
-  int                                   n;
   VerseInfo*                            verseInfo;
   int                                   i;
   QString                               text;
@@ -78,7 +78,8 @@ TextDisplayReaderViewWindow::SlotBookSelected
   QTextBlockFormat                      textBlockFormat;
   QTextCursor                           cursor;
 
-  //! 
+  //!
+  k = 0;
   Book = InBook;
   verseSet = Book->GetVerses();
 
@@ -104,23 +105,14 @@ TextDisplayReaderViewWindow::SlotBookSelected
       text = "";
       CreateNewBlock(cursor);
     }
-    text += verseInfo->GetText() + QString(" ");
+    t = verseInfo->GetText();
+    text +=  t + QString(" ");
+    k += t.length() + 1;
   }
+
+  TRACE_FUNCTION_INT(k);
   cursor.insertText(text);
-  blockCount = doc->blockCount();
-  CurrentText = text;
   delete verseSet;
-  n = CurrentText.length();
-
-  CurrentTextStart = 0;
-  for ( i = 0 ; i < n ; i++ ) {
-    if ( CurrentText[i].isPunct() ) {
-      i++;
-      break;
-    }
-  }
-
-  CurrentTextEnd = i;
   setFocus();
 }
 
