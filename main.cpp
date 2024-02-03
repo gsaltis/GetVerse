@@ -15,6 +15,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <QtGui>
+#include <QJSONDocument>
+#include <QMessageBox>
 
 /*****************************************************************************!
  * Local Headers
@@ -84,7 +86,7 @@ HandleCommandLineFormatAdd
 
 void
 MainDataBasePopulate
-(void);
+(QString InOptions);
 
 void
 MainWordDataBasePopulate
@@ -195,6 +197,9 @@ DisplayErrorMessage
  *****************************************************************************/
 QString
 MainInitialView = "verse";
+
+QString
+MainVersion = "NASB";
 
 SystemConfig*
 MainSystemConfig;
@@ -530,7 +535,12 @@ ProcessCommandLine
     
     //!
     if ( command == "-p" || command == "--populate" ) {
-      MainDataBasePopulate();
+      i++;
+      s = QString("vcbfC");
+      if ( i == argc ) {
+        s = QString(argv[i]);
+      }
+      MainDataBasePopulate(s);
       exit(EXIT_SUCCESS);
     }
     
@@ -665,14 +675,14 @@ DisplayHelp
   printf("  -a, --addformatting     : Add formatting to database\n");
   printf("  -b, --block             : Specify the block output style\n");
   printf("  -c, --config filename   : Specify the system configuration file\n");
-  printf("  -d, --database          : Populates the database\n");
+  printf("  -d, --database          : Specifies the database name\n");
   printf("  -e, --easysplit         : Specifies whether to split lines only at end of sentence\n");
   printf("  -f, --file filename     : Specify the input filename\n");
   printf("  -F, --format            : Apply formatting\n");
   printf("  -g, --geometry string   : Set initial geometry (XxY:W+H)\n");
   printf("  -h, --help              : Display this information\n");
   printf("  -n, --nogui             : Don't use GUI\n");
-  printf("  -p, --populate filename : Specify the database filename (Default %s)\n", DEFAULT_DB_FILENAME);
+  printf("  -p, --populate options  : Populate the database vcbfC\n");
   printf("                            Requires that '-f, --filename' is specified\n");
   printf("  -r, --reference         : Specifies whether to display the verse reference\n");
   printf("  -s, --split             : Specifies whether to split lines at puncations\n");
@@ -681,6 +691,7 @@ DisplayHelp
   printf("  -e, --easysplit         : Specifies whether to split lines only at end of sentence\n");
   printf("  -V, --verbose           : Specifies 'verbose' operation\n");
   printf("  -v, --version           : Display the version information\n");
+  printf("  -w,  --words            : Populates the word database table\n");
 }
 
 /*****************************************************************************!
@@ -727,89 +738,212 @@ HandleCommandLineFormatAdd
  *****************************************************************************/
 void
 MainDataBasePopulate
-(void)
+(QString )
 {
-  QString                               line;
+  int                                   chapterCount;
+  int                                   p;
+  int                                   q;
+  int                                   lastVerseNumber;
+  int                                   lastChapterNumber;
+  int                                   lastBookNumber;
+  QStringList                           sts;
+  QString                               verseText;
+  int                                   verseNumber;
+  int                                   chapterNumber;
+  int                                   bookNumber;
+  QJsonObject                           verseObject;
+  QJsonValue                            jsonValue;
   int                                   i;
+  int                                   k;
+  QJsonArray                            jsonArray;
+  QByteArray                            fileBytes;
+  QJsonDocument                         doc;
+  char*                                 errorString;
+  QString                               qt;
   int                                   n;
+  sqlite3*                              database;
+  QString                               databaseFilename;
+  QString                               verseJSONFilename;
+  QString                               bookSQLFilename;
+  QString                               chapterInsertQuery;
+  QString                               createVerseTableQuery =
+    QString("CREATE TABLE Verses   (version string, book int, chapter int, verse int, text string);");
+  QString                               createBookTableQuery =
+    QString("CREATE TABLE Book    (version string, book int, chapters int, standardbookorder int, standardbookgroup int, hebrewbookorder int, hebrewbookgroup int, groupend int, name string, nameabbrev string, righttoleft int);");
+  QString                               createChapterTableQuery =
+    QString("CREATE TABLE Chapter (version string, book int, chapter int, verseCount int);");
+  QString                               readerFormatCreateTableQuery =
+    QString("CREATE TABLE ReaderViewFormat (version string, book int, chapter int, verse int, wordindex int, format int, color string, title string)");
+  QString                               verseCreateQuery;
 
-  QString                               book;
-  QString                               lastBook;
-  int                                   bookIndex = 1;
-
-  int                                   chapter;
-  int                                   lastChapter = 0;
-
-  int                                   verse;
-  int                                   lastVerse   = 0;
-
-  char                                  text[4096];
+  //! Declare input/output filenames
+  databaseFilename = QString("%1-1.db").arg(MainVersion);
+  verseJSONFilename = QString("JSON/%1.json").arg(MainVersion);
+  bookSQLFilename = QString("SQL/%1Books.sql").arg(MainVersion);
   
-  if ( MainFilename.isEmpty() ) {
-    fprintf(stderr, "'-p, --populate requires an input filename\n");
-    DisplayHelp();
-    exit(EXIT_FAILURE);
+  //! Declare input/output files
+  QFile                                 databaseFile(databaseFilename);
+  QFile                                 verseJSONFile(verseJSONFilename);
+  QFile                                 bookSQLFile(bookSQLFilename);
+  
+  //! Remove old database
+  printf("Removing %s\n", databaseFilename.toStdString().c_str());
+  if ( databaseFile.exists() ) {
+    databaseFile.remove();
   }
 
-  //!
-  if ( MainVerbose ) {
-    printf("Opening Database   : %s\n", MainDatabaseFilename.toStdString().c_str());
-  }
-
-  n = sqlite3_open(MainDatabaseFilename.toStdString().c_str(), &MainDatabase);
+  //! Open new empty database
+  printf("Creating database\n");
+  n = sqlite3_open(databaseFilename.toStdString().c_str(), &database);
   if ( n != SQLITE_OK ) {
-    fprintf(stderr, "Could not open database %s : %s\n", MainDatabaseFilename.toStdString().c_str(), sqlite3_errstr(n));
+    qt = QString("Could not open database %1").arg(databaseFilename);
+    QMessageBox::critical(NULL, "sqlite3_optn() FAIL", qt);
     exit(EXIT_FAILURE);
   }
 
-  if ( MainVerbose ) {
-    printf("Clearing Databases\n");
-  }
-  MainClearingDatabase();
   //!
-  if ( MainVerbose ) {
-    printf("Reading Input File : %s\n", MainFilename.toStdString().c_str());
+  printf("Opening input files\n");
+  
+  //! Open verse JSON File
+  if ( ! verseJSONFile.open(QIODevice::ReadOnly | QIODevice::Text) ) {
+    qt = QString("Could not input file %1").arg(verseJSONFilename);
+    QMessageBox::critical(NULL, "sqlite3_optn() FAIL", qt);
+    exit(EXIT_FAILURE);
   }
 
-  MainReadLines();
+  //! Open book rows SQL file 
+  if ( ! bookSQLFile.open(QIODevice::ReadOnly | QIODevice::Text) ) {
+    qt = QString("Could not input file %1").arg(bookSQLFilename);
+    QMessageBox::critical(NULL, "sqlite3_optn() FAIL", qt);
+    exit(EXIT_FAILURE);
+  }
 
   //!
-  if ( MainVerbose ) {
-    printf("Processing Booknames\n");
+  printf("Creating Tables\n");
+  
+  //! Create verse database table
+  n = sqlite3_exec(database, createVerseTableQuery.toStdString().c_str(), NULL, NULL, &errorString);
+  if ( n != SQLITE_OK ) {
+    qt = QString("Could create Verse table %1").arg(errorString);
+    QMessageBox::critical(NULL, "sqlite3_exec() FAIL", qt);
+    exit(EXIT_FAILURE);
   }
 
-  for ( i = 0 ; i < MainFileLines.count(); i++ ) {
-    line = MainFileLines[i];
-    memset(text, 0x00, sizeof(text));
-    if ( !MainParseTextLine(line, book, &chapter, &verse, text) ) {
-      fprintf(stderr, "Could not parse line\n");
-      fprintf(stderr, "  %s\n", line.toStdString().c_str());
+  //! Create book database table
+  n = sqlite3_exec(database, createBookTableQuery.toStdString().c_str(), NULL, NULL, &errorString);
+  if ( n != SQLITE_OK ) {
+    qt = QString("Could create Book table %1").arg(errorString);
+    QMessageBox::critical(NULL, "sqlite3_exec() FAIL", qt);
+    exit(EXIT_FAILURE);
+  }
+
+  //! Create chapter database table
+  n = sqlite3_exec(database, createChapterTableQuery.toStdString().c_str(), NULL, NULL, &errorString);
+  if ( n != SQLITE_OK ) {
+    qt = QString("Could create Book table %1").arg(errorString);
+    QMessageBox::critical(NULL, "sqlite3_exec() FAIL", qt);
+    exit(EXIT_FAILURE);
+  }
+  
+  //! Create chapter database table
+  n = sqlite3_exec(database, readerFormatCreateTableQuery.toStdString().c_str(), NULL, NULL, &errorString);
+  if ( n != SQLITE_OK ) {
+    qt = QString("Could create Reader View Format table %1").arg(errorString);
+    QMessageBox::critical(NULL, "sqlite3_exec() FAIL", qt);
+    exit(EXIT_FAILURE);
+  }
+
+  //! Read and insert book rows into table
+  printf("Populate Book table\n");
+  qt = QString(bookSQLFile.readAll());
+  if ( qt.isEmpty() ) {
+    qt = QString("%1 does not appear to contain data").arg(bookSQLFilename);
+    QMessageBox::critical(NULL, "Book SQL input read", qt);
+    exit(EXIT_FAILURE);
+  }
+  bookSQLFile.close();
+
+  //! 
+  sts = qt.split("\n");
+  q = sts.size();
+  p = 1;
+  for ( auto st : sts) {
+    n = sqlite3_exec(database, st.toStdString().c_str(), NULL, NULL, &errorString);
+    printf("Books  : %2d of %2d\r", p, q);
+    if ( n != SQLITE_OK ) {
+      qt = QString("INSERT INTO Book Fail\n QUERY : %1\nERROR : %2").arg(st).arg(errorString);
+      QMessageBox::critical(NULL, "sqlite3_exec() FAIL", st);
       exit(EXIT_FAILURE);
     }
-    do {
-      if ( lastBook.isEmpty() && (book != lastBook) ) {
-        MainDBInsertBookName(lastBook, bookIndex, lastChapter);
-        MainDBInsertChapter(bookIndex, lastChapter, lastVerse);
-        bookIndex ++;
-        lastBook = book;
-        lastChapter = chapter;
-        lastVerse = 0;
-        break;
-      }
-      if ( chapter != lastChapter ) {
-        MainDBInsertChapter(bookIndex, lastChapter, lastVerse);
-        lastChapter = chapter;
-      }
-    } while (false);
-    MainDBInsertVerse(bookIndex, book, chapter, verse, text);
-    lastBook = book;
-    lastChapter = chapter;
-    lastVerse = verse;
+    p++;
   }
-  MainDBInsertBookName(lastBook, bookIndex, chapter);
-  MainDBInsertChapter(bookIndex, lastChapter, verse);
-  MainDBInsertVerse(bookIndex, book, chapter, verse, text);
-  sqlite3_close(MainDatabase);
+  printf("\n");
+
+  //! Read JSON verse text from file
+  printf("Populate Verse and Chapter tables\n");
+  fileBytes = verseJSONFile.readAll();
+  verseJSONFile.close();
+  doc = QJsonDocument::fromJson(fileBytes);
+  if ( doc.isEmpty() ) {
+    qt = QString("%1 does not appear to be a JSON files").arg(verseJSONFilename);
+    QMessageBox::critical(NULL, "JSON FAIL", qt);
+    exit(EXIT_FAILURE);
+  }
+
+  lastBookNumber = 1;
+  lastChapterNumber = 1;
+  lastVerseNumber = 1;
+  verseNumber = 1;
+  chapterCount = 1;
+  //! Populate Verse table
+  jsonArray = doc.array();
+  k = jsonArray.size();
+  for (i = 0; i < k; i++) {
+    jsonValue = jsonArray[i];
+    verseObject = jsonValue.toObject();
+    bookNumber = verseObject["book"].toInt();
+    chapterNumber = verseObject["chapter"].toInt();
+    verseNumber = verseObject["verse"].toInt();
+    verseText = verseObject["text"].toString();
+    printf("Verses : %02d %03d %03d : (%5d of %5d) Chapter %4d\r",
+           bookNumber, chapterNumber, verseNumber,
+           i + 1, k,
+           chapterCount);
+    verseCreateQuery =
+      QString("INSERT INTO Verses VALUES('%1', %2, %3, %4, \"%5\");")
+      .arg(MainVersion)
+      .arg(bookNumber)
+      .arg(chapterNumber)
+      .arg(verseNumber)
+      .arg(verseText);
+    n = sqlite3_exec(database, verseCreateQuery.toStdString().c_str(), NULL, NULL, &errorString);
+    if ( n != SQLITE_OK ) {
+      qt = QString("INSERT INTO Verses Fail : %1").arg(errorString);
+      QMessageBox::critical(NULL, "sqlite3_exec() FAIL", qt);
+      exit(EXIT_FAILURE);
+    }
+
+    //! Check whether to insert chapter / verse count 
+    if ( lastChapterNumber != chapterNumber ) {
+      chapterInsertQuery = QString("INSERT INTO Chapter VALUES('%1', %2, %3, %4);")
+        .arg(MainVersion)
+        .arg(lastBookNumber)
+        .arg(lastChapterNumber)
+        .arg(lastVerseNumber);
+      n = sqlite3_exec(database, chapterInsertQuery.toStdString().c_str(), NULL, NULL, &errorString);
+      if ( n != SQLITE_OK ) {
+        qt = QString("INSERT INTO Chapter Fail\n QUERY : %1\nERROR : %2").arg(chapterInsertQuery).arg(errorString);
+        QMessageBox::critical(NULL, "sqlite3_exec() FAIL", qt);
+        exit(EXIT_FAILURE);
+      }
+      chapterCount++;
+    } 
+    lastChapterNumber = chapterNumber;
+    lastBookNumber = bookNumber;
+    lastVerseNumber = verseNumber;
+  }
+  printf("\nDatabase created\n");
+  sqlite3_close(database);
 }
 
 /*****************************************************************************!
@@ -819,30 +953,6 @@ void
 MainWordDataBasePopulate
 (void)
 {
-  int                                   book;
-  char                                  sqlstmt[128];
-  int                                   n;
-  
-  book = 45;  // Romans
-  //!
-  if ( MainVerbose ) {
-    printf("Opening Database   : %s\n", MainDatabaseFilename.toStdString().c_str());
-  }
-  
-  n = sqlite3_open(MainDatabaseFilename.toStdString().c_str(), &MainDatabase);
-  if ( n != SQLITE_OK ) {
-    fprintf(stderr, "Could not open database %s : %s\n", MainDatabaseFilename.toStdString().c_str(), sqlite3_errstr(n));
-    exit(EXIT_FAILURE);
-  }
-
-  sprintf(sqlstmt, "SELECT * FROM Verses WHERE book is %d;", book);
-
-  (void)sqlite3_exec(MainDatabase, sqlstmt, MainWordDataBasePopulateCB, NULL, NULL);
-    
-  //!
-  if ( MainVerbose ) {
-    printf("Closing Database   : %s\n", MainDatabaseFilename.toStdString().c_str());
-  }
 }
 
 /*****************************************************************************!
@@ -852,97 +962,9 @@ int
 MainWordDataBasePopulateCB
 (void*, int InColumnCount, char** InColumnValues, char** InColumnNames)
 {
-  int                                   m;
-  QChar                                 ch2;
-  int                                   k;
-  int                                   start;
-  QChar                                 ch;
-  int                                   i;
-  int                                   book;
-  int                                   chapter;
-  int                                   verse;
-  QString                               text;
-  int                                   n;
-  QString                               word;
-
-  verse = 0;
-  book = 0;
-  chapter = 0;
-  
-  enum {
-    Start,
-    InWord,
-    InSpaces
-  } state = Start;
-  
-  for (i = 0; i < InColumnCount; i++) {
-    QString                             columnName  = QString(InColumnNames[i]);
-    QString                             columnValue = QString(InColumnValues[i]);
-    if ( columnName == "book") {
-      book = columnValue.toInt();
-      continue;
-    }
-    if ( columnName == "chapter") {
-      chapter = columnValue.toInt();
-      continue;
-      
-    }
-    if ( columnName == "verse") {
-      verse = columnValue.toInt();
-      continue;      
-    }
-    if ( columnName == "text") {
-      text = columnValue;
-      continue;
-    }
-  }
-
-  n = text.length();
-
-  for (i = 0; i < n; i++) {
-    ch = text[i];
-    switch (state) {
-      case Start : {
-        if ( ch.isLetter() ) {
-          start = i;
-          state = InWord;
-          break;
-        }
-        break;
-      }
-
-      case InSpaces : {
-        if ( ch.isLetter() ) {
-          start = i;
-          state = InWord;
-          break;
-        }        
-        break;
-      }
-
-      case InWord : {
-        if ( ch.isLetter() ) {
-          break;
-        }
-        if ( ch == '\'' ) {
-          k = i + 1;
-          if ( k < n ) {
-            // Handle what looks like a contraction
-            ch2 = text[k];
-            if ( ch2.isLetter() ) {
-              break;
-            }
-            break;
-          }
-        }
-        m = i - start;
-        word = text.sliced(start, m);
-        printf("%2d %2d %2d : %s\n", book, chapter, verse, word.toStdString().c_str());
-        state = InSpaces;
-        break;
-      }
-    }
-  }
+  (void)InColumnCount;
+  (void)InColumnValues;
+  (void)InColumnNames;
   return 0;
 }
 
@@ -1342,7 +1364,7 @@ MainDBBReadBookInfo
   char                                  sqlstmt[128];
   int                                   n;
 
-  sprintf(sqlstmt, "SELECT *  FROM BookFormat;");
+  sprintf(sqlstmt, "SELECT *  FROM Book;");
   n = sqlite3_exec(MainDatabase, sqlstmt, MainDBBReadBookInfoCB, NULL, NULL);
   if ( n == SQLITE_OK ) {
     return;
@@ -1357,10 +1379,11 @@ int
 MainDBBReadBookInfoCB
 (void*, int InColumnCount, char** InColumnValues, char** InColumnNames)
 {
+  QString                               version;
   int                                   rightToLeft = 0;
   BookInfo*                             bookInfo;
   int                                   chapterCount = 0;
-  int                                   bookIndex = 0;
+  int                                   book = 0;
   QString                               bookName;
   QString                               nameAbbrev;
   int                                   bookOrder = 0;
@@ -1375,52 +1398,58 @@ MainDBBReadBookInfoCB
     columnName  = InColumnNames[i];
     columnValue = InColumnValues[i];
 
-    if ( columnName == "BookIndex" ) {
-      bookIndex = columnValue.toInt();
+    if ( columnName == "version" ) {
+      version = columnValue;
       continue;
     }
-    if ( columnName == "Chapters" ) {
+    
+    if ( columnName == "book" ) {
+      book = columnValue.toInt();
+      continue;
+    }
+    if ( columnName == "chapters" ) {
       chapterCount = columnValue.toInt();
       continue;
     }
-    if ( columnName == "StandardBooksOrder" ) {
+    if ( columnName == "standardbooksorder" ) {
       bookOrder = columnValue.toInt();
       continue;
     }
-    if ( columnName == "StandardBookGroup" ) {
+    if ( columnName == "standardbookgroup" ) {
       bookGroup = columnValue.toInt();
       continue;
     }
-    if ( columnName == "HebrewBookOrder" ) {
+    if ( columnName == "hebrewbookorder" ) {
       hebrewBookOrder = columnValue.toInt();
       continue;
     }
-    if ( columnName == "HebrewBookGroup" ) {
+    if ( columnName == "hebrewbookgroup" ) {
       hebrewBookGroup = columnValue.toInt();
       continue;
     }
-    if ( columnName == "GroupEnd" ) {
+    if ( columnName == "groupend" ) {
       groupEnd = columnValue.toInt();
       continue;
     }
-    if ( columnName == "Name" ) {
+    if ( columnName == "name" ) {
       bookName = columnValue;
       continue;
     }
-    if ( columnName == "NameAbbrev" ) {
+    if ( columnName == "nameabbrev" ) {
       nameAbbrev = columnValue;
       continue;
     }
 
-    if ( columnName == "RightToLeft" ) {
+    if ( columnName == "righttoleft" ) {
       rightToLeft = columnValue.toInt();
     }
   }
 
   bookInfo = new BookInfo();
+  bookInfo->SetVersion(version);
   bookInfo->name                = bookName;
   bookInfo->nameAbbrev          = nameAbbrev;
-  bookInfo->index               = bookIndex;
+  bookInfo->index               = book;
   bookInfo->chapters            = chapterCount;
   bookInfo->bookOrder           = bookOrder;
   bookInfo->bookGroup           = bookGroup;

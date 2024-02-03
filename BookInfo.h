@@ -41,38 +41,40 @@ class BookInfo : public QWidget
 
  //! Public Methods
  public :
-  QString                               GetCapitalizedBookName  ();
-  int                                   GetVerseCount           ();
-  void                                  ReadVerses              ();
-  void                                  AddLineText             (int InChapter, int InVerse, QString InVerseText);
-  BookInfoWord*                         GetWord                 (int InChapter, int InVerse, int InIndex);
-  int                                   GetWordCount            ();
-  static int                            ReadVersesCB            (void* InThisPointer, int InColumnCount, char** InColumnValues, char** InColumnNames);
-  int                                   GetChapterWordCount     (int InChapter);
-  int                                   GetChapterVerseCount    (int InChapter);
-  void                                  GetChapterWordIndices   (int InChapter, int &InStartIndex, int &InEndIndex);
-  BookInfoWord*                         GetWordByIndex          (int InIndex);
-  int                                   GetIndex                (void);
-  int                                   GetChapterCount         (void);
-  int                                   GetRightToLeft          (void);
-  void                                  SetRightToLeft          (int InRightToLeft);
-  QString                               GetName                 (void);
-  static QString                        GetVerseText            (int InBookNumber, int InChapterNumber, int InVerseNumber);
-  VerseInfoSet*                         GetVerses               ();
+  QString                       GetCapitalizedBookName  ();
+  int                           GetVerseCount           ();
+  void                          ReadVerses              ();
+  void                          AddLineText             (int InChapter, int InVerse, QString InVerseText);
+  BookInfoWord*                 GetWord                 (int InChapter, int InVerse, int InIndex);
+  int                           GetWordCount            ();
+  static int                    ReadVersesCB            (void* InThisPointer, int InColumnCount, char** InColumnValues, char** InColumnNames);
+  int                           GetChapterWordCount     (int InChapter);
+  int                           GetChapterVerseCount    (int InChapter);
+  void                          GetChapterWordIndices   (int InChapter, int &InStartIndex, int &InEndIndex);
+  BookInfoWord*                 GetWordByIndex          (int InIndex);
+  int                           GetIndex                (void);
+  int                           GetChapterCount         (void);
+  int                           GetRightToLeft          (void);
+  void                          SetRightToLeft          (int InRightToLeft);
+  QString                       GetName                 (void);
+  static QString                GetVerseText            (int InBookNumber, int InChapterNumber, int InVerseNumber);
+  VerseInfoSet*                 GetVerses               ();
+  QString                       GetVersion              (void);
+  void                          SetVersion              (QString InVersion);
 
  //! Public Data
  public :
-  QString                               name;
-  QString                               nameAbbrev;
-  int                                   chapters;
-  int                                   index;
-  int                                   bookOrder;
-  int                                   bookGroup;
-  int                                   hebrewBookOrder;
-  int                                   hebrewBookGroup;
-  int                                   groupEnd;
-  QList<BookInfoWord*>                  wordItems;
-  int                                   RightToLeft;
+  QString                       name;
+  QString                       nameAbbrev;
+  int                           chapters;
+  int                           index;
+  int                           bookOrder;
+  int                           bookGroup;
+  int                           hebrewBookOrder;
+  int                           hebrewBookGroup;
+  int                           groupEnd;
+  QList<BookInfoWord*>          wordItems;
+  int                           RightToLeft;
  
  //! Protected Methods
  protected :
@@ -85,7 +87,8 @@ class BookInfo : public QWidget
 
  //! Private Data
  private :
- 
+  QString                       version;
+
  //! Public Slots
  public slots :
 

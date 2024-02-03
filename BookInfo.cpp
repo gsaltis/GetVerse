@@ -272,7 +272,6 @@ BookInfo::GetChapterWordIndices
   end = 0;
   
   n = wordItems.size();
-
   for (i = 0; i < n; i++) {
     wordItem = wordItems[i];
     if ( wordItem->GetChapter() != InChapter ) {
@@ -287,7 +286,6 @@ BookInfo::GetChapterWordIndices
   InStartIndex = start;
   InEndIndex = end;
 }
-
 /*****************************************************************************!
  * Function : GetWordByIndex
  *****************************************************************************/
@@ -460,4 +458,23 @@ BookInfo::GetChapterVerseCount
 
   sqlite3_finalize(sqlStatement);
   return verseCount;
+}
+
+/*****************************************************************************!
+ * Function : GetVersion
+ *****************************************************************************/
+QString
+BookInfo::GetVersion(void)
+{
+  return version;  
+}
+
+/*****************************************************************************!
+ * Function : SetVersion
+ *****************************************************************************/
+void
+BookInfo::SetVersion
+(QString InVersion)
+{
+  version = InVersion;  
 }

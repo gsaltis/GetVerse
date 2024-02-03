@@ -90,11 +90,9 @@ MainWindow::Initialize()
 void
 MainWindow::CreateSubWindows()
 {
-  TRACE_FUNCTION_START();
   displayWindow = new MainDisplayWindow(BookName, ChapterNumber, VerseNumber);
   displayWindow->setParent(this);
   statusbar = statusBar();
-  TRACE_FUNCTION_END();
 }
 
 /*****************************************************************************!

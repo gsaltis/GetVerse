@@ -110,7 +110,6 @@ TextDisplayReaderViewWindow::SlotBookSelected
     k += t.length() + 1;
   }
 
-  TRACE_FUNCTION_INT(k);
   cursor.insertText(text);
   delete verseSet;
   setFocus();

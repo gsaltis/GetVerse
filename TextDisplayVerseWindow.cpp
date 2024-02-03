@@ -143,6 +143,9 @@ TextDisplayVerseWindow::CreateDisplayItems
   QString                               wordText;
   TextDisplayVerseItem*                 displayItem;
 
+  startIndex = 0;
+  endIndex = 0;
+  
   ClearDisplayItems();
   if ( NULL == Book ) {
     return;
