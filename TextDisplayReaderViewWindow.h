@@ -37,7 +37,7 @@ class TextDisplayReaderViewWindow : public QTextEdit
 
  //! Constructors
  public :
-  TextDisplayReaderViewWindow   ();
+  TextDisplayReaderViewWindow   (QWidget* InParent);
 
  //! Destructor
  public :
@@ -57,8 +57,14 @@ class TextDisplayReaderViewWindow : public QTextEdit
 
  //! Private Methods
  private :
-  void                          Initialize              ();
-  void                          CreateNewBlock          (QTextCursor& InCursorx);
+  void                          Initialize                      ();
+  void                          CreateParagraphBlock            (QTextCursor& InCursor, uint32_t InPosition, int InLeftIndent, int InRightIndent, int InTopIndent, int InBottomIndent);
+  void                          CreateCharBlock                 (QTextCursor& InCursor, uint32_t InStart, uint32_t InEnd, QColor InColor);
+  void                          CreateChapterBlock              (QTextCursor& InCursor, uint32_t InIndent);
+  void                          CreateCharFontBlock             (QTextCursor& InCursor, uint32_t InStart, uint32_t InEnd, QFont InFont);
+  void                          CreateCharBackgroundBlock       (QTextCursor& InCursor, uint32_t InStart, uint32_t InEnd, QColor InColor);
+  void                          CreateConnections               (void);
+  int                           FindWordIndexAtPosition         (int InCursorPosition);
 
  //! Private Data
  private :
@@ -68,10 +74,23 @@ class TextDisplayReaderViewWindow : public QTextEdit
   int                           CurrentTextStart;
   int                           CurrentTextEnd;
   
+  int                           selectionStart;
+  int                           selectionEnd;
+  int                           selectionStartWord;
+  int                           selectionEndWord;
+ 
+  int                           currentCursorIndex;
+
  //! Public Slots
  public slots :
-  void                          SlotBookSelected        (BookInfo* InBook);
-  void                          SlotChapterSelected     (int InChapter);
+  void                          SlotBookSelected                (BookInfo* InBook);
+  void                          SlotChapterSelected             (int InChapter);
+  void                          SlotCursorPositionChanged       (void);
+  void                          SlotTextColorSet                (QColor InTextColor);
+  void                          SlotTextFontSet                 (QFont InFont);
+  void                          SlotTextBackgroundColorSet      (QColor InTextBackgroundColor);
+  void                          SlotParagraphSet                (int InLeftIndent, int InRightIndent, int InTopIndent, int InBottomIndent);
+  void                          SlotExtraPushed                 ();
 
  //! Public Signals
  signals :

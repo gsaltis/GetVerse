@@ -1,10 +1,16 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource>
-    <file>Images/Form.png</file>
-    <file>Images/Close.png</file>
-    <file>Images/List.png</file>
-    <file>Images/Pen.png</file>
     <file>Images/Book.png</file>
     <file>Images/BookMark.png</file>
+    <file>Images/Close.png</file>
+    <file>Images/Exdent.png</file>
+    <file>Images/Font.png</file>
+    <file>Images/Form.png</file>
+    <file>Images/Indent.png</file>
+    <file>Images/List.png</file>
+    <file>Images/Paragraph.png</file>
+    <file>Images/Pen.png</file>
+    <file>Images/TextBackgroundColor.png</file>
+    <file>Images/TextColor.png</file>
 </qresource>
 </RCC>

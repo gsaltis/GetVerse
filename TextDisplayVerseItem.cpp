@@ -204,7 +204,7 @@ TextDisplayVerseItem::GetVerseNumber(void)
 }
 
 /*****************************************************************************!
- * 
+ * Function : enterEvent
  *****************************************************************************/
 void
 TextDisplayVerseItem::enterEvent
@@ -218,7 +218,7 @@ TextDisplayVerseItem::enterEvent
 }
 
 /*****************************************************************************!
- * 
+ * Function : leaveEnter
  *****************************************************************************/
 void
 TextDisplayVerseItem::leaveEvent

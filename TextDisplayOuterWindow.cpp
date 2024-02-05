@@ -269,6 +269,7 @@ void
 TextDisplayOuterWindow::BookSelected
 (BookInfo* InBookInfo, int InChapter)
 {
+  TRACE_FUNCTION_START();
   InBookInfo->ReadVerses();
   header->SetText(InBookInfo->GetCapitalizedBookName());
   viewWindow->ClearText();
@@ -282,6 +283,7 @@ TextDisplayOuterWindow::BookSelected
   if ( InChapter > 0 ) {
     emit SignalChapterSelected(InChapter);
   }
+  TRACE_FUNCTION_END();
 }
 
 /*****************************************************************************!

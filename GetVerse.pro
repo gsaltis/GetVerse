@@ -44,6 +44,7 @@ SOURCES                         += \
 				   BookNameWindow.cpp                           \
 				   BookmarkButton.cpp                           \
 				   ChapterHeaderWindow.cpp                      \
+				   CreateParagraphDialog.cpp                    \
 				   Formatting.cpp                               \
 				   InterlinearChapter.cpp                       \
 				   InterlinearDisplayElementSelectDialog.cpp    \
@@ -81,6 +82,7 @@ SOURCES                         += \
 				   TextDisplayInterlinearWordSelect.cpp         \
 				   TextDisplayItem.cpp                          \
 				   TextDisplayOuterWindow.cpp                   \
+				   TextDisplayReaderToolBar.cpp                 \
 				   TextDisplayReaderViewContainerWindow.cpp     \
 				   TextDisplayReaderViewWindow.cpp              \
 				   TextDisplayReferenceItem.cpp                 \
@@ -103,6 +105,7 @@ SOURCES                         += \
 				   TextDisplayWordItem.cpp                      \
 				   VerseInfo.cpp                                \
 				   VerseInfoSet.cpp                             \
+                                   WindowHeader.cpp                             \
 				   main.cpp                                     \
 				   sqlite3.c                                    \
 
@@ -120,6 +123,7 @@ HEADERS                         += \
 				   BookNameWindow.h                             \
 				   BookmarkButton.h                             \
 				   ChapterHeaderWindow.h                        \
+				   CreateParagraphDialog.h                      \
 				   Formatting.h                                 \
 				   InterlinearChapter.h                         \
 				   InterlinearDisplayElementSelectDialog.h      \
@@ -157,6 +161,7 @@ HEADERS                         += \
 				   TextDisplayInterlinearWordSelect.h           \
 				   TextDisplayItem.h                            \
 				   TextDisplayOuterWindow.h                     \
+				   TextDisplayReaderToolBar.h                   \
 				   TextDisplayReaderViewContainerWindow.h       \
 				   TextDisplayReaderViewWindow.h                \
 				   TextDisplayReferenceItem.h                   \
@@ -179,6 +184,7 @@ HEADERS                         += \
 				   TextDisplayWordItem.h                        \
 				   VerseInfo.h                                  \
 				   VerseInfoSet.h                               \
+                                   WindowHeader.h                               \
 				   sqlite3.h                                    \
 
 FORMS                           += \

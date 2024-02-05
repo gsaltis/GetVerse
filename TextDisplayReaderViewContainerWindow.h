@@ -20,6 +20,7 @@
 #include "TextDisplayReaderViewWindow.h"
 #include "BookInfo.h"
 #include "ChapterHeaderWindow.h"
+#include "TextDisplayReaderToolBar.h"
 
 /*****************************************************************************!
  * Exported Macros
@@ -36,53 +37,64 @@ class TextDisplayReaderViewContainerWindow : public QWidget
 {
   Q_OBJECT;
 
- //! Constructors
- public :
+  //! Constructors
+public :
   TextDisplayReaderViewContainerWindow ();
 
- //! Destructor
- public :
+  //! Destructor
+public :
   ~TextDisplayReaderViewContainerWindow ();
 
- //! Public Methods
- public :
+  //! Public Methods
+public :
 
- //! Public Data
- public :
+  //! Public Data
+public :
 
- //! Protected Methods
- protected :
+  //! Protected Methods
+protected :
 
- //! Protected Data
- protected :
+  //! Protected Data
+protected :
 
- //! Private Methods
- private :
+  //! Private Methods
+private :
   void                          initialize              ();
   void                          CreateSubWindows        ();
   void                          CreateConnections       ();
   void                          InitializeSubWindows    ();
   void                          resizeEvent             (QResizeEvent* InEvent);
 
- //! Private Data
- private :
+  //! Private Data
+private :
   TextDisplayReaderViewWindow*  readerWindow;
   int                           Chapter;
   BookInfo*                     Book;
   ChapterHeaderWindow*          header;
+  TextDisplayReaderToolBar*     toolBar;
 
- //! Public Slots
- public slots :
+  //! Public Slots
+public slots :
   void                          SlotBookSelected        (BookInfo* InBookInfo);
+  void                          SlotTextColorSet        (QColor InTextColor);
+  void                          SlotTextBackgroundColorSet (QColor InColor);
+  void                          SlotTextFontSet         (QFont InFont);
+  void                          SlotParagraphSet        (int InLeftIndent, int InRightIndent, int InTopIndent, int InBottomIndent);
+  void                          SlotExtraPushed         (void);
 
- //! Public Signals
- signals :
-  void                          SignalBookSelected      (BookInfo* InBookInfo);
-  void                          SignalTotalChaptersChanged (int InTotalChapters);
-  void                          SignalChapterSelected   (int InChapter);
+  //! Public Signals
+signals :
+  void                          SignalBookSelected              (BookInfo* InBookInfo);
+  void                          SignalTotalChaptersChanged      (int InTotalChapters);
+  void                          SignalChapterSelected           (int InChapter);
+  void                          SignalTextColorSet              (QColor InTextColor);
+  void                          SignalTextBackgroundColorSet    (QColor InColor);
+  void                          SignalTextFontSet               (QFont InFont);
+  void                          SignalParagraphSet              (int InLeftIndent, int InRightIndent, int InTopIndent, int InBottomIndent);
+  void                          SignalExtraPushed               ();
 
- //! Public Actions
- public :
+  //! Public Actions
+public :
 
 };
 
