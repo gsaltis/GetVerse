@@ -22,6 +22,7 @@
 #include "Common.h"
 #include "BookMark.h"
 #include "main.h"
+#include "BookMarkManager.h"
 
 /*****************************************************************************!
  * Function : TextControlBar
@@ -112,6 +113,10 @@ TextControlBar::CreateConnections
           TextControlBarCheckBox::SignalChecked,
           this,
           TextControlBar::SlotTransliterateChecked);
+  connect(MainBookMarks,
+          BookMarkManager::SignalBookMarksUpdated,
+          this,
+          TextControlBar::SlotBookMarksUpdated);
 }
 
 /*****************************************************************************!
@@ -215,9 +220,11 @@ TextControlBar::CreateSubWindows()
     
     BookmarkButtons[i]->resize(BOOKMARK_BUTTON_WIDTH, ButtonHeight);
     BookmarkButtons[i]->move(x2, 0);
+#if 0
     if ( bookmark->GetChapter() == 0 ) {
       BookmarkButtons[i]->hide();
     }
+#endif
     x2 += BOOKMARK_BUTTON_WIDTH;
   }
   
@@ -982,7 +989,9 @@ void
 TextControlBar::SlotBookmarkSelected
 (BookInfo* InBook, int InChapter, int InVerse, int InWord)
 {
+  TRACE_FUNCTION_START();
   emit SignalBookmarkSelected(InBook, InChapter, InVerse, InWord);
+  TRACE_FUNCTION_END();
 }
 
 /*****************************************************************************!
@@ -1017,4 +1026,32 @@ TextControlBar::SetInterlinearElements(void)
   WordBreakTypeCombo->hide();
   WordBreakTypeLabel->hide();
   InterlinearElementsDisplay(true);
+}
+
+/*****************************************************************************!
+ * Function : SlotBookMarksUpdated
+ *****************************************************************************/
+void
+TextControlBar::SlotBookMarksUpdated(void)
+{
+  int                                   bookIndex;
+  BookInfo*                             bookInfo;
+  int                                   i;
+  BookMark*                             bookMark;
+
+  TRACE_FUNCTION_START();
+  SlotClearBookMarks();
+  for ( i = 0 ; i < BOOK_MARK_MANAGER_MAX_COUNT ; i++ ) {
+    bookMark = MainBookMarks->GetBookMarkByIndex(i);
+    bookIndex = bookMark->GetBook();
+    if ( bookIndex == 0 ) {
+      continue;
+    }
+    bookInfo = MainBookInfo->FindBookByIndex(bookIndex);
+    if ( NULL == bookInfo ) {
+      continue;
+    }
+    BookmarkButtons[i]->Set(bookInfo, bookMark->GetChapter(), bookMark->GetVerse());
+  }
+  TRACE_FUNCTION_END();
 }

@@ -8,6 +8,7 @@
 /*****************************************************************************!
  * Global Headers
  *****************************************************************************/
+#include <trace_winnetqt.h>
 #include <QtCore>
 #include <QtGui>
 #include <QWidget>
@@ -99,6 +100,12 @@ BookMarkManager::SetBookMark
 {
   int                                   n;
   int                                   i;
+
+  TRACE_FUNCTION_START();
+  if ( FindBookMark(InBook, InChapter, InVerse) ) {
+    TRACE_FUNCTION_END();
+    return;
+  }
   ShiftBookMarks();
   bookMarks[0]->Set(InBook, InChapter, InVerse);
 
@@ -106,6 +113,8 @@ BookMarkManager::SetBookMark
   for (i = 0; i < n; i++) {
     bookMarks[i]->Save(settings);
   }
+  emit SignalBookMarksUpdated();
+  TRACE_FUNCTION_END();
 }
 
 /*****************************************************************************!
@@ -148,5 +157,45 @@ void
 BookMarkManager::SlotSetBookmark
 (int InBook, int InChapter, int InVerse, int InWordIndex)
 {
+  TRACE_FUNCTION_START();
   SetBookMark(InBook, InChapter, InVerse, InWordIndex);
+  TRACE_FUNCTION_END();
 }
+
+/*****************************************************************************!
+ * Function : FindBookMark
+ *****************************************************************************/
+BookMark*
+BookMarkManager::FindBookMark
+(int InBook, int InChapter, int InVerse)
+{
+  BookMark*                             bookMark;
+  int                                   i;
+  int                                   n;
+  
+  n = BOOK_MARK_MANAGER_MAX_COUNT;
+  for (i = 0; i < n; i++) {
+    bookMark = bookMarks[i];
+    if ( bookMark->GetBook() == InBook &&
+         bookMark->GetChapter() == InChapter &&
+         bookMark->GetVerse() == InVerse ) {
+      return bookMark;
+    }
+  }
+  return NULL;
+}
+  
+/*****************************************************************************!
+ * Function : GetBookMarkByIndex
+ *****************************************************************************/
+BookMark*
+BookMarkManager::GetBookMarkByIndex
+(int InIndex)
+{
+  if ( InIndex < 0 || InIndex >= BOOK_MARK_MANAGER_MAX_COUNT ) {
+    return NULL;
+  }
+
+  return bookMarks[InIndex];
+}
+

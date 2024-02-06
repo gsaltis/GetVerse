@@ -46,7 +46,9 @@ public :
   BookMark*                     GetBookMark             (int InIndex);
   void                          Read                    ();
   void                          SetBookMark             (int InBook, int InChapter, int InVerse, int InWord);
+  BookMark*                     FindBookMark            (int InBook, int InChapter, int InVerse);
   void                          Clear                   (void);
+  BookMark*                     GetBookMarkByIndex      (int InIndex);
   
   //! Public Data
 public :
@@ -72,6 +74,7 @@ public slots :
 
   //! Public Signals
 signals :
+  void                          SignalBookMarksUpdated  (void);
 
   //! Public Actions
 public :

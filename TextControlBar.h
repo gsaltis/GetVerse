@@ -150,6 +150,7 @@ public slots :
   void                          SlotDisplayBookMarks            (void);
   void                          SlotBookmarkSelected            (BookInfo* InBook, int InChapter, int InVerse, int InWord);
   void                          SlotReaderViewButtonPushed      (void);
+  void                          SlotBookMarksUpdated    (void);
   
   //! Public Signals
 signals :
