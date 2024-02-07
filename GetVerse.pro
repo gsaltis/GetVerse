@@ -46,6 +46,7 @@ SOURCES                         += \
 				   ChapterHeaderWindow.cpp                      \
 				   CreateParagraphDialog.cpp                    \
 				   Formatting.cpp                               \
+				   GotoReferenceDialog.cpp                      \
 				   InterlinearChapter.cpp                       \
 				   InterlinearDisplayElementSelectDialog.cpp    \
 				   InterlinearVerse.cpp                         \
@@ -105,7 +106,7 @@ SOURCES                         += \
 				   TextDisplayWordItem.cpp                      \
 				   VerseInfo.cpp                                \
 				   VerseInfoSet.cpp                             \
-                                   WindowHeader.cpp                             \
+				   WindowHeader.cpp                             \
 				   main.cpp                                     \
 				   sqlite3.c                                    \
 
@@ -125,6 +126,7 @@ HEADERS                         += \
 				   ChapterHeaderWindow.h                        \
 				   CreateParagraphDialog.h                      \
 				   Formatting.h                                 \
+				   GotoReferenceDialog.h                        \
 				   InterlinearChapter.h                         \
 				   InterlinearDisplayElementSelectDialog.h      \
 				   InterlinearVerse.h                           \
@@ -184,7 +186,7 @@ HEADERS                         += \
 				   TextDisplayWordItem.h                        \
 				   VerseInfo.h                                  \
 				   VerseInfoSet.h                               \
-                                   WindowHeader.h                               \
+				   WindowHeader.h                               \
 				   sqlite3.h                                    \
 
 FORMS                           += \

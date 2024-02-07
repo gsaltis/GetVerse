@@ -75,6 +75,7 @@ class TextDisplayVerseScrollWindow : public QScrollArea
   void                          SlotSetStartupBookmarkInfo (BookInfo* InBookInfo, int InChapter);
   void                          SlotChapterArrowSelected (int InChapter);
   void                          SlotSetBookmark         (int InBook, int InChapter, int InVerse, int InWordIndex);
+  void                          SlotGotoBookChapter     (BookInfo* InBook, int InChapter);
 
  //! Public Signals
  signals :
@@ -84,6 +85,7 @@ class TextDisplayVerseScrollWindow : public QScrollArea
   void                          SignalSetStartupBookmarkInfo (BookInfo* InBookInfo, int InChapter);
   void                          SignalChapterArrowSelected (int InChapter);
   void                          SignalSetBookmark       (int InBook, int InChapter, int InVerse, int InWordIndex);
+  void                          SignalGotoBookChapter   (BookInfo* InBook, int InChapter);
 
  //! Public Actions
  public :

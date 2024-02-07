@@ -17,6 +17,8 @@
  * Local Headers
  *****************************************************************************/
 #include "BookInfoManager.h"
+#include "main.h"
+#include "Common.h"
 
 /*****************************************************************************!
  * Function : BookInfoManager
@@ -151,4 +153,59 @@ BookInfoManager::GetBookByName
     }
   }
   return NULL;
+}
+
+/*****************************************************************************!
+ * Function : GetBookCount
+ *****************************************************************************/
+int
+BookInfoManager::GetBookCount(void)
+{
+  return Books.size();
+}
+
+/*****************************************************************************!
+ * Function : GetBookByIndex
+ *****************************************************************************/
+BookInfo*
+BookInfoManager::GetBookByIndex
+(int InIndex)
+{
+  int                                   i;
+  BookInfo*                             bookInfo;
+  int                                   bookCount;
+
+  bookCount = Books.size();
+  if ( InIndex < 1 || InIndex > bookCount ) {
+    return NULL;
+  }
+  for (i = 0; i < bookCount; i++) {
+    bookInfo = Books[i];
+    if ( bookInfo->GetIndex() == InIndex ) {
+      return bookInfo;
+    }
+  }
+  return NULL;
+}
+
+/*****************************************************************************!
+ * Function : PopulateBookNameCombo
+ *****************************************************************************/
+void
+BookInfoManager::PopulateBookNameCombo
+(QComboBox* InComboBox)
+{
+  BookInfo*                             bookInfo;
+  int                                   n;
+  int                                   i;
+
+  n = GetBookCount();
+
+  for (i = 0; i < n; i++) {
+    bookInfo = MainBookInfo->GetBookByIndex(i + 1);
+    if ( NULL == bookInfo ) {
+      continue;
+    }
+    InComboBox->addItem(bookInfo->GetCapitalizedBookName(), bookInfo->GetIndex());
+  }
 }

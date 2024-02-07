@@ -20,6 +20,7 @@
 #include "BookInfoWord.h"
 #include "TextDisplayVerseReferenceItem.h"
 #include "Common.h"
+#include "GotoReferenceDialog.h"
 
 /*****************************************************************************!
  * Function : TextDisplayVerseWindow
@@ -343,93 +344,79 @@ TextDisplayVerseWindow::KeyPress
 {
   int                                   newChapter;
 
-  TRACE_FUNCTION_START();
-  TRACE_FUNCTION_HEX(InKey);
-  TRACE_FUNCTION_HEX(InModifiers);
   if ( maxChapters == 0 ) {
-    TRACE_FUNCTION_END();
     return false;
   }
 
   if ( InModifiers != Qt::NoModifier ) {
-    TRACE_FUNCTION_END();
     return false;
   }
   (void)InKey;
 
   if ( InKey == Qt::Key_I ) {
     emit SignalWindowChange(5);
-    TRACE_FUNCTION_END();
     return true;
   }
   
   if ( InKey == Qt::Key_B ) {
     emit SignalWindowChange(2);
-    TRACE_FUNCTION_END();
     return true;
   }
   
   if ( InKey == Qt::Key_E ) {
     emit SignalWindowChange(3);
-    TRACE_FUNCTION_END();
     return true;
   }
   
   if ( InKey == Qt::Key_S ) {
     emit SignalWindowChange(4);
-    TRACE_FUNCTION_END();
     return true;
   }
 
   if ( InKey == Qt::Key_V ) {
     emit SignalWindowChange(1);
-    TRACE_FUNCTION_END();
     return true;
   }
 
   if ( InKey == Qt::Key_1 ) {
-    TRACE_FUNCTION_LOCATION();
     emit SignalSetBookmark(Book->GetIndex(), Chapter, 1, 1);
-    TRACE_FUNCTION_END();
     return true;
   }
 
+  if ( InKey == Qt::Key_2 ) {
+    GotoBookChapterReference();
+    return true;
+  }
+  
   if ( InKey == Qt::Key_0 ) {
     emit SignalSetStartupBookmarkInfo(Book, Chapter);
-    TRACE_FUNCTION_END();
     return true;
   }
   
   if ( InKey == Qt::Key_Left ) {
     if ( Chapter <= 1 ) {
-      TRACE_FUNCTION_END();
       return true;
     }
     newChapter = Chapter - 1;
     SlotChapterSelected(newChapter);
     emit SignalChapterArrowSelected(newChapter);
-    TRACE_FUNCTION_END();
     return true;
   }
 
   if ( InKey == Qt::Key_Right ) {
     if ( Chapter >= maxChapters ) {
-      TRACE_FUNCTION_END();
       return true;
     }
 
     if( Chapter >= maxChapters ) {
-      TRACE_FUNCTION_END();
       return true;
     }
     newChapter = Chapter+1;
     SlotChapterSelected(newChapter);
     emit SignalChapterArrowSelected(newChapter);
-    TRACE_FUNCTION_END();
     return true;
   }
 
-  TRACE_FUNCTION_END();
   return false;
 }
 
@@ -450,7 +437,37 @@ void
 TextDisplayVerseWindow::SlotSetBookmark
 (int InBook, int InChapter, int InVerse, int InWordIndex)
 {
-  TRACE_FUNCTION_START();
   emit SignalSetBookmark(InBook, InChapter, InVerse, InWordIndex);
-  TRACE_FUNCTION_END();
+}
+
+/*****************************************************************************!
+ * Function : GotoBookChapterReference
+ *****************************************************************************/
+void
+TextDisplayVerseWindow::GotoBookChapterReference(void)
+{
+  QString                               bookName;
+  GotoReferenceDialog*                  dialog;
+
+  dialog = new GotoReferenceDialog(Book, Chapter);
+  if ( ! dialog->exec() ) {
+    return;
+  }
+
+  Book = dialog->GetBook();
+  Chapter = dialog->GetChapter();
+  delete dialog;
+  
+  bookName = Book->GetName();
+  emit SignalGotoBookChapter(Book, Chapter);
+}
+
+/*****************************************************************************!
+ * Function : SlotGotoBookChapter
+ *****************************************************************************/
+void
+TextDisplayVerseWindow::SlotGotoBookChapter
+(BookInfo* InBook, int InChapter)
+{
+  emit SignalGotoBookChapter(InBook, InChapter);  
 }

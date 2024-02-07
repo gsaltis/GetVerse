@@ -19,6 +19,7 @@
  *****************************************************************************/
 #include "BookInfoWord.h"
 #include "VerseInfoSet.h"
+#include "QComboBox"
 
 /*****************************************************************************!
  * Exported Macros
@@ -61,6 +62,7 @@ class BookInfo : public QWidget
   VerseInfoSet*                 GetVerses               ();
   QString                       GetVersion              (void);
   void                          SetVersion              (QString InVersion);
+  void                          PopulateChapterComboBox (QComboBox* InComboBox);
 
  //! Public Data
  public :

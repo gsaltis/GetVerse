@@ -478,3 +478,17 @@ BookInfo::SetVersion
 {
   version = InVersion;  
 }
+
+/*****************************************************************************!
+ * Function : PopulateChapterComboBox
+ *****************************************************************************/
+void
+BookInfo::PopulateChapterComboBox
+(QComboBox* InComboBox)
+{
+  int                                   chapter;
+  InComboBox->clear();
+  for (chapter = 1; chapter <= chapters; chapter++) {
+    InComboBox->addItem(QString("%1").arg(chapter), chapter);
+  }
+}

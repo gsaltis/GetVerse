@@ -114,15 +114,16 @@ class TextDisplayOuterWindow : public QFrame
   void                          SlotSetStartupBookmark          (int InBook, int InChapter, int InVerse);
   void                          SlotWindowChange                (int InType);
   void                          SlotSetStartupBookmarkInfo      (BookInfo* InBookInfo, int InChapter);
-  void                          SlotSetBookMark         (BookInfo* InBookInfo, int InChapter, int InVerse, int InWord);
-  void                          SlotClearBookMarks      (void);
-  void                          SlotDisplayBookMarks    (void);
-  void                          SlotBookmarkSelected    (BookInfo* InBook, int InChapter, int InVerse, int InWord);
-  void                          SlotSetReaderMode       (void);
-  void                          SlotEnglishChanged      (bool InSet);
-  void                          SlotTransliterateChanged (bool InSet);
-  void                          SlotMorphologyChanged   (bool InSet);
-  void                          SlotStrongsChanged      (bool InSet);
+  void                          SlotSetBookMark                 (BookInfo* InBookInfo, int InChapter, int InVerse, int InWord);
+  void                          SlotClearBookMarks              (void);
+  void                          SlotDisplayBookMarks            (void);
+  void                          SlotBookmarkSelected            (BookInfo* InBook, int InChapter, int InVerse, int InWord);
+  void                          SlotSetReaderMode               (void);
+  void                          SlotEnglishChanged              (bool InSet);
+  void                          SlotTransliterateChanged        (bool InSet);
+  void                          SlotMorphologyChanged           (bool InSet);
+  void                          SlotStrongsChanged              (bool InSet);
+  void                          SlotGotoBookChapter             (BookInfo* InBook, int InChapter);
   
  //! Public Signals
  signals :

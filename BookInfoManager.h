@@ -13,6 +13,7 @@
 #include <QtCore>
 #include <QtGui>
 #include <QWidget>
+#include <QComboBox>
 
 /*****************************************************************************!
  * Local Headers
@@ -50,6 +51,9 @@ class BookInfoManager : public QWidget
   int                           GetSize                 (void);
   BookInfo*                     GetByIndex              (int InIndex);
   BookInfo*                     GetBookByName           (QString InBookName, bool InUseAbbrev = false);
+  int                           GetBookCount            (void);
+  BookInfo*                     GetBookByIndex          (int InIndex);
+  void                          PopulateBookNameCombo   (QComboBox* InComboBox);
 
  //! Public Data
  public :

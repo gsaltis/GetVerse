@@ -263,13 +263,12 @@ TextDisplayOuterWindow::SlotBookSelected
 }
 
 /*****************************************************************************!
- * Function : BookSelected
+ * function : BookSelected
  *****************************************************************************/
 void
 TextDisplayOuterWindow::BookSelected
 (BookInfo* InBookInfo, int InChapter)
 {
-  TRACE_FUNCTION_START();
   InBookInfo->ReadVerses();
   header->SetText(InBookInfo->GetCapitalizedBookName());
   viewWindow->ClearText();
@@ -283,7 +282,6 @@ TextDisplayOuterWindow::BookSelected
   if ( InChapter > 0 ) {
     emit SignalChapterSelected(InChapter);
   }
-  TRACE_FUNCTION_END();
 }
 
 /*****************************************************************************!
@@ -319,7 +317,7 @@ TextDisplayOuterWindow::CreateConnections(void)
   
   connect(viewWindow,
           TextDisplayViewScrollWindow::SignalSetStartupBookmark,
-          this,
+          this, 
           TextDisplayOuterWindow::SlotSetStartupBookmarkInfo);
   
   connect(sentenceWindow,
@@ -626,6 +624,10 @@ TextDisplayOuterWindow::CreateConnections(void)
           TextControlBar::SignalMorphologyChanged,
           this,
           TextDisplayOuterWindow::SlotMorphologyChanged);
+  connect(verseWindow,
+          TextDisplayVerseContainerWindow::SignalGotoBookChapter,
+          this,
+          TextDisplayOuterWindow::SlotGotoBookChapter);
 }
 
 /*****************************************************************************!
@@ -973,4 +975,16 @@ TextDisplayOuterWindow::SetViewMode
     SlotSetInterlinearMode();
     return;
   }
+}
+
+/*****************************************************************************!
+ * Function : SlotGotoBookChapter
+ *****************************************************************************/
+void
+TextDisplayOuterWindow::SlotGotoBookChapter
+(BookInfo* InBook, int InChapter)
+{
+  TRACE_FUNCTION_START();
+  BookSelected(InBook, InChapter);
+  TRACE_FUNCTION_END();
 }

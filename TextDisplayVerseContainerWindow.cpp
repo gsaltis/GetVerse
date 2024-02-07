@@ -149,6 +149,10 @@ TextDisplayVerseContainerWindow::CreateConnections(void)
           TextDisplayVerseScrollWindow::SignalSetBookmark,
           this,
           TextDisplayVerseContainerWindow::SlotSetBookmark);
+  connect(verseWindow,
+          TextDisplayVerseScrollWindow::SignalGotoBookChapter,
+          this,
+          TextDisplayVerseContainerWindow::SlotGotoBookChapter);
 }
 
 /*****************************************************************************!
@@ -158,8 +162,10 @@ void
 TextDisplayVerseContainerWindow::SlotBookSelected
 (BookInfo* InBook)
 {
-  Book = InBook;
-  emit SignalBookSelected(InBook);
+  if ( Book == NULL || Book->GetIndex() != InBook->GetIndex() ) {
+    Book = InBook;
+    emit SignalBookSelected(InBook);
+  }
   emit SignalChapterSelected(1);
   emit SignalTotalChaptersChanged(Book->GetChapterCount());
   SlotChapterSelected(1);
@@ -215,4 +221,14 @@ TextDisplayVerseContainerWindow::SlotSetBookmark
   QString                               st;
   
   st = QString("%1 %2:%3.%4").arg(InBook).arg(InChapter).arg(InVerse).arg(InWordIndex);
+}
+
+/*****************************************************************************!
+ * Function : SlotGotoBookChapter
+ *****************************************************************************/
+void
+TextDisplayVerseContainerWindow::SlotGotoBookChapter
+(BookInfo* InBook, int InChapter)
+{
+  emit SignalGotoBookChapter(InBook, InChapter);  
 }

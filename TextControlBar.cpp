@@ -220,11 +220,9 @@ TextControlBar::CreateSubWindows()
     
     BookmarkButtons[i]->resize(BOOKMARK_BUTTON_WIDTH, ButtonHeight);
     BookmarkButtons[i]->move(x2, 0);
-#if 0
     if ( bookmark->GetChapter() == 0 ) {
       BookmarkButtons[i]->hide();
     }
-#endif
     x2 += BOOKMARK_BUTTON_WIDTH;
   }
   
